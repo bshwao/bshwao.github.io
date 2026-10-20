@@ -1,0 +1,11 @@
+{
+  "name": "eric-hsu-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Eric Hsu's architectural portfolio, built for GitHub Pages.",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "check": "node --check assets/app.js && node --check assets/content.js && node --check assets/skyscraper.js && node --check assets/floor-view.js && node --check assets/floor-plans.js && node --check assets/floor-content.js && node --check scripts/serve.mjs"
+  }
+}
