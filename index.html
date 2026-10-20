@@ -1,44 +1,72 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
-  <meta name="description" content="Explore Eric Hsu's portfolio through an unfolding blue wireframe skyscraper. Electrical engineering at McGill, Formula Electric, and projects across hardware and software.">
+  <meta name="description"
+    content="Explore Eric Hsu's portfolio through an unfolding blue wireframe skyscraper. Electrical engineering at McGill, Formula Electric, and projects across hardware and software.">
   <meta property="og:title" content="Eric Hsu — Structures & systems">
-  <meta property="og:description" content="An unfolding structure for projects, experience, and the things I'm learning along the way.">
+  <meta property="og:description"
+    content="An unfolding structure for projects, experience, and the things I'm learning along the way.">
   <meta property="og:type" content="website">
-  <title>Eric Hsu — Structures & systems</title>
+  <title>Eric Hsu — Structures & Systems</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="stylesheet" href="./assets/styles.css">
   <link rel="stylesheet" href="./assets/floor-view.css">
   <script type="module" src="./assets/app.js"></script>
 </head>
+
 <body>
   <main class="tower-page" id="main">
-    <h1 class="sr-only">Eric Hsu — electrical engineering, projects, and experience</h1>
+    <h1 class="sr-only">Eric Hsu — Electrical Engineering, Projects, and Experience</h1>
     <div class="drawing-reference" aria-hidden="true"><span>EH—001</span><span>STRUCTURES & SYSTEMS</span></div>
     <div class="tower-scene" id="tower-scene">
       <div class="tower-art" id="tower-art"></div>
-      <button class="tower-trigger" id="tower-trigger" type="button" aria-label="Expand the skyscraper to explore Eric Hsu's portfolio" aria-expanded="false" aria-controls="tower-art" aria-describedby="entry-hint"><span class="sr-only">Unfold the structure</span></button>
+      <button class="tower-trigger" id="tower-trigger" type="button"
+        aria-label="Expand the skyscraper to explore Eric Hsu's portfolio" aria-expanded="false"
+        aria-controls="tower-art" aria-describedby="entry-hint"><span class="sr-only">Unfold the
+          Structure</span></button>
     </div>
-    <button class="collapse-tower" id="collapse-tower" type="button" hidden><span aria-hidden="true">↙</span> Collapse structure</button>
-    <div class="page-identity"><span class="identity-name">ERIC HSU</span><span>ELECTRICAL ENGINEERING · McGILL</span></div>
-    <p class="entry-hint" id="entry-hint" aria-live="polite"><span class="hint-mark" aria-hidden="true">+</span><span id="hint-text">CLICK THE STRUCTURE TO UNFOLD</span></p>
+    <button class="collapse-tower" id="collapse-tower" type="button" hidden><span aria-hidden="true">↙</span> Collapse
+      Structure</button>
+    <div class="page-identity"><span class="identity-name">ERIC HSU</span><span>ELECTRICAL ENGINEERING · McGILL</span>
+    </div>
+    <p class="entry-hint" id="entry-hint" aria-live="polite"><span class="hint-mark" aria-hidden="true">+</span><span
+        id="hint-text">CLICK THE STRUCTURE TO UNFOLD</span></p>
     <span class="drawing-edition" aria-hidden="true">PORTFOLIO / 2026</span>
   </main>
 
-  <noscript><section class="noscript-content"><h2>Eric Hsu</h2><p>Electrical engineering student at McGill University, expected graduation 2030. Electronic Systems Team Member at McGill Formula Electric.</p><p>Projects: <a href="https://github.com/ric-e/flowst8">flowst8</a>, a real-time productivity application, and <a href="https://github.com/bshwao/Test-Shell">Test-Shell</a>, a UNIX shell simulator in C.</p><p>Enable JavaScript to unfold the structure, or <a href="./assets/eric-hsu-resume.pdf">read the full résumé</a>.</p><a href="mailto:erichsu8681@gmail.com">erichsu8681@gmail.com</a></section></noscript>
+  <noscript>
+    <section class="noscript-content">
+      <h2>Eric Hsu</h2>
+      <p>Electrical Engineering Undergraduate at McGill University, Expected graduation 2030. Electronic Systems Team
+        Member at McGill Formula Electric.</p>
+      <p>Projects: <a href="https://github.com/ric-e/flowst8">flowst8</a>, A Real-Time Productivity Application, and <a
+          href="https://github.com/bshwao/Test-Shell">Test-Shell</a>, a UNIX shell simulator in C.</p>
+      <p>Enable JavaScript to unfold the structure, or <a href="./assets/eric-hsu-resume.pdf">Read the Full Résumé</a>.
+      </p><a href="mailto:erichsu8681@gmail.com">erichsu8681@gmail.com</a>
+    </section>
+  </noscript>
 
   <dialog id="room-dialog" class="floor-view" aria-labelledby="room-title" aria-describedby="floor-description">
     <div class="floor-shell">
       <header class="floor-topbar">
-        <button id="close-room" class="close-room" type="button" aria-label="Return to the expanded tower"><span aria-hidden="true">↖</span> Back to tower</button>
-        <div class="floor-heading"><p id="room-location" class="eyebrow"></p><h2 id="room-title"></h2></div>
+        <button id="close-room" class="close-room" type="button" aria-label="Return to the expanded tower"><span
+            aria-hidden="true">↖</span> Back to Tower</button>
+        <div class="floor-heading">
+          <p id="room-location" class="eyebrow"></p>
+          <h2 id="room-title"></h2>
+        </div>
         <nav class="floor-navigation" id="floor-navigation" aria-label="Explore another floor"></nav>
       </header>
-      <div class="floor-scroll"><div class="floor-sheet" id="floor-sheet"></div><p id="floor-description" class="floor-description"></p></div>
+      <div class="floor-scroll">
+        <div class="floor-sheet" id="floor-sheet"></div>
+        <p id="floor-description" class="floor-description"></p>
+      </div>
     </div>
   </dialog>
 </body>
+
 </html>

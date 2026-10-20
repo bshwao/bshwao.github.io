@@ -124,6 +124,9 @@ export function createSkyscraper() {
       const worldB = surface(b, midZ);
       const outward = [worldB[1] - worldA[1], worldA[0] - worldB[0], 0];
       const towardCamera = camera.map((n, axis) => n - (worldA[axis] + worldB[axis]) / 2);
+      // Rear radial faces form floating panels at the section cuts; omit them
+      // from the shared geometry used by both collapsed and expanded views.
+      if (dot([Math.cos(midpoint), Math.sin(midpoint), 0], towardCamera) <= 0) continue;
       if (dot(outward, towardCamera) <= 0) continue;
 
       const left = zSamples.map((z) => projectedSurface(a, z));

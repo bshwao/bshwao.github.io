@@ -109,24 +109,26 @@ export function createFloorPlan(sectionId) {
     return result;
   }
 
+  // Keep door swings inside the room padding at every desktop plan scale.
+  const doorSize = 22;
   function doorVertical(y, left = false) {
     const direction = left ? -1 : 1;
-    const hingeY = left ? y + 34 : y;
-    const endY = left ? y : y + 34;
-    return `<path d="M600 ${hingeY}h${direction * 34}M600 ${endY}A34 34 0 0 0 ${600 + direction * 34} ${hingeY}" stroke-width=".7"/><circle cx="600" cy="${hingeY}" r="1.1" fill="${blue}" stroke="none"/>`;
+    const hingeY = left ? y + doorSize : y;
+    const endY = left ? y : y + doorSize;
+    return `<path class="plan-door" d="M600 ${hingeY}h${direction * doorSize}M600 ${endY}A${doorSize} ${doorSize} 0 0 0 ${600 + direction * doorSize} ${hingeY}" stroke-width=".7"/><circle cx="600" cy="${hingeY}" r="1.1" fill="${blue}" stroke="none"/>`;
   }
   function doorHorizontal(x, up = false) {
-    const endY = up ? 356 : 424;
-    return `<path d="M${x} 390V${endY}M${x + 34} 390A34 34 0 0 ${up ? 0 : 1} ${x} ${endY}" stroke-width=".7"/><circle cx="${x}" cy="390" r="1.1" fill="${blue}" stroke="none"/>`;
+    const endY = 390 + (up ? -doorSize : doorSize);
+    return `<path class="plan-door" d="M${x} 390V${endY}M${x + doorSize} 390A${doorSize} ${doorSize} 0 0 ${up ? 0 : 1} ${x} ${endY}" stroke-width=".7"/><circle cx="${x}" cy="390" r="1.1" fill="${blue}" stroke="none"/>`;
   }
   function partitions() {
-    let result = wall('M600 115V251M600 285V521M600 555V667');
+    let result = wall(`M600 115V251M600 ${251 + doorSize}V521M600 ${521 + doorSize}V667`);
     result += doorVertical(251) + doorVertical(521, true);
     if (id !== 'projects') {
-      result += wall(`M84 390H${plan.leftDoor}M${plan.leftDoor + 34} 390H598`);
+      result += wall(`M84 390H${plan.leftDoor}M${plan.leftDoor + doorSize} 390H598`);
       result += doorHorizontal(plan.leftDoor);
     }
-    result += wall(`M602 390H${plan.rightDoor}M${plan.rightDoor + 34} 390H1116`);
+    result += wall(`M602 390H${plan.rightDoor}M${plan.rightDoor + doorSize} 390H1116`);
     result += doorHorizontal(plan.rightDoor, true);
     return result;
   }
