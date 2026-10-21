@@ -212,7 +212,7 @@ async function start() {
       <footer class="interior-footer"><p id="interior-note"></p><div class="interior-share"><button id="share-room" type="button">Copy link ↗</button><a id="complete-portfolio" href="./reading.html">Full portfolio ↗</a></div><p id="share-status" role="status"></p><input id="share-url" type="text" readonly aria-label="Link to this view" hidden><nav id="interior-navigation" aria-label="Explore another section"></nav></footer>
     </aside>
     <div class="page-identity"><span class="identity-name">ERIC HSU</span><span>ELECTRICAL ENGINEERING · McGILL</span></div>
-    <div class="spatial-bottom"><button type="button" id="unfold-structure" aria-label="Unfold the structure" disabled>+ <span id="spatial-hint" aria-live="polite">DRAWING THE STRUCTURE…</span></button><p id="orbit-instructions">RMB DRAG TO ORBIT <span>·</span> SCROLL TO ZOOM</p></div>
+    <div class="spatial-bottom"><button type="button" id="unfold-structure" aria-label="Unfold the structure" disabled>+ <span id="spatial-hint" aria-live="polite">DRAWING THE STRUCTURE…</span></button><p id="orbit-instructions">LEFT DRAG TO ORBIT <span>·</span> SCROLL TO ZOOM</p></div>
     <span class="drawing-edition" aria-hidden="true">PORTFOLIO / 2026</span>`;
   $('#reading-view').addEventListener('click', () => void useFallback(false));
   const { createSpatialScene } = await import('./scene-3d.js');

@@ -16,7 +16,7 @@ Three.js 0.180.0 and OrbitControls are vendored under `assets/vendor/`, with the
 
 ## Explore
 
-- **Right mouse drag:** orbit around the tower or interior. The browser context menu is suppressed only inside the canvas. **Scroll / middle drag:** zoom. **Reset view:** restore the framing for the current mode.
+- **Left mouse drag:** orbit around the tower or interior. Click without dragging to select the tower, a section, or furniture. The browser context menu is suppressed only inside the canvas. **Scroll / middle drag:** zoom. **Reset view:** restore the framing for the current mode.
 - **Touch:** one finger rotates; a tap selects; two fingers pinch to zoom.
 - **Keyboard:** focus the canvas and use arrow keys to rotate, `+` / `-` to zoom, and Enter / Space to unfold. The section labels and room buttons are ordinary keyboard-accessible HTML controls.
 - **Select the tower:** unfold its five height sections. There are no section tabs on the opening screen.
@@ -71,7 +71,7 @@ npm ci
 npm test
 ```
 
-The integration harness runs the actual camera controller and OrbitControls with jsdom and a test renderer at desktop and phone dimensions, plus reduced motion and a fresh room deep link. It verifies staged facade entry, hidden neighboring floors throughout room flights, pointer/keyboard room preview, RMB controls, room close-ups, highlighting, portrait/landscape framing, resize preservation, gesture rejection, navigation, clipboard success/fallback, content links, cancellation, keyboard input, idle rendering, and the reading fallback. It does **not** validate WebGL pixels or replace visual browser testing. Node's VM module warning during these tests is expected.
+The integration harness runs the actual camera controller and OrbitControls with jsdom and a test renderer at desktop and phone dimensions, plus reduced motion and a fresh room deep link. It verifies staged facade entry, hidden neighboring floors throughout room flights, pointer/keyboard room preview, left-drag controls, room close-ups, highlighting, portrait/landscape framing, resize preservation, gesture rejection, navigation, clipboard success/fallback, content links, cancellation, keyboard input, idle rendering, and the reading fallback. It does **not** validate WebGL pixels or replace visual browser testing. Node's VM module warning during these tests is expected.
 
 Local browser QA also covered the assembled and expanded tower, Projects overview and Systems lab close-up, the detailed electronics bench and grand piano, room URL refresh/back/forward, copying a link, the text portfolio, and a linked Résumé room in the SVG fallback. Representative layouts were inspected at the default desktop size, 390 × 844 portrait, and 650 × 390 landscape, including phone panel scrolling, with no console errors or horizontal overflow in the inspected pages. This is a representative visual check rather than a device/performance benchmark.
 

@@ -174,13 +174,14 @@ assert.equal(main.dataset.mode, 'explore');
 assert.equal(main.dataset.transition, 'idle');
 if (!reduced) assert.ok(middle.distanceTo(lastCamera.position) > 1, 'Camera moves throughout expansion');
 
-// Exercise the actual vendored OrbitControls using right-button pointer events.
+// Exercise the actual vendored OrbitControls using left-button pointer events.
 const canvas = w.document.querySelector('canvas');
-const sendPointer = (type, x, y) => sendMouse(type, x, y, 2);
+const sendPointer = (type, x, y) => sendMouse(type, x, y, 0);
 const angle = Number(main.dataset.azimuth);
 sendPointer('pointerdown', viewportWidth * .4, 400); sendPointer('pointermove', viewportWidth * .6, 430); sendPointer('pointerup', viewportWidth * .6, 430);
 for (let i = 0; i < 12; i++) await tick(16);
-assert.ok(Math.abs(Number(main.dataset.azimuth) - angle) > .1, 'RMB drag orbits the real camera');
+assert.ok(Math.abs(Number(main.dataset.azimuth) - angle) > .1, 'Left-button drag orbits the real camera');
+assert.equal(w.location.hash, '#explore', 'Orbiting does not select a section');
 const contextMenu = new w.MouseEvent('contextmenu', { cancelable: true });
 canvas.dispatchEvent(contextMenu); assert.ok(contextMenu.defaultPrevented, 'Browser context menu is suppressed on the canvas');
 if (mobile) {
@@ -374,6 +375,6 @@ assert.equal(w.document.activeElement, w.document.querySelector('#plan-resume-d 
 assert.equal(w.document.title, `${floorContent.resume.rooms[3].title} · Résumé — Eric Hsu`);
 assert.equal(canvas.isConnected, false, 'The old canvas is removed during fallback');
 assert.equal(motionListeners.size, 0, 'Media preference listeners are cleaned up');
-console.log(`DOM/camera integration passed (${mobile ? 'mobile' : reduced ? 'reduced motion' : deepLink ? 'fresh room link' : 'desktop'}): room URLs, titles, clipboard/manual sharing, reading links, room flights, highlighting, RMB/touch, resize, framing, gestures, history, cancellation, keyboard, idle rendering, motion preferences, and nested-link fallback (${renders} frames).`);
+console.log(`DOM/camera integration passed (${mobile ? 'mobile' : reduced ? 'reduced motion' : deepLink ? 'fresh room link' : 'desktop'}): room URLs, titles, clipboard/manual sharing, reading links, room flights, highlighting, left-drag/touch, resize, framing, gestures, history, cancellation, keyboard, idle rendering, motion preferences, and nested-link fallback (${renders} frames).`);
 dom.window.close();
 

@@ -18,7 +18,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   canvas.className = 'spatial-canvas';
   canvas.tabIndex = 0;
   canvas.setAttribute('role', 'img');
-  canvas.setAttribute('aria-label', 'Interactive 3D blueprint skyscraper. Right mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold.');
+  canvas.setAttribute('aria-label', 'Interactive 3D blueprint skyscraper. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold.');
   container.append(canvas);
   const scene = new T.Scene();
   scene.add(new T.HemisphereLight('#ffffff', '#b2c8e2', 2.25));
@@ -28,7 +28,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   const camera = new T.PerspectiveCamera(34, 1, .02, 2000);
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const controls = new OrbitControls(camera, canvas);
-  controls.mouseButtons = { LEFT: null, MIDDLE: T.MOUSE.DOLLY, RIGHT: T.MOUSE.ROTATE };
+  controls.mouseButtons = { LEFT: T.MOUSE.ROTATE, MIDDLE: T.MOUSE.DOLLY, RIGHT: null };
   controls.touches = { ONE: T.TOUCH.ROTATE, TWO: T.TOUCH.DOLLY_ROTATE };
   controls.enablePan = false;
   controls.enableDamping = !reducedMotion.matches;
@@ -222,7 +222,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     move(to, instant ? 1 : nextMode === 'section' ? 1850 : previousMode === 'section' ? 1550 : 1300, onComplete);
     canvas.dataset.mode = nextMode;
     canvas.dataset.section = selected?.id || '';
-    canvas.setAttribute('aria-label', selected ? `3D cutaway of ${selected.name}: ${selected.theme}. Right mouse drag or arrow keys to orbit. Select a numbered room to read its contents.` : 'Interactive 3D blueprint skyscraper. Right mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold.');
+    canvas.setAttribute('aria-label', selected ? `3D cutaway of ${selected.name}: ${selected.theme}. Left mouse drag or arrow keys to orbit. Select a numbered room to read its contents.` : 'Interactive 3D blueprint skyscraper. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold.');
   }
   function focusRoom(index, { instant = false } = {}) {
     if (!selected || animation?.kind === 'scene' || !Number.isInteger(index) || !selected.interior.rooms[index]) return;
@@ -244,6 +244,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   function hit(event) {
     const bounds = canvas.getBoundingClientRect();
     pointer.set((event.clientX - bounds.left) / bounds.width * 2 - 1, -(event.clientY - bounds.top) / bounds.height * 2 + 1);
+    camera.updateMatrixWorld();
     raycaster.setFromCamera(pointer, camera);
     if (mode === 'section' && selected) {
       return raycaster.intersectObjects(selected.interior.pickables, false)[0]?.object.userData.roomIndex ?? null;
@@ -254,7 +255,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     if (hoveredRoom !== null || hover !== null) {
       hover = null; hoveredRoom = null; selected?.interior.setHoveredRoom(null); invalidate();
     }
-    canvas.style.cursor = event.button === 2 || event.pointerType === 'touch' ? 'grabbing' : 'grab';
+    canvas.style.cursor = event.button === 0 || event.pointerType === 'touch' ? 'grabbing' : 'grab';
     activePointers.add(event.pointerId);
     if (activePointers.size > 1) { if (pointerStart) pointerStart.cancelled = true; return; }
     pointerStart = { x: event.clientX, y: event.clientY, button: event.button, id: event.pointerId, cancelled: false };
