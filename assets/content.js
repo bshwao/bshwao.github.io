@@ -26,7 +26,7 @@ export const rooms = [
     title: "Ideas, put to work.",
     eyebrow: "Selected projects",
     description:
-      "From a real-time focus application to a UNIX shell in C: a look at what I have been building.",
+      "Driving simulations, a real-time focus application, and a UNIX shell in C: a look at what I have been building.",
   },
   {
     id: "experience",
@@ -84,6 +84,21 @@ export const projects = [
     ],
     stack: ["C", "POSIX", "UNIX", "Process management"],
     url: "https://github.com/bshwao/Test-Shell",
+  },
+  {
+    title: "Poltergeist",
+    category: "Autonomous driving simulation & evaluation",
+    year: "",
+    description:
+      "A CARLA-based platform for creating hazardous driving scenarios, evaluating autonomous agents, and reviewing telemetry, sensor recordings, and failure evidence.",
+    bullets: [
+      "Built a React and TypeScript dashboard with a FastAPI backend to create, save, validate, and execute parameterized driving scenarios.",
+      "Implemented repeatable agent comparisons with matched seeds, failure search, reproduction, and scenario minimization.",
+      "Linked agent observations and proposed/applied controls to telemetry, synchronized RGB camera and LiDAR recordings, and behavior reports.",
+      "Integrated a Python agent SDK and pretrained PlanT 2.0 reference controller for local driving experiments.",
+    ],
+    stack: ["Python", "FastAPI", "React", "TypeScript", "CARLA", "SQLite", "Pydantic"],
+    url: "https://github.com/bshwao/Poltergeist",
   },
 ];
 

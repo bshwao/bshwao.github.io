@@ -1,6 +1,6 @@
 import { profile, projects, experience, education, skills, personalNotes } from './content.js';
 
-const [focusApp, shellProject] = projects;
+const [focusApp, shellProject, poltergeist] = projects;
 const formulaElectric = experience[0];
 const resumeDownload = {
   label: 'Download résumé · PDF',
@@ -19,7 +19,7 @@ export const floorContent = {
         description: `Electrical engineering at ${profile.university}, ${profile.location}.`,
         paragraphs: [
           'My work spans circuits and code: designing circuit boards, connecting sensors, and building software that makes systems work together.',
-          "With McGill Formula Electric, I work on the race car's low-voltage electronics. My software projects include a real-time productivity application and a UNIX shell built in C.",
+          "With McGill Formula Electric, I work on the race car's low-voltage electronics. My software projects include autonomous driving simulation, a real-time productivity application, and a UNIX shell built in C.",
         ],
       },
       {
@@ -67,6 +67,7 @@ export const floorContent = {
         description: focusApp.description,
         paragraphs: [`${focusApp.category} · ${focusApp.year}`],
         bullets: focusApp.bullets,
+        tags: focusApp.stack,
         links: [{ label: 'View flowst8 source', href: focusApp.url }],
       },
       {
@@ -77,21 +78,22 @@ export const floorContent = {
         description: shellProject.description,
         paragraphs: [shellProject.category],
         bullets: shellProject.bullets,
+        tags: shellProject.stack,
         links: [{ label: 'View Test-Shell source', href: shellProject.url }],
       },
       {
         id: 'c',
         number: '03',
-        name: 'Materials library',
-        title: 'The toolkit',
-        description: 'Technologies used across these two builds.',
-        entries: [
-          { title: focusApp.title, detail: focusApp.stack.join(' · ') },
-          { title: shellProject.title, detail: shellProject.stack.join(' · ') },
-        ],
+        name: 'Simulation lab',
+        title: poltergeist.title,
+        description: poltergeist.description,
+        paragraphs: [poltergeist.category],
+        bullets: poltergeist.bullets,
+        tags: poltergeist.stack,
+        links: [{ label: 'View Poltergeist source', href: poltergeist.url }],
       },
     ],
-    note: 'Selected work across real-time applications and operating systems.',
+    note: 'Selected work across driving simulation, real-time applications, and operating systems.',
   },
 
   experience: {

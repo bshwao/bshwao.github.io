@@ -203,7 +203,7 @@ export function createInterior(section, content) {
     } else if (section.id === 'projects') {
       if (index === 0) { add('Dual monitor development desk', () => desk(p, 0, 0, 2)); add('Workstation tower', () => { box(p, -2.6, .8, -1, .9, 1.6, 1.1, 'blue'); for (let y = .3; y < 1.5; y += .2) box(p, -2.6, y, -.43, .64, .035, .02, 'ink'); }); }
       if (index === 1) { add('Ventilated server racks and cable runs', () => { server(p, -2, -1); server(p, 0, -1); }); add('Systems terminal', () => desk(p, 0, 2)); }
-      if (index === 2) { add('Code reference library', () => bookcase(p, 0, -2)); add('Shell development desk', () => desk(p)); }
+      if (index === 2) { add('Experiment reference library', () => bookcase(p, 0, -2)); add('Driving simulation analysis desk', () => desk(p)); }
     } else if (section.id === 'experience') {
       if (index === 0) add('Electronics bench, oscilloscope, probes and PCB', () => electronics(p));
       if (index === 1) add('Infrastructure racks with vents and cable runs', () => { server(p, -1.6, 0); server(p, 1.6, 0); box(p, 0, .15, 0, 4.8, .08, 2.2, 'glass'); });
