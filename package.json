@@ -6,6 +6,11 @@
   "description": "Eric Hsu's architectural portfolio, built for GitHub Pages.",
   "scripts": {
     "dev": "node scripts/serve.mjs",
-    "check": "node --check assets/app.js && node --check assets/content.js && node --check assets/skyscraper.js && node --check assets/floor-view.js && node --check assets/floor-plans.js && node --check assets/floor-content.js && node --check scripts/serve.mjs"
+    "check": "node scripts/check.mjs && node scripts/reading.mjs --check && node --test scripts/model.test.mjs scripts/layout.test.mjs scripts/routes.test.mjs",
+    "reading": "node scripts/reading.mjs",
+    "test": "node --experimental-vm-modules scripts/spatial.test.mjs && node --experimental-vm-modules scripts/spatial.test.mjs --mobile && node --experimental-vm-modules scripts/spatial.test.mjs --reduced && node --experimental-vm-modules scripts/spatial.test.mjs --deep-link"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
   }
 }

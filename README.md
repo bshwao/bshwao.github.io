@@ -1,44 +1,79 @@
-# Eric Hsu — Architectural portfolio
+# Eric Hsu — Structures & systems
 
-A buildless personal portfolio for GitHub Pages. The opening screen presents an original, dense blue wireframe skyscraper against a pure white background. Its low-angle perspective, tapered form, and stepped setbacks create the architectural entry point. Select the tower to expand five clickable height bands and reveal About, Projects, Experience, Résumé, and Contact. Select a band to zoom toward it, then enter a top-down floor plan with portfolio content arranged inside its rooms.
+A personal portfolio built for GitHub Pages, presented as a real, interactive 3D blueprint skyscraper. The blue linework, white surfaces, stepped wings, and needle spire are procedural geometry, viewable from every side. Selecting the tower separates five closed, solid sections; selecting a section moves the same camera toward it while the facade is cut away to reveal an inhabited architectural model.
 
 ## Preview
 
-With Node.js 20.11 or newer installed:
+With Node.js 20.11 or newer:
 
 ```sh
 npm run dev
 ```
 
-Open `http://127.0.0.1:4173`. No packages need to be installed. Use `PORT` to select another port. The server binds only to the local computer.
+Open `http://127.0.0.1:4173`. There is no build step and preview needs no package installation. `PORT` can select another port. The server binds only to the local computer.
 
-Run `npm run check` to check JavaScript syntax. There is no build step.
+Three.js 0.180.0 and OrbitControls are vendored under `assets/vendor/`, with their MIT license. All runtime assets are served locally; the website does not depend on a CDN, external fonts, a server backend, or a package installation on GitHub Pages.
 
-## Edit the site
+## Explore
 
-- `assets/content.js`: profile, projects, experience, education, skills, and personal details. The content is based on the supplied October 20, 2026 résumé; missing project dates are intentionally omitted.
-- `assets/floor-content.js`: maps the supplied content to the rooms on each floor. Projects has three rooms; the other floors each have four.
-- `assets/skyscraper.js`: procedural SVG tower geometry, blue wireframe linework, perspective projection, and five height-band targets.
-- `assets/floor-plans.js`: top-down SVG architectural plans and the room positions shared by the content renderer.
-- `assets/floor-view.js`: floor content rendering, camera zoom, entry and return transitions, focus management, room scroll cues, and mobile overview hotspots.
-- `assets/app.js`: tower framing, expansion and collapse, band selection, keyboard actions, and hash navigation.
-- `assets/styles.css`: visual system and responsive layouts.
-- `assets/floor-view.css`: fullscreen floor plans, room layouts, bounded desktop scrolling, mobile layouts, and camera transition styling.
-- `index.html`: tower entry screen, document metadata, fullscreen floor dialog, and JavaScript fallback.
-- `assets/eric-hsu-resume.pdf`: downloadable résumé. Replace this file to update the download.
+- **Right mouse drag:** orbit around the tower or interior. The browser context menu is suppressed only inside the canvas. **Scroll / middle drag:** zoom. **Reset view:** restore the framing for the current mode.
+- **Touch:** one finger rotates; a tap selects; two fingers pinch to zoom.
+- **Keyboard:** focus the canvas and use arrow keys to rotate, `+` / `-` to zoom, and Enter / Space to unfold. The section labels and room buttons are ordinary keyboard-accessible HTML controls.
+- **Select the tower:** unfold its five height sections. There are no section tabs on the opening screen.
+- **Select a section:** the neighboring floors separate first, the camera approaches on a gentle raised path, then the facade opens before the reading panel settles into place. The scene stays 3D throughout.
+- **Hover or focus a room:** preview its furniture and matching marker, with a named “Explore room” cue. Numbered controls and room buttons have 44px targets; captions give way at edges and collisions while the controls remain usable.
+- **Select a room marker, room name, or its furniture:** move the camera into a close view, emphasize that room's furniture outlines, and display its portfolio content in a readable panel. On phones the panel sits below the model. Links and the résumé PDF remain normal HTML links.
+- **Whole floor:** return to the complete interior while keeping the selected room's information open. Arrow keys, Home, and End also navigate the room names in the panel.
+- **Escape:** step back from a room close-up to the whole floor, then to the expanded tower, then to the assembled tower. **Back to tower** returns directly to the expanded structure. Previous / next links move between interiors.
 
-Band IDs are `about`, `projects`, `experience`, `resume`, and `contact`. Keep these IDs consistent across the content file, skyscraper targets, floor content, and plan layouts. The order of rooms in `floor-content.js` matches the room positions in `floor-plans.js`.
+The interiors are distinct: About has a study, grand piano with individual keys, strings and bench, and a conversation area; Projects has development workstations, vented server racks with cables, and a reference library; Experience has oscilloscopes, probes, circuit boards, network racks, and a Formula-style inspection model; Résumé has document cabinets and reference shelves; Contact has a reception counter and furnished lounge. These are illustrative architectural models; factual portfolio copy comes from the supplied résumé.
 
-`#explore` opens the expanded structure. Direct URLs such as `/#projects` open the corresponding floor plan. **Back to tower** or Escape reverses the camera transition and restores focus to the selected height band. **Collapse structure** returns to the initial tower view. Previous and next floor links, browser history, and direct hashes support moving between sections.
+Close-ups keep other floors hidden and quiet the surrounding rooms, perimeter and core. Hovering another room restores its detail for a preview; Whole floor gradually restores the context. Each room's static primitives are batched by surface material, preserving picking while limiting the detailed interiors to 21–26 draw calls per floor. Room camera framing fits actual workspace bounds rather than an enclosing sphere.
 
-## Completed scope
+`#explore` opens the exploded assembly; `#about`, `#projects`, `#experience`, `#resume`, and `#contact` open their interiors directly. Selecting a room adds its stable ID to the URL, for example `#projects/b` opens the Systems lab. **Copy link** copies the current room or floor URL; if clipboard access is unavailable, it reveals a selectable link instead. Browser back / forward and refresh restore the linked view. The document title identifies the selected floor and room.
 
-The current scope includes the responsive portfolio foundation, supplied résumé content, downloadable PDF, original blue wireframe skyscraper, animated expansion, and five selectable height bands. Each selection zooms toward its segment before revealing an architectural floor plan. About, Experience, Résumé, and Contact each use four rooms; Projects uses a main workshop and two smaller rooms. The initial tower view keeps section labels hidden until the structure expands.
+Transitions can be interrupted and restarted from the current pose. Reduced motion skips camera flights and orbital inertia, including when the preference changes while the site is open. Rendering stops when the scene is still or the tab is hidden.
 
-On desktop, HTML content sits inside the plan's rooms, with scrollable room bodies and overflow cues when needed. On mobile, an overview plan has numbered hotspots that jump to readable rooms stacked below it. Keyboard controls, focus restoration, and reduced-motion preferences are supported. The tower, floor plans, and camera effect use procedural SVG, JavaScript, and CSS transforms without dependencies or external font requests.
+Room markers adapt to the available space and avoid piling up at the edges when the model rotates or zooms. A room that is outside the camera view remains available through the panel. Camera framing reserves space for the text panel and heading; short landscape phone screens use a side panel. Phone panels scroll as one reading surface, including their links, with room selection returning to the top. Resizing preserves the viewing angle and relative zoom, including while a room flight is in progress. Multi-touch gestures and drags that return to their starting point cannot accidentally open a section.
+
+**Reading view** restores the previous SVG tower and accessible 2D room plans. It is also the automatic fallback if WebGL 2 cannot initialize or its context is lost. Linked rooms remain selected in this fallback. Reload to return to 3D.
+
+**Full portfolio** opens `reading.html`, a complete text portfolio with all projects, experience, education, skills, activities, contact links, and the résumé PDF. It works without JavaScript, has section anchors and print styles, and is linked from the no-JavaScript entry page. Both pages include share/search metadata using the GitHub Pages address.
+
+## Edit
+
+- `assets/content.js` and `assets/floor-content.js`: profile, projects, experience, skills, and the rooms containing that information. Keep the existing section IDs and room ordering.
+- `assets/tower-geometry.js`: shared tower dimensions, setbacks, footprints, and room positions.
+- `assets/tower-model.js` and `assets/interiors.js`: capped section meshes, structural plates, floor slabs, furniture, and picking targets.
+- `assets/scene-3d.js`: the renderer, OrbitControls, room-focused camera framing, continuous transitions, clipping planes, raycasting, and render scheduling.
+- `assets/spatial-layout.js`: the shared visible camera region and collision-aware room marker placement.
+- `assets/spatial-app.js` and `assets/spatial.css`: routes, projected labels, room content, focus management, and responsive presentation. `assets/app.js` is the entry point.
+- `assets/routes.js`: shared floor and room URL parsing for the 3D and SVG experiences.
+- `scripts/reading.mjs` and `assets/reading.css`: the text portfolio generator and styles. After editing shared content, run `npm run reading` to refresh `reading.html`; the check command detects stale content.
+- `assets/legacy-app.js`, `assets/skyscraper.js`, and the `floor-view` / `floor-plans` files preserve the previous architecture as the reading fallback.
+- `assets/eric-hsu-resume.pdf`: the résumé download.
+
+## Check
+
+```sh
+npm run check
+```
+
+This checks syntax, both pages' local assets and anchors, text portfolio synchronization, room URLs, watertight section geometry, selection from all azimuths, distinct furnished rooms, furniture raycasts and geometry budgets, room positions, focus/preview material restoration, and screen/marker layouts. No development dependencies are needed for these checks.
+
+For DOM and camera integration checks:
+
+```sh
+npm ci
+npm test
+```
+
+The integration harness runs the actual camera controller and OrbitControls with jsdom and a test renderer at desktop and phone dimensions, plus reduced motion and a fresh room deep link. It verifies staged facade entry, hidden neighboring floors throughout room flights, pointer/keyboard room preview, RMB controls, room close-ups, highlighting, portrait/landscape framing, resize preservation, gesture rejection, navigation, clipboard success/fallback, content links, cancellation, keyboard input, idle rendering, and the reading fallback. It does **not** validate WebGL pixels or replace visual browser testing. Node's VM module warning during these tests is expected.
+
+Local browser QA also covered the assembled and expanded tower, Projects overview and Systems lab close-up, the detailed electronics bench and grand piano, room URL refresh/back/forward, copying a link, the text portfolio, and a linked Résumé room in the SVG fallback. Representative layouts were inspected at the default desktop size, 390 × 844 portrait, and 650 × 390 landscape, including phone panel scrolling, with no console errors or horizontal overflow in the inspected pages. This is a representative visual check rather than a device/performance benchmark.
 
 ## GitHub Pages
 
-This repository is structured for the root of `bshwao.github.io`. When ready to publish, push the files, then choose the desired branch and `/(root)` in **Settings → Pages → Deploy from a branch**. `.nojekyll` lets GitHub serve the files directly. All local asset paths are relative.
+Push this repository and use **Settings → Pages → Deploy from a branch**, selecting the intended branch and `/(root)`. `.nojekyll` lets GitHub serve the files directly. Keep the vendored modules and local assets committed; `node_modules/` and `.preview/` are ignored.
 
-The site is available for local preview. Deployment has not been configured or triggered.
+These edits are prepared locally. Committing and pushing publishes them through the existing GitHub Pages configuration.
