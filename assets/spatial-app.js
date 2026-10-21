@@ -2,6 +2,7 @@ import { sections } from './tower-geometry.js';
 import { floorContent } from './floor-content.js';
 import { roomMarkerLayout } from './spatial-layout.js';
 import { parseRoute, routeHash } from './routes.js';
+import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus } from './project-story.js';
 
 const page = document.querySelector('#main');
 const originalMarkup = page.innerHTML;
@@ -15,12 +16,16 @@ const link = item => `<a href="${escape(item.href)}"${item.download ? ` download
 function roomMarkup(room) {
   return `<p class="spatial-eyebrow">${escape(room.number)} / ${escape(room.name)}</p>
     <h3 id="interior-room-title" tabindex="-1">${escape(room.title)}</h3>
+    ${renderProjectStatus(room.status)}
     ${room.description ? `<p class="interior-intro">${escape(room.description)}</p>` : ''}
+    ${renderCaseStudyLink(room.projectId)}
     ${room.facts ? `<dl class="interior-facts">${room.facts.map(item => `<div><dt>${escape(item.value)}</dt><dd>${escape(item.label)}</dd></div>`).join('')}</dl>` : ''}
     ${(room.paragraphs || []).map(text => `<p>${escape(text)}</p>`).join('')}
+    ${renderStory(room.story)}
     ${room.bullets ? `<ul>${room.bullets.map(text => `<li>${escape(text)}</li>`).join('')}</ul>` : ''}
     ${(room.entries || []).map(item => `<section class="interior-entry"><h4>${escape(item.title)}</h4>${item.subtitle ? `<p>${escape(item.subtitle)}</p>` : ''}${item.detail ? `<p>${escape(item.detail)}</p>` : ''}</section>`).join('')}
     ${room.tags ? `<ul class="interior-tags" aria-label="Skills and topics">${room.tags.map(text => `<li>${escape(text)}</li>`).join('')}</ul>` : ''}
+    ${renderGallery(room.images)}
     ${room.links ? `<div class="interior-links">${room.links.map(link).join('')}</div>` : ''}`;
 }
 
@@ -78,7 +83,9 @@ function syncRoute({ instant = false, force = false } = {}) {
   currentRoomIndex = roomIndex;
   const sectionName = sections.find(section => section.id === id)?.name;
   document.title = id ? `${roomIndex === null ? '' : `${floorContent[id].rooms[roomIndex].title} · `}${sectionName} — Eric Hsu` : defaultTitle;
-  $('#complete-portfolio').href = `./reading.html${id ? `#${id === 'resume' ? 'education' : id}` : ''}`;
+  const projectId = id === 'projects' && roomIndex !== null ? floorContent.projects.rooms[roomIndex].projectId : null;
+  $('#complete-portfolio').href = `./reading.html${projectId ? `#project-${projectId}` : id ? `#${id === 'resume' ? 'education' : id}` : ''}`;
+  $('#complete-portfolio').textContent = projectId ? 'Full case study ↗' : 'Full portfolio ↗';
   $('#share-status').textContent = '';
   $('#share-url').hidden = true;
   if (sameSection) {

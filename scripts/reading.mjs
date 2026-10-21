@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { profile, projects, experience, education, skills, personalNotes } from '../assets/content.js';
 import { floorContent } from '../assets/floor-content.js';
+import { renderStory, renderGallery, renderProjectStatus } from '../assets/project-story.js';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const page = resolve(root, 'reading.html');
@@ -39,6 +40,7 @@ export function renderReadingPage() {
   <link rel="canonical" href="${site}reading.html">
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="stylesheet" href="./assets/reading.css">
+  <link rel="stylesheet" href="./assets/project-story.css">
   <script type="application/ld+json">${JSON.stringify(person).replace(/</g, '\\u003c')}</script>
 </head>
 <body>
@@ -67,13 +69,17 @@ export function renderReadingPage() {
       <section id="projects" aria-labelledby="projects-title">
         <p class="section-number" aria-hidden="true">02 / Selected work</p>
         <h2 id="projects-title">Projects</h2>
-${projects.map(project => `        <article class="portfolio-entry">
+${projects.map(project => `        <article class="portfolio-entry" id="project-${escape(project.id)}">
           <div class="entry-heading"><h3>${escape(project.title)}</h3>${project.year ? `<p class="entry-date">${escape(project.year)}</p>` : ''}</div>
+          ${renderProjectStatus(project.status)}
           <p class="entry-context">${escape(project.category)}</p>
           <p>${escape(project.description)}</p>
+          ${renderStory(project.story)}
           ${list(project.bullets)}
           <p class="technology"><span>Technologies</span> ${escape(project.stack.join(' · '))}</p>
+          ${renderGallery(project.images)}
           <p>${link(project.url, `View ${project.title} source`)} <span aria-hidden="true">↗</span></p>
+          ${project.links?.length ? `<div class="project-additional-links">${project.links.map(item => link(item.href, item.label)).join('')}</div>` : ''}
         </article>`).join('\n')}
       </section>
 
@@ -122,7 +128,7 @@ ${skills.map(group => `          <div><dt>${escape(group.label)}</dt><dd>${escap
   </div>
 </body>
 </html>
-`;
+`.replace(/^[ \t]+$/gm, '');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

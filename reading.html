@@ -15,6 +15,7 @@
   <link rel="canonical" href="https://bshwao.github.io/reading.html">
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="stylesheet" href="./assets/reading.css">
+  <link rel="stylesheet" href="./assets/project-story.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","@id":"https://bshwao.github.io/#eric-hsu","name":"Eric Hsu","url":"https://bshwao.github.io/","sameAs":["https://github.com/bshwao","https://www.linkedin.com/in/erichsu07/"],"email":"mailto:erichsu8681@gmail.com","affiliation":{"@type":"CollegeOrUniversity","name":"McGill University"}}</script>
 </head>
 <body>
@@ -47,33 +48,44 @@
       <section id="projects" aria-labelledby="projects-title">
         <p class="section-number" aria-hidden="true">02 / Selected work</p>
         <h2 id="projects-title">Projects</h2>
-        <article class="portfolio-entry">
+        <article class="portfolio-entry" id="project-flowst8">
           <div class="entry-heading"><h3>flowst8</h3><p class="entry-date">September 2026</p></div>
+          <span class="project-status" data-status="complete">Complete</span>
           <p class="entry-context">Contributor · Team of three · Hack The Hill III</p>
           <p>A real-time productivity application designed to calculate dynamic focus scores, detect developer fatigue, and prompt timely breaks.</p>
+          <div class="project-story"><section class="project-story-note"><h4>My contribution</h4><p>I worked mainly on the backend and the connection between the frontend and backend, bringing separately developed components together into a usable application.</p></section><section class="project-story-note"><h4>Building against the clock</h4><p>The hackathon deadline left little time for polish or repeated revision. We prioritized getting the wearable data, backend services, and interface working together as one end-to-end prototype.</p></section><section class="project-story-note"><h4>What we delivered</h4><p>A working prototype that brings heart-rate and keyboard activity into a live focus dashboard and alerts. The experience taught me how much practical debugging and coordination it takes to connect independently built parts.</p></section></div>
           <ul>
-          <li>Built an end-to-end Python, FastAPI, and WebSocket pipeline to synchronize keystrokes per minute with live Apple Watch heart-rate telemetry.</li>
-          <li>Containerized microservices with Docker and used TimescaleDB for continuous time-series storage.</li>
-          <li>Integrated ElevenLabs audio alerts and connected the HTML/Next frontend with the Python/TypeScript backend.</li>
+          <li>Python, FastAPI, and WebSockets connect keyboard activity with Apple Watch heart-rate data ingested through Pulsoid.</li>
+          <li>Docker connects the services, with TimescaleDB storing the incoming time-series data.</li>
+          <li>The frontend presents the live signals and focus state, with ElevenLabs audio alerts supporting the notification flow.</li>
         </ul>
           <p class="technology"><span>Technologies</span> Python · FastAPI · WebSockets · TypeScript · Next · Docker · TimescaleDB</p>
+          <div class="project-gallery" aria-label="Project images"><figure class="project-image"><a class="project-image-link" href="./assets/projects/flowst8/focus-dashboard.png" target="_blank" rel="noopener noreferrer" aria-label="Open full image: flowst8 dashboard showing focus score, heart-rate signals, keyboard activity, and a heart-rate trace"><img src="./assets/projects/flowst8/focus-dashboard.png" alt="flowst8 dashboard showing focus score, heart-rate signals, keyboard activity, and a heart-rate trace" width="806" height="328" loading="lazy" decoding="async"></a><figcaption>The prototype dashboard brings the incoming signals and estimated focus state into one view.</figcaption></figure><figure class="project-image"><a class="project-image-link" href="./assets/projects/flowst8/event-stream.png" target="_blank" rel="noopener noreferrer" aria-label="Open full image: flowst8 event stream showing repeated heart-rate connection messages"><img src="./assets/projects/flowst8/event-stream.png" alt="flowst8 event stream showing repeated heart-rate connection messages" width="806" height="328" loading="lazy" decoding="async"></a><figcaption>Connection events made the frontend and backend integration visible while debugging.</figcaption></figure><figure class="project-image is-portrait"><a class="project-image-link" href="./assets/projects/flowst8/watch-capture.png" target="_blank" rel="noopener noreferrer" aria-label="Open full image: Apple Watch showing an active heart-rate capture session"><img src="./assets/projects/flowst8/watch-capture.png" alt="Apple Watch showing an active heart-rate capture session" width="374" height="573" loading="lazy" decoding="async"></a><figcaption>Apple Watch heart-rate capture during the prototype demonstration.</figcaption></figure><figure class="project-image is-portrait"><a class="project-image-link" href="./assets/projects/flowst8/heart-rate-connection.png" target="_blank" rel="noopener noreferrer" aria-label="Open full image: Heart-rate broadcasting interface showing an active connection and session statistics"><img src="./assets/projects/flowst8/heart-rate-connection.png" alt="Heart-rate broadcasting interface showing an active connection and session statistics" width="542" height="573" loading="lazy" decoding="async"></a><figcaption>The companion broadcasting interface used to check the heart-rate connection.</figcaption></figure></div>
           <p><a href="https://github.com/ric-e/flowst8">View flowst8 source</a> <span aria-hidden="true">↗</span></p>
+          <div class="project-additional-links"><a href="https://devpost.com/software/larp-the-north">View the Devpost submission</a></div>
         </article>
-        <article class="portfolio-entry">
+        <article class="portfolio-entry" id="project-test-shell">
           <div class="entry-heading"><h3>Test-Shell</h3></div>
-          <p class="entry-context">UNIX CLI shell simulator</p>
-          <p>A lightweight UNIX command-line interpreter in C, built to explore core operating-system interactions and essential shell functionality.</p>
+          <span class="project-status" data-status="complete">Complete</span>
+          <p class="entry-context">Personal C programming exercise</p>
+          <p>A small Bash-like command interpreter written in C to practice command parsing, POSIX processes, and file descriptors.</p>
+          <div class="project-story"><section class="project-story-note"><h4>Why I built it</h4><p>I started Test-Shell as a short, self-directed project to test my C programming skills and understand what happens between entering a command and seeing a program run.</p></section><section class="project-story-note"><h4>A deliberately small scope</h4><p>The aim was to explore a useful subset of shell behavior. It supports common built-ins, external commands, pipelines, and basic redirection, without attempting to reproduce all of Bash.</p></section><section class="project-story-note"><h4>What I practiced</h4><p>The project gave me a concrete way to work with child processes, pipes, file descriptors, argument parsing, and cleanup after each command. The emphasis was hands-on learning through a compact implementation.</p></section></div>
           <ul>
-          <li>Used POSIX fork, execvp, and wait calls to create processes, execute child processes, and manage synchronization.</li>
-          <li>Implemented argument parsing and memory management to prevent leaks and mitigate zombie processes.</li>
+          <li>Implemented nine built-in commands, including cd, pwd, echo, env, export, and history.</li>
+          <li>Used fork, execvp, and waitpid for external commands, with pipe and dup2 connecting command pipelines.</li>
+          <li>Added argument parsing, basic I/O redirection, background execution, and cleanup of command allocations.</li>
         </ul>
           <p class="technology"><span>Technologies</span> C · POSIX · UNIX · Process management</p>
+
           <p><a href="https://github.com/bshwao/Test-Shell">View Test-Shell source</a> <span aria-hidden="true">↗</span></p>
+
         </article>
-        <article class="portfolio-entry">
+        <article class="portfolio-entry" id="project-poltergeist">
           <div class="entry-heading"><h3>Poltergeist</h3></div>
+          <span class="project-status" data-status="ongoing">Ongoing</span>
           <p class="entry-context">Autonomous driving simulation &amp; evaluation</p>
           <p>A CARLA-based platform for creating hazardous driving scenarios, evaluating autonomous agents, and reviewing telemetry, sensor recordings, and failure evidence.</p>
+          <div class="project-story"><section class="project-story-note"><h4>Who I am building it for</h4><p>I started Poltergeist with the goal of pitching a repeatable stress-testing platform to autonomous driving companies and smaller startups. The idea is to give different models a common set of challenging conditions and make their responses easier to compare.</p></section><section class="project-story-note"><h4>From simulator physics to useful measurements</h4><p>The biggest engineering challenge was understanding CARLA&#39;s vehicle motion and translating it into meaningful dashboard values. That meant connecting position, speed, and timing data to braking, stopping, clearance, and time-to-collision calculations, while keeping units and unavailable measurements explicit.</p></section><section class="project-story-note"><h4>What the platform makes possible</h4><p>The current local workflow brings scenario setup, agent execution, recorded evidence, and behavior review together. It gives a team a repeatable starting point for investigating failures and comparing model versions under controlled conditions.</p></section></div>
           <ul>
           <li>Built a React and TypeScript dashboard with a FastAPI backend to create, save, validate, and execute parameterized driving scenarios.</li>
           <li>Implemented repeatable agent comparisons with matched seeds, failure search, reproduction, and scenario minimization.</li>
@@ -81,7 +93,9 @@
           <li>Integrated a Python agent SDK and pretrained PlanT 2.0 reference controller for local driving experiments.</li>
         </ul>
           <p class="technology"><span>Technologies</span> Python · FastAPI · React · TypeScript · CARLA · SQLite · Pydantic</p>
+          <div class="project-gallery" aria-label="Project images"><figure class="project-image is-portrait is-preview-top"><a class="project-image-link" href="./assets/projects/poltergeist/scenario-workspace.png" target="_blank" rel="noopener noreferrer" aria-label="Open full image: Poltergeist scenario workspace with map selection, seeded parameters, recipe validation, and execution settings"><img src="./assets/projects/poltergeist/scenario-workspace.png" alt="Poltergeist scenario workspace with map selection, seeded parameters, recipe validation, and execution settings" width="1280" height="3583" loading="lazy" decoding="async"><span class="project-image-action" aria-hidden="true">Open full image ↗</span></a><figcaption>Scenario setup: map selection, seeded parameters, validation, and execution settings. Open the full image to explore the workspace.</figcaption></figure><figure class="project-image is-portrait is-preview-top"><a class="project-image-link" href="./assets/projects/poltergeist/experiment-comparison.png" target="_blank" rel="noopener noreferrer" aria-label="Open full image: Poltergeist experiment comparison dashboard with matched-agent results and evidence exports"><img src="./assets/projects/poltergeist/experiment-comparison.png" alt="Poltergeist experiment comparison dashboard with matched-agent results and evidence exports" width="1280" height="4647" loading="lazy" decoding="async"><span class="project-image-action" aria-hidden="true">Open full image ↗</span></a><figcaption>Agent comparison using synthetic integration-test data, illustrating the workflow rather than a real-world driving result.</figcaption></figure><figure class="project-image"><a class="project-image-link" href="./assets/projects/poltergeist/decision-review.jpg" target="_blank" rel="noopener noreferrer" aria-label="Open full image: Poltergeist decision review linking an agent input to applied controls and the following measured response"><img src="./assets/projects/poltergeist/decision-review.jpg" alt="Poltergeist decision review linking an agent input to applied controls and the following measured response" width="1265" height="712" loading="lazy" decoding="async"></a><figcaption>Frame-linked decision review from a deterministic synthetic fixture: inputs, applied controls, and measured response.</figcaption></figure><figure class="project-image"><a class="project-image-link" href="./assets/projects/poltergeist/carla-camera-frame.png" target="_blank" rel="noopener noreferrer" aria-label="Open full image: RGB camera sensor frame captured from a vehicle in CARLA"><img src="./assets/projects/poltergeist/carla-camera-frame.png" alt="RGB camera sensor frame captured from a vehicle in CARLA" width="320" height="180" loading="lazy" decoding="async"></a><figcaption>An RGB sensor frame from a documented live CARLA 0.9.16 integration run.</figcaption></figure></div>
           <p><a href="https://github.com/bshwao/Poltergeist">View Poltergeist source</a> <span aria-hidden="true">↗</span></p>
+
         </article>
       </section>
 

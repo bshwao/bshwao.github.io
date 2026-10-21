@@ -1,6 +1,7 @@
 import { rooms } from './content.js';
 import { floorContent } from './floor-content.js';
 import { createFloorPlan, planLayouts } from './floor-plans.js';
+import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus } from './project-story.js';
 
 const escape = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
 const pause = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -15,12 +16,16 @@ function renderRoom(sectionId, room, layout) {
   return `<section class="floor-room" id="plan-${sectionId}-${room.id}" style="grid-column:${layout.column};grid-row:${layout.row}" aria-labelledby="${headingId}">
     <header class="floor-room-header"><p class="floor-room-name">${escape(room.number)} / ${escape(room.name)}</p><h3 id="${headingId}" tabindex="-1">${escape(room.title)}</h3></header>
     <div class="floor-room-scroll">
+      ${renderProjectStatus(room.status)}
       ${room.description ? `<p class="floor-room-description">${escape(room.description)}</p>` : ''}
+      ${renderCaseStudyLink(room.projectId)}
       ${room.facts ? `<div class="floor-facts">${room.facts.map(fact => `<div><strong>${escape(fact.value)}</strong><span>${escape(fact.label)}</span></div>`).join('')}</div>` : ''}
       ${(room.paragraphs || []).map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}
+      ${renderStory(room.story)}
       ${room.bullets ? `<ul>${room.bullets.map(item => `<li>${escape(item)}</li>`).join('')}</ul>` : ''}
       ${(room.entries || []).map(entry => `<article class="floor-entry"><h4>${escape(entry.title)}</h4>${entry.subtitle ? `<p>${escape(entry.subtitle)}</p>` : ''}${entry.detail ? `<p>${escape(entry.detail)}</p>` : ''}</article>`).join('')}
       ${room.tags ? `<div class="floor-tags">${room.tags.map(tag => `<span>${escape(tag)}</span>`).join('')}</div>` : ''}
+      ${renderGallery(room.images)}
     </div>
     <span class="room-scroll-cue" aria-hidden="true" hidden>MORE BELOW ↓</span>
     ${room.links ? `<footer class="floor-room-links">${room.links.map(renderLink).join('')}</footer>` : ''}

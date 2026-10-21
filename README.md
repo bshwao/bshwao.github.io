@@ -40,6 +40,8 @@ Room markers adapt to the available space and avoid piling up at the edges when 
 
 **Full portfolio** opens `reading.html`, a complete text portfolio with all projects, experience, education, skills, activities, contact links, and the résumé PDF. It works without JavaScript, has section anchors and print styles, and is linked from the no-JavaScript entry page. Both pages include share/search metadata using the GitHub Pages address.
 
+Project rooms include personal context, engineering challenges, and image galleries. flowst8 includes the supplied dashboard and wearable images plus the Devpost submission. Poltergeist uses existing project captures; captions distinguish synthetic dashboard demonstrations from the CARLA camera capture. Test-Shell describes source-verified features and learning goals without claiming unrecorded test results. Gallery links open the complete original images, including full-page dashboard captures.
+
 ## Edit
 
 - `assets/content.js` and `assets/floor-content.js`: profile, projects, experience, skills, and the rooms containing that information. Keep the existing section IDs and room ordering.
@@ -49,6 +51,7 @@ Room markers adapt to the available space and avoid piling up at the edges when 
 - `assets/spatial-layout.js`: the shared visible camera region and collision-aware room marker placement.
 - `assets/spatial-app.js` and `assets/spatial.css`: routes, projected labels, room content, focus management, and responsive presentation. `assets/app.js` is the entry point.
 - `assets/routes.js`: shared floor and room URL parsing for the 3D and SVG experiences.
+- `assets/project-story.js` and `assets/project-story.css`: shared stories and galleries for the 3D panels, SVG plans, and reading page. Story entries use `title` / `text`; images use local `src`, descriptive `alt` / `caption`, and original `width` / `height`. Use `preview: 'top'` only for a tall image that needs a cropped thumbnail; the full original remains linked. Keep source images under `assets/projects/`.
 - `scripts/reading.mjs` and `assets/reading.css`: the text portfolio generator and styles. After editing shared content, run `npm run reading` to refresh `reading.html`; the check command detects stale content.
 - `assets/legacy-app.js`, `assets/skyscraper.js`, and the `floor-view` / `floor-plans` files preserve the previous architecture as the reading fallback.
 - `assets/eric-hsu-resume.pdf`: the résumé download.

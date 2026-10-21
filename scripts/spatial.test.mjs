@@ -313,6 +313,7 @@ for (const id of ['projects', 'experience', 'resume', 'contact']) {
   for (let i = 0; i < count; i++) {
     click(`#station-navigation [data-station="${i}"]`); await tick(800);
     assert.equal(w.location.hash, `#${id}/${floorContent[id].rooms[i].id}`);
+    if (id === 'projects') assert.equal(w.document.querySelector('#complete-portfolio').getAttribute('href'), `./reading.html#project-${floorContent.projects.rooms[i].projectId}`, 'Each project opens its own complete case study');
     assertRoomFramed(['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id), i);
   }
   click('#floor-overview'); await tick(800);
