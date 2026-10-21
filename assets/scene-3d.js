@@ -55,11 +55,11 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   };
   function framing(nextMode, frameWidth = width, frameHeight = height) {
     const expanded = nextMode !== 'tower';
-    const target = new T.Vector3(0, expanded ? 74 : 53, 0);
-    const halfHeight = expanded ? 83 : 58;
+    const target = new T.Vector3(0, expanded ? 74 : 56, 0);
+    const halfHeight = expanded ? 83 : 61;
     const fov = Math.tan(T.MathUtils.degToRad(camera.fov / 2));
     const distance = Math.max(halfHeight / fov * 1.12, (expanded ? 39 : 27) / (fov * frameWidth / frameHeight) * 1.15);
-    const direction = new T.Vector3(.57, expanded ? .5 : .13, 1).normalize();
+    const direction = new T.Vector3(.57, expanded ? .5 : .32, 1).normalize();
     return { target, position: target.clone().addScaledVector(direction, distance) };
   }
   function interiorFraming(module, roomIndex = null, position = module.group.position) {
@@ -104,6 +104,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       // Room flights keep the other floors isolated; only a scene entry can show them.
       module.group.visible = !surrounding || context > .001;
       const cut = cuts[index];
+      module.capPlans.setPresentation(expansion, cut, context);
       module.clip.constant = module.group.position.y + (module.high - module.low) * (1 - cut) + module.interior.unit * .17;
       module.interior.group.visible = cut > .03;
       module.line.color.set(hover === module.id ? '#164b8d' : '#426eaa');
@@ -116,6 +117,8 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     });
     model.ground.visible = reveal < .1;
     model.groundLine.opacity = .45 * (1 - expansion * .7);
+    model.district.setPresentation(expansion, reveal);
+    model.districtBuildings.setPresentation(expansion, reveal);
     model.root.updateMatrixWorld(true);
   }
   function labels() {

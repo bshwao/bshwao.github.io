@@ -2,6 +2,9 @@ import * as T from './vendor/three.module.min.js';
 import { sections, setbacks, footprint, radius } from './tower-geometry.js';
 import { createInterior } from './interiors.js';
 import { floorContent } from './floor-content.js';
+import { createDistrictGround } from './district-ground.js';
+import { createCapPlans } from './cap-plans.js';
+import { createDistrictBuildings } from './district-buildings.js';
 
 function capGeometry(height) {
   const points = footprint(height).map(([x, z]) => new T.Vector2(x, z));
@@ -13,6 +16,9 @@ function capGeometry(height) {
 export function createTowerModel() {
   const root = new T.Group();
   const modules = sections.map((section, index) => {
+    // A cut belongs to the volume below it. Sampling the next setback at the
+    // top pinches the roof inward and leaves a stray contour across the cut.
+    const profileHeight = y => y === section.high ? y - .002 : y;
     const group = new T.Group(); root.add(group);
     const shell = new T.Group(); group.add(shell);
     const clip = new T.Plane(new T.Vector3(0, -1, 0), 200);
@@ -27,7 +33,7 @@ export function createTowerModel() {
     levels = [...new Set(levels.map(y => Math.round(y * 1e4) / 1e4))].sort((a, b) => a - b);
     const positions = [], indices = [], lines = [];
     const count = 96;
-    for (const y of levels) for (const [x, z] of footprint(y, count)) positions.push(x, y - section.low, z);
+    for (const y of levels) for (const [x, z] of footprint(profileHeight(y), count)) positions.push(x, y - section.low, z);
     for (let level = 0; level < levels.length - 1; level++) for (let i = 0; i < count; i++) {
       const a = level * count + i, b = level * count + (i + 1) % count;
       indices.push(a, a + count, b, b, a + count, b + count);
@@ -40,7 +46,7 @@ export function createTowerModel() {
     mesh.userData.sectionId = section.id;
     shell.add(mesh);
     const ring = y => {
-      const points = footprint(y, count);
+      const points = footprint(profileHeight(y), count);
       for (let i = 0; i < count; i++) {
         const a = points[i], b = points[(i + 1) % count];
         lines.push(a[0], y - section.low, a[1], b[0], y - section.low, b[1]);
@@ -55,7 +61,7 @@ export function createTowerModel() {
     lineGeometry.setAttribute('position', new T.Float32BufferAttribute(lines, 3));
     shell.add(new T.LineSegments(lineGeometry, line));
     for (const y of [section.low, section.high]) {
-      const cap = new T.Mesh(capGeometry(y), slabMaterial);
+      const cap = new T.Mesh(capGeometry(profileHeight(y)), slabMaterial);
       cap.position.y = y - section.low;
       cap.userData.sectionId = section.id;
       shell.add(cap);
@@ -75,9 +81,11 @@ export function createTowerModel() {
     group.add(base);
     const interior = createInterior(section, floorContent[section.id]);
     group.add(interior.group);
+    const capPlans = createCapPlans(section, base.position.y - floorGeometry.parameters.options.depth);
+    group.add(capPlans.group);
     const maxRadius = Math.max(...footprint(section.low).map(p => Math.hypot(...p)));
     group.position.y = section.low;
-    return { ...section, index, group, shell, clip, surface, line, slabMaterial, interior, maxRadius, base, mesh };
+    return { ...section, index, group, shell, clip, surface, line, slabMaterial, interior, capPlans, maxRadius, base, mesh };
   });
   const ground = new T.Group(); root.add(ground);
   const groundLine = new T.LineBasicMaterial({ color: '#9fb9d6', transparent: true, opacity: .45 });
@@ -92,5 +100,7 @@ export function createTowerModel() {
   }
   const markGeometry = new T.BufferGeometry(); markGeometry.setAttribute('position', new T.Float32BufferAttribute(marks, 3));
   ground.add(new T.LineSegments(markGeometry, groundLine));
-  return { root, modules, ground, groundLine };
+  const district = createDistrictGround(); root.add(district.root);
+  const districtBuildings = createDistrictBuildings(); root.add(districtBuildings.root);
+  return { root, modules, ground, groundLine, district, districtBuildings };
 }

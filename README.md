@@ -2,6 +2,12 @@
 
 A personal portfolio built for GitHub Pages, presented as a real, interactive 3D blueprint skyscraper. The blue linework, white surfaces, stepped wings, and needle spire are procedural geometry, viewable from every side. Selecting the tower separates five closed, solid sections; selecting a section moves the same camera toward it while the facade is cut away to reveal an inhabited architectural model.
 
+The tower stands on a world-space blueprint master plan: a fading drafting grid, central plaza, streets, sidewalks, crosswalks, twelve numbered parcels, surveying marks, a dimension chain, and a north arrow. The opening camera is raised slightly to show the ground. Low-rise apartments, stepped offices, gabled and sawtooth workshops, and campus buildings fill the twelve parcels. Open courtyards, varied rooflines, and generous setbacks keep the skyscraper prominent. White surfaces and pale blue elevations are batched into five rendering layers for the whole district. The plan and buildings quiet during expansion and fade out inside sections, returning with the tower. Landscaping and other district furnishings remain future work. Dimensions use illustrative model units rather than surveyed real-world measurements.
+
+Exposed cuts in the expanded tower carry schematic floor plans: inset walls, wing partitions with door swings, a lift/stair core, and section-specific furniture. Upper and lower cut faces are detailed, so the plans remain attached when viewed from above or below. The spire retains its pointed top; its broad lower cut carries About's plan. The drawings fade before the full interior opens and remain hidden on the assembled tower. Each section uses two batched line layers with no extra fonts, textures, or interactive controls.
+
+See [the project roadmap](./ROADMAP.md) for remaining phases.
+
 ## Preview
 
 With Node.js 20.11 or newer:
@@ -46,7 +52,10 @@ Project rooms include personal context, engineering challenges, and image galler
 
 - `assets/content.js` and `assets/floor-content.js`: profile, projects, experience, skills, and the rooms containing that information. Keep the existing section IDs and room ordering.
 - `assets/tower-geometry.js`: shared tower dimensions, setbacks, footprints, and room positions.
+- `assets/district-ground.js`: district master-plan dimensions and parcel bounds, plus batched ground surfaces, linework, vector annotations, and presentation fading. North is the negative Z direction. Buildings use the shared `districtPlan.parcels` bounds.
+- `assets/district-buildings.js`: the twelve parcel-based building schemes, solid massing, roofs, facade bays, shared rendering layers, and presentation fading. Buildings stay below 17 units and retain at least five units of clearance inside their parcels.
 - `assets/tower-model.js` and `assets/interiors.js`: capped section meshes, structural plates, floor slabs, furniture, and picking targets.
+- `assets/cap-plans.js`: schematic cut-face plans, clipped to each inset footprint, with section-specific furniture and presentation fading.
 - `assets/scene-3d.js`: the renderer, OrbitControls, room-focused camera framing, continuous transitions, clipping planes, raycasting, and render scheduling.
 - `assets/spatial-layout.js`: the shared visible camera region and collision-aware room marker placement.
 - `assets/spatial-app.js` and `assets/spatial.css`: routes, projected labels, room content, focus management, and responsive presentation. `assets/app.js` is the entry point.

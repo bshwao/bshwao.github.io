@@ -4,11 +4,122 @@ import * as T from '../assets/vendor/three.module.min.js';
 import { createTowerModel } from '../assets/tower-model.js';
 import { sections, footprint, stationPositions } from '../assets/tower-geometry.js';
 import { floorContent } from '../assets/floor-content.js';
+import { districtPlan } from '../assets/district-ground.js';
 
 const model = createTowerModel();
 model.root.updateMatrixWorld(true);
 const round = value => Math.round(value * 1e5);
 const key = p => p.map(round).join(',');
+
+test('the district reserves a clear tower plaza and non-overlapping parcels outside the streets', () => {
+  const overlap = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
+  const plaza = [-districtPlan.plazaHalf, -districtPlan.plazaHalf, districtPlan.plazaHalf, districtPlan.plazaHalf];
+  const roads = districtPlan.roadCenters.flatMap(center => {
+    const lo = center - districtPlan.roadWidth / 2, hi = center + districtPlan.roadWidth / 2;
+    return [[lo, -108, hi, 108], [-108, lo, 108, hi]];
+  });
+  for (const [x, z] of footprint(0)) assert.ok(Math.abs(x) < districtPlan.plazaHalf && Math.abs(z) < districtPlan.plazaHalf);
+  assert.equal(new Set(districtPlan.parcels.map(parcel => parcel.id)).size, 12);
+  for (const [index, parcel] of districtPlan.parcels.entries()) {
+    const bounds = parcel.bounds;
+    assert.ok(bounds[0] < bounds[2] && bounds[1] < bounds[3]);
+    assert.ok(!overlap(bounds, plaza), `${parcel.id}: leaves the plaza clear`);
+    assert.ok(roads.every(road => !overlap(bounds, road)), `${parcel.id}: leaves streets clear`);
+    assert.ok(districtPlan.parcels.slice(index + 1).every(other => !overlap(bounds, other.bounds)), `${parcel.id}: no overlapping parcels`);
+  }
+});
+
+test('the decorative district has finite ground geometry within a small rendering budget', () => {
+  const district = model.district;
+  let calls = 0, triangles = 0, vertices = 0;
+  district.root.traverse(node => {
+    if (!node.geometry) return;
+    calls++;
+    const positions = node.geometry.attributes.position;
+    vertices += positions.count;
+    if (node.isMesh) triangles += positions.count / 3;
+    for (let i = 0; i < positions.count; i++) {
+      assert.ok(Number.isFinite(positions.getX(i)) && Number.isFinite(positions.getZ(i)));
+      assert.ok(positions.getY(i) < 0, 'District geometry stays below the tower');
+    }
+    assert.equal(node.userData.sectionId, undefined, 'Ground cannot become a selectable tower section');
+  });
+  assert.ok(calls <= 10 && triangles < 500 && vertices < 10_000, `${calls} calls / ${triangles} triangles / ${vertices} vertices`);
+});
+
+test('district buildings fit their parcels, keep the tower clear, and share a bounded geometry budget', () => {
+  const district = model.districtBuildings;
+  assert.equal(district.buildings.length, districtPlan.parcels.length);
+  assert.equal(new Set(district.buildings.map(building => building.parcelId)).size, 12);
+  assert.equal(new Set(district.buildings.map(building => building.type)).size, 4);
+  for (const building of district.buildings) {
+    const [x0, z0, x1, z1] = districtPlan.parcels.find(parcel => parcel.id === building.parcelId).bounds;
+    assert.ok(building.bounds.min.x >= x0 + 5 && building.bounds.max.x <= x1 - 5);
+    assert.ok(building.bounds.min.z >= z0 + 5 && building.bounds.max.z <= z1 - 5);
+    assert.ok(building.bounds.max.y < 17, `${building.parcelId}: low-rise massing preserves the tower silhouette`);
+    assert.ok(building.parts.every(part => part.width > 0 && part.depth > 0 && part.top > part.bottom));
+  }
+  let triangles = 0, vertices = 0;
+  for (const object of district.root.children) {
+    const positions = object.geometry.attributes.position;
+    vertices += positions.count;
+    if (object.isMesh) triangles += positions.count / 3;
+    assert.equal(object.userData.sectionId, undefined, 'Buildings cannot become selectable portfolio sections');
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
+      assert.ok([x, y, z].every(Number.isFinite));
+      assert.ok(districtPlan.parcels.some(({ bounds: [x0, z0, x1, z1] }) => x > x0 + 5 && x < x1 - 5 && z > z0 + 5 && z < z1 - 5), 'All surfaces and facade strokes leave streets and sidewalks clear');
+    }
+  }
+  const roofNormals = district.root.getObjectByName('building-roofs').geometry.attributes.normal;
+  for (let i = 0; i < roofNormals.count; i++) assert.ok(roofNormals.getY(i) > 0, 'Gabled, sawtooth, and flat roofs face the sky');
+  assert.ok(district.root.children.length <= 5 && triangles < 2500 && vertices < 16_000, `${triangles} triangles / ${vertices} vertices`);
+
+  const target = new T.Vector3(0, 5, 0);
+  const meshes = district.root.children.filter(object => object.isMesh);
+  for (let i = 0; i < 24; i++) {
+    const angle = i / 24 * Math.PI * 2;
+    const origin = new T.Vector3(Math.sin(angle) * 215, 116, Math.cos(angle) * 215);
+    const ray = new T.Raycaster(origin, target.clone().sub(origin).normalize(), 0, origin.distanceTo(target));
+    assert.equal(ray.intersectObjects(meshes).length, 0, `Opening view keeps the tower base visible from ${i * 15} degrees`);
+  }
+});
+
+test('cap plans stay within their cut footprints and keep distinct, inexpensive furnishings', () => {
+  const signatures = new Set();
+  const inside = (x, z, polygon) => {
+    let result = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const a = polygon[i], b = polygon[j];
+      if ((a[1] > z) !== (b[1] > z) && x < (b[0] - a[0]) * (z - a[1]) / (b[1] - a[1]) + a[0]) result = !result;
+    }
+    return result;
+  };
+  for (const module of model.modules) {
+    const { capPlans } = module;
+    assert.ok(capPlans.features.includes('elevator') && capPlans.features.includes('stairs'));
+    assert.ok(capPlans.features.length >= 6, `${module.id}: meaningful furnishings`);
+    signatures.add([...capPlans.features].sort().join(','));
+    assert.ok(capPlans.faces.some(face => face.side === 'underside'), `${module.id}: furnished lower cut`);
+    assert.equal(capPlans.faces.some(face => face.side === 'top'), module.id !== 'about', 'The spire is preserved rather than furnished');
+    assert.equal(capPlans.group.children.length, 2, 'Two batched drawing layers per section');
+    let count = 0;
+    for (const drawing of capPlans.group.children) {
+      const points = drawing.geometry.attributes.position;
+      count += points.count;
+      for (let i = 0; i < points.count; i++) {
+        const x = points.getX(i), y = points.getY(i), z = points.getZ(i);
+        assert.ok([x, y, z].every(Number.isFinite));
+        const face = capPlans.faces.find(face => Math.abs(face.y - y) < 1e-4);
+        assert.ok(face, `${module.id}: every stroke belongs to a cut face`);
+        assert.ok(inside(x, z, footprint(face.height)), `${module.id}: plan stays within the facade`);
+      }
+      assert.equal(drawing.userData.sectionId, undefined, 'Decorative strokes do not become picking targets');
+    }
+    assert.ok(count > 100 && count < 5000, `${module.id}: ${count} plan vertices`);
+  }
+  assert.equal(signatures.size, 5, 'Five section-specific furnishing schemes');
+});
 
 test('all five sections have closed exterior volumes, including their cut surfaces', () => {
   for (const module of model.modules) {

@@ -156,6 +156,8 @@ if (deepLink) {
 }
 assert.equal(main.dataset.transition, 'idle');
 assert.equal(main.dataset.mode, 'tower');
+assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'The opening view includes the surrounding district buildings');
+assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Assembled tower hides the cap plans');
 assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the tower');
 assert.equal(w.document.title, initialTitle, 'The opening tower restores the page title');
 const towerPoint = new THREE.Vector3(0, 53, 0).project(lastCamera);
@@ -173,6 +175,8 @@ assert.equal(main.dataset.transition, reduced ? 'idle' : 'moving');
 const middle = lastCamera.position.clone();
 await tick(900);
 assert.equal(main.dataset.mode, 'explore');
+assert.ok(lastScene.getObjectByName('building-outlines').material.opacity < .3, 'Surrounding buildings recede while choosing a section');
+assert.ok(sections.every(section => lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Expansion reveals all cut-face plans');
 assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the expanded tower');
 assert.equal(main.dataset.transition, 'idle');
 if (!reduced) assert.ok(middle.distanceTo(lastCamera.position) > 1, 'Camera moves throughout expansion');
@@ -207,6 +211,9 @@ if (!reduced) {
 await tick(1400);
 assert.equal(main.dataset.mode, 'section'); assert.equal(main.dataset.transition, 'idle');
 assert.equal(canvas.dataset.section, 'about');
+assert.equal(lastScene.getObjectByName('blueprint-district').visible, false, 'The district clears away for interior reading');
+assert.equal(lastScene.getObjectByName('district-buildings').visible, false, 'District buildings clear away before interior reading');
+assert.equal(lastScene.getObjectByName('cap-plans-about').visible, false, 'The cap drawing clears before the furnished interior is read');
 assertFloorFramed('about');
 assert.ok(w.document.querySelector('#interior-content').textContent.includes('Eric Hsu'));
 const previewButton = w.document.querySelector('#station-navigation [data-station="2"]');
@@ -332,6 +339,9 @@ w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles
 w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await tick(1700);
 assert.equal(main.dataset.mode, 'tower'); assert.equal(main.dataset.transition, 'idle');
 assert.equal(canvas.dataset.section, '');
+assert.equal(lastScene.getObjectByName('blueprint-district').visible, true, 'Returning to the tower restores the district');
+assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'Cancelled flights restore the surrounding buildings');
+assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Interrupted entry and collapse cannot leave cap plans floating over the assembled tower');
 const before = Number(main.dataset.azimuth);
 canvas.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true })); await tick(16);
 assert.notEqual(Number(main.dataset.azimuth), before, 'Keyboard rotation works after interrupted transitions');
