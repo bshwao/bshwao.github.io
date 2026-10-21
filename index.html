@@ -27,21 +27,6 @@
 <body>
   <main class="tower-page" id="main">
     <h1 class="sr-only">Eric Hsu — Electrical Engineering, Projects, and Experience</h1>
-    <div class="drawing-reference" aria-hidden="true"><span>EH—001</span><span>STRUCTURES & SYSTEMS</span></div>
-    <div class="tower-scene" id="tower-scene">
-      <div class="tower-art" id="tower-art"></div>
-      <button class="tower-trigger" id="tower-trigger" type="button"
-        aria-label="Expand the skyscraper to explore Eric Hsu's portfolio" aria-expanded="false"
-        aria-controls="tower-art" aria-describedby="entry-hint"><span class="sr-only">Unfold the
-          Structure</span></button>
-    </div>
-    <button class="collapse-tower" id="collapse-tower" type="button" hidden><span aria-hidden="true">↙</span> Collapse
-      Structure</button>
-    <div class="page-identity"><span class="identity-name">ERIC HSU</span><span>ELECTRICAL ENGINEERING · McGILL</span>
-    </div>
-    <p class="entry-hint" id="entry-hint" aria-live="polite"><span class="hint-mark" aria-hidden="true">+</span><span
-        id="hint-text">CLICK THE STRUCTURE TO UNFOLD</span></p>
-    <span class="drawing-edition" aria-hidden="true">PORTFOLIO / 2026</span>
   </main>
 
   <noscript>
@@ -60,8 +45,7 @@
   <dialog id="room-dialog" class="floor-view" aria-labelledby="room-title" aria-describedby="floor-description">
     <div class="floor-shell">
       <header class="floor-topbar">
-        <button id="close-room" class="close-room" type="button" aria-label="Return to the expanded tower"><span
-            aria-hidden="true">↖</span> Back to Tower</button>
+        <div class="floor-view-actions"><button id="reading-tower" class="close-room" type="button"><span aria-hidden="true">↖</span> Back to tower</button><button id="close-room" class="close-room" type="button" aria-label="Return to the current 3D section">3D view ↗</button></div>
         <div class="floor-heading">
           <p id="room-location" class="eyebrow"></p>
           <h2 id="room-title"></h2>

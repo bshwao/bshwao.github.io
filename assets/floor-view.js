@@ -4,7 +4,6 @@ import { createFloorPlan, planLayouts } from './floor-plans.js';
 import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus } from './project-story.js';
 
 const escape = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
-const pause = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 function renderLink(link) {
   const external = /^https?:/.test(link.href);
@@ -32,38 +31,12 @@ function renderRoom(sectionId, room, layout) {
   </section>`;
 }
 
-export function createFloorExperience({ page, scene, towerSvg, floors, reducedMotion, onCloseRequest }) {
+export function createSectionReadingView({ onClose, onTower, onNavigate }) {
   const dialog = document.querySelector('#room-dialog');
-  const collapse = document.querySelector('#collapse-tower');
   const sheet = document.querySelector('#floor-sheet');
   const closeButton = document.querySelector('#close-room');
-  const visualFloors = [...scene.querySelectorAll('.tower-floor-visual')].sort((a, b) => Number(a.style.getPropertyValue('--floor-index')) - Number(b.style.getPropertyValue('--floor-index')));
-  const sourceBounds = visualFloors.map(floor => floor.getBBox());
   let currentId = null;
-  let phase = 'tower';
-  let revision = 0;
-  let selectedFloor = null;
-
-  function setCamera(id) {
-    const index = rooms.findIndex(room => room.id === id);
-    const bounds = sourceBounds[index];
-    const visual = visualFloors[index];
-    const viewBox = towerSvg.viewBox.baseVal;
-    const { width, height } = page.getBoundingClientRect();
-    const drawingScale = Math.min(width / viewBox.width, height / viewBox.height);
-    const offsetX = (width - viewBox.width * drawingScale) / 2;
-    const offsetY = (height - viewBox.height * drawingScale) / 2;
-    const dx = parseFloat(visual.style.getPropertyValue('--expand-x')) || 0;
-    const dy = parseFloat(visual.style.getPropertyValue('--expand-y')) || 0;
-    const centerX = offsetX + (bounds.x + bounds.width / 2 + dx - viewBox.x) * drawingScale;
-    const centerY = offsetY + (bounds.y + bounds.height / 2 + dy - viewBox.y) * drawingScale;
-    const zoom = Math.max(1.8, Math.min(5.5, width * .88 / (bounds.width * drawingScale), height * .72 / (bounds.height * drawingScale)));
-    page.style.setProperty('--segment-zoom', zoom);
-    page.style.setProperty('--segment-x', `${-(centerX - width / 2) * zoom}px`);
-    page.style.setProperty('--segment-y', `${-(centerY - height / 2) * zoom}px`);
-    visualFloors.forEach((element, i) => element.classList.toggle('is-selected', i === index));
-    floors.forEach((element, i) => element.classList.toggle('is-selected', i === index));
-  }
+  let currentRoomIndex = null;
 
   function measureRooms() {
     if (!dialog.open) return;
@@ -99,79 +72,58 @@ export function createFloorExperience({ page, scene, towerSvg, floors, reducedMo
     document.querySelector('.floor-scroll').scrollTop = 0;
   }
 
-  async function enter(id, { animate = true } = {}) {
-    if (!floorContent[id] || (currentId === id && phase === 'floor')) return;
-    const token = ++revision;
-    const changePlan = dialog.open;
+  function show(id, roomIndex = null) {
+    if (!floorContent[id]) return;
+    const changed = currentId !== id;
+    const opening = !dialog.open;
+    const roomChanged = currentRoomIndex !== roomIndex;
+    if (changed) render(id);
     currentId = id;
-    selectedFloor = floors.find(floor => floor.dataset.room === id);
-    phase = 'entering';
-    scene.inert = true;
-    collapse.disabled = true;
-    page.classList.add('is-entering-floor');
-    document.querySelector('#hint-text').textContent = `ENTERING ${rooms.find(room => room.id === id).name.toUpperCase()}…`;
-    if (changePlan) {
-      dialog.classList.remove('is-visible');
-      await pause(animate && !reducedMotion.matches ? 170 : 0);
-      if (token !== revision) return;
-    }
-    render(id);
-    setCamera(id);
-    scene.classList.add('is-zoomed');
-    if (!changePlan) {
-      await pause(animate && !reducedMotion.matches ? 850 : 0);
-      if (token !== revision) return;
-      dialog.showModal();
-    }
-    // Establish the initial plan pose before animating to the top-down view.
-    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    if (token !== revision) return;
+    currentRoomIndex = roomIndex;
+    if (opening) dialog.showModal();
     dialog.classList.add('is-visible');
-    phase = 'floor';
-    closeButton.focus({ preventScroll: true });
     measureRooms();
+    if (!opening && !changed && !roomChanged) return;
+    const room = floorContent[id].rooms[roomIndex];
+    const target = room ? document.getElementById(`plan-${id}-${room.id}`) : null;
+    if (target) {
+      target.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+      target.querySelector('h3').focus({ preventScroll: true });
+    } else closeButton.focus({ preventScroll: true });
   }
 
-  async function leave({ expanded = true, animate = true } = {}) {
-    if (phase === 'tower') return;
-    const token = ++revision;
-    const focusTarget = expanded ? selectedFloor : document.querySelector('#tower-trigger');
-    phase = 'leaving';
-    currentId = null;
-    document.querySelector('#hint-text').textContent = 'RETURNING TO TOWER…';
+  function close({ focus = true } = {}) {
+    if (!dialog.open) return;
     dialog.classList.remove('is-visible');
-    scene.classList.remove('is-zoomed');
-    visualFloors.forEach(element => element.classList.remove('is-selected'));
-    floors.forEach(element => element.classList.remove('is-selected'));
-    await pause(animate && !reducedMotion.matches ? 260 : 0);
-    if (token !== revision) return;
-    if (dialog.open) dialog.close();
-    await pause(animate && !reducedMotion.matches ? 590 : 0);
-    if (token !== revision) return;
-    phase = 'tower';
-    page.classList.remove('is-entering-floor');
-    scene.inert = false;
-    collapse.disabled = false;
-    document.querySelector('#hint-text').textContent = expanded ? 'CHOOSE A LEVEL TO EXPLORE' : 'CLICK THE STRUCTURE TO UNFOLD';
-    focusTarget?.focus({ preventScroll: true });
+    dialog.close();
+    if (focus) onClose();
   }
 
-  closeButton.addEventListener('click', onCloseRequest);
-  dialog.addEventListener('cancel', event => { event.preventDefault(); onCloseRequest(); });
+  closeButton.addEventListener('click', () => close());
+  document.querySelector('#reading-tower').addEventListener('click', () => { close({ focus: false }); onTower(); });
+  dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
+  // Handle Escape here as well so it never reaches the 3D section's route handler.
+  dialog.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    event.preventDefault(); event.stopPropagation(); close();
+  });
   dialog.addEventListener('click', event => {
+    const floor = event.target.closest('[data-room]');
+    if (floor && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+      event.preventDefault(); onNavigate(floor.dataset.room); return;
+    }
     const jump = event.target.closest('[data-plan-room]');
     if (!jump) return;
     const target = document.getElementById(jump.dataset.planRoom);
-    target.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
+    target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     target.querySelector('h3').focus({ preventScroll: true });
   });
   dialog.addEventListener('scroll', event => {
     if (event.target.classList?.contains('floor-room-scroll')) measureRooms();
   }, { capture: true, passive: true });
-  new ResizeObserver(() => {
-    if (currentId) setCamera(currentId);
-    measureRooms();
-  }).observe(page);
+  new ResizeObserver(measureRooms).observe(sheet);
+  // Images can change the scrollable content after the initial measurement.
+  sheet.addEventListener('load', measureRooms, true);
 
-  return { enter, leave, get active() { return phase !== 'tower'; } };
+  return { show, close, get active() { return dialog.open; } };
 }

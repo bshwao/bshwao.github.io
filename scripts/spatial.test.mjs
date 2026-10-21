@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import * as THREE from '../assets/vendor/three.module.min.js';
 import { viewportLayout } from '../assets/spatial-layout.js';
 import { floorContent } from '../assets/floor-content.js';
+import { sections } from '../assets/tower-geometry.js';
 
 const root = resolve(import.meta.dirname, '..');
 const mobile = process.argv.includes('--mobile');
@@ -155,6 +156,7 @@ if (deepLink) {
 }
 assert.equal(main.dataset.transition, 'idle');
 assert.equal(main.dataset.mode, 'tower');
+assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the tower');
 assert.equal(w.document.title, initialTitle, 'The opening tower restores the page title');
 const towerPoint = new THREE.Vector3(0, 53, 0).project(lastCamera);
 const towerX = (towerPoint.x + 1) * viewportWidth / 2, towerY = (1 - towerPoint.y) * viewportHeight / 2;
@@ -171,6 +173,7 @@ assert.equal(main.dataset.transition, reduced ? 'idle' : 'moving');
 const middle = lastCamera.position.clone();
 await tick(900);
 assert.equal(main.dataset.mode, 'explore');
+assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the expanded tower');
 assert.equal(main.dataset.transition, 'idle');
 if (!reduced) assert.ok(middle.distanceTo(lastCamera.position) > 1, 'Camera moves throughout expansion');
 
@@ -356,25 +359,57 @@ assert.equal(canvas.dataset.section, 'resume');
 assert.equal(canvas.dataset.focusedRoom, '3');
 assert.equal(w.location.hash, '#resume/d');
 assert.ok(w.document.querySelector('a[download]'));
-if (mobile) {
-  const loss = new w.Event('webglcontextlost', { cancelable: true }); canvas.dispatchEvent(loss);
-  assert.ok(loss.defaultPrevented, 'Context loss is handled by the reading fallback');
-} else click('#reading-view');
-for (let i = 0; i < 300 && !w.document.querySelector('#tower-art svg'); i++) await new Promise(resolve => setTimeout(resolve, 10));
-await tick(5); await tick(5); await settleImports();
-for (let i = 0; i < 30 && w.document.activeElement !== w.document.querySelector('#plan-resume-d h3'); i++) {
-  await new Promise(resolve => setTimeout(resolve, 5)); await tick(16);
-}
-assert.ok(!main.classList.contains('spatial'), 'Reading view restores the previous accessible experience');
-assert.ok(w.document.querySelector('#tower-art svg'), 'The SVG fallback is intact');
-assert.equal(w.location.hash, '#resume/d', 'Reading fallback preserves the incoming room URL');
-assert.equal(w.document.querySelector('#room-title').textContent, 'Résumé', 'Reading fallback opens the section from a nested room URL');
-assert.equal(w.document.querySelector('#room-dialog').open, true);
-assert.ok(w.document.querySelector('#plan-resume-d a[download]'), 'The requested section still exposes its résumé download');
-assert.equal(w.document.activeElement, w.document.querySelector('#plan-resume-d h3'), 'Reading fallback focuses the exact room from the nested URL');
+// Reading mode is a reversible section overlay; it never replaces the live 3D scene.
+assert.equal(w.document.querySelector('#reading-view').hidden, false);
+const readingCamera = lastCamera.position.clone();
+click('#reading-view');
+const dialog = w.document.querySelector('#room-dialog');
+assert.equal(dialog.open, true);
+assert.ok(main.classList.contains('spatial'));
+assert.equal(w.document.querySelector('canvas'), canvas, 'Reading mode retains the same 3D canvas');
+assert.equal(w.document.querySelector('#tower-art'), null, 'No legacy SVG tower exists');
+assert.equal(w.location.hash, '#resume/d');
+assert.equal(w.document.querySelector('#room-title').textContent, 'Résumé');
+assert.ok(w.document.querySelector('#plan-resume-d a[download]'));
+assert.equal(w.document.activeElement, w.document.querySelector('#plan-resume-d h3'), 'Reading mode focuses the linked room');
 assert.equal(w.document.title, `${floorContent.resume.rooms[3].title} · Résumé — Eric Hsu`);
-assert.equal(canvas.isConnected, false, 'The old canvas is removed during fallback');
+click('#close-room');
+assert.equal(dialog.open, false);
+assert.equal(w.document.activeElement, w.document.querySelector('#reading-view'));
+assert.equal(w.location.hash, '#resume/d', 'Returning to 3D preserves the room URL');
+assert.equal(lastCamera.position.distanceTo(readingCamera), 0, 'Toggling the view preserves the camera exactly');
+click('#reading-view');
+for (const id of ['contact', 'about', 'projects', 'experience', 'resume']) {
+  click(`#floor-navigation [data-room="${id}"]`); await settleCamera();
+  assert.equal(dialog.open, true, 'Section navigation keeps reading mode open');
+  assert.equal(canvas.dataset.section, id, 'The underlying 3D model follows the selected section');
+  assert.equal(w.document.querySelector('#room-title').textContent, sections.find(section => section.id === id).name);
+  assert.ok(w.document.querySelector(`#plan-${id}-${floorContent[id].rooms[0].id}`));
+  assert.equal(w.document.activeElement, w.document.querySelector('#close-room'), 'Camera completion cannot steal focus from the dialog');
+}
+// Back/forward or a nested hash also updates a reading section.
+w.history.pushState(null, '', '#projects/c'); w.dispatchEvent(new w.PopStateEvent('popstate')); await settleCamera();
+assert.equal(dialog.open, true);
+assert.equal(w.document.activeElement, w.document.querySelector('#plan-projects-c h3'));
+dialog.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+assert.equal(dialog.open, false, 'Escape returns to 3D before changing routes');
+assert.equal(w.location.hash, '#projects/c');
+click('#reading-view');
+click('#reading-tower'); await settleCamera();
+assert.equal(dialog.open, false);
+assert.equal(main.dataset.mode, 'explore', 'Reading mode returns to the real 3D tower');
+assert.equal(canvas.isConnected, true);
+assert.equal(w.document.querySelector('#reading-view').hidden, true);
+w.history.pushState(null, '', '#resume/d'); w.dispatchEvent(new w.PopStateEvent('popstate')); await settleCamera();
+click('#reading-view');
+const loss = new w.Event('webglcontextlost', { cancelable: true }); canvas.dispatchEvent(loss);
+assert.ok(loss.defaultPrevented);
+assert.equal(dialog.open, false, 'Context loss closes the section overlay');
+assert.ok(main.classList.contains('unavailable'));
+assert.equal(w.document.querySelector('#tower-art'), null, 'Context loss cannot revive the removed 2D tower');
+assert.equal(w.document.querySelector('#unavailable-portfolio').getAttribute('href'), './reading.html#education', 'The text fallback keeps the selected section available');
+assert.equal(canvas.isConnected, false);
 assert.equal(motionListeners.size, 0, 'Media preference listeners are cleaned up');
-console.log(`DOM/camera integration passed (${mobile ? 'mobile' : reduced ? 'reduced motion' : deepLink ? 'fresh room link' : 'desktop'}): room URLs, titles, clipboard/manual sharing, reading links, room flights, highlighting, left-drag/touch, resize, framing, gestures, history, cancellation, keyboard, idle rendering, motion preferences, and nested-link fallback (${renders} frames).`);
+console.log(`DOM/camera integration passed (${mobile ? 'mobile' : reduced ? 'reduced motion' : deepLink ? 'fresh room link' : 'desktop'}): room URLs, titles, clipboard/manual sharing, section reading mode, retained 3D navigation, room flights, highlighting, left-drag/touch, resize, framing, gestures, history, cancellation, keyboard, idle rendering, motion preferences, and text fallback (${renders} frames).`);
 dom.window.close();
 

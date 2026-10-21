@@ -36,7 +36,7 @@ Transitions can be interrupted and restarted from the current pose. Reduced moti
 
 Room markers adapt to the available space and avoid piling up at the edges when the model rotates or zooms. A room that is outside the camera view remains available through the panel. Camera framing reserves space for the text panel and heading; short landscape phone screens use a side panel. Phone panels scroll as one reading surface, including their links, with room selection returning to the top. Resizing preserves the viewing angle and relative zoom, including while a room flight is in progress. Multi-touch gestures and drags that return to their starting point cannot accidentally open a section.
 
-**Reading view** restores the previous SVG tower and accessible 2D room plans. It is also the automatic fallback if WebGL 2 cannot initialize or its context is lost. Linked rooms remain selected in this fallback. Reload to return to 3D.
+**Reading view** is available only inside a section. It opens that section's accessible floor plan over the live 3D scene, with previous/next section navigation. **3D view** returns to the same section, room, and camera without reloading; **Back to tower** returns to the expanded 3D structure. Escape closes the reading view first. The old SVG tower has been removed. If WebGL 2 cannot initialize or its context is lost, a text notice links to the complete portfolio and the corresponding section.
 
 **Full portfolio** opens `reading.html`, a complete text portfolio with all projects, experience, education, skills, activities, contact links, and the résumé PDF. It works without JavaScript, has section anchors and print styles, and is linked from the no-JavaScript entry page. Both pages include share/search metadata using the GitHub Pages address.
 
@@ -50,10 +50,10 @@ Project rooms include personal context, engineering challenges, and image galler
 - `assets/scene-3d.js`: the renderer, OrbitControls, room-focused camera framing, continuous transitions, clipping planes, raycasting, and render scheduling.
 - `assets/spatial-layout.js`: the shared visible camera region and collision-aware room marker placement.
 - `assets/spatial-app.js` and `assets/spatial.css`: routes, projected labels, room content, focus management, and responsive presentation. `assets/app.js` is the entry point.
-- `assets/routes.js`: shared floor and room URL parsing for the 3D and SVG experiences.
+- `assets/routes.js`: shared floor and room URL parsing for 3D and section reading mode.
 - `assets/project-story.js` and `assets/project-story.css`: shared stories and galleries for the 3D panels, SVG plans, and reading page. Story entries use `title` / `text`; images use local `src`, descriptive `alt` / `caption`, and original `width` / `height`. Use `preview: 'top'` only for a tall image that needs a cropped thumbnail; the full original remains linked. Keep source images under `assets/projects/`.
 - `scripts/reading.mjs` and `assets/reading.css`: the text portfolio generator and styles. After editing shared content, run `npm run reading` to refresh `reading.html`; the check command detects stale content.
-- `assets/legacy-app.js`, `assets/skyscraper.js`, and the `floor-view` / `floor-plans` files preserve the previous architecture as the reading fallback.
+- `assets/floor-view.js`, `assets/floor-view.css`, and `assets/floor-plans.js`: section-only reading mode and accessible floor-plan layouts.
 - `assets/eric-hsu-resume.pdf`: the résumé download.
 
 ## Check
@@ -71,9 +71,9 @@ npm ci
 npm test
 ```
 
-The integration harness runs the actual camera controller and OrbitControls with jsdom and a test renderer at desktop and phone dimensions, plus reduced motion and a fresh room deep link. It verifies staged facade entry, hidden neighboring floors throughout room flights, pointer/keyboard room preview, left-drag controls, room close-ups, highlighting, portrait/landscape framing, resize preservation, gesture rejection, navigation, clipboard success/fallback, content links, cancellation, keyboard input, idle rendering, and the reading fallback. It does **not** validate WebGL pixels or replace visual browser testing. Node's VM module warning during these tests is expected.
+The integration harness runs the actual camera controller and OrbitControls with jsdom and a test renderer at desktop and phone dimensions, plus reduced motion and a fresh room deep link. It verifies staged facade entry, hidden neighboring floors throughout room flights, pointer/keyboard room preview, left-drag controls, room close-ups, highlighting, portrait/landscape framing, resize preservation, gesture rejection, navigation, clipboard success/fallback, content links, cancellation, keyboard input, idle rendering, section reading mode, returning to the retained 3D scene, and the text fallback. It does **not** validate WebGL pixels or replace visual browser testing. Node's VM module warning during these tests is expected.
 
-Local browser QA also covered the assembled and expanded tower, Projects overview and Systems lab close-up, the detailed electronics bench and grand piano, room URL refresh/back/forward, copying a link, the text portfolio, and a linked Résumé room in the SVG fallback. Representative layouts were inspected at the default desktop size, 390 × 844 portrait, and 650 × 390 landscape, including phone panel scrolling, with no console errors or horizontal overflow in the inspected pages. This is a representative visual check rather than a device/performance benchmark.
+Local browser QA has covered the assembled and expanded tower, Projects overview and Systems lab close-up, the detailed electronics bench and grand piano, room URL refresh/back/forward, copying a link, and the text portfolio. The updated section reading mode was checked for floor-plan presentation, section navigation, and returning to 3D. Earlier representative layouts were inspected at the default desktop size, 390 × 844 portrait, and 650 × 390 landscape, including phone panel scrolling. This is a representative visual check rather than a device/performance benchmark.
 
 ## GitHub Pages
 

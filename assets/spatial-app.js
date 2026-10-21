@@ -3,13 +3,14 @@ import { floorContent } from './floor-content.js';
 import { roomMarkerLayout } from './spatial-layout.js';
 import { parseRoute, routeHash } from './routes.js';
 import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus } from './project-story.js';
+import { createSectionReadingView } from './floor-view.js';
 
 const page = document.querySelector('#main');
-const originalMarkup = page.innerHTML;
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 let spatial, currentId = null, currentRoomIndex = null, revision = 0;
 const defaultTitle = document.title;
 let routeKey = '', fallbackActive = false;
+let readingView;
 const $ = selector => page.querySelector(selector);
 const link = item => `<a href="${escape(item.href)}"${item.download ? ` download="${escape(item.download)}"` : ''}${/^https?:/.test(item.href) ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escape(item.label)} <span aria-hidden="true">↗</span></a>`;
 
@@ -88,6 +89,11 @@ function syncRoute({ instant = false, force = false } = {}) {
   $('#complete-portfolio').textContent = projectId ? 'Full case study ↗' : 'Full portfolio ↗';
   $('#share-status').textContent = '';
   $('#share-url').hidden = true;
+  $('#reading-view').hidden = mode !== 'section';
+  if (readingView.active) {
+    if (id) readingView.show(id, roomIndex);
+    else readingView.close({ focus: false });
+  }
   if (sameSection) {
     if (roomIndex === null) spatial.overview();
     else selectRoom(roomIndex, { writeRoute: false });
@@ -122,6 +128,7 @@ function syncRoute({ instant = false, force = false } = {}) {
     $('#interior-content').setAttribute('aria-busy', 'false');
     if (id && roomIndex !== null) spatial.focusRoom(roomIndex, { instant });
     $('#spatial-hint').textContent = id ? 'SELECT A ROOM TO EXPLORE' : mode === 'explore' ? 'CHOOSE A SECTION TO EXPLORE' : 'CLICK THE STRUCTURE TO UNFOLD';
+    if (readingView.active) return;
     if (id && !instant) $('#interior-room-title').focus({ preventScroll: true });
     else if (mode === 'explore' && !instant) (oldId ? $(`#tower-labels [data-section="${oldId}"]`) : $('#tower-labels button'))?.focus({ preventScroll: true });
     else if (mode === 'tower' && !instant) $('#unfold-structure').focus({ preventScroll: true });
@@ -175,20 +182,18 @@ function onFrame(state) {
   }
 }
 
-async function useFallback(error) {
+function useFallback() {
   if (fallbackActive) return;
   fallbackActive = true; revision++;
+  readingView?.close({ focus: false });
   spatial?.dispose();
-  page.className = 'tower-page';
+  page.className = 'tower-page unavailable';
   for (const name of [...page.attributes].map(attribute => attribute.name)) if (name.startsWith('data-') || name === 'style') page.removeAttribute(name);
-  page.innerHTML = originalMarkup;
-  console.info(error ? '3D unavailable; using the accessible architectural view.' : 'Using the architectural reading view.');
-  await import('./legacy-app.js');
   const route = parseRoute(location.hash);
-  if (route.mode !== 'section') (route.mode === 'explore' ? page.querySelector('.tower-floor') : page.querySelector('#tower-trigger'))?.focus({ preventScroll: true });
-  const note = document.createElement('p'); note.className = 'fallback-note';
-  note.textContent = error ? '3D is unavailable in this browser. The complete portfolio is available here.' : 'Architectural reading view · Reload to return to 3D.';
-  page.append(note);
+  const anchor = route.sectionId === 'projects' && route.roomIndex !== null ? `project-${floorContent.projects.rooms[route.roomIndex].projectId}` : route.sectionId === 'resume' ? 'education' : route.sectionId;
+  page.innerHTML = `<section class="unavailable-content" aria-labelledby="unavailable-title"><p class="spatial-eyebrow">ERIC HSU / STRUCTURES & SYSTEMS</p><h1 id="unavailable-title" tabindex="-1">The 3D view is unavailable.</h1><p>Try reloading to open the 3D structure, or read the complete portfolio below.</p><button type="button" id="retry-spatial">Reload 3D view ↗</button><a href="./reading.html${anchor ? `#${anchor}` : ''}" id="unavailable-portfolio">Read the complete portfolio ↗</a><nav aria-label="Portfolio sections">${sections.map(section => `<a href="./reading.html#${section.id === 'resume' ? 'education' : section.id}">${escape(section.name)}</a>`).join('')}</nav></section>`;
+  $('#retry-spatial').addEventListener('click', () => location.reload());
+  $('#unavailable-title').focus({ preventScroll: true });
 }
 
 async function start() {
@@ -198,7 +203,7 @@ async function start() {
     <h1 class="sr-only">Eric Hsu — Electrical Engineering, Projects, and Experience</h1>
     <div class="spatial-stage" id="spatial-stage"></div>
     <div class="drawing-reference" aria-hidden="true"><span>EH—001</span><span>STRUCTURES & SYSTEMS</span></div>
-    <div class="spatial-tools"><button type="button" id="reset-spatial" aria-label="Reset the 3D camera" disabled>↺ <span>Reset view</span></button><button type="button" id="reading-view">Reading view</button></div>
+    <div class="spatial-tools"><button type="button" id="reset-spatial" aria-label="Reset the 3D camera" disabled>↺ <span>Reset view</span></button><button type="button" id="reading-view" aria-haspopup="dialog" aria-controls="room-dialog" hidden>Reading view</button></div>
     <nav class="tower-labels" id="tower-labels" aria-label="Portfolio sections" aria-hidden="true" inert>${sections.map(section => `<button type="button" class="tower-label" data-section="${section.id}"><span class="spatial-eyebrow">${section.number} / PORTFOLIO</span><span class="tower-label-name">${escape(section.name)}</span><span class="tower-label-subtitle">${section.subtitle}</span></button>`).join('')}</nav>
     <div class="station-markers" id="station-markers" aria-label="Rooms in this interior" aria-hidden="true" inert></div>
     <button type="button" class="structure-action" id="back-to-structure" hidden>↖ <span>Back to tower</span></button>
@@ -214,7 +219,12 @@ async function start() {
     <div class="page-identity"><span class="identity-name">ERIC HSU</span><span>ELECTRICAL ENGINEERING · McGILL</span></div>
     <div class="spatial-bottom"><button type="button" id="unfold-structure" aria-label="Unfold the structure" disabled>+ <span id="spatial-hint" aria-live="polite">DRAWING THE STRUCTURE…</span></button><p id="orbit-instructions">LEFT DRAG TO ORBIT <span>·</span> SCROLL TO ZOOM</p></div>
     <span class="drawing-edition" aria-hidden="true">PORTFOLIO / 2026</span>`;
-  $('#reading-view').addEventListener('click', () => void useFallback(false));
+  readingView = createSectionReadingView({
+    onClose: () => $('#reading-view')?.focus({ preventScroll: true }),
+    onTower: () => navigate('explore'),
+    onNavigate: navigate,
+  });
+  $('#reading-view').addEventListener('click', () => { if (currentId) readingView.show(currentId, currentRoomIndex); });
   const { createSpatialScene } = await import('./scene-3d.js');
   if (fallbackActive) return;
   spatial = createSpatialScene({
@@ -294,7 +304,7 @@ async function start() {
     });
   }
   document.addEventListener('keydown', event => {
-    if (fallbackActive || event.key !== 'Escape') return;
+    if (fallbackActive || readingView.active || event.key !== 'Escape') return;
     if (currentId && currentRoomIndex !== null) { event.preventDefault(); navigate(currentId); return; }
     if (currentId || page.dataset.mode === 'explore') { event.preventDefault(); navigate(currentId ? 'explore' : 'tower'); }
   });

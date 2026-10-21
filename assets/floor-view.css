@@ -1,13 +1,5 @@
 @layer floor;
 @layer floor {
-  .tower-scene.is-zoomed .tower-art { transform: translate(var(--segment-x), var(--segment-y)) scale(var(--segment-zoom)); transition-duration: 850ms; }
-  .is-entering-floor .tower-art { transition-duration: 850ms; }
-  .tower-floor-visual { transition: transform 1150ms cubic-bezier(.25,.75,.2,1), opacity 500ms ease; transition-delay: calc(var(--floor-index, 0) * 35ms), 0ms; }
-  .tower-scene.is-zoomed .tower-floor-visual:not(.is-selected) { opacity: .035; }
-  .tower-scene.is-zoomed .tower-floor-visual.is-selected { opacity: 1; }
-  .tower-scene.is-zoomed .floor-label, .tower-scene.is-zoomed .tower-floor { opacity: 0; transition: opacity 250ms; }
-  .is-entering-floor .collapse-tower, .is-entering-floor .drawing-reference, .is-entering-floor .page-identity, .is-entering-floor .drawing-edition { opacity: 0; pointer-events: none; }
-  .collapse-tower, .drawing-reference, .page-identity, .drawing-edition { transition: opacity 300ms; }
   dialog.floor-view { position: fixed; inset: 0; margin: 0; width: 100%; height: 100dvh; max-width: none; max-height: none; border: 0; padding: 0; background: #fff; box-shadow: none; overflow: hidden; opacity: 0; transition: opacity 340ms ease; }
   dialog.floor-view::backdrop { background: transparent; backdrop-filter: none; }
   dialog.floor-view.is-visible { opacity: 1; }
@@ -15,6 +7,8 @@
   .floor-topbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; flex: 0 0 auto; min-height: 78px; padding: 14px 32px; border-bottom: 1px solid #dce5f1; }
   .floor-topbar .close-room { justify-self: start; display: flex; flex-direction: row; gap: 13px; padding: 10px 0; font: 10px/1.5 var(--mono); }
   .floor-topbar .close-room > span { font-size: 18px; }
+  .floor-view-actions { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+  .floor-view-actions .close-room { min-height: 44px; }
   .floor-heading { text-align: center; }
   .floor-heading .eyebrow { font-size: 7px; color: #6d8db7; letter-spacing: .13em; }
   .floor-heading h2 { font: 400 29px/1.15 var(--serif); letter-spacing: -.035em; margin-top: 3px; }
@@ -96,5 +90,5 @@
     .room-scroll-cue { display: none; }
     .floor-description { padding: 20px 22px 0; font-size: 8px; }
   }
-  @media (prefers-reduced-motion: reduce) { .floor-view, .floor-sheet, .tower-art, .tower-floor-visual { transition: none !important; } }
+  @media (prefers-reduced-motion: reduce) { .floor-view, .floor-sheet { transition: none !important; } }
 }

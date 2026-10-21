@@ -84,7 +84,13 @@
 .spatial-heading { background: #ffffffed; padding: 3px 15px 8px; }
 #interior-navigation { display: flex; justify-content: space-between; margin-top: 10px; font: 10px/1.5 var(--mono); }
 #interior-navigation a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; padding: 8px 0; }
-.fallback-note { position: absolute; bottom: 78px; left: 50%; transform: translateX(-50%); color: #6d85a6; font: 9px/1.6 var(--mono); text-align: center; width: min(90%,500px); pointer-events: none; }
+.unavailable { overflow-y: auto; }
+.unavailable-content { width: min(680px,100%); margin: 0 auto; padding: 12vh 28px 50px; }
+.unavailable-content h1 { font: 400 36px/1.2 var(--serif); margin: 22px 0; }
+.unavailable-content p { color: #526f94; }
+.unavailable-content > a, .unavailable-content > button { display: block; width: fit-content; margin-top: 24px; min-height: 44px; padding: 12px 0; border: 0; background: none; font: 12px/1.6 var(--mono); }
+.unavailable-content nav { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 24px; }
+.unavailable-content nav a { padding-block: 12px; }
 @media (max-width: 1000px) and (min-width: 761px) {
   .tower-label { width: 160px; }
   .tower-label-subtitle { font-size: 6px; letter-spacing: -.03em; }
