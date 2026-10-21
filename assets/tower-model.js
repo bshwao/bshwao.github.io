@@ -5,6 +5,7 @@ import { floorContent } from './floor-content.js';
 import { createDistrictGround } from './district-ground.js';
 import { createCapPlans } from './cap-plans.js';
 import { createDistrictBuildings } from './district-buildings.js';
+import { createDistrictDetails } from './district-details.js';
 
 function capGeometry(height) {
   const points = footprint(height).map(([x, z]) => new T.Vector2(x, z));
@@ -102,5 +103,6 @@ export function createTowerModel() {
   ground.add(new T.LineSegments(markGeometry, groundLine));
   const district = createDistrictGround(); root.add(district.root);
   const districtBuildings = createDistrictBuildings(); root.add(districtBuildings.root);
-  return { root, modules, ground, groundLine, district, districtBuildings };
+  const districtDetails = createDistrictDetails(districtBuildings.buildings); root.add(districtDetails.root);
+  return { root, modules, ground, groundLine, district, districtBuildings, districtDetails };
 }

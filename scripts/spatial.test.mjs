@@ -157,6 +157,7 @@ if (deepLink) {
 assert.equal(main.dataset.transition, 'idle');
 assert.equal(main.dataset.mode, 'tower');
 assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'The opening view includes the surrounding district buildings');
+assert.equal(lastScene.getObjectByName('district-character').visible, true, 'The opening view includes the landscaped district');
 assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Assembled tower hides the cap plans');
 assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the tower');
 assert.equal(w.document.title, initialTitle, 'The opening tower restores the page title');
@@ -176,6 +177,7 @@ const middle = lastCamera.position.clone();
 await tick(900);
 assert.equal(main.dataset.mode, 'explore');
 assert.ok(lastScene.getObjectByName('building-outlines').material.opacity < .3, 'Surrounding buildings recede while choosing a section');
+assert.ok(lastScene.getObjectByName('district-detail-ink').material.opacity < .25, 'Landscaping recedes while choosing a section');
 assert.ok(sections.every(section => lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Expansion reveals all cut-face plans');
 assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the expanded tower');
 assert.equal(main.dataset.transition, 'idle');
@@ -213,6 +215,7 @@ assert.equal(main.dataset.mode, 'section'); assert.equal(main.dataset.transition
 assert.equal(canvas.dataset.section, 'about');
 assert.equal(lastScene.getObjectByName('blueprint-district').visible, false, 'The district clears away for interior reading');
 assert.equal(lastScene.getObjectByName('district-buildings').visible, false, 'District buildings clear away before interior reading');
+assert.equal(lastScene.getObjectByName('district-character').visible, false, 'Landscaping and test vehicles clear away before interior reading');
 assert.equal(lastScene.getObjectByName('cap-plans-about').visible, false, 'The cap drawing clears before the furnished interior is read');
 assertFloorFramed('about');
 assert.ok(w.document.querySelector('#interior-content').textContent.includes('Eric Hsu'));
@@ -341,6 +344,7 @@ assert.equal(main.dataset.mode, 'tower'); assert.equal(main.dataset.transition, 
 assert.equal(canvas.dataset.section, '');
 assert.equal(lastScene.getObjectByName('blueprint-district').visible, true, 'Returning to the tower restores the district');
 assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'Cancelled flights restore the surrounding buildings');
+assert.equal(lastScene.getObjectByName('district-character').visible, true, 'Cancelled flights restore landscaping and workshop details');
 assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Interrupted entry and collapse cannot leave cap plans floating over the assembled tower');
 const before = Number(main.dataset.azimuth);
 canvas.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true })); await tick(16);

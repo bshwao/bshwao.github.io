@@ -119,6 +119,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     model.groundLine.opacity = .45 * (1 - expansion * .7);
     model.district.setPresentation(expansion, reveal);
     model.districtBuildings.setPresentation(expansion, reveal);
+    model.districtDetails.setPresentation(expansion, reveal);
     model.root.updateMatrixWorld(true);
   }
   function labels() {

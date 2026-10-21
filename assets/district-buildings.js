@@ -11,7 +11,7 @@ const schemes = [
   { type: 'office', height: 12, form: 'stepped' },
   { type: 'workshop', height: 6, form: 'sawtooth' },
   { type: 'apartments', height: 12, form: 'court' },
-  { type: 'workshop', height: 6, form: 'gable' },
+  { type: 'workshop', height: 6, form: 'test-yard' },
   { type: 'campus', height: 9, form: 'bar' },
   { type: 'office', height: 12, form: 'stepped' },
 ];
@@ -119,10 +119,12 @@ export function createDistrictBuildings() {
     } else if (scheme.form === 'bar') {
       block(cx, cz, width * .85, depth * .9, scheme.height);
     } else {
-      const top = block(cx, cz, width, depth, scheme.height);
-      if (scheme.form === 'gable') {
+      const hallDepth = scheme.form === 'test-yard' ? depth * .28 : depth;
+      const hallZ = scheme.form === 'test-yard' ? cz + depth * .36 : cz;
+      const top = block(cx, hallZ, width, hallDepth, scheme.height);
+      if (scheme.form === 'gable' || scheme.form === 'test-yard') {
         const ridge = top + 2.1;
-        const x0 = cx - width / 2, x1 = cx + width / 2, z0 = cz - depth / 2, z1 = cz + depth / 2;
+        const x0 = cx - width / 2, x1 = cx + width / 2, z0 = hallZ - hallDepth / 2, z1 = hallZ + hallDepth / 2;
         quad(roofs, [x0, top, z0], [x0, top, z1], [cx, ridge, z1], [cx, ridge, z0]);
         quad(roofs, [cx, ridge, z0], [cx, ridge, z1], [x1, top, z1], [x1, top, z0]);
         surfaces.push(x1, top, z0, x0, top, z0, cx, ridge, z0,

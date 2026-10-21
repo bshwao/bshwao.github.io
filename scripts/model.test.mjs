@@ -85,6 +85,41 @@ test('district buildings fit their parcels, keep the tower clear, and share a bo
   }
 });
 
+test('district landscaping and engineering references leave building volumes clear and stay inexpensive', () => {
+  const district = model.districtDetails;
+  const count = kind => district.features.filter(feature => feature.kind === kind).length;
+  assert.ok(count('tree') >= 20 && count('bench') >= 8 && count('streetlight') >= 8);
+  for (const kind of ['campus-quad', 'residential-courtyard', 'engineering-workshop', 'vehicle-test-loop', 'formula-test-car', 'autonomous-test-car', 'test-garage-frontage', 'roof-equipment']) assert.ok(count(kind), `${kind}: recognizable district character`);
+  const parts = model.districtBuildings.buildings.flatMap(building => building.parts.map(part => new T.Box3(
+    new T.Vector3(part.x - part.width / 2 + .01, part.bottom + .01, part.z - part.depth / 2 + .01),
+    new T.Vector3(part.x + part.width / 2 - .01, part.top - .01, part.z + part.depth / 2 - .01))));
+  for (const feature of district.features) {
+    assert.ok(!feature.bounds.isEmpty() && [...feature.bounds.min.toArray(), ...feature.bounds.max.toArray()].every(Number.isFinite), `${feature.kind}: tangible, finite geometry`);
+    if (feature.placement === 'ground') assert.ok(parts.every(part => !part.intersectsBox(feature.bounds)), `${feature.kind}: stays outside occupied building volumes`);
+  }
+  let triangles = 0, vertices = 0;
+  for (const object of district.root.children) {
+    const positions = object.geometry.attributes.position;
+    vertices += positions.count;
+    if (object.isMesh) triangles += positions.count / 3;
+    assert.equal(object.userData.sectionId, undefined, 'Scenery never becomes a selectable tower section');
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
+      assert.ok([x, y, z].every(Number.isFinite));
+      assert.ok(Math.abs(x) < districtPlan.extent && Math.abs(z) < districtPlan.extent && y < 17);
+      if (y < .5) assert.ok(districtPlan.roadCenters.every(center => Math.abs(x - center) > districtPlan.roadWidth / 2 && Math.abs(z - center) > districtPlan.roadWidth / 2), 'Ground-level fixtures keep the streets and crosswalks clear');
+    }
+  }
+  assert.ok(district.root.children.length <= 6 && triangles < 6500 && vertices < 30_000, `${triangles} triangles / ${vertices} vertices`);
+  const target = new T.Vector3(0, 5, 0);
+  for (let i = 0; i < 24; i++) {
+    const angle = i / 24 * Math.PI * 2;
+    const origin = new T.Vector3(Math.sin(angle) * 215, 116, Math.cos(angle) * 215);
+    const ray = new T.Raycaster(origin, target.clone().sub(origin).normalize(), 0, origin.distanceTo(target));
+    assert.equal(ray.intersectObjects(district.root.children.filter(object => object.isMesh)).length, 0, 'Landscaping preserves the opening sightline to the tower base');
+  }
+});
+
 test('cap plans stay within their cut footprints and keep distinct, inexpensive furnishings', () => {
   const signatures = new Set();
   const inside = (x, z, polygon) => {

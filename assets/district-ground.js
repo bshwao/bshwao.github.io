@@ -37,11 +37,34 @@ const glyphs = {
   '8': [[[0, .5], [0, 1], [.6, 1], [.6, 0], [0, 0], [0, .5], [.6, .5]]],
   '9': [[[.6, .5], [0, .5], [0, 1], [.6, 1], [.6, 0], [0, 0]]],
   A: [[[0, 0], [0, .7], [.3, 1], [.6, .7], [.6, 0]], [[0, .4], [.6, .4]]],
+  B: [[[0, 0], [0, 1], [.45, 1], [.6, .8], [.6, .65], [.45, .5], [0, .5]], [[.45, .5], [.6, .35], [.6, .15], [.45, 0], [0, 0]]],
+  C: [[[.6, 1], [0, 1], [0, 0], [.6, 0]]],
+  E: [[[.6, 1], [0, 1], [0, 0], [.6, 0]], [[0, .5], [.5, .5]]],
+  F: [[[0, 0], [0, 1], [.6, 1]], [[0, .5], [.5, .5]]],
+  G: [[[.6, 1], [0, 1], [0, 0], [.6, 0], [.6, .5], [.3, .5]]],
+  I: [[[0, 1], [.6, 1]], [[.3, 1], [.3, 0]], [[0, 0], [.6, 0]]],
   L: [[[0, 1], [0, 0], [.6, 0]]],
+  M: [[[0, 0], [0, 1], [.3, .5], [.6, 1], [.6, 0]]],
   N: [[[0, 0], [0, 1], [.6, 0], [.6, 1]]],
+  O: [[[0, 0], [0, 1], [.6, 1], [.6, 0], [0, 0]]],
   P: [[[0, 0], [0, 1], [.6, 1], [.6, .5], [0, .5]]],
+  R: [[[0, 0], [0, 1], [.6, 1], [.6, .5], [0, .5]], [[.25, .5], [.6, 0]]],
+  S: [[[.6, 1], [0, 1], [0, .5], [.6, .5], [.6, 0], [0, 0]]],
+  T: [[[0, 1], [.6, 1]], [[.3, 1], [.3, 0]]],
+  U: [[[0, 1], [0, 0], [.6, 0], [.6, 1]]],
+  W: [[[0, 1], [.1, 0], [.3, .5], [.5, 0], [.6, 1]]],
+  '/': [[[0, 0], [.6, 1]]],
   Z: [[[0, 1], [.6, 1], [0, 0], [.6, 0]]],
 };
+
+export function appendDraftingText(positions, value, size, project) {
+  const start = -(value.length * .9 - .3) * size / 2;
+  [...value].forEach((char, index) => {
+    for (const path of glyphs[char] || []) for (let i = 1; i < path.length; i++) {
+      for (const point of [path[i - 1], path[i]]) positions.push(...project(start + (index * .9 + point[0]) * size, point[1] * size));
+    }
+  });
+}
 
 /** Static, batched ground geometry. Decorative only: never a picking target. */
 export function createDistrictGround() {
@@ -75,14 +98,7 @@ export function createDistrictGround() {
     target.positions.push(x0, y, z0, x0, y, z1, x1, y, z1, x0, y, z0, x1, y, z1, x1, y, z0);
   }
   function text(value, x, z, size = 2.1) {
-    const start = x - (value.length * .9 - .3) * size / 2;
-    [...value].forEach((char, index) => {
-      for (const path of glyphs[char] || []) for (let i = 1; i < path.length; i++) {
-        const a = path[i - 1], b = path[i];
-        segment(notes, start + (index * .9 + a[0]) * size, z - a[1] * size,
-          start + (index * .9 + b[0]) * size, z - b[1] * size);
-      }
-    });
+    appendDraftingText(notes.positions, value, size, (dx, dy) => [x + dx, -.22, z - dy]);
   }
 
   // Fade the outer drafting field into the white background using vertex colours.
@@ -140,7 +156,7 @@ export function createDistrictGround() {
       segment(details, x, z, x + (x < (x0 + x1) / 2 ? 3 : -3), z);
       segment(details, x, z, x, z + (z < (z0 + z1) / 2 ? 3 : -3));
     }
-    text(`P${parcel.id}`, (x0 + x1) / 2, (z0 + z1) / 2 + 1.2, 2.4);
+    text(`P${parcel.id}`, x0 + 5, z1 - 1.6, 1.25);
   }
 
   // Crosswalks lead to all four sides of the plaza, before the junctions.
