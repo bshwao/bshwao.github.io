@@ -1,0 +1,27 @@
+import { writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+
+const root = resolve(import.meta.dirname, '..'), origin = 'https://bshwao.github.io/';
+const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
+const files = ['index.html', 'reading.html', 'assets/scene-3d.js', 'assets/tower-model.js', 'assets/render-budget.js', 'assets/district-style.js', 'assets/social-preview.png', 'assets/eric-hsu-resume.pdf', 'sitemap.xml', 'robots.txt', 'QA.md', 'ROADMAP.md', 'MAINTENANCE.md'];
+const hash = (data, binary) => createHash('sha256').update(binary ? data : data.toString('utf8').replaceAll('\r\n', '\n')).digest('hex');
+const results = await Promise.allSettled(files.map(async path => {
+  const response = await fetch(`${origin}${path === 'index.html' ? '' : path}?release=${commit}`, { signal: AbortSignal.timeout(30_000), cache: 'no-store' });
+  if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
+  if (!response.url.startsWith(origin)) throw new Error(`${path}: unexpected redirect to ${response.url}`);
+  const binary = /\.(png|pdf)$/.test(path), local = execFileSync('git', ['show', `${commit}:${path}`], { cwd: root, maxBuffer: 10_000_000 }), live = Buffer.from(await response.arrayBuffer());
+  const expected = hash(local, binary), actual = hash(live, binary);
+  if (expected !== actual) throw new Error(`${path}: published content differs from the local release`);
+  const contentType = response.headers.get('content-type');
+  if (path.endsWith('.png') && !contentType?.startsWith('image/png')) throw new Error(`${path}: incorrect image content type`);
+  if (path.endsWith('.pdf') && !contentType?.startsWith('application/pdf')) throw new Error(`${path}: incorrect PDF content type`);
+  return { path, status: response.status, contentType, sha256: actual, bytes: live.length };
+}));
+const checks = results.filter(result => result.status === 'fulfilled').map(result => result.value);
+const errors = results.filter(result => result.status === 'rejected').map(result => result.reason.message);
+const result = { checkedAt: new Date().toISOString(), commit, origin, status: errors.length ? 'FAIL' : 'PASS', checks, ...(errors.length ? { errors } : {}) };
+if (!errors.length && process.argv.includes('--record')) await writeFile(resolve(root, 'state/deployment.json'), `${JSON.stringify(result, null, 2)}\n`);
+console.log(JSON.stringify(result, null, 2));
+if (errors.length) process.exitCode = 1;

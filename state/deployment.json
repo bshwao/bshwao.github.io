@@ -1,0 +1,99 @@
+{
+  "checkedAt": "2026-10-22T02:36:26.854Z",
+  "commit": "5c4049362967e0e8479314da54a33dfaf0cbfd61",
+  "origin": "https://bshwao.github.io/",
+  "status": "PASS",
+  "checks": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "ba6f902fd90d7e3cad2f5e52e35ba3233e131a34da7fd369a19837aaf172d92c",
+      "bytes": 4041
+    },
+    {
+      "path": "reading.html",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "7f742b559464cec42b5a1a05dc749f16e2f0f026969ae574e89f15f6f3374f7b",
+      "bytes": 20249
+    },
+    {
+      "path": "assets/scene-3d.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "5913f3d8c2cf997e2c95b67b215f93ad356ca2bb9614a82863c18678afd72de0",
+      "bytes": 26438
+    },
+    {
+      "path": "assets/tower-model.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "9320ab347390ad7ab6ba1321fd390c5fcc9c1e343bce63385d17557e4c8ffc3b",
+      "bytes": 8327
+    },
+    {
+      "path": "assets/render-budget.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "ee0dcae7ff9816a3ead2ff845f0a86a5d93eef20c78abd873459307e30d2eea7",
+      "bytes": 367
+    },
+    {
+      "path": "assets/district-style.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "bd6ac7ae6f46757907a1fb9161ded9b5684017ec9d0a0ee5c93d9f70ab2de3f6",
+      "bytes": 4792
+    },
+    {
+      "path": "assets/social-preview.png",
+      "status": 200,
+      "contentType": "image/png",
+      "sha256": "21aeae3aee26fe344ace2553116854b340c1bc5f5af487bc6a1073b8e566055f",
+      "bytes": 412122
+    },
+    {
+      "path": "assets/eric-hsu-resume.pdf",
+      "status": 200,
+      "contentType": "application/pdf",
+      "sha256": "6a6680f52c21b05492c1f312fc36607d3abb10b580f5ec834c9e9790c3adb274",
+      "bytes": 127160
+    },
+    {
+      "path": "sitemap.xml",
+      "status": 200,
+      "contentType": "application/xml",
+      "sha256": "8aea45d0a47dabd2bdb675fe38d15f303ffa21b89cda2695bb81ae7136e5c938",
+      "bytes": 222
+    },
+    {
+      "path": "robots.txt",
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "sha256": "c0c389fa5d2f57939e6f0c268dce307d4ecd6cac1208b1aeb5a1367acc5f72ac",
+      "bytes": 90
+    },
+    {
+      "path": "QA.md",
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "sha256": "c8df42496f5b671204fb42668be56342b77bc79ddb184df551e5479c5b6569c2",
+      "bytes": 4125
+    },
+    {
+      "path": "ROADMAP.md",
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "sha256": "1924c2e56587347a34773cde333f702f3c5d92bc138747fe635ec7cedf668318",
+      "bytes": 3600
+    },
+    {
+      "path": "MAINTENANCE.md",
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "sha256": "ae5fe1d7648553bbe116e9ea99cd47437c9cefa8888f5f2f7f291013dc5685f8",
+      "bytes": 4325
+    }
+  ]
+}

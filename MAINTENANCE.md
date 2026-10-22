@@ -43,6 +43,8 @@ The canonical site is `https://bshwao.github.io/`. Keep `index.html`, the metada
 
 Commit reviewed changes and push to `main`. The `Portfolio checks` workflow runs automatically on pushes and pull requests. GitHub Pages uses the existing branch deployment; verify both checks and the `pages build and deployment` run for the published commit, then inspect the live home page, a room deep link, reading page, résumé, sharing card, and sitemap.
 
+After Pages finishes, run `node scripts/verify-live.mjs` to compare the canonical live pages, model/style modules, binary assets, sitemap, crawler setup, and release documentation against the committed `HEAD` snapshot. Text comparisons normalize Windows line endings; PNG/PDF comparisons use the exact bytes. `--record` saves the evidence to `state/deployment.json` for a subsequent documentation commit.
+
 For a regression, use `git revert <commit>` and publish the revert through the same checks. This preserves history and provides a reproducible rollback. `node_modules/` and `.preview/` are local-only and stay ignored.
 
 Periodic content review is ongoing maintenance: revisit project status, experience, résumé, external links, demos, and measured results when they change. No unattended account changes or recurring notification jobs are configured.
