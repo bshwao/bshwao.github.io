@@ -1,0 +1,183 @@
+{
+  "checkedAt": "2026-10-22T17:09:51.058Z",
+  "scope": "Complete multicolor app, DOM overlays and real WebGL on this Chromium/RTX 2060 host. One normal-load run; timings exclude asynchronous GPU work and later layout/paint from callback CPU. No claim about user Edge performance or reliable speedup.",
+  "baseline": "state/frame-qa.json records the earlier blue site and performance-only change. Both versions were near this host’s 165Hz refresh limit.",
+  "normal": {
+    "viewport": "1280x720",
+    "simulatedFrameDelayMs": 0,
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "contextLossFallback": true,
+    "qualityTrace": [
+      {
+        "quality": "0",
+        "detail": "full",
+        "width": 1280,
+        "height": 720,
+        "time": 522.5
+      }
+    ],
+    "rows": [
+      {
+        "name": "tower orbit",
+        "frames": 660,
+        "fps": 165,
+        "medianMs": 6.1,
+        "p95Ms": 6.1,
+        "callbackP95Ms": 1.4,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "unfold",
+        "frames": 212,
+        "fps": 162.5,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 2.2,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "explore orbit",
+        "frames": 660,
+        "fps": 164.7,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 1.3,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "open projects",
+        "frames": 306,
+        "fps": 162.9,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 1,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "floor orbit",
+        "frames": 660,
+        "fps": 165,
+        "medianMs": 6.1,
+        "p95Ms": 6.4,
+        "callbackP95Ms": 0.7,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "room flight",
+        "frames": 127,
+        "fps": 165,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 0.7,
+        "detail": "full",
+        "quality": "0"
+      }
+    ]
+  },
+  "diagnosticLoad": {
+    "viewport": "1280x720",
+    "simulatedFrameDelayMs": 28,
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "contextLossFallback": null,
+    "qualityTrace": [
+      {
+        "quality": "0",
+        "detail": "full",
+        "width": 1280,
+        "height": 720,
+        "time": 156.1
+      },
+      {
+        "quality": "1",
+        "detail": "compact",
+        "width": 1088,
+        "height": 612,
+        "time": 1180.4
+      },
+      {
+        "quality": "2",
+        "detail": "compact",
+        "width": 896,
+        "height": 503,
+        "time": 2228.8
+      },
+      {
+        "quality": "3",
+        "detail": "compact",
+        "width": 704,
+        "height": 396,
+        "time": 3271.2
+      }
+    ],
+    "rows": [
+      {
+        "name": "tower orbit",
+        "frames": 138,
+        "fps": 34.4,
+        "medianMs": 30.3,
+        "p95Ms": 30.4,
+        "callbackP95Ms": 1.1,
+        "detail": "compact",
+        "quality": "3"
+      },
+      {
+        "name": "unfold",
+        "frames": 44,
+        "fps": 33,
+        "medianMs": 30.3,
+        "p95Ms": 30.4,
+        "callbackP95Ms": 1.4,
+        "detail": "compact",
+        "quality": "3"
+      },
+      {
+        "name": "explore orbit",
+        "frames": 133,
+        "fps": 33,
+        "medianMs": 30.3,
+        "p95Ms": 30.4,
+        "callbackP95Ms": 1.2,
+        "detail": "compact",
+        "quality": "3"
+      },
+      {
+        "name": "open projects",
+        "frames": 59,
+        "fps": 31.3,
+        "medianMs": 30.4,
+        "p95Ms": 36.4,
+        "callbackP95Ms": 1.3,
+        "detail": "compact",
+        "quality": "3"
+      },
+      {
+        "name": "floor orbit",
+        "frames": 135,
+        "fps": 33.6,
+        "medianMs": 30.3,
+        "p95Ms": 30.4,
+        "callbackP95Ms": 0.7,
+        "detail": "compact",
+        "quality": "3"
+      },
+      {
+        "name": "room flight",
+        "frames": 27,
+        "fps": 33.8,
+        "medianMs": 30.3,
+        "p95Ms": 30.4,
+        "callbackP95Ms": 0.7,
+        "detail": "compact",
+        "quality": "3"
+      }
+    ]
+  },
+  "diagnosticNote": "28ms CPU work is deliberately injected after each scene frame. This verifies 0→1→2→3 adaptation and continued navigation, not performance on a slower GPU."
+}

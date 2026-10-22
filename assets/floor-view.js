@@ -53,6 +53,7 @@ export function createSectionReadingView({ onClose, onTower, onNavigate }) {
   }
 
   function render(id) {
+    dialog.dataset.sectionTheme = id;
     const section = rooms.find(room => room.id === id);
     const content = floorContent[id];
     const layout = planLayouts[id];

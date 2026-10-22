@@ -1,3 +1,4 @@
+import { palette, sectionColors } from './color-theme.js';
 /** Decorative concept plans. The readable, interactive portfolio content remains HTML. */
 const canvas = { x: 100, y: 120, width: 1000, height: 540 };
 const room = (column, row, number) => {
@@ -53,13 +54,13 @@ export function createFloorPlan(sectionId) {
   const id = Object.hasOwn(plans, sectionId) ? sectionId : 'about';
   const plan = plans[id];
   const layout = planLayouts[id];
-  const blue = '#2c568f';
+  const ink = sectionColors[id].ink;
   const n = (value) => Number(value.toFixed(2));
   const line = (x1, y1, x2, y2, extra = '') => `<line x1="${n(x1)}" y1="${n(y1)}" x2="${n(x2)}" y2="${n(y2)}" ${extra}/>`;
   const rect = (x, y, width, height, extra = '') => `<rect x="${x}" y="${y}" width="${width}" height="${height}" ${extra}/>`;
-  const text = (x, y, label, extra = '') => `<text x="${x}" y="${y}" fill="${blue}" stroke="none" font-family="Consolas, 'Liberation Mono', monospace" ${extra}>${label}</text>`;
-  const wall = (d, width = 4.2) => `<path d="${d}" stroke="${blue}" stroke-width="${width}"/><path d="${d}" stroke="#fff" stroke-width="${width - 1.8}"/>`;
-  const doubleRect = (x, y, width, height) => rect(x, y, width, height, `fill="#fff" stroke="${blue}" stroke-width=".85"`) + rect(x + 3, y + 3, width - 6, height - 6, 'stroke-width=".65"');
+  const text = (x, y, label, extra = '') => `<text x="${x}" y="${y}" fill="${ink}" stroke="none" font-family="Consolas, 'Liberation Mono', monospace" ${extra}>${label}</text>`;
+  const wall = (d, width = 4.2) => `<path d="${d}" stroke="${ink}" stroke-width="${width}"/><path d="${d}" stroke="#fff" stroke-width="${width - 1.8}"/>`;
+  const doubleRect = (x, y, width, height) => rect(x, y, width, height, `fill="#fff" stroke="${ink}" stroke-width=".85"`) + rect(x + 3, y + 3, width - 6, height - 6, 'stroke-width=".65"');
 
   function glazing() {
     let result = '';
@@ -115,11 +116,11 @@ export function createFloorPlan(sectionId) {
     const direction = left ? -1 : 1;
     const hingeY = left ? y + doorSize : y;
     const endY = left ? y : y + doorSize;
-    return `<path class="plan-door" d="M600 ${hingeY}h${direction * doorSize}M600 ${endY}A${doorSize} ${doorSize} 0 0 0 ${600 + direction * doorSize} ${hingeY}" stroke-width=".7"/><circle cx="600" cy="${hingeY}" r="1.1" fill="${blue}" stroke="none"/>`;
+    return `<path class="plan-door" d="M600 ${hingeY}h${direction * doorSize}M600 ${endY}A${doorSize} ${doorSize} 0 0 0 ${600 + direction * doorSize} ${hingeY}" stroke-width=".7"/><circle cx="600" cy="${hingeY}" r="1.1" fill="${ink}" stroke="none"/>`;
   }
   function doorHorizontal(x, up = false) {
     const endY = 390 + (up ? -doorSize : doorSize);
-    return `<path class="plan-door" d="M${x} 390V${endY}M${x + doorSize} 390A${doorSize} ${doorSize} 0 0 ${up ? 0 : 1} ${x} ${endY}" stroke-width=".7"/><circle cx="${x}" cy="390" r="1.1" fill="${blue}" stroke="none"/>`;
+    return `<path class="plan-door" d="M${x} 390V${endY}M${x + doorSize} 390A${doorSize} ${doorSize} 0 0 ${up ? 0 : 1} ${x} ${endY}" stroke-width=".7"/><circle cx="${x}" cy="390" r="1.1" fill="${ink}" stroke="none"/>`;
   }
   function partitions() {
     let result = wall(`M600 115V251M600 ${251 + doorSize}V521M600 ${521 + doorSize}V667`);
@@ -181,8 +182,8 @@ export function createFloorPlan(sectionId) {
   const coreY = plan.core === 'top' ? 65 : 670;
   const coreX = 495;
   const coreEntry = plan.core === 'top' ? '<path d="M584 113h32" stroke="#fff" stroke-width="6"/><path d="M584 113v-27M616 113A32 32 0 0 0 584 81" stroke-width=".65"/>' : '<path d="M584 670h32" stroke="#fff" stroke-width="6"/><path d="M584 670v27M616 670A32 32 0 0 1 584 702" stroke-width=".65"/>';
-  return `<svg class="floor-plan-drawing" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" fill="none" stroke="${blue}" stroke-width=".75" stroke-linejoin="round" stroke-linecap="round" font-size="7">
-    <defs><pattern id="plan-hatch-${id}" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M-2 2L2-2M0 7L7 0M5 9L9 5" stroke="${blue}" stroke-width=".4" opacity=".25"/></pattern></defs>
+  const drawing = `<svg class="floor-plan-drawing" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" fill="none" stroke="${ink}" stroke-width=".75" stroke-linejoin="round" stroke-linecap="round" font-size="7">
+    <defs><pattern id="plan-hatch-${id}" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M-2 2L2-2M0 7L7 0M5 9L9 5" stroke="${ink}" stroke-width=".4" opacity=".25"/></pattern></defs>
     <path d="${plan.outline}" fill="#fff" stroke="none"/>
     <path d="${plan.outline}" stroke="url(#plan-hatch-${id})" stroke-width="15" opacity=".45"/>
     ${wall(plan.outline, 6.2)}
@@ -196,4 +197,5 @@ export function createFloorPlan(sectionId) {
     <g class="plan-north-arrow"><path d="M1167 102V55m-5 13 5-13 5 13-5-4Z" fill="none" stroke-width=".75"/><circle cx="1167" cy="78" r="18" stroke-width=".4"/>${text(1167, 42, 'N', 'text-anchor="middle" letter-spacing="1" font-size="8"')}</g>
     <g class="plan-title-block" opacity=".8"><path d="M84 743H1116M84 738v10M1116 738v10" stroke-width=".45"/>${text(84, 763, `E.H. / ${plan.title.toUpperCase()}`, 'letter-spacing="1.3"')}${text(600, 763, 'CONCEPT PLAN / NOT TO SCALE', 'text-anchor="middle" letter-spacing="1.15" font-size="6.5"')}${text(1116, 763, `0${Object.keys(plans).indexOf(id) + 1} / INTERIOR STUDY`, 'text-anchor="end" letter-spacing="1" font-size="6.5"')}</g>
   </svg>`;
+  return drawing.replaceAll('#fff', palette.raised);
 }

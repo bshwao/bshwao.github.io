@@ -4,6 +4,7 @@ import { roomMarkerLayout, towerLabelLayout, outdoorViewLayout } from './spatial
 import { parseRoute, routeHash } from './routes.js';
 import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus } from './project-story.js';
 import { createSectionReadingView } from './floor-view.js';
+import { palette } from './color-theme.js';
 
 const page = document.querySelector('#main');
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -12,6 +13,27 @@ const defaultTitle = document.title;
 let routeKey = '', fallbackActive = false;
 let readingView;
 const $ = selector => page.querySelector(selector);
+const labelSizes = new WeakMap();
+const labelObserver = new ResizeObserver(entries => {
+  let changed = false;
+  for (const entry of entries || []) {
+    const box = entry.borderBoxSize?.[0];
+    const width = box?.inlineSize ?? entry.contentRect.width;
+    const height = box?.blockSize ?? entry.contentRect.height;
+    const previous = labelSizes.get(entry.target);
+    // Hidden labels keep their last useful measurement until they are shown again.
+    if (width > 0 && height > 0 && (previous?.width !== width || previous?.height !== height)) {
+      labelSizes.set(entry.target, { width, height }); changed = true;
+    }
+  }
+  if (changed) spatial?.refreshLabels();
+});
+function observeLabels() {
+  labelObserver.disconnect();
+  page.querySelectorAll('.tower-label, .station-marker-label').forEach(node => labelObserver.observe(node));
+}
+const setData = (node, key, value) => { if (node.dataset[key] !== value) node.dataset[key] = value; };
+const setStyle = (node, key, value) => { if (node.style.getPropertyValue(key) !== value) node.style.setProperty(key, value); };
 const link = item => `<a href="${escape(item.href)}"${item.download ? ` download="${escape(item.download)}"` : ''}${/^https?:/.test(item.href) ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escape(item.label)} <span aria-hidden="true">↗</span></a>`;
 
 function roomMarkup(room) {
@@ -55,6 +77,7 @@ function sectionMarkup(id) {
   $('#spatial-title').textContent = section.name;
   $('#station-navigation').innerHTML = content.rooms.map((room, i) => `<button type="button" data-station="${i}" aria-pressed="${i === 0}" aria-label="Explore room ${escape(room.number)}: ${escape(room.name)}"><span>${escape(room.number)}</span>${escape(room.name)}<span class="station-navigation-arrow" aria-hidden="true">↗</span></button>`).join('');
   $('#station-markers').innerHTML = content.rooms.map((room, i) => `<button type="button" class="station-marker" data-station="${i}" aria-pressed="${i === 0}" aria-label="Explore room ${escape(room.number)}: ${escape(room.name)}"><span>${escape(room.number)}</span><span class="station-marker-label" aria-hidden="true">${escape(room.name)}<span class="station-marker-action">Explore room ↗</span></span></button>`).join('');
+  observeLabels();
   const index = sections.indexOf(section);
   const previous = sections[(index + 4) % 5], next = sections[(index + 1) % 5];
   $('#interior-navigation').innerHTML = `<a href="#${previous.id}" data-section="${previous.id}" aria-label="Previous floor: ${escape(previous.name)}">← ${escape(previous.name)}</a><a href="#${next.id}" data-section="${next.id}" aria-label="Next floor: ${escape(next.name)}">${escape(next.name)} →</a>`;
@@ -80,6 +103,7 @@ function syncRoute({ instant = false, force = false } = {}) {
   const oldId = currentId;
   const sameSection = id && oldId === id && page.dataset.transition === 'idle';
   currentId = id;
+  page.dataset.sectionTheme = id || '';
   currentRoomIndex = roomIndex;
   const sectionName = sections.find(section => section.id === id)?.name;
   document.title = id ? `${roomIndex === null ? '' : `${floorContent[id].rooms[roomIndex].title} · `}${sectionName} — Eric Hsu` : defaultTitle;
@@ -135,48 +159,51 @@ function syncRoute({ instant = false, force = false } = {}) {
 }
 
 function onFrame(state) {
-  page.style.setProperty('--interior-progress', state.panel.toFixed(4));
-  page.dataset.azimuth = state.azimuth.toFixed(3);
-  page.dataset.polar = state.polar.toFixed(3);
-  page.dataset.cameraMotion = state.transitionType || 'idle';
-  page.dataset.focusedRoom = state.focusedRoom === null ? '' : String(state.focusedRoom);
+  setStyle(page, '--interior-progress', state.panel.toFixed(4));
+  setData(page, 'azimuth', state.azimuth.toFixed(3));
+  setData(page, 'polar', state.polar.toFixed(3));
+  setData(page, 'cameraMotion', state.transitionType || 'idle');
+  setData(page, 'focusedRoom', state.focusedRoom === null ? '' : String(state.focusedRoom));
   const hoveredRoom = state.hoveredRoom ?? null;
-  page.dataset.hoveredRoom = hoveredRoom === null ? '' : String(hoveredRoom);
-  for (const node of page.querySelectorAll('[data-station]')) node.dataset.hovered = String(Number(node.dataset.station) === hoveredRoom);
+  setData(page, 'hoveredRoom', hoveredRoom === null ? '' : String(hoveredRoom));
+  for (const node of page.querySelectorAll('[data-station]')) setData(node, 'hovered', String(Number(node.dataset.station) === hoveredRoom));
   if (currentId && page.dataset.transition === 'idle') {
     const room = floorContent[currentId].rooms[hoveredRoom];
     const hint = room ? `EXPLORE ROOM ${room.number} / ${room.name.toUpperCase()}` : 'SELECT A NUMBERED ROOM OR FURNITURE';
     if ($('#spatial-hint').textContent !== hint) $('#spatial-hint').textContent = hint;
   }
   const { width, height } = state.viewport;
-  page.dataset.layout = state.viewport.stacked ? 'stacked' : 'split';
-  $('#floor-overview').disabled = state.focusedRoom === null;
+  setData(page, 'layout', state.viewport.stacked ? 'stacked' : 'split');
+  const overview = $('#floor-overview');
+  if (overview.disabled !== (state.focusedRoom === null)) overview.disabled = state.focusedRoom === null;
   const viewStatus = state.focusedRoom === null ? 'FLOOR OVERVIEW' : `ROOM ${String(state.focusedRoom + 1).padStart(2, '0')} / CLOSE VIEW`;
   if ($('#room-view-status').textContent !== viewStatus) $('#room-view-status').textContent = viewStatus;
   const nodes = state.mode === 'section' ? $('#station-markers').children : $('#tower-labels').children;
   if (state.mode !== 'section') {
     const layout = outdoorViewLayout(width, height, 'explore').labelLayout;
-    $('#tower-labels').dataset.layout = layout;
-    page.dataset.labelLayout = layout;
+    setData($('#tower-labels'), 'layout', layout);
+    setData(page, 'labelLayout', layout);
   }
   const towerLabels = state.mode === 'section' ? null : towerLabelLayout(state.labels.map(item => {
     const node = [...nodes].find(element => element.dataset.section === item.id);
-    return { ...item, labelWidth: node?.offsetWidth, labelHeight: node?.offsetHeight };
+    const size = labelSizes.get(node);
+    return { ...item, labelWidth: size?.width, labelHeight: size?.height };
   }), width, height);
   if (towerLabels) {
-    $('#tower-labels').dataset.layout = towerLabels.layout;
-    page.dataset.labelLayout = towerLabels.layout;
+    setData($('#tower-labels'), 'layout', towerLabels.layout);
+    setData(page, 'labelLayout', towerLabels.layout);
   }
   const points = state.mode === 'section' ? roomMarkerLayout(state.labels.map(item => {
     const caption = nodes[Number(item.id)]?.querySelector('.station-marker-label');
-    return { ...item, captionWidth: caption?.offsetWidth, captionHeight: caption?.offsetHeight };
+    const size = labelSizes.get(caption);
+    return { ...item, captionWidth: size?.width, captionHeight: size?.height };
   }), state.viewport, state.activeRoom, hoveredRoom) : towerLabels.points;
   for (const item of points) {
     const node = state.mode === 'section' ? nodes[Number(item.id)] : [...nodes].find(element => element.dataset.section === item.id);
     if (!node) continue;
     if (state.mode === 'section') {
-      node.hidden = !item.shown;
-      node.dataset.captionHidden = String(!item.captionShown);
+      if (node.hidden !== !item.shown) node.hidden = !item.shown;
+      setData(node, 'captionHidden', String(!item.captionShown));
       node.style.left = `${item.x}px`; node.style.top = `${item.y}px`;
       const dx = item.sourceX - item.x, dy = item.sourceY - item.y;
       node.style.setProperty('--leader-length', `${Math.hypot(dx, dy)}px`);
@@ -199,6 +226,7 @@ function onFrame(state) {
 function useFallback() {
   if (fallbackActive) return;
   fallbackActive = true; revision++;
+  labelObserver.disconnect();
   readingView?.close({ focus: false });
   spatial?.dispose();
   page.className = 'tower-page unavailable';
@@ -217,6 +245,7 @@ async function start() {
     <h1 class="sr-only">Eric Hsu — Electrical Engineering, Projects, and Experience</h1>
     <div class="spatial-stage" id="spatial-stage"></div>
     <div class="drawing-reference" aria-hidden="true"><span>EH—001</span><span>STRUCTURES & SYSTEMS</span></div>
+    <div class="material-key" aria-hidden="true">${['teal', 'blue', 'coral', 'mustard', 'rose'].map(key => `<span style="--swatch:${palette[key]}"></span>`).join('')}<small>MATERIAL STUDY / 01</small></div>
     <div class="spatial-tools"><button type="button" id="reset-spatial" aria-label="Reset the 3D camera" disabled>↺ <span>Reset view</span></button><button type="button" id="reading-view" aria-haspopup="dialog" aria-controls="room-dialog" hidden>Reading view</button></div>
     <nav class="tower-labels" id="tower-labels" aria-label="Portfolio sections" aria-hidden="true" inert>${sections.map(section => `<button type="button" class="tower-label" data-section="${section.id}"><span class="spatial-eyebrow">${section.number} / PORTFOLIO</span><span class="tower-label-name">${escape(section.name)}</span><span class="tower-label-subtitle">${section.subtitle}</span></button>`).join('')}</nav>
     <div class="station-markers" id="station-markers" role="group" aria-label="Rooms in this interior" aria-hidden="true" inert></div>
@@ -238,6 +267,7 @@ async function start() {
     onTower: () => navigate('explore'),
     onNavigate: navigate,
   });
+  observeLabels();
   $('#reading-view').addEventListener('click', () => { if (currentId) readingView.show(currentId, currentRoomIndex); });
   const { createSpatialScene } = await import('./scene-3d.js');
   if (fallbackActive) return;

@@ -1,4 +1,5 @@
 import * as T from './vendor/three.module.min.js';
+import { palette, sectionColors } from './color-theme.js';
 import { footprint, radius, wings } from './tower-geometry.js';
 
 // Small architectural sketches for the closed tower's exposed cut faces.
@@ -169,12 +170,20 @@ export function createCapPlans(section, undersideY) {
   face(section.high - .002, section.high - section.low + .12, 'top');
   face(section.low + .005, undersideY - .12, 'underside');
   const materials = [
-    new T.LineBasicMaterial({ color: '#638ab7', transparent: true, opacity: .75, depthWrite: false }),
-    new T.LineBasicMaterial({ color: '#86a5c8', transparent: true, opacity: .8, depthWrite: false }),
+    new T.LineBasicMaterial({ color: palette.muted, transparent: true, opacity: .75, depthWrite: false }),
+    new T.LineBasicMaterial({ color: '#ffffff', vertexColors: true, transparent: true, opacity: .8, depthWrite: false }),
   ];
   for (const [index, positions] of [walls, furniture].entries()) {
     const geometry = new T.BufferGeometry();
     geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
+    if (index === 1) {
+      const colors = [], swatches = [sectionColors[section.id].ink, palette.warmInk, palette.tealInk];
+      const color = new T.Color();
+      for (let vertex = 0; vertex < positions.length / 3; vertex++) {
+        color.set(swatches[Math.floor(vertex / 12) % swatches.length]); colors.push(...color.toArray());
+      }
+      geometry.setAttribute('color', new T.Float32BufferAttribute(colors, 3));
+    }
     const lines = new T.LineSegments(geometry, materials[index]);
     lines.name = index === 0 ? 'plan-walls-and-core' : 'plan-furniture'; group.add(lines);
   }

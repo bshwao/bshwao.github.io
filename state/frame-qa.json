@@ -1,0 +1,207 @@
+{
+  "scope": "Local Chromium 155 with real WebGL; continuous keyboard orbit and the complete app DOM. One before/after run; not an Edge or physical-device guarantee.",
+  "baselineCommit": "509ba052ab0661e6b1c0d612f2a151281a8fc452",
+  "before": {
+    "viewport": "1280x720",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "rows": [
+      {
+        "name": "tower orbit",
+        "frames": 661,
+        "fps": 165,
+        "medianMs": 6.1,
+        "p95Ms": 6.3,
+        "callbackP95Ms": 1.5,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "unfold",
+        "frames": 215,
+        "fps": 165,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 1.8,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "explore orbit",
+        "frames": 661,
+        "fps": 165,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 1.7,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "open projects",
+        "frames": 302,
+        "fps": 161.8,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 2.1,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "floor orbit",
+        "frames": 660,
+        "fps": 164.8,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 1,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "room flight",
+        "frames": 125,
+        "fps": 162.4,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 2,
+        "detail": "full",
+        "quality": "0"
+      }
+    ]
+  },
+  "after": {
+    "viewport": "1280x720",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "rows": [
+      {
+        "name": "tower orbit",
+        "frames": 656,
+        "fps": 164,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 1.4,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "unfold",
+        "frames": 215,
+        "fps": 165,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 2.1,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "explore orbit",
+        "frames": 660,
+        "fps": 165,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 1.5,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "open projects",
+        "frames": 303,
+        "fps": 162.9,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 1.7,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "floor orbit",
+        "frames": 659,
+        "fps": 164.5,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 1,
+        "detail": "full",
+        "quality": "0"
+      },
+      {
+        "name": "room flight",
+        "frames": 127,
+        "fps": 165,
+        "medianMs": 6.1,
+        "p95Ms": 6.2,
+        "callbackP95Ms": 1.4,
+        "detail": "full",
+        "quality": "0"
+      }
+    ]
+  },
+  "simulatedLoad": {
+    "viewport": "1280x720",
+    "simulatedFrameDelayMs": 28,
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "rows": [
+      {
+        "name": "tower orbit",
+        "frames": 137,
+        "fps": 34.1,
+        "medianMs": 30.3,
+        "p95Ms": 30.4,
+        "callbackP95Ms": 1.4,
+        "detail": "compact",
+        "quality": "3"
+      },
+      {
+        "name": "unfold",
+        "frames": 44,
+        "fps": 32.6,
+        "medianMs": 30.3,
+        "p95Ms": 36.3,
+        "callbackP95Ms": 1.5,
+        "detail": "compact",
+        "quality": "3"
+      },
+      {
+        "name": "explore orbit",
+        "frames": 132,
+        "fps": 32.9,
+        "medianMs": 30.3,
+        "p95Ms": 30.4,
+        "callbackP95Ms": 1.2,
+        "detail": "compact",
+        "quality": "3"
+      },
+      {
+        "name": "open projects",
+        "frames": 60,
+        "fps": 31.8,
+        "medianMs": 30.3,
+        "p95Ms": 36.4,
+        "callbackP95Ms": 1.5,
+        "detail": "compact",
+        "quality": "3"
+      },
+      {
+        "name": "floor orbit",
+        "frames": 133,
+        "fps": 33.2,
+        "medianMs": 30.3,
+        "p95Ms": 30.4,
+        "callbackP95Ms": 0.9,
+        "detail": "compact",
+        "quality": "3"
+      },
+      {
+        "name": "room flight",
+        "frames": 26,
+        "fps": 33.3,
+        "medianMs": 30.3,
+        "p95Ms": 30.4,
+        "callbackP95Ms": 0.9,
+        "detail": "compact",
+        "quality": "3"
+      }
+    ]
+  },
+  "simulatedLoadNote": "Adds a fixed 28ms CPU delay after each scene frame to verify adaptation. It does not simulate a specific GPU or demonstrate a speed increase."
+}

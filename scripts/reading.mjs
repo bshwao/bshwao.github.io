@@ -1,3 +1,4 @@
+import { palette } from '../assets/color-theme.js';
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -29,7 +30,7 @@ export function renderReadingPage() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="${palette.paper}">
   <title>${escape(profile.name)} — Portfolio reading view</title>
   <meta name="description" content="${escape(`${profile.name}'s projects, engineering experience, education, skills, and contact information. Electrical engineering at ${profile.university}, ${profile.location}.`)}">
   <meta property="og:title" content="${escape(profile.name)} — Portfolio reading view">
@@ -39,14 +40,16 @@ export function renderReadingPage() {
   <meta property="og:image" content="${site}assets/social-preview.png">
   <meta property="og:image:width" content="1280">
   <meta property="og:image:height" content="720">
-  <meta property="og:image:alt" content="Eric Hsu — Electrical engineering at McGill, with a blueprint tower and surrounding city.">
+  <meta property="og:image:alt" content="Eric Hsu — Electrical engineering at McGill, with a multicolor architectural tower and surrounding city.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="${site}assets/social-preview.png">
-  <meta name="twitter:image:alt" content="Eric Hsu — Electrical engineering at McGill, with a blueprint tower and surrounding city.">
+  <meta name="twitter:image:alt" content="Eric Hsu — Electrical engineering at McGill, with a multicolor architectural tower and surrounding city.">
   <link rel="canonical" href="${site}reading.html">
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="stylesheet" href="./assets/reading.css">
   <link rel="stylesheet" href="./assets/project-story.css">
+  <link rel="stylesheet" href="./assets/theme.css">
+  <link rel="stylesheet" href="./assets/color-system.css">
   <script type="application/ld+json">${JSON.stringify(person).replace(/</g, '\\u003c')}</script>
 </head>
 <body>

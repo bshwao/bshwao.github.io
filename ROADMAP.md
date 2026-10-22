@@ -35,3 +35,17 @@ All six numbered city phases are implemented.
 - [x] **Maintenance setup:** content/update instructions, reproducible QA pages, automated repository checks, and a release/rollback guide in `MAINTENANCE.md`.
 
 Content maintenance continues when projects, experience, résumé, links, demos, or measured results change. A custom domain is optional and has not been requested; the existing HTTPS GitHub Pages address remains canonical.
+
+## Multicolor redesign — complete locally
+
+The supplied architectural reference establishes a new direction: warm paper, graphite drafting lines, and muted teal, dusty blue, terracotta, mustard, and rose accents. Carry material colors through the tower, exposed plans, furnished interiors, district, and website controls. Preserve the existing automatic rendering budget and room navigation.
+
+These are new redesign phases, separate from the six completed city phases:
+
+1. **Palette and foundation — moderate:** shared color tokens, warm page/canvas backgrounds, graphite text, five section accents, and comparison screenshots.
+2. **Tower and cross-sections — high:** teal glazing, pale structural surfaces, accented floor plates, colored cap plans, and coordinated transition states.
+3. **Interiors and district — high:** material-colored furniture and rooms, quieter city colors, and palette-aware focus, shading, and fading.
+4. **Website consistency — moderate:** section/room controls, reading dialogs, static portfolio, fallback, responsive styling, and sharing artwork.
+5. **Verification and release readiness — moderate:** accessibility, full/adaptive-quality comparisons, frame timing, stable GPU resources, and final QA evidence.
+
+All five redesign phases are complete. The detailed palette, implementation areas, completion criteria, and performance constraints are in [COLOR-PLAN.md](./COLOR-PLAN.md). Source checks, five integration modes, 39 browser accessibility views, responsive and color-vision review, real WebGL resource/disposal checks, and frame/adaptive-quality runs pass. See `state/multicolor-qa.json` and `QA.md` for evidence and scope. The redesign and preceding performance optimizations are release-ready locally and remain unpublished.

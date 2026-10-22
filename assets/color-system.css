@@ -1,0 +1,45 @@
+/* Material colors and interaction roles shared by 3D, reading and fallback UI. */
+html, body, .tower-page, dialog.floor-view { background: var(--paper); color: var(--ink); }
+::selection { background: var(--accent-tint); color: var(--ink); }
+:focus-visible { outline-color: var(--accent-ink); }
+.tower-page::after { border-color: var(--line); }
+.spatial-stage::after { background: linear-gradient(to bottom,rgba(var(--paper-rgb),.95),rgba(var(--paper-rgb),0) 13%,rgba(var(--paper-rgb),0) 76%,rgba(var(--paper-rgb),.95)); }
+.material-key { position: absolute; left: 50%; top: 30px; transform: translateX(-50%); display: flex; align-items: center; gap: 7px; pointer-events: none; }
+.material-key span { width: 7px; height: 7px; background: var(--swatch); }
+.material-key small { margin-left: 5px; color: var(--muted); font: 7px/1.5 var(--mono); letter-spacing: .08em; }
+.tower-label { border-left: 2px solid var(--accent); }
+.tower-label-name { color: var(--ink); }
+.tower-label:hover .tower-label-name, .tower-label:focus-visible .tower-label-name { color: var(--accent-ink); }
+.tower-label:hover, .tower-label:focus-visible { background: var(--accent-tint); }
+.tower-label::before { background: var(--accent); }
+.tower-label::after { border-color: var(--accent-ink); background: var(--raised); }
+.spatial-heading { border-top: 2px solid var(--accent); }
+.spatial-heading h2, .interior-content h3, .floor-heading h2 { color: var(--ink); }
+.station-marker { border-color: var(--accent-ink); color: var(--accent-ink); background: var(--raised); }
+.station-marker[aria-pressed="true"] { background: var(--accent-ink); border-color: var(--accent-ink); color: var(--raised); }
+.station-marker[data-hovered="true"], .station-marker:focus-visible { border-color: var(--accent-ink); box-shadow: 0 0 0 4px var(--accent-tint); }
+.station-marker-label, .station-marker-action { color: var(--accent-ink); background: var(--raised); }
+.station-marker::before { background: var(--accent-ink); }
+.station-navigation button[aria-pressed="true"] { color: var(--accent-ink); border-bottom-color: var(--accent-ink); }
+.station-navigation button[data-hovered="true"], .station-navigation button:focus-visible { color: var(--accent-ink); background: var(--accent-tint); }
+.interior-facts dt, .floor-facts strong { color: var(--accent-ink); }
+.interior-links a:hover, .project-reading-link:hover { color: var(--accent-ink); border-color: var(--accent-ink); }
+.project-status { color: var(--muted); background: var(--raised); border-color: var(--line); }
+.project-status[data-status="ongoing"] { color: var(--accent-ink); background: var(--accent-tint); border-color: var(--accent-ink); }
+.reading-sheet, .floor-room, .floor-room-scroll, .project-gallery .project-image-action { background: var(--raised); }
+.reading-sheet main > section { border-bottom-color: var(--accent); }
+.reading-sheet main > section h2::before { content: ''; display: inline-block; width: 9px; height: 9px; margin-right: 14px; vertical-align: middle; background: var(--accent); }
+.floor-heading { border-top: 2px solid var(--accent); padding-top: 6px; }
+.plan-glazing { fill: var(--glass); stroke: var(--accent-ink); }
+.plan-furnishings { fill: var(--timber); }
+.plan-core { fill: var(--accent-tint); }
+.floor-plan-drawing text { fill: var(--muted); }
+.plan-hotspots button { color: var(--accent-ink); border-color: var(--accent-ink); background: var(--raised); }
+.plan-hotspots button:hover { background: var(--accent-tint); }
+.unavailable-content button { color: var(--accent-ink); background: var(--raised); }
+@media (max-width: 760px) {
+  .material-key { top: 31px; left: 50%; right: auto; transform: translateX(-50%); gap: 4px; }
+  .material-key span { width: 5px; height: 5px; }
+  .material-key small { display: none; }
+}
+@media print { html, body, .reading-sheet { background: white; color: black; } }

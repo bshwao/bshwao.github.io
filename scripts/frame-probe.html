@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>Frame probe</title></head><body><script>
+// Load the actual app document at a same-origin URL with frame instrumentation.
+fetch('../index.html').then(response => response.text()).then(html => {
+  const delayMs = Math.max(0, Math.min(50, Number(new URLSearchParams(location.search).get('delay')) || 0));
+  const noWebGL = new URLSearchParams(location.search).get('webgl') === 'off';
+  const probe = `${noWebGL ? `const originalContext = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function(type, ...args) {
+    return /^(webgl2?|experimental-webgl)$/.test(type) ? null : originalContext.call(this, type, ...args);
+  };` : ''}
+  const originalRAF = window.requestAnimationFrame.bind(window);
+  window.frameProbe = [];
+  window.frameQualityTrace = [];
+  window.requestAnimationFrame = callback => originalRAF(time => {
+    const started = performance.now();
+    callback(time);
+    if (callback.name === 'draw') window.frameProbe.push({ time, cpu: performance.now() - started });
+    if (callback.name === 'draw') {
+      const canvas = document.querySelector('canvas'), quality = canvas?.dataset.quality;
+      if (quality !== undefined && window.frameQualityTrace.at(-1)?.quality !== quality) {
+        window.frameQualityTrace.push({ quality, detail: canvas.dataset.detail, width: canvas.width, height: canvas.height, time });
+      }
+    }
+    if (callback.name === 'draw') {
+      const until = performance.now() + ${delayMs};
+      while (performance.now() < until) {} // Optional, diagnostic-only simulated load.
+    }
+  });`;
+  document.open();
+  document.write(html.replace('<head>', '<head><base href="' + location.origin + '/"><script>' + probe + '<' + '/script>'));
+  document.close();
+});
+</script></body></html>

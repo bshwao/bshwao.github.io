@@ -1,3 +1,4 @@
+import { palette } from './color-theme.js';
 import * as T from './vendor/three.module.min.js';
 import { applyDistrictDepth } from './district-style.js';
 
@@ -79,16 +80,16 @@ export function createDistrictGround() {
     const item = { name, positions: [], material, opacity, surface, order };
     layers.set(name, item); return item;
   }
-  const minor = layer('draft-grid-minor', '#e0eaf6', { opacity: .38, order: -12 });
-  const major = layer('draft-grid-major', '#bfd2e8', { opacity: .5, order: -11 });
-  const streets = layer('streets', '#e5eef8', { surface: true, order: -10 });
-  const walks = layer('sidewalks', '#f3f7fc', { surface: true, order: -9 });
-  const plaza = layer('central-plaza', '#f7faff', { surface: true, order: -8 });
-  const parcels = layer('parcels', '#fafcff', { surface: true, order: -8 });
-  const boundaries = layer('curbs-and-parcels', '#83a5cc', { opacity: .72, order: -7 });
-  const details = layer('paving-and-road-marks', '#b0c7e1', { opacity: .48, order: -6 });
-  const notes = layer('survey-annotations', '#789dc5', { opacity: .72, order: -5 });
-  const markings = layer('road-markings', '#92b1d4', { surface: true, opacity: .84, order: -5 });
+  const minor = layer('draft-grid-minor', palette.grid, { opacity: .38, order: -12 });
+  const major = layer('draft-grid-major', palette.line, { opacity: .5, order: -11 });
+  const streets = layer('streets', palette.street, { surface: true, order: -10 });
+  const walks = layer('sidewalks', palette.paving, { surface: true, order: -9 });
+  const plaza = layer('central-plaza', palette.raised, { surface: true, order: -8 });
+  const parcels = layer('parcels', palette.paper, { surface: true, order: -8 });
+  const boundaries = layer('curbs-and-parcels', palette.draft, { opacity: .72, order: -7 });
+  const details = layer('paving-and-road-marks', palette.line, { opacity: .48, order: -6 });
+  const notes = layer('survey-annotations', palette.draft, { opacity: .72, order: -5 });
+  const markings = layer('road-markings', palette.muted, { surface: true, opacity: .84, order: -5 });
 
   function segment(target, x1, z1, x2, z2, y = -.22) {
     target.positions.push(x1, y, z1, x2, y, z2);
@@ -212,7 +213,7 @@ export function createDistrictGround() {
     const geometry = new T.BufferGeometry();
     geometry.setAttribute('position', new T.Float32BufferAttribute(item.positions, 3));
     if (item === minor || item === major) {
-      const base = item.material.color.clone(), white = new T.Color('#ffffff');
+      const base = item.material.color.clone(), white = new T.Color(palette.paper);
       const colors = [];
       for (let i = 0; i < item.positions.length; i += 3) {
         const edge = Math.max(Math.abs(item.positions[i]), Math.abs(item.positions[i + 2]));

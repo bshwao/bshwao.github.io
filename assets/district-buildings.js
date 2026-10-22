@@ -1,3 +1,4 @@
+import { palette } from './color-theme.js';
 import * as T from './vendor/three.module.min.js';
 import { districtPlan } from './district-ground.js';
 import { applyDistrictDepth, shadeDistrictGeometry } from './district-style.js';
@@ -153,11 +154,11 @@ export function createDistrictBuildings() {
   boxGeometry.dispose();
 
   const layers = [
-    { name: 'building-surfaces', positions: surfaces, color: '#fcfdff', mesh: true },
-    { name: 'building-roofs', positions: roofs, color: '#edf4fc', mesh: true },
-    { name: 'building-glazing', positions: glazing, color: '#dae7f5', mesh: true },
-    { name: 'building-outlines', positions: outlines, color: '#7296bf', opacity: .8 },
-    { name: 'building-facades', positions: details, color: '#a2bcd8', opacity: .46 },
+    { name: 'building-surfaces', positions: surfaces, color: palette.stone, mesh: true },
+    { name: 'building-roofs', positions: roofs, color: palette.coral, mesh: true },
+    { name: 'building-glazing', positions: glazing, color: palette.glass, mesh: true },
+    { name: 'building-outlines', positions: outlines, color: palette.draft, opacity: .8 },
+    { name: 'building-facades', positions: details, color: palette.draft, opacity: .46 },
   ];
   for (const layer of layers) {
     const geometry = new T.BufferGeometry();

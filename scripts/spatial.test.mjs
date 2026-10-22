@@ -8,6 +8,7 @@ import * as THREE from '../assets/vendor/three.module.min.js';
 import { viewportLayout } from '../assets/spatial-layout.js';
 import { floorContent } from '../assets/floor-content.js';
 import { sections } from '../assets/tower-geometry.js';
+import { sectionColors } from '../assets/color-theme.js';
 
 const root = resolve(import.meta.dirname, '..');
 const mobile = process.argv.includes('--mobile');
@@ -312,7 +313,7 @@ assertRoomFramed(0, 2);
 assert.equal(main.dataset.cameraMotion, 'idle');
 assert.equal(w.document.querySelector('#floor-overview').disabled, false);
 const about = lastScene.children.find(node => node.isGroup).children[0].children[2];
-assert.equal(about.children[2].children[0].children[0].material.color.getHexString(), '174d91', 'The selected room has a stronger 3D outline');
+assert.equal(about.children[2].children[0].children[0].material.color.getHexString(), sectionColors.about.ink.slice(1), 'The selected room has a stronger 3D outline');
 click('#share-room'); await settleImports();
 assert.equal(copiedURLs.at(-1), `${previewURL}#about/c`, 'Copy link preserves origin, path, search, and the exact room');
 assert.equal(w.document.querySelector('#share-status').textContent, 'Link copied.');
@@ -488,6 +489,19 @@ assert.equal(main.dataset.mode, 'explore', 'Reading mode returns to the real 3D 
 assert.equal(canvas.isConnected, true);
 assert.equal(w.document.querySelector('#reading-view').hidden, true);
 w.history.pushState(null, '', '#resume/d'); w.dispatchEvent(new w.PopStateEvent('popstate')); await settleCamera();
+if (!reduced) {
+  // A sustained slow flight changes rendering cost, not camera framing or routes.
+  w.history.pushState(null, '', '#projects'); w.dispatchEvent(new w.PopStateEvent('popstate'));
+  for (let i = 0; i < 58; i++) await tick(34);
+  assert.ok(Number(canvas.dataset.quality) >= 1, 'Slow active frames lower quality automatically');
+  assert.equal(canvas.dataset.detail, 'compact');
+  assert.equal(canvas.dataset.section, 'projects');
+  assertFloorFramed('projects');
+  const quality = canvas.dataset.quality;
+  await resizeTo(...originalViewport);
+  assert.equal(canvas.dataset.quality, quality, 'Resizing retains the learned device budget');
+  w.history.pushState(null, '', '#resume/d'); w.dispatchEvent(new w.PopStateEvent('popstate')); await settleCamera();
+}
 click('#reading-view');
 const loss = new w.Event('webglcontextlost', { cancelable: true }); canvas.dispatchEvent(loss);
 assert.ok(loss.defaultPrevented);

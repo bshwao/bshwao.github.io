@@ -5,6 +5,7 @@ import { createTowerModel } from '../assets/tower-model.js';
 import { sections, footprint, stationPositions } from '../assets/tower-geometry.js';
 import { floorContent } from '../assets/floor-content.js';
 import { districtPlan } from '../assets/district-ground.js';
+import { palette, sectionColors } from '../assets/color-theme.js';
 
 const model = createTowerModel();
 model.root.updateMatrixWorld(true);
@@ -339,9 +340,9 @@ test('room highlighting is independent and every camera target has real furnitur
   for (const module of model.modules) {
     const interior = module.interior;
     interior.setActiveRoom(1); interior.setHoveredRoom(2);
-    assert.equal(interior.rooms[1].line.color.getHexString(), '174d91');
-    assert.equal(interior.rooms[2].line.color.getHexString(), '376faf');
-    assert.equal(interior.rooms[0].line.color.getHexString(), '7292b8');
+    assert.equal(interior.rooms[1].line.color.getHexString(), sectionColors[module.id].ink.slice(1));
+    assert.equal(interior.rooms[2].line.color.getHexString(), palette.ink.slice(1));
+    assert.equal(interior.rooms[0].line.color.getHexString(), palette.muted.slice(1));
     for (const room of interior.rooms) {
       assert.ok(room.radius > 0 && Number.isFinite(room.radius));
       assert.ok(room.bounds.containsPoint(room.center));
@@ -380,7 +381,7 @@ test('room focus quiets the context and restores its materials without cumulativ
     interior.setFocus(null, 1);
     for (const material of materials) assert.deepEqual(appearance(material), original.get(material), `${module.id}: clearing focus retains the overview`);
     interior.setFocus(1, 1); interior.setHoveredRoom(2);
-    assert.equal(interior.rooms[2].line.color.getHexString(), '376faf', `${module.id}: hovering brings a contextual room back into view`);
+    assert.equal(interior.rooms[2].line.color.getHexString(), palette.ink.slice(1), `${module.id}: hovering brings a contextual room back into view`);
     for (const { material } of interior.rooms[2].surfaces) assert.deepEqual(appearance(material), original.get(material), `${module.id}: previewed furniture regains its original surface`);
     interior.setHoveredRoom(null);
     assert.ok(interior.rooms[2].line.opacity < .58, `${module.id}: leaving a preview quiets that room again`);

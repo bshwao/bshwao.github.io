@@ -1,3 +1,4 @@
+import { palette } from './color-theme.js';
 import * as T from './vendor/three.module.min.js';
 import { appendDraftingText } from './district-ground.js';
 import { applyDistrictDepth, shadeDistrictGeometry } from './district-style.js';
@@ -7,12 +8,12 @@ export function createDistrictDetails(buildings) {
   const root = new T.Group(); root.name = 'district-character';
   const features = [];
   const layers = {
-    paper: { color: '#fafcfe', mesh: true, positions: [] },
-    blue: { color: '#cbddef', mesh: true, positions: [] },
-    foliage: { color: '#e8f1fa', mesh: true, positions: [] },
-    paving: { color: '#f0f5fb', mesh: true, positions: [] },
-    ink: { color: '#7d9fc5', opacity: .72, positions: [] },
-    fine: { color: '#abc3de', opacity: .46, positions: [] },
+    paper: { color: palette.structure, mesh: true, positions: [] },
+    blue: { color: palette.mustard, mesh: true, positions: [] },
+    foliage: { color: palette.sage, mesh: true, positions: [] },
+    paving: { color: palette.paving, mesh: true, positions: [] },
+    ink: { color: palette.draft, opacity: .72, positions: [] },
+    fine: { color: palette.line, opacity: .46, positions: [] },
   };
   const sources = new Map();
   let active = null;

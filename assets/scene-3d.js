@@ -3,7 +3,8 @@ import { OrbitControls } from './vendor/OrbitControls.js';
 import { createTowerModel } from './tower-model.js';
 import { viewportLayout } from './spatial-layout.js';
 import { outdoorCameraPose } from './camera-framing.js';
-import { renderBudget } from './render-budget.js';
+import { renderBudget, createFrameBudget } from './render-budget.js';
+import { palette } from './color-theme.js';
 
 const ease = t => t * t * t * (t * (t * 6 - 15) + 10);
 const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - start), 0, 1));
@@ -11,8 +12,8 @@ const lerp = T.MathUtils.lerp;
 
 /** One persistent scene and camera: tower, exploded assembly, and inhabited cutaway. */
 export function createSpatialScene({ container, onSelectSection, onSelectRoom, onFrame, onContextLost }) {
-  const renderer = new T.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'low-power' });
-  renderer.setClearColor('#ffffff');
+  const renderer = new T.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'default' });
+  renderer.setClearColor(palette.paper);
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
   renderer.localClippingEnabled = true;
   renderer.outputColorSpace = T.SRGBColorSpace;
@@ -23,9 +24,9 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   canvas.setAttribute('aria-label', 'Interactive 3D blueprint skyscraper. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold.');
   container.append(canvas);
   const scene = new T.Scene();
-  scene.add(new T.HemisphereLight('#ffffff', '#b2c8e2', 2.25));
+  scene.add(new T.HemisphereLight(palette.sky, palette.bounce, 2.25));
   const light = new T.DirectionalLight('#ffffff', 1.4); light.position.set(50, 120, 80); scene.add(light);
-  const fill = new T.DirectionalLight('#d2e3fa', .6); fill.position.set(-80, 30, -60); scene.add(fill);
+  const fill = new T.DirectionalLight(palette.fill, .6); fill.position.set(-80, 30, -60); scene.add(fill);
   const model = createTowerModel(); scene.add(model.root);
   const depthReferences = [];
   model.root.traverse(node => { if (node.material?.userData.districtDepth) depthReferences.push(node.material.userData.districtDepth); });
@@ -52,10 +53,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   let pointerStart = null, hover = null;
   const savedViews = new Map();
   const activePointers = new Set();
+  const frameBudget = createFrameBudget();
+  let modelDirty = true, lastProjection = '', drawing = false, lastDrawEnd = 0;
   const cuts = model.modules.map(() => 0);
   const projectVector = new T.Vector3();
+  const paper = new T.Color(palette.paper);
   const white = new T.Color('#ffffff');
-  const shellColor = new T.Color('#f5f9fe'), slabColor = new T.Color('#e4eef9'), baseColor = new T.Color('#edf4fc');
   const projection = world => {
     projectVector.copy(world).project(camera);
     return { x: (projectVector.x + 1) * width / 2, y: (1 - projectVector.y) * height / 2, visible: projectVector.z > -1 && projectVector.z < 1 };
@@ -94,9 +97,11 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       screenCenter: new T.Vector2(layout.centerX / width, layout.centerY / height) };
   }
   function updateProjection() {
+    const key = `${width}:${height}:${screenCenter.x}:${screenCenter.y}`;
+    if (key === lastProjection) return;
+    lastProjection = key;
     camera.aspect = width / height;
     camera.setViewOffset(width, height, (.5 - screenCenter.x) * width, (.5 - screenCenter.y) * height, width, height);
-    camera.updateProjectionMatrix();
   }
   function updateModel() {
     model.modules.forEach((module, index) => {
@@ -108,11 +113,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       module.capPlans.setPresentation(expansion, cut, context);
       module.clip.constant = module.group.position.y + (module.high - module.low) * (1 - cut) + module.interior.unit * .17;
       module.interior.group.visible = cut > .03;
-      module.line.color.set(hover === module.id ? '#164b8d' : '#426eaa');
-      module.line.opacity = .7 * context;
-      module.surface.color.lerpColors(shellColor, white, 1 - context);
-      module.slabMaterial.color.lerpColors(slabColor, white, 1 - context);
-      module.base.material.color.lerpColors(baseColor, white, module === selected ? focusAmount * .8 : 1 - context);
+      module.line.color.set(hover === module.id ? module.colors.ink : palette.muted);
+      module.line.opacity = .62 * context;
+      module.surface.color.copy(white);
+      module.surface.emissive.copy(paper).multiplyScalar((1 - context) * .8);
+      module.slabMaterial.color.set(module.colors.tint).lerp(paper, 1 - context);
+      module.base.material.color.set(module.colors.tint).lerp(paper, module === selected ? focusAmount * .8 : 1 - context);
       module.base.children[0].material.opacity = .8 * context * (module === selected ? 1 - focusAmount * .72 : 1);
       module.interior.setFocus?.(module === selected ? contextRoom : null, focusAmount);
     });
@@ -139,6 +145,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   }
   function draw(time = performance.now()) {
     if (disposed || document.hidden) { frame = 0; return; }
+    drawing = true;
     frame = 0;
     let moving = false;
     if (animation) {
@@ -172,9 +179,11 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       }
       moving = true;
     }
-    updateProjection(); updateModel();
+    updateProjection();
+    if (moving || modelDirty) { updateModel(); modelDirty = false; }
     const changed = controls.update();
     if (dirty || moving || changed) {
+      if (frameBudget.sample(time)) applyBudget();
       const distance = camera.position.distanceTo(controls.target);
       for (const reference of depthReferences) reference.value = distance;
       renderer.render(scene, camera);
@@ -183,11 +192,24 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
         azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle() });
       dirty = false;
     }
+    lastDrawEnd = performance.now(); drawing = false;
     if (animation || changed) invalidate();
+  }
+  function applyBudget() {
+    const budget = renderBudget(width, height, devicePixelRatio, frameBudget.quality);
+    renderer.setPixelRatio(budget.pixelRatio);
+    model.setCompact(budget.compact);
+    canvas.dataset.detail = budget.compact ? 'compact' : 'full';
+    canvas.dataset.quality = String(frameBudget.quality);
   }
   function invalidate() {
     dirty = true;
-    if (!frame && !disposed) frame = requestAnimationFrame(draw);
+    if (!frame && !disposed) {
+      // Measure motion, not a pause between separate interactions. Time spent
+      // waiting for an already-requested frame still counts as rendering load.
+      if (!drawing && performance.now() - lastDrawEnd > 80) frameBudget.reset();
+      frame = requestAnimationFrame(draw);
+    }
   }
   function setControlLimits() {
     const radius = focusedRoom === null ? selected?.maxRadius : selected?.interior.rooms[focusedRoom]?.radius;
@@ -222,6 +244,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     }
     if (reset) savedViews.delete(nextMode);
     mode = nextMode;
+    modelDirty = true;
     selected = nextMode === 'section' ? model.modules.find(module => module.id === id) : null;
     focusedRoom = null; contextRoom = null; activeRoom = 0; hoveredRoom = null;
     canvas.dataset.focusedRoom = '';
@@ -280,7 +303,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   }
   canvas.addEventListener('pointerdown', event => {
     if (hoveredRoom !== null || hover !== null) {
-      hover = null; hoveredRoom = null; selected?.interior.setHoveredRoom(null); invalidate();
+      hover = null; hoveredRoom = null; selected?.interior.setHoveredRoom(null); modelDirty = true; invalidate();
     }
     canvas.style.cursor = event.button === 0 || event.pointerType === 'touch' ? 'grabbing' : 'grab';
     activePointers.add(event.pointerId);
@@ -307,9 +330,9 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     const nextRoom = mode === 'section' ? found : null;
     canvas.style.cursor = found !== null ? 'pointer' : 'grab';
     if (hoveredRoom !== nextRoom) { hoveredRoom = nextRoom; selected?.interior.setHoveredRoom(nextRoom); invalidate(); }
-    if (hover !== next) { hover = next; invalidate(); }
+    if (hover !== next) { hover = next; modelDirty = true; invalidate(); }
   });
-  canvas.addEventListener('pointerleave', () => { hover = null; hoveredRoom = null; selected?.interior.setHoveredRoom(null); invalidate(); });
+  canvas.addEventListener('pointerleave', () => { hover = null; hoveredRoom = null; selected?.interior.setHoveredRoom(null); modelDirty = true; invalidate(); });
   canvas.addEventListener('keydown', event => {
     if (animation) return;
     if (event.key === 'Enter' || event.key === ' ') {
@@ -339,9 +362,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     const targetAdjustment = controls.target.clone().sub(oldPose.target);
     const zoom = hasViewport ? offset.length() / oldPose.position.distanceTo(oldPose.target) : 1;
     width = bounds.width; height = bounds.height;
-    const budget = renderBudget(width, height, devicePixelRatio);
-    renderer.setPixelRatio(budget.pixelRatio); model.setCompact(budget.compact);
-    canvas.dataset.detail = budget.compact ? 'compact' : 'full';
+    frameBudget.reset(); applyBudget();
     renderer.setSize(width, height);
     if (hasViewport) for (const [viewMode, saved] of savedViews) {
       const viewDirection = saved.position.clone().sub(saved.target);
@@ -377,7 +398,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     controls.update(); invalidate();
   };
   const observer = new ResizeObserver(resize); observer.observe(container);
-  const visibility = () => { if (!document.hidden) invalidate(); };
+  const visibility = () => { frameBudget.reset(); if (!document.hidden) invalidate(); };
   const motionChange = () => {
     controls.enableDamping = !reducedMotion.matches;
     if (reducedMotion.matches && animation) { animation.start = performance.now(); animation.duration = 1; }
@@ -390,7 +411,8 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   resize();
   goTo('tower', null, { instant: true });
   return {
-    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), width, height }; },
+    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: frameBudget.quality, width, height }; },
+    refreshLabels() { invalidate(); },
     goTo,
     focusRoom,
     overview,

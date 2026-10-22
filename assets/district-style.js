@@ -1,5 +1,6 @@
 import * as T from './vendor/three.module.min.js';
 import { footprint } from './tower-geometry.js';
+import { palette } from './color-theme.js';
 
 /** Camera-relative atmospheric depth, confined to the decorative city. */
 export function applyDistrictDepth(material, strength = .68) {
@@ -7,23 +8,24 @@ export function applyDistrictDepth(material, strength = .68) {
   material.userData.districtDepth = reference;
   material.onBeforeCompile = shader => {
     shader.uniforms.districtReference = reference;
+    shader.uniforms.districtPaper = { value: new T.Color(palette.paper) };
     shader.vertexShader = `varying float vDistrictDepth;\n${shader.vertexShader}`.replace(
       '#include <project_vertex>', '#include <project_vertex>\nvDistrictDepth = -mvPosition.z;');
-    shader.fragmentShader = `uniform float districtReference;\nvarying float vDistrictDepth;\n${shader.fragmentShader}`.replace(
+    shader.fragmentShader = `uniform float districtReference;\nuniform vec3 districtPaper;\nvarying float vDistrictDepth;\n${shader.fragmentShader}`.replace(
       '#include <tonemapping_fragment>',
       `float districtFade = smoothstep(districtReference - 65.0, districtReference + 125.0, vDistrictDepth) * ${strength.toFixed(3)};
-       gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.0), districtFade);
+       gl_FragColor.rgb = mix(gl_FragColor.rgb, districtPaper, districtFade);
        #include <tonemapping_fragment>`);
   };
-  material.customProgramCacheKey = () => `district-depth-v1-${strength}`;
+  material.customProgramCacheKey = () => `district-depth-v2-${strength}`;
   return material;
 }
 
-/** Bake a restrained blue wash into faces; no shadow maps or extra lights. */
+/** Bake a restrained warm wash into faces; no shadow maps or extra lights. */
 export function shadeDistrictGeometry(geometry, color) {
   geometry.computeVertexNormals();
   const normals = geometry.attributes.normal;
-  const paper = new T.Color(color), shade = new T.Color('#b8cee6');
+  const paper = new T.Color(color), shade = new T.Color(palette.shadow);
   const sun = new T.Vector3(50, 120, 80).normalize();
   const normal = new T.Vector3(), ink = new T.Color(), colors = [];
   for (let i = 0; i < normals.count; i++) {
@@ -73,7 +75,7 @@ export function createDistrictShadows(buildings, features) {
   const geometry = new T.BufferGeometry();
   geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
   geometry.setAttribute('color', new T.Float32BufferAttribute(colors, 4));
-  const material = applyDistrictDepth(new T.MeshBasicMaterial({ color: '#6f94bf', vertexColors: true, transparent: true, depthWrite: false }));
+  const material = applyDistrictDepth(new T.MeshBasicMaterial({ color: palette.shadow, vertexColors: true, transparent: true, depthWrite: false }));
   const mesh = new T.Mesh(geometry, material); mesh.name = 'contact-washes'; mesh.renderOrder = -4; root.add(mesh);
   return {
     root,

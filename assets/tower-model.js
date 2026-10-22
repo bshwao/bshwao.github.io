@@ -7,6 +7,7 @@ import { createCapPlans } from './cap-plans.js';
 import { createDistrictBuildings } from './district-buildings.js';
 import { createDistrictDetails } from './district-details.js';
 import { createDistrictShadows } from './district-style.js';
+import { palette, sectionColors } from './color-theme.js';
 
 function capGeometry(height) {
   const points = footprint(height).map(([x, z]) => new T.Vector2(x, z));
@@ -24,9 +25,10 @@ export function createTowerModel() {
     const group = new T.Group(); root.add(group);
     const shell = new T.Group(); group.add(shell);
     const clip = new T.Plane(new T.Vector3(0, -1, 0), 200);
-    const surface = new T.MeshLambertMaterial({ color: '#f5f9fe', side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1, clippingPlanes: [clip] });
-    const line = new T.LineBasicMaterial({ color: '#426eaa', transparent: true, opacity: .7, clippingPlanes: [clip] });
-    const slabMaterial = new T.MeshLambertMaterial({ color: '#e4eef9', side: T.DoubleSide, clippingPlanes: [clip] });
+    const colors = sectionColors[section.id];
+    const surface = new T.MeshLambertMaterial({ color: '#ffffff', vertexColors: true, side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1, clippingPlanes: [clip] });
+    const line = new T.LineBasicMaterial({ color: palette.muted, transparent: true, opacity: .62, clippingPlanes: [clip] });
+    const slabMaterial = new T.MeshLambertMaterial({ color: colors.tint, side: T.DoubleSide, clippingPlanes: [clip] });
     let levels = [section.low, section.high];
     for (const y of setbacks) if (y > section.low && y < section.high) levels.push(y - .002, y);
     for (let y = Math.ceil(section.low / 3.4) * 3.4; y < section.high; y += 3.4) if (y > section.low) levels.push(y);
@@ -44,6 +46,17 @@ export function createTowerModel() {
     }
     const geometry = new T.BufferGeometry();
     geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
+    // Color existing facade vertices: glazing bays, ivory piers and occasional
+    // warm service panels. Solid topology and the single surface draw are retained.
+    const facadeColors = [], facade = new T.Color();
+    for (const y of levels) for (let i = 0; i < count; i++) {
+      const bay = i % 32, storey = Math.floor(y / 3.4);
+      const color = bay >= 8 && bay <= 23 ? palette.teal
+        : bay >= 27 && bay <= 29 && storey % 4 === 1 ? (index % 2 ? palette.coral : palette.mustard)
+        : palette.structure;
+      facadeColors.push(...facade.set(color).toArray());
+    }
+    geometry.setAttribute('color', new T.Float32BufferAttribute(facadeColors, 3));
     geometry.setIndex(indices); geometry.computeVertexNormals();
     const mesh = new T.Mesh(geometry, surface);
     mesh.userData.sectionId = section.id;
@@ -88,13 +101,13 @@ export function createTowerModel() {
       plates.setAttribute('normal', new T.Float32BufferAttribute(plateNormals, 3));
       shell.add(new T.Mesh(plates, slabMaterial));
     }
-    const baseMaterial = new T.MeshLambertMaterial({ color: '#edf4fc', side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1 });
+    const baseMaterial = new T.MeshLambertMaterial({ color: colors.tint, side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1 });
     const floorShape = new T.Shape(footprint(section.low + .005).map(([x, z]) => new T.Vector2(x, z)));
     const floorGeometry = new T.ExtrudeGeometry(floorShape, { depth: radius(0, section.low) * .065, bevelEnabled: false });
     floorGeometry.rotateX(Math.PI / 2);
     const base = new T.Mesh(floorGeometry, baseMaterial);
     base.position.y = .035;
-    base.add(new T.LineSegments(new T.EdgesGeometry(floorGeometry, 30), new T.LineBasicMaterial({ color: '#779bc4', transparent: true, opacity: .8 })));
+    base.add(new T.LineSegments(new T.EdgesGeometry(floorGeometry, 30), new T.LineBasicMaterial({ color: colors.ink, transparent: true, opacity: .8 })));
     group.add(base);
     const interior = createInterior(section, floorContent[section.id]);
     group.add(interior.group);
@@ -102,10 +115,10 @@ export function createTowerModel() {
     group.add(capPlans.group);
     const maxRadius = Math.max(...footprint(section.low).map(p => Math.hypot(...p)));
     group.position.y = section.low;
-    return { ...section, index, group, shell, clip, surface, line, lineGeometry, coarseLineGeometry, slabMaterial, interior, capPlans, maxRadius, base, mesh };
+    return { ...section, colors, index, group, shell, clip, surface, line, lineGeometry, coarseLineGeometry, slabMaterial, interior, capPlans, maxRadius, base, mesh };
   });
   const ground = new T.Group(); root.add(ground);
-  const groundLine = new T.LineBasicMaterial({ color: '#9fb9d6', transparent: true, opacity: .45 });
+  const groundLine = new T.LineBasicMaterial({ color: palette.draft, transparent: true, opacity: .45 });
   for (const r of [27, 29]) {
     const points = Array.from({ length: 121 }, (_, i) => new T.Vector3(Math.cos(i / 120 * Math.PI * 2) * r, -.12, Math.sin(i / 120 * Math.PI * 2) * r));
     ground.add(new T.Line(new T.BufferGeometry().setFromPoints(points), groundLine));

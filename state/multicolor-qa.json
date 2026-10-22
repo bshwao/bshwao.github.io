@@ -1,0 +1,142 @@
+{
+  "assessedOn": "2026-10-22",
+  "status": "COMPLETE_LOCAL_RELEASE_READY",
+  "published": false,
+  "checks": {
+    "sourceAndGeometry": {
+      "status": "PASS",
+      "tests": 40,
+      "command": "npm run check"
+    },
+    "integration": {
+      "status": "PASS",
+      "command": "npm test",
+      "modes": [
+        "desktop",
+        "portrait",
+        "reduced-motion",
+        "room-deep-link",
+        "no-WebGL"
+      ],
+      "additionalCoverage": [
+        "Interrupted transitions",
+        "Resize and learned quality retention",
+        "Hidden-tab suspension and return",
+        "Reduced motion",
+        "Quality recovery hysteresis",
+        "Context-loss cleanup"
+      ]
+    },
+    "localHTTP": {
+      "status": "PASS",
+      "paths": [
+        "/",
+        "/reading.html",
+        "/assets/theme.css",
+        "/assets/color-system.css",
+        "/assets/color-theme.js",
+        "/scripts/palette.html"
+      ]
+    },
+    "sharingArtwork": {
+      "status": "PASS",
+      "path": "assets/social-preview.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 267113,
+      "method": "Geometry vector projection and Pillow rasterization; inspected with image viewer. This is not a browser screenshot."
+    },
+    "whitespace": {
+      "status": "PASS",
+      "command": "git diff --check"
+    },
+    "simulatedColorContrast": {
+      "status": "PASS",
+      "scope": "Essential inks on paper/section tints under grayscale and three linear-RGB CVD transforms. Numeric checks pass; browser inspection of labels and selected-room cues also completed.",
+      "test": "scripts/theme.test.mjs"
+    },
+    "accessibility": {
+      "status": "PASS",
+      "viewports": [
+        "1280x720",
+        "390x844",
+        "650x390"
+      ],
+      "views": 39,
+      "automatedViolations": 0,
+      "evidence": "state/multicolor-accessibility-qa.json"
+    },
+    "realWebGL": {
+      "status": "PASS",
+      "evidence": "state/multicolor-browser-qa.json",
+      "scope": "Desktop, portrait, simulated DPR 3 and 4K DPR 2. All floors and one close-up per floor, draw/raster budgets, zero textures, idle rendering, stable allocation and disposal.",
+      "baselineComparison": "state/multicolor-browser-qa.json#baselineComparison"
+    },
+    "frames": {
+      "status": "PASS",
+      "evidence": "state/multicolor-frame-qa.json",
+      "normalFpsRange": [
+        162.5,
+        165
+      ],
+      "adaptiveTiers": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "realContextLossFallback": true,
+      "scope": "One Chromium/RTX 2060 run, near 165Hz ceiling; injected 28ms CPU delay verifies adaptation only. Edge performance remains unmeasured."
+    },
+    "visual": {
+      "status": "PASS",
+      "screenshots": "state/multicolor-views/",
+      "additionalLocalScreenshots": ".preview/",
+      "scope": "Assembled/exploded tower, all five floors at 1280x720, 390x844 and 650x390, representative room close-ups, reading/dialog/no-script/no-WebGL fallback, selection and focus. Grayscale, protanopia, deuteranopia and tritanopia simulations inspected."
+    }
+  },
+  "remaining": [],
+  "browserBlocker": {
+    "status": "RESOLVED",
+    "resolution": "Browser control recovered and current browser checks completed in the original chat. A subsequent fresh verification chat reviewed the saved evidence and found no release blocker."
+  },
+  "scopeNote": "All five redesign phases are complete and verified locally. Publication is conditional on a deployment request. Current browser evidence is separate from the historic blue-site reports.",
+  "reviewHarness": "scripts/color-review.html",
+  "checkedAt": "2026-10-22T17:09:51.058Z",
+  "phases": [
+    {
+      "phase": 1,
+      "status": "COMPLETE"
+    },
+    {
+      "phase": 2,
+      "status": "COMPLETE"
+    },
+    {
+      "phase": 3,
+      "status": "COMPLETE"
+    },
+    {
+      "phase": 4,
+      "status": "COMPLETE"
+    },
+    {
+      "phase": 5,
+      "status": "COMPLETE",
+      "closure": "Independent review and shader-program comparison documentation complete; no remaining Phase 5 gates."
+    }
+  ],
+  "reviewFixes": [
+    "Moved the phone material legend clear of Reset",
+    "Separated material colors from the accessible section theme text",
+    "Recreated the review iframe when toggling no-script permissions to ensure a fresh sandboxed document"
+  ],
+  "verificationReview": {
+    "status": "PASS",
+    "chatTitle": "Multicolor redesign verification",
+    "chatId": "01a1649b-b809-72c1-aa53-f492cc2e592f",
+    "findings": "No release-blocking gaps. The shader-program delta was the only documentation omission; it is now recorded in QA.md and the WebGL evidence.",
+    "documentationFollowup": "CLOSED",
+    "closedOn": "2026-10-22"
+  }
+}

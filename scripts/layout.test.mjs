@@ -3,7 +3,44 @@ import assert from 'node:assert/strict';
 import { viewportLayout, roomMarkerLayout, outdoorViewLayout, towerLabelLayout } from '../assets/spatial-layout.js';
 import { outdoorCameraPose, outdoorFramingPoints } from '../assets/camera-framing.js';
 import * as T from '../assets/vendor/three.module.min.js';
-import { renderBudget } from '../assets/render-budget.js';
+import { renderBudget, createFrameBudget } from '../assets/render-budget.js';
+
+test('slow active motion reduces work while sustained headroom restores quality gradually', () => {
+  const budget = createFrameBudget();
+  let time = 0;
+  const run = (interval, frames) => { for (let i = 0; i < frames; i++) budget.sample(time += interval); };
+  run(16.7, 120); assert.equal(budget.quality, 0);
+  run(33.3, 40); assert.equal(budget.quality, 1);
+  const full = renderBudget(1920, 1080, 2), light = renderBudget(1920, 1080, 2, budget.quality);
+  assert.equal(light.compact, true);
+  assert.ok(light.pixelRatio < full.pixelRatio);
+  run(33.3, 100); assert.equal(budget.quality, 3, 'Degradation is bounded');
+  budget.reset(); run(16.7, 300); assert.equal(budget.quality, 3, 'A short burst cannot restore expensive detail');
+  run(16.7, 80); assert.equal(budget.quality, 2, 'Restores one tier after six healthy seconds');
+  run(16.7, 750); assert.equal(budget.quality, 0);
+});
+
+test('idle gaps, background pauses, and isolated spikes do not lower quality', () => {
+  const budget = createFrameBudget(); let time = 0;
+  for (let i = 0; i < 10; i++) {
+    budget.sample(time += 5000);
+    for (let j = 0; j < 50; j++) budget.sample(time += j === 20 ? 90 : 16.7);
+    budget.reset();
+  }
+  assert.equal(budget.quality, 0);
+  const normal = renderBudget(3840, 2160, 2);
+  for (let quality = 0; quality <= 3; quality++) {
+    const current = renderBudget(3840, 2160, 2, quality);
+    assert.ok(current.pixelRatio > 0 && current.pixelRatio <= normal.pixelRatio);
+    assert.ok(3840 * 2160 * current.pixelRatio ** 2 <= 2_400_001);
+  }
+});
+
+test('very slow consecutive frames still trigger adaptation instead of being treated as idle', () => {
+  const budget = createFrameBudget();
+  for (let i = 0; i < 6; i++) budget.sample(i * 300);
+  assert.equal(budget.quality, 1);
+});
 
 test('phone and large-screen raster budgets stay bounded without changing navigation regions', () => {
   for (const [width, height, ratio] of [[390, 844, 3], [844, 390, 3], [1440, 900, 2], [3840, 2160, 2]]) {

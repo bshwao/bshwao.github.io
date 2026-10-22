@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process';
 
 const root = resolve(import.meta.dirname, '..'), origin = 'https://bshwao.github.io/';
 const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
-const files = ['index.html', 'reading.html', 'assets/scene-3d.js', 'assets/tower-model.js', 'assets/render-budget.js', 'assets/district-style.js', 'assets/social-preview.png', 'assets/eric-hsu-resume.pdf', 'sitemap.xml', 'robots.txt', 'QA.md', 'ROADMAP.md', 'MAINTENANCE.md'];
+const files = ['index.html', 'reading.html', 'assets/scene-3d.js', 'assets/tower-model.js', 'assets/render-budget.js', 'assets/color-theme.js', 'assets/theme.css', 'assets/color-system.css', 'assets/interiors.js', 'assets/cap-plans.js', 'assets/spatial-app.js', 'assets/spatial.css', 'assets/floor-view.js', 'assets/floor-view.css', 'assets/reading.css', 'assets/styles.css', 'assets/project-story.css', 'assets/floor-plans.js', 'assets/district-ground.js', 'assets/district-buildings.js', 'assets/district-details.js', 'assets/district-style.js', 'assets/favicon.svg', 'assets/social-preview.png', 'assets/eric-hsu-resume.pdf', 'sitemap.xml', 'robots.txt', 'QA.md', 'ROADMAP.md', 'MAINTENANCE.md'];
 const hash = (data, binary) => createHash('sha256').update(binary ? data : data.toString('utf8').replaceAll('\r\n', '\n')).digest('hex');
 const results = await Promise.allSettled(files.map(async path => {
   const response = await fetch(`${origin}${path === 'index.html' ? '' : path}?release=${commit}`, { signal: AbortSignal.timeout(30_000), cache: 'no-store' });
