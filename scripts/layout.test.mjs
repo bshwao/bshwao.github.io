@@ -1,6 +1,45 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { viewportLayout, roomMarkerLayout } from '../assets/spatial-layout.js';
+import { viewportLayout, roomMarkerLayout, outdoorViewLayout, towerLabelLayout } from '../assets/spatial-layout.js';
+import { outdoorCameraPose, outdoorFramingPoints } from '../assets/camera-framing.js';
+import * as T from '../assets/vendor/three.module.min.js';
+
+test('outdoor cameras fit the district or tower inside the space reserved for controls', () => {
+  for (const [width, height] of [[1440, 900], [1280, 720], [844, 390], [650, 390], [520, 360], [390, 844], [390, 600], [320, 568]]) {
+    for (const mode of ['tower', 'explore']) {
+      const { position, target, layout } = outdoorCameraPose(mode, width, height);
+      const camera = new T.PerspectiveCamera(34, width / height, .02, 2000);
+      camera.position.copy(position); camera.lookAt(target);
+      camera.setViewOffset(width, height, width / 2 - layout.centerX, height / 2 - layout.centerY, width, height);
+      camera.updateMatrixWorld();
+      for (const point of outdoorFramingPoints(mode, width)) {
+        const p = point.clone().project(camera);
+        const x = (p.x + 1) * width / 2, y = (1 - p.y) * height / 2;
+        assert.ok(x >= layout.rect.left - 1 && x <= layout.rect.right + 1 && y >= layout.rect.top - 1 && y <= layout.rect.bottom + 1,
+          `${mode} at ${width}x${height}: (${x.toFixed(1)},${y.toFixed(1)}) stays within the model region`);
+      }
+      assert.ok(position.toArray().every(Number.isFinite));
+    }
+  }
+});
+
+test('section labels stay spaced and accessible when their projected anchors collide or leave the screen', () => {
+  for (const [width, height] of [[1280, 800], [844, 390], [650, 390], [520, 360], [390, 844], [320, 568]]) {
+    const points = Array.from({ length: 5 }, (_, index) => ({ id: String(index), side: index % 2 ? -1 : 1, x: index === 0 ? -300 : width / 2, y: 200, visible: index !== 4 }));
+    const result = towerLabelLayout(points, width, height);
+    assert.equal(result.points.filter(point => point.shown).length, 5, 'Offscreen floors retain a navigation control');
+    assert.equal(result.layout, outdoorViewLayout(width, height, 'explore').labelLayout);
+    if (result.layout === 'dock') continue;
+    for (const item of result.points) {
+      const left = item.side < 0 ? item.x - item.labelWidth : item.x;
+      assert.ok(left >= 16 && left + item.labelWidth <= width - 16);
+      assert.ok(item.y - item.labelHeight / 2 >= 92 && item.y + item.labelHeight / 2 < height - 100);
+      for (const other of result.points) if (item !== other && item.side === other.side) {
+        assert.ok(Math.abs(item.y - other.y) >= (item.labelHeight + other.labelHeight) / 2 + 7);
+      }
+    }
+  }
+});
 
 test('camera regions reserve headers and reading panels across phone orientations', () => {
   for (const [width, height] of [[1280, 800], [844, 390], [650, 390], [390, 844], [390, 600], [320, 568]]) {

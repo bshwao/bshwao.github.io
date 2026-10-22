@@ -10,6 +10,51 @@ export function viewportLayout(width, height) {
     centerX: (rect.left + rect.right) / 2, centerY: (rect.top + rect.bottom) / 2 };
 }
 
+/** Reserve real controls before fitting the outdoor model or its section labels. */
+export function outdoorViewLayout(width, height, mode = 'tower') {
+  const docked = width <= 480;
+  const compact = !docked && (height <= 520 || width <= 760);
+  const labelLayout = docked ? 'dock' : compact ? 'compact' : 'projected';
+  const top = height <= 520 ? 88 : 80;
+  const bottom = height - (mode === 'explore' && docked ? 242 : width <= 760 ? 124 : 100);
+  const inset = mode === 'explore' && !docked ? Math.min(width * .19, compact ? 148 : 240) : 24;
+  const rect = { left: inset, right: width - inset, top, bottom: Math.max(top + 40, bottom) };
+  return { width, height, labelLayout, rect, centerX: width / 2, centerY: (rect.top + rect.bottom) / 2 };
+}
+
+/** All five section controls remain available, including when zoomed off screen. */
+export function towerLabelLayout(points, width, height) {
+  const { labelLayout } = outdoorViewLayout(width, height, 'explore');
+  if (labelLayout === 'dock') return { layout: labelLayout, points: points.map(point => ({ ...point, shown: true, leader: false })) };
+  const top = height <= 520 ? 100 : 104, bottom = height - (width <= 760 ? 118 : 106);
+  const result = points.map((point, index) => {
+    const labelWidth = point.labelWidth || (labelLayout === 'compact' ? 124 : width <= 1000 ? 160 : 210);
+    const labelHeight = point.labelHeight || (labelLayout === 'compact' ? 44 : 72);
+    const sourceVisible = point.visible && point.x >= 0 && point.x <= width && point.y >= top && point.y <= bottom;
+    const desiredX = point.x + point.side * 26;
+    const minX = point.side < 0 ? labelWidth + 18 : 18;
+    const maxX = width - (point.side > 0 ? labelWidth + 18 : 18);
+    return { ...point, shown: true, sourceX: point.x, sourceY: point.y, labelWidth, labelHeight, sourceVisible,
+      x: Math.max(minX, Math.min(maxX, desiredX)),
+      y: sourceVisible ? point.y : top + (index + .5) / points.length * (bottom - top) };
+  });
+  for (const side of [-1, 1]) {
+    const column = result.filter(point => point.side === side).sort((a, b) => a.y - b.y);
+    for (let i = 0; i < column.length; i++) {
+      const item = column[i], previous = column[i - 1];
+      item.y = Math.max(top + item.labelHeight / 2, item.y,
+        previous ? previous.y + (previous.labelHeight + item.labelHeight) / 2 + 8 : 0);
+    }
+    for (let i = column.length - 1; i >= 0; i--) {
+      const item = column[i], next = column[i + 1];
+      item.y = Math.min(item.y, bottom - item.labelHeight / 2,
+        next ? next.y - (next.labelHeight + item.labelHeight) / 2 - 8 : Infinity);
+    }
+  }
+  for (const item of result) item.leader = item.sourceVisible && Math.hypot(item.x - item.sourceX, item.y - item.sourceY) <= 105;
+  return { layout: labelLayout, points: result };
+}
+
 export function roomMarkerLayout(points, layout, activeIndex, hoveredIndex = null) {
   const { rect } = layout;
   const radius = 22;

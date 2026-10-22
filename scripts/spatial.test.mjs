@@ -161,6 +161,27 @@ assert.equal(lastScene.getObjectByName('district-character').visible, true, 'The
 assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Assembled tower hides the cap plans');
 assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the tower');
 assert.equal(w.document.title, initialTitle, 'The opening tower restores the page title');
+// At street level a solid foreground building must block the tower behind it.
+const outdoorCanvas = w.document.querySelector('canvas');
+const cameraKey = key => outdoorCanvas.dispatchEvent(new w.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+for (let i = 0; i < 6; i++) { cameraKey('ArrowDown'); await tick(16); }
+const towerMeshes = lastScene.children.find(node => node.isGroup).children.slice(0, 5).flatMap(module => module.children[0].children.filter(node => node.isMesh));
+const sceneryMeshes = ['district-buildings', 'district-character'].flatMap(name => lastScene.getObjectByName(name).children.filter(node => node.isMesh));
+let blockedPoint;
+for (let i = 0; i < 49 && !blockedPoint; i++) {
+  for (const height of [2, 5, 9]) {
+    const point = new THREE.Vector3(0, height, 0);
+    const ray = new THREE.Raycaster(lastCamera.position, point.clone().sub(lastCamera.position).normalize());
+    const towerHit = ray.intersectObjects(towerMeshes)[0], obstacle = ray.intersectObjects(sceneryMeshes)[0];
+    if (towerHit && obstacle && obstacle.distance < towerHit.distance - .01) { blockedPoint = point.project(lastCamera); break; }
+  }
+  if (!blockedPoint) { cameraKey('ArrowRight'); await tick(16); }
+}
+assert.ok(blockedPoint, 'The street-level orbit includes an occluded tower surface');
+const blockedX = (blockedPoint.x + 1) * viewportWidth / 2, blockedY = (1 - blockedPoint.y) * viewportHeight / 2;
+sendMouse('pointerdown', blockedX, blockedY); sendMouse('pointerup', blockedX, blockedY);
+assert.equal(main.dataset.mode, 'tower', 'Solid scenery cannot select the tower through its walls');
+click('#reset-spatial'); await settleCamera();
 const towerPoint = new THREE.Vector3(0, 53, 0).project(lastCamera);
 const towerX = (towerPoint.x + 1) * viewportWidth / 2, towerY = (1 - towerPoint.y) * viewportHeight / 2;
 sendMouse('pointerdown', towerX, towerY); sendMouse('pointermove', towerX + 30, towerY); sendMouse('pointermove', towerX, towerY); sendMouse('pointerup', towerX, towerY);
@@ -168,6 +189,8 @@ assert.equal(main.dataset.mode, 'tower', 'Dragging away and back does not count 
 sendMouse('pointerdown', towerX, towerY, 0, 'touch', 7); sendMouse('pointerdown', towerX + 40, towerY, 0, 'touch', 8);
 sendMouse('pointerup', towerX, towerY, 0, 'touch', 7); sendMouse('pointerup', towerX + 40, towerY, 0, 'touch', 8);
 assert.equal(main.dataset.mode, 'tower', 'A two-finger gesture never counts as a section selection');
+click('#reset-spatial'); await settleCamera();
+const openingPosition = lastCamera.position.clone();
 sendMouse('pointerdown', towerX, towerY); sendMouse('pointerup', towerX, towerY);
 w.document.querySelector('canvas').dispatchEvent(new w.MouseEvent('click', { bubbles: true, clientX: towerX, clientY: towerY }));
 assert.equal(w.location.hash, '#explore', 'The browser click following a canvas tap cannot override the tower selection');
@@ -201,6 +224,16 @@ if (mobile) {
   assert.equal(main.dataset.mode, 'explore');
 }
 
+await settleCamera();
+cameraKey('-'); await settleCamera();
+const savedOutdoorPosition = lastCamera.position.clone(), savedOutdoorRotation = lastCamera.quaternion.clone();
+await resizeTo(320, 568); await settleCamera();
+assert.equal(w.document.querySelector('#tower-labels').dataset.layout, 'dock', 'Portrait exposes every section in a fixed dock');
+await resizeTo(650, 390); await settleCamera();
+assert.equal(w.document.querySelector('#tower-labels').dataset.layout, 'compact', 'Short landscape screens use compact section labels');
+await resizeTo(...originalViewport); await settleCamera();
+assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Outdoor resize round trips preserve orbit and relative zoom');
+
 click('[data-section="about"]'); await tick(600);
 assert.equal(main.dataset.transition, reduced ? 'idle' : 'moving');
 if (!reduced) {
@@ -210,6 +243,8 @@ if (!reduced) {
   assert.ok(visibleHeight > 30, 'Entry approaches the section before opening its facade');
   assert.equal(Number(main.style.getPropertyValue('--interior-progress')), 0, 'The reading panel follows the architectural approach');
 }
+assert.equal(lastScene.getObjectByName('district-buildings').visible, false, 'City buildings clear before the facade opens');
+assert.equal(lastScene.getObjectByName('district-character').visible, false, 'City furnishings clear before the facade opens');
 await tick(1400);
 assert.equal(main.dataset.mode, 'section'); assert.equal(main.dataset.transition, 'idle');
 assert.equal(canvas.dataset.section, 'about');
@@ -314,6 +349,14 @@ click('#floor-overview'); await tick(800);
 await settleCamera();
 const idleRenders = renders; await tick(500);
 assert.equal(renders, idleRenders, 'An idle scene stops rendering');
+
+click('#back-to-structure'); await settleCamera();
+assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Leaving an interior restores the expanded view after viewport changes');
+assert.ok(lastCamera.quaternion.angleTo(savedOutdoorRotation) < .001, 'Leaving an interior restores the expanded viewing angle');
+w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await settleCamera();
+assert.ok(lastCamera.position.distanceTo(openingPosition) < .02, 'Collapsing restores the independent assembled city camera');
+click('#unfold-structure'); await settleCamera();
+assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Unfolding restores the previous expanded orbit and zoom');
 
 // Move between all interior models and check the document/source links.
 for (const id of ['projects', 'experience', 'resume', 'contact']) {

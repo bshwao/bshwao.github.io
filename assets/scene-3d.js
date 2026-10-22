@@ -2,6 +2,7 @@ import * as T from './vendor/three.module.min.js';
 import { OrbitControls } from './vendor/OrbitControls.js';
 import { createTowerModel } from './tower-model.js';
 import { viewportLayout } from './spatial-layout.js';
+import { outdoorCameraPose } from './camera-framing.js';
 
 const ease = t => t * t * t * (t * (t * 6 - 15) + 10);
 const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - start), 0, 1));
@@ -42,8 +43,11 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   let width = 1, height = 1, mode = 'tower', selected = null;
   let focusedRoom = null, contextRoom = null, activeRoom = 0, hoveredRoom = null, hasViewport = false;
   let expansion = 0, reveal = 0, panel = 0, focusAmount = 0;
+  let districtVisibility = 1;
+  const screenCenter = new T.Vector2(.5, .5);
   let animation = null, frame = 0, dirty = true, disposed = false;
-  let pointerStart = null, hover = null, savedExplore = null;
+  let pointerStart = null, hover = null;
+  const savedViews = new Map();
   const activePointers = new Set();
   const cuts = model.modules.map(() => 0);
   const projectVector = new T.Vector3();
@@ -53,14 +57,10 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     projectVector.copy(world).project(camera);
     return { x: (projectVector.x + 1) * width / 2, y: (1 - projectVector.y) * height / 2, visible: projectVector.z > -1 && projectVector.z < 1 };
   };
-  function framing(nextMode, frameWidth = width, frameHeight = height) {
-    const expanded = nextMode !== 'tower';
-    const target = new T.Vector3(0, expanded ? 74 : 56, 0);
-    const halfHeight = expanded ? 83 : 61;
-    const fov = Math.tan(T.MathUtils.degToRad(camera.fov / 2));
-    const distance = Math.max(halfHeight / fov * 1.12, (expanded ? 39 : 27) / (fov * frameWidth / frameHeight) * 1.15);
-    const direction = new T.Vector3(.57, expanded ? .5 : .32, 1).normalize();
-    return { target, position: target.clone().addScaledVector(direction, distance) };
+  function framing(nextMode, frameWidth = width, frameHeight = height, direction = null) {
+    const pose = outdoorCameraPose(nextMode, frameWidth, frameHeight, direction);
+    return { target: pose.target, position: pose.position,
+      screenCenter: new T.Vector2(pose.layout.centerX / frameWidth, pose.layout.centerY / frameHeight) };
   }
   function interiorFraming(module, roomIndex = null, position = module.group.position) {
     const room = roomIndex === null ? null : module.interior.rooms[roomIndex];
@@ -87,14 +87,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
         distance = Math.max(distance, point.dot(direction) + Math.max(Math.abs(point.dot(right)) / horizontal, Math.abs(point.dot(up)) / vertical));
       }
     }
-    return { target, position: target.clone().addScaledVector(direction, distance) };
+    return { target, position: target.clone().addScaledVector(direction, distance),
+      screenCenter: new T.Vector2(layout.centerX / width, layout.centerY / height) };
   }
   function updateProjection() {
     camera.aspect = width / height;
-    if (panel > .001) {
-      const layout = viewportLayout(width, height);
-      camera.setViewOffset(width, height, (width / 2 - layout.centerX) * panel, (height / 2 - layout.centerY) * panel, width, height);
-    } else camera.clearViewOffset();
+    camera.setViewOffset(width, height, (.5 - screenCenter.x) * width, (.5 - screenCenter.y) * height, width, height);
     camera.updateProjectionMatrix();
   }
   function updateModel() {
@@ -115,11 +113,11 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       module.base.children[0].material.opacity = .8 * context * (module === selected ? 1 - focusAmount * .72 : 1);
       module.interior.setFocus?.(module === selected ? contextRoom : null, focusAmount);
     });
-    model.ground.visible = reveal < .1;
-    model.groundLine.opacity = .45 * (1 - expansion * .7);
-    model.district.setPresentation(expansion, reveal);
-    model.districtBuildings.setPresentation(expansion, reveal);
-    model.districtDetails.setPresentation(expansion, reveal);
+    model.ground.visible = districtVisibility > .005;
+    model.groundLine.opacity = .45 * (1 - expansion * .7) * districtVisibility;
+    model.district.setPresentation(expansion, 1 - districtVisibility);
+    model.districtBuildings.setPresentation(expansion, 1 - districtVisibility);
+    model.districtDetails.setPresentation(expansion, 1 - districtVisibility);
     model.root.updateMatrixWorld(true);
   }
   function labels() {
@@ -130,7 +128,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     return model.modules.map((module, index) => {
       const side = index % 2 ? -1 : 1;
       const point = module.group.position.clone();
-      point.addScaledVector(new T.Vector3().setFromMatrixColumn(camera.matrixWorld, 0), side * (module.maxRadius * .78 + 4));
+      point.addScaledVector(new T.Vector3().setFromMatrixColumn(camera.matrixWorld, 0), side * (module.maxRadius + .8));
       point.y += (module.high - module.low) * (index === 0 ? .36 : .5);
       return { id: module.id, side, ...projection(point) };
     });
@@ -145,11 +143,14 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       animation.progress = t;
       const entering = animation.kind === 'scene' && mode === 'section';
       const leaving = animation.kind === 'scene' && animation.from.reveal > animation.to.reveal;
-      const cameraProgress = entering ? phase(t, .04, 1) : e;
+      const cameraProgress = entering ? phase(t, .1, 1) : e;
       const structureProgress = entering ? phase(t, 0, .76) : e;
       const cutProgress = entering ? phase(t, .28, .9) : leaving ? phase(t, 0, .65) : e;
       expansion = lerp(animation.from.expansion, animation.to.expansion, e);
       reveal = lerp(animation.from.reveal, animation.to.reveal, e);
+      districtVisibility = lerp(animation.from.districtVisibility, animation.to.districtVisibility,
+        entering ? phase(t, 0, .24) : leaving ? phase(t, .62, 1) : e);
+      screenCenter.lerpVectors(animation.from.screenCenter, animation.to.screenCenter, entering ? phase(t, .22, .9) : e);
       panel = lerp(animation.from.panel, animation.to.panel, entering ? phase(t, .48, .96) : leaving ? phase(t, 0, .55) : e);
       focusAmount = lerp(animation.from.focusAmount, animation.to.focusAmount, e);
       camera.position.lerpVectors(animation.from.position, animation.to.position, cameraProgress);
@@ -185,7 +186,9 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   function setControlLimits() {
     const radius = focusedRoom === null ? selected?.maxRadius : selected?.interior.rooms[focusedRoom]?.radius;
     controls.minDistance = selected ? radius * 1.4 : 85;
-    controls.maxDistance = selected ? selected.maxRadius * 16 : 650;
+    const pose = selected ? null : framing(mode);
+    const outdoor = pose ? pose.position.distanceTo(pose.target) : 0;
+    controls.maxDistance = selected ? selected.maxRadius * 16 : Math.max(650, outdoor * 2.2);
   }
   function move(to, duration, done, kind = 'scene') {
     // Drain orbital inertia before taking the new animation's starting pose.
@@ -194,8 +197,8 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     controls.maxDistance = Infinity;
     animation = {
       start: performance.now(), duration: reducedMotion.matches ? 1 : Math.max(1, duration), kind, progress: 0,
-      from: { position: camera.position.clone(), target: controls.target.clone(), expansion, reveal, panel, focusAmount, modules: model.modules.map(module => module.group.position.clone()), cuts: [...cuts] },
-      to: { focusAmount: 0, ...to, position: to.position.clone(), target: to.target.clone() }, done,
+      from: { position: camera.position.clone(), target: controls.target.clone(), screenCenter: screenCenter.clone(), districtVisibility, expansion, reveal, panel, focusAmount, modules: model.modules.map(module => module.group.position.clone()), cuts: [...cuts] },
+      to: { focusAmount: 0, districtVisibility, ...to, position: to.position.clone(), target: to.target.clone(), screenCenter: (to.screenCenter || screenCenter).clone() }, done,
       lift: new T.Vector3(0, kind === 'scene' && selected ? Math.min(18, camera.position.distanceTo(to.position) * .09) : kind === 'room' ? Math.min(selected.interior.unit * 2, camera.position.distanceTo(to.position) * .12) : 0, 0),
     };
     controls.enabled = false;
@@ -203,8 +206,15 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     canvas.style.cursor = 'grab';
     invalidate();
   }
-  function goTo(nextMode, id, { instant = false, onComplete } = {}) {
+  function goTo(nextMode, id, { instant = false, onComplete, reset = false } = {}) {
     const previousMode = mode;
+    const direction = camera.position.clone().sub(controls.target);
+    if (previousMode !== 'section' && previousMode !== nextMode && !reset) {
+      // Interrupted outdoor flights remember their destination, not a half-pose.
+      const pose = animation?.kind === 'scene' ? animation.to : { position: camera.position, target: controls.target, screenCenter };
+      savedViews.set(previousMode, { position: pose.position.clone(), target: pose.target.clone(), screenCenter: pose.screenCenter.clone() });
+    }
+    if (reset) savedViews.delete(nextMode);
     mode = nextMode;
     selected = nextMode === 'section' ? model.modules.find(module => module.id === id) : null;
     focusedRoom = null; contextRoom = null; activeRoom = 0; hoveredRoom = null;
@@ -212,7 +222,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     selected?.interior.setActiveRoom(0);
     selected?.interior.setHoveredRoom(null);
     if (nextMode === 'section' && !selected) throw new Error('Unknown section');
-    if (nextMode === 'section' && previousMode !== 'section') savedExplore = previousMode === 'explore' ? { position: camera.position.clone(), target: controls.target.clone() } : framing('explore');
+    if (nextMode === 'section' && !savedViews.has('explore')) savedViews.set('explore', framing('explore', width, height, direction));
     // Resolve expanded transforms before calculating the destination floor's position.
     const desiredExpansion = nextMode === 'tower' ? 0 : 1;
     const modulePositions = model.modules.map((module, index) => new T.Vector3(
@@ -220,9 +230,9 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       module.low + (4 - index) * 10 * desiredExpansion + (selected && module !== selected ? (selected.index - index) * 105 : 0), 0));
     let pose;
     if (selected) pose = interiorFraming(selected, null, modulePositions[selected.index]);
-    else if (nextMode === 'explore' && previousMode === 'section' && savedExplore) pose = savedExplore;
-    else pose = framing(nextMode);
-    const to = { ...pose, expansion: desiredExpansion, reveal: selected ? 1 : 0, panel: selected ? 1 : 0, modules: modulePositions, cuts: model.modules.map(module => module === selected ? 1 : 0) };
+    else if (!reset && previousMode !== nextMode && savedViews.has(nextMode)) pose = savedViews.get(nextMode);
+    else pose = framing(nextMode, width, height, reset ? null : direction);
+    const to = { ...pose, expansion: desiredExpansion, districtVisibility: selected ? 0 : 1, reveal: selected ? 1 : 0, panel: selected ? 1 : 0, modules: modulePositions, cuts: model.modules.map(module => module === selected ? 1 : 0) };
     move(to, instant ? 1 : nextMode === 'section' ? 1850 : previousMode === 'section' ? 1550 : 1300, onComplete);
     canvas.dataset.mode = nextMode;
     canvas.dataset.section = selected?.id || '';
@@ -253,7 +263,14 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     if (mode === 'section' && selected) {
       return raycaster.intersectObjects(selected.interior.pickables, false)[0]?.object.userData.roomIndex ?? null;
     }
-    return raycaster.intersectObjects(model.modules.flatMap(module => module.shell.children).filter(item => item.isMesh), false)[0]?.object.userData.sectionId ?? null;
+    const found = raycaster.intersectObjects(model.modules.flatMap(module => module.shell.children).filter(item => item.isMesh), false)[0];
+    if (!found) return null;
+    if (mode === 'tower' && districtVisibility > .5) {
+      const scenery = [...model.districtBuildings.root.children, ...model.districtDetails.root.children].filter(item => item.isMesh);
+      const obstacle = raycaster.intersectObjects(scenery, false)[0];
+      if (obstacle && obstacle.distance < found.distance - .01) return null;
+    }
+    return found.object.userData.sectionId ?? null;
   }
   canvas.addEventListener('pointerdown', event => {
     if (hoveredRoom !== null || hover !== null) {
@@ -312,32 +329,43 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     if (bounds.width <= 0 || bounds.height <= 0 || (hasViewport && width === bounds.width && height === bounds.height)) return;
     const oldWidth = width, oldHeight = height;
     const offset = camera.position.clone().sub(controls.target);
-    const oldPose = selected ? interiorFraming(selected, focusedRoom) : framing(mode);
+    const oldPose = selected ? interiorFraming(selected, focusedRoom) : framing(mode, width, height, offset);
+    const targetAdjustment = controls.target.clone().sub(oldPose.target);
     const zoom = hasViewport ? offset.length() / oldPose.position.distanceTo(oldPose.target) : 1;
     width = bounds.width; height = bounds.height;
     renderer.setPixelRatio(Math.min(devicePixelRatio, width <= 760 ? 1.5 : 1.75));
     renderer.setSize(width, height);
-    if (savedExplore && hasViewport) {
-      const oldFrame = framing('explore', oldWidth, oldHeight), newFrame = framing('explore');
+    if (hasViewport) for (const [viewMode, saved] of savedViews) {
+      const viewDirection = saved.position.clone().sub(saved.target);
+      const oldFrame = framing(viewMode, oldWidth, oldHeight, viewDirection), newFrame = framing(viewMode, width, height, viewDirection);
       const scale = newFrame.position.distanceTo(newFrame.target) / oldFrame.position.distanceTo(oldFrame.target);
-      savedExplore.position.sub(savedExplore.target).multiplyScalar(scale).add(savedExplore.target);
+      const adjustment = saved.target.clone().sub(oldFrame.target);
+      saved.target.copy(newFrame.target).add(adjustment);
+      saved.position.copy(saved.target).addScaledVector(viewDirection, scale);
+      saved.screenCenter.copy(newFrame.screenCenter);
     }
     if (!animation) {
-      const pose = selected ? interiorFraming(selected, focusedRoom) : framing(mode);
-      camera.position.copy(hasViewport ? pose.target.clone().addScaledVector(offset.normalize(), pose.position.distanceTo(pose.target) * zoom) : pose.position);
+      const pose = selected ? interiorFraming(selected, focusedRoom) : framing(mode, width, height, hasViewport ? offset : null);
+      const distance = pose.position.distanceTo(pose.target) * zoom;
+      if (hasViewport && !selected) pose.target.add(targetAdjustment);
+      camera.position.copy(hasViewport ? pose.target.clone().addScaledVector(offset.normalize(), distance) : pose.position);
       controls.target.copy(pose.target);
+      screenCenter.copy(pose.screenCenter);
     } else {
       let pose;
       if (selected) pose = interiorFraming(selected, focusedRoom, animation.to.modules[selected.index]);
       else {
-        const oldFrame = framing(mode, oldWidth, oldHeight), newFrame = framing(mode);
+        const viewDirection = animation.to.position.clone().sub(animation.to.target);
+        const oldFrame = framing(mode, oldWidth, oldHeight, viewDirection), newFrame = framing(mode, width, height, viewDirection);
         const scale = newFrame.position.distanceTo(newFrame.target) / oldFrame.position.distanceTo(oldFrame.target);
-        pose = { target: animation.to.target.clone(), position: animation.to.position.clone().sub(animation.to.target).multiplyScalar(scale).add(animation.to.target) };
+        const target = newFrame.target.clone().add(animation.to.target.clone().sub(oldFrame.target));
+        pose = { target, position: viewDirection.multiplyScalar(scale).add(target), screenCenter: newFrame.screenCenter };
       }
       const remaining = animation.duration - (performance.now() - animation.start);
       move({ ...animation.to, ...pose }, remaining, animation.done, animation.kind);
     }
     hasViewport = true;
+    if (!animation) setControlLimits();
     controls.update(); invalidate();
   };
   const observer = new ResizeObserver(resize); observer.observe(container);
@@ -362,7 +390,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       if (hoveredRoom === next) return;
       hoveredRoom = next; selected?.interior.setHoveredRoom(next); invalidate();
     },
-    reset() { if (selected) overview(); else if (!animation) goTo(mode, selected?.id); },
+    reset() { if (selected) overview(); else if (!animation) goTo(mode, selected?.id, { reset: true }); },
     focus() { canvas.focus({ preventScroll: true }); },
     dispose() {
       disposed = true; cancelAnimationFrame(frame); observer.disconnect();

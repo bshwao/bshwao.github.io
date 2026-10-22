@@ -1,6 +1,6 @@
 import { sections } from './tower-geometry.js';
 import { floorContent } from './floor-content.js';
-import { roomMarkerLayout } from './spatial-layout.js';
+import { roomMarkerLayout, towerLabelLayout, outdoorViewLayout } from './spatial-layout.js';
 import { parseRoute, routeHash } from './routes.js';
 import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus } from './project-story.js';
 import { createSectionReadingView } from './floor-view.js';
@@ -155,10 +155,23 @@ function onFrame(state) {
   const viewStatus = state.focusedRoom === null ? 'FLOOR OVERVIEW' : `ROOM ${String(state.focusedRoom + 1).padStart(2, '0')} / CLOSE VIEW`;
   if ($('#room-view-status').textContent !== viewStatus) $('#room-view-status').textContent = viewStatus;
   const nodes = state.mode === 'section' ? $('#station-markers').children : $('#tower-labels').children;
+  if (state.mode !== 'section') {
+    const layout = outdoorViewLayout(width, height, 'explore').labelLayout;
+    $('#tower-labels').dataset.layout = layout;
+    page.dataset.labelLayout = layout;
+  }
+  const towerLabels = state.mode === 'section' ? null : towerLabelLayout(state.labels.map(item => {
+    const node = [...nodes].find(element => element.dataset.section === item.id);
+    return { ...item, labelWidth: node?.offsetWidth, labelHeight: node?.offsetHeight };
+  }), width, height);
+  if (towerLabels) {
+    $('#tower-labels').dataset.layout = towerLabels.layout;
+    page.dataset.labelLayout = towerLabels.layout;
+  }
   const points = state.mode === 'section' ? roomMarkerLayout(state.labels.map(item => {
     const caption = nodes[Number(item.id)]?.querySelector('.station-marker-label');
     return { ...item, captionWidth: caption?.offsetWidth, captionHeight: caption?.offsetHeight };
-  }), state.viewport, state.activeRoom, hoveredRoom) : state.labels;
+  }), state.viewport, state.activeRoom, hoveredRoom) : towerLabels.points;
   for (const item of points) {
     const node = state.mode === 'section' ? nodes[Number(item.id)] : [...nodes].find(element => element.dataset.section === item.id);
     if (!node) continue;
@@ -171,13 +184,15 @@ function onFrame(state) {
       node.style.setProperty('--leader-angle', `${Math.atan2(dy, dx)}rad`);
       continue;
     }
-    const labelWidth = node.offsetWidth || (width <= 760 ? 124 : width <= 1000 ? 160 : 210);
-    const minimumX = item.side === -1 ? labelWidth + 22 : item.side === 1 ? 22 : 65;
-    const maximumX = width - (item.side === 1 ? labelWidth + 22 : item.side === -1 ? 22 : 65);
-    const x = Math.max(minimumX, Math.min(maximumX, item.x));
-    const y = Math.max(100, Math.min(height - 105, item.y));
-    node.style.left = `${x}px`; node.style.top = `${y}px`;
-    node.style.visibility = item.visible ? 'visible' : 'hidden';
+    node.style.left = towerLabels.layout === 'dock' ? '' : `${item.x}px`;
+    node.style.top = towerLabels.layout === 'dock' ? '' : `${item.y}px`;
+    node.style.visibility = 'visible';
+    node.dataset.leader = String(item.leader);
+    const dx = item.leader ? item.sourceX - item.x : 0, dy = item.leader ? item.sourceY - item.y : 0;
+    node.style.setProperty('--tower-leader-length', `${item.leader ? Math.hypot(dx, dy) : 0}px`);
+    node.style.setProperty('--tower-leader-angle', `${Math.atan2(dy, dx)}rad`);
+    node.style.setProperty('--tower-anchor-x', `${item.leader ? dx : 0}px`);
+    node.style.setProperty('--tower-anchor-y', `${item.leader ? dy : 0}px`);
     if (item.side) node.dataset.side = String(item.side);
   }
 }
