@@ -12,6 +12,8 @@ export function createInterior(section, content) {
   const lineMaterial = new T.LineBasicMaterial({ color: '#315f97', transparent: true, opacity: .8 });
   const pickables = [], anchors = [], roomModels = [];
   let activeRoom = 0, hoveredRoom = null, focusedRoom = null, focusAmount = 0;
+  const unitBox = new T.BoxGeometry(1, 1, 1), unitCylinder = new T.CylinderGeometry(1, 1, 1, 20);
+  const shared = new Set([unitBox, unitCylinder]), edgeSources = new Map();
 
   function object(parent, geometry, x, y, z, material = 'paper', turn = 0) {
     const mesh = new T.Mesh(geometry, materials[material]);
@@ -20,8 +22,8 @@ export function createInterior(section, content) {
     parent.add(mesh);
     return mesh;
   }
-  const box = (p, x, y, z, w, h, d, mat = 'paper', turn = 0) => object(p, new T.BoxGeometry(w, h, d), x, y, z, mat, turn);
-  const cylinder = (p, x, y, z, r, h, mat = 'paper') => object(p, new T.CylinderGeometry(r, r, h, 20), x, y, z, mat);
+  const box = (p, x, y, z, w, h, d, mat = 'paper', turn = 0) => { const mesh = object(p, unitBox, x, y, z, mat, turn); mesh.scale.set(w, h, d); return mesh; };
+  const cylinder = (p, x, y, z, r, h, mat = 'paper') => { const mesh = object(p, unitCylinder, x, y, z, mat); mesh.scale.set(r, h, r); return mesh; };
   function feature(p, name, build) {
     p.userData.features ??= [];
     p.userData.features.push(name);
@@ -235,8 +237,9 @@ export function createInterior(section, content) {
       const surface = mesh.userData.surface;
       if (!buckets.has(surface)) buckets.set(surface, []);
       buckets.get(surface).push(geometry);
-      edgeParts.push(new T.EdgesGeometry(mesh.geometry, 25).applyMatrix4(transform));
-      mesh.geometry.dispose();
+      if (!edgeSources.has(mesh.geometry)) edgeSources.set(mesh.geometry, new T.EdgesGeometry(mesh.geometry, 25));
+      edgeParts.push(edgeSources.get(mesh.geometry).clone().applyMatrix4(transform));
+      if (!shared.has(mesh.geometry)) mesh.geometry.dispose();
     }
     zone.clear();
     const combine = (parts, attributes) => {
@@ -309,6 +312,11 @@ export function createInterior(section, content) {
     anchors[index].set(room.center.x, room.bounds.max.y + unit * .65, room.center.z);
   });
   const white = new T.Color('#ffffff');
+  for (const edges of edgeSources.values()) edges.dispose();
+  for (const geometry of shared) {
+    let retained = false; group.traverse(node => { if (node.geometry === geometry) retained = true; });
+    if (!retained) geometry.dispose();
+  }
   function paintRooms() {
     const contextFade = focusedRoom === null ? 0 : focusAmount;
     lineMaterial.color.set('#315f97').lerp(white, contextFade * .65);
@@ -325,8 +333,12 @@ export function createInterior(section, content) {
   }
   paintRooms();
   return { group, pickables, anchors, reach, unit, rooms: roomModels,
-    setActiveRoom(index) { activeRoom = index; paintRooms(); },
-    setHoveredRoom(index) { hoveredRoom = index; paintRooms(); },
-    setFocus(index, amount = 1) { focusedRoom = Number.isInteger(index) && roomModels[index] ? index : null; focusAmount = T.MathUtils.clamp(amount, 0, 1); paintRooms(); },
+    setActiveRoom(index) { if (activeRoom === index) return; activeRoom = index; paintRooms(); },
+    setHoveredRoom(index) { if (hoveredRoom === index) return; hoveredRoom = index; paintRooms(); },
+    setFocus(index, amount = 1) {
+      const next = Number.isInteger(index) && roomModels[index] ? index : null, fade = next === null ? 0 : T.MathUtils.clamp(amount, 0, 1);
+      if (focusedRoom === next && focusAmount === fade) return;
+      focusedRoom = next; focusAmount = fade; paintRooms();
+    },
   };
 }

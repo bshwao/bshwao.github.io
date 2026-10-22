@@ -10,7 +10,7 @@
   .floor-view-actions { display: flex; flex-wrap: wrap; gap: 4px 22px; }
   .floor-view-actions .close-room { min-height: 44px; }
   .floor-heading { text-align: center; }
-  .floor-heading .eyebrow { font-size: 7px; color: #6d8db7; letter-spacing: .13em; }
+  .floor-heading .eyebrow { font-size: 7px; color: #526f96; letter-spacing: .13em; }
   .floor-heading h2 { font: 400 29px/1.15 var(--serif); letter-spacing: -.035em; margin-top: 3px; }
   .floor-navigation { display: flex; justify-self: end; gap: 24px; font: 9px/1.6 var(--mono); }
   .floor-navigation a { text-decoration: none; white-space: nowrap; padding-block: 8px; }
@@ -24,7 +24,7 @@
   .floor-rooms { position: absolute; left: 8.333333%; right: 8.333333%; top: 15%; bottom: 17.5%; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: repeat(6, minmax(0, 1fr)); }
   .floor-room { display: flex; flex-direction: column; position: relative; min-width: 0; min-height: 0; padding: clamp(19px, 2.5vw, 32px); scroll-margin-top: 20px; }
   .floor-room-header { flex: 0 0 auto; padding-bottom: 10px; }
-  .floor-room-name { font: 8px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #6f8bb1; }
+  .floor-room-name { font: 8px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #526f96; }
   .floor-room-header h3 { font: 400 23px/1.15 var(--serif); letter-spacing: -.025em; margin-top: 6px; overflow-wrap: anywhere; }
   .floor-room-scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #bacde7 transparent; font-size: 12px; line-height: 1.7; color: #526f96; padding-right: 7px; }
   .floor-room-scroll:focus-visible { outline-offset: 2px; }
@@ -39,15 +39,15 @@
   .floor-room-links a:hover { text-decoration: underline; }
   .floor-facts { display: flex; gap: 22px; flex-wrap: wrap; margin: 11px 0 14px; }
   .floor-facts strong { font: 27px/1 var(--serif); color: #315c98; display: block; }
-  .floor-facts span { display: block; font: 8px/1.4 var(--mono); margin-top: 6px; color: #6e8db5; max-width: 150px; }
+  .floor-facts span { display: block; font: 8px/1.4 var(--mono); margin-top: 6px; color: #526f96; max-width: 150px; }
   .floor-entry { margin: 0 0 14px; }
   .floor-entry:last-child { margin-bottom: 0; }
   .floor-entry h4 { font-size: 12px; font-weight: 500; color: #315982; margin: 0 0 4px; }
   .floor-entry p { font-size: 11px; margin: 0 0 3px; }
   .floor-tags { display: flex; gap: 5px; flex-wrap: wrap; padding-bottom: 2px; }
   .floor-tags span { border-bottom: 1px solid #d8e3f2; padding: 4px 6px 4px 0; font: 10px/1.4 var(--mono); }
-  .room-scroll-cue { position: absolute; right: 33px; bottom: 12px; font: 6px/1.5 var(--mono); letter-spacing: .07em; color: #7493bb; background: #fff; padding-left: 7px; pointer-events: none; }
-  .floor-description { margin: 0 auto; max-width: 1000px; padding: 0 15px 10px; text-align: center; font: 9px/1.6 var(--mono); color: #6c8bb3; }
+  .room-scroll-cue { position: absolute; right: 33px; bottom: 12px; font: 6px/1.5 var(--mono); letter-spacing: .07em; color: #526f96; background: #fff; padding-left: 7px; pointer-events: none; }
+  .floor-description { margin: 0 auto; max-width: 1000px; padding: 0 15px 10px; text-align: center; font: 9px/1.6 var(--mono); color: #526f96; }
 
   @media (min-width: 851px) and (max-height: 700px) {
     .floor-topbar { min-height: 64px; padding-block: 8px; }

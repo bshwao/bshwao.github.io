@@ -16,7 +16,7 @@ export function renderStory(story = []) {
 
 export function renderGallery(images = []) {
   if (!images.length) return '';
-  return `<div class="project-gallery" aria-label="Project images">${images.map(image => {
+  return `<div class="project-gallery" role="group" aria-label="Project images">${images.map(image => {
     const width = Number(image.width), height = Number(image.height);
     const sized = Number.isInteger(width) && width > 0 && Number.isInteger(height) && height > 0;
     const preview = image.preview === 'top';

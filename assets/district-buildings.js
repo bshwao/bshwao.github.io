@@ -1,5 +1,6 @@
 import * as T from './vendor/three.module.min.js';
 import { districtPlan } from './district-ground.js';
+import { applyDistrictDepth, shadeDistrictGeometry } from './district-style.js';
 
 const schemes = [
   { type: 'campus', height: 9, form: 'court' },
@@ -153,18 +154,18 @@ export function createDistrictBuildings() {
 
   const layers = [
     { name: 'building-surfaces', positions: surfaces, color: '#fcfdff', mesh: true },
-    { name: 'building-roofs', positions: roofs, color: '#f1f6fc', mesh: true },
-    { name: 'building-glazing', positions: glazing, color: '#e8f0fa', mesh: true },
-    { name: 'building-outlines', positions: outlines, color: '#8fafd1', opacity: .72 },
-    { name: 'building-facades', positions: details, color: '#a9c1dc', opacity: .64 },
+    { name: 'building-roofs', positions: roofs, color: '#edf4fc', mesh: true },
+    { name: 'building-glazing', positions: glazing, color: '#dae7f5', mesh: true },
+    { name: 'building-outlines', positions: outlines, color: '#7296bf', opacity: .8 },
+    { name: 'building-facades', positions: details, color: '#a2bcd8', opacity: .46 },
   ];
   for (const layer of layers) {
     const geometry = new T.BufferGeometry();
     geometry.setAttribute('position', new T.Float32BufferAttribute(layer.positions, 3));
-    if (layer.mesh) geometry.computeVertexNormals();
-    const material = layer.mesh
-      ? new T.MeshLambertMaterial({ color: layer.color, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
-      : new T.LineBasicMaterial({ color: layer.color, transparent: true, opacity: layer.opacity, depthWrite: false });
+    if (layer.mesh) shadeDistrictGeometry(geometry, layer.color);
+    const material = applyDistrictDepth(layer.mesh
+      ? new T.MeshBasicMaterial({ color: '#ffffff', vertexColors: true, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
+      : new T.LineBasicMaterial({ color: layer.color, transparent: true, opacity: layer.opacity, depthWrite: false }), layer.mesh ? .52 : .72);
     const object = layer.mesh ? new T.Mesh(geometry, material) : new T.LineSegments(geometry, material);
     object.name = layer.name;
     layer.material = material;

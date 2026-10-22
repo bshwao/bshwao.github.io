@@ -6,9 +6,15 @@ The tower stands on a world-space blueprint master plan: a fading drafting grid,
 
 The district includes four planted plaza corners, a furnished campus quad and residential courtyard, 24 trees, 12 benches, eight streetlights, and restrained rooftop equipment and panel banks. An MFE / LAB workshop has a roller door, canopy, and outdoor workbenches. A second workshop is a support garage beside a Poltergeist test loop with a static Formula-style car and a sensor-equipped test vehicle. These are illustrative references, not simulated driving demonstrations. Parcel numbers sit in the margins so they stay clear of occupied courtyards and the test yard. All character details use six shared rendering layers and add no ongoing animation or lighting loop.
 
+The city drawing separates stronger building edges and curbs from lighter facade, paving, and grid lines. Lane dashes, stop bars, travel arrows, and striped plaza crossings have actual surface width. Baked blue face washes and one shared mesh of soft contact shading anchor buildings, trees, and the tower. Camera-relative atmospheric fading quiets the far side as the view rotates and zooms, while the tower retains its own ink contrast. The screen margins fade toward white behind the navigation. These effects use local geometry, vertex colors, and a small material shader extension; no textures, shadow maps, or postprocessing are needed. The city and its shading clear together during interior entry.
+
+Internal tower plates share one draw per section, and room construction reuses box/cylinder geometry before batching. Small or short viewports use a lighter tower drawing and omit the minor grid and fine city strokes; the full solid profiles, cut-face plans, landmarks, furniture, and picking remain available. Phone drawing uses less than half the tower line segments of desktop. Raster work is capped at 2.4 million pixels, with a 1.35 pixel-ratio cap on compact screens and 1.75 on desktop. Detail restores automatically on resize, and inactive room styling avoids repeated material work.
+
 Exposed cuts in the expanded tower carry schematic floor plans: inset walls, wing partitions with door swings, a lift/stair core, and section-specific furniture. Upper and lower cut faces are detailed, so the plans remain attached when viewed from above or below. The spire retains its pointed top; its broad lower cut carries About's plan. The drawings fade before the full interior opens and remain hidden on the assembled tower. Each section uses two batched line layers with no extra fonts, textures, or interactive controls.
 
-See [the project roadmap](./ROADMAP.md) for remaining phases.
+See [the project roadmap](./ROADMAP.md) for phase completion and release verification.
+See [the maintenance guide](./MAINTENANCE.md) for content updates, browser QA, sharing artwork, releases, and rollback.
+See [the release verification](./QA.md) for measured WebGL budgets, accessibility results, and test scope.
 
 ## Preview
 
@@ -59,10 +65,12 @@ Project rooms include personal context, engineering challenges, and image galler
 - `assets/district-ground.js`: district master-plan dimensions and parcel bounds, plus batched ground surfaces, linework, vector annotations, and presentation fading. North is the negative Z direction. Buildings use the shared `districtPlan.parcels` bounds.
 - `assets/district-buildings.js`: the twelve parcel-based building schemes, solid massing, roofs, facade bays, shared rendering layers, and presentation fading. Buildings stay below 17 units and retain at least five units of clearance inside their parcels.
 - `assets/district-details.js`: plaza and courtyard furnishings, trees, streetlights, workshop frontage, the vehicle test yard, rooftop details, and their shared presentation fade. The ground module's `appendDraftingText` supplies vector signage without fonts or textures.
+- `assets/district-style.js`: baked face washes, camera-relative city depth fading, and the single shared contact-shading mesh.
 - `assets/tower-model.js` and `assets/interiors.js`: capped section meshes, structural plates, floor slabs, furniture, and picking targets.
 - `assets/cap-plans.js`: schematic cut-face plans, clipped to each inset footprint, with section-specific furniture and presentation fading.
 - `assets/scene-3d.js`: the renderer, OrbitControls, room-focused camera framing, continuous transitions, clipping planes, raycasting, and render scheduling.
 - `assets/camera-framing.js`: bounds-based assembled city and expanded tower camera framing, with space reserved for navigation.
+- `assets/render-budget.js`: compact/full drawing selection and the shared raster budget.
 - `assets/spatial-layout.js`: the shared visible camera regions, responsive section label placement, and collision-aware room marker placement.
 - `assets/spatial-app.js` and `assets/spatial.css`: routes, projected labels, room content, focus management, and responsive presentation. `assets/app.js` is the entry point.
 - `assets/routes.js`: shared floor and room URL parsing for 3D and section reading mode.
@@ -88,12 +96,16 @@ npm test
 
 The integration harness runs the actual camera controller and OrbitControls with jsdom and a test renderer at desktop and phone dimensions, plus reduced motion and a fresh room deep link. It verifies staged facade entry and city clearance, hidden neighboring floors throughout room flights, foreground city occlusion, independent outdoor camera restoration, responsive section navigation, pointer/keyboard room preview, left-drag controls, room close-ups, highlighting, portrait/landscape framing, resize preservation, gesture rejection, navigation, clipboard success/fallback, content links, cancellation, keyboard input, idle rendering, section reading mode, returning to the retained 3D scene, and the text fallback. It does **not** validate WebGL pixels or replace visual browser testing. Node's VM module warning during these tests is expected.
 
+The harness also simulates initial WebGL failure and hidden-tab suspension. Real GPU budgets, repeated navigation/resize, and disposal can be checked with `scripts/browser-qa.html`; `scripts/accessibility-qa.html` audits settled views using axe after `npm ci`. These are developer checks, excluded from crawler discovery. The repository workflow runs the Node checks on pushes and pull requests.
+
 Local browser QA has covered the assembled and expanded tower, Projects overview and Systems lab close-up, the detailed electronics bench and grand piano, room URL refresh/back/forward, copying a link, and the text portfolio. The updated section reading mode was checked for floor-plan presentation, section navigation, and returning to 3D. Earlier representative layouts were inspected at the default desktop size, 390 × 844 portrait, and 650 × 390 landscape, including phone panel scrolling. This is a representative visual check rather than a device/performance benchmark.
 
 City phase 4 was visually checked at 1280 × 720, with live 390 × 650 portrait and 650 × 390 landscape viewports for the section dock and compact labels. The portrait dock was also used to enter Projects and return to the expanded structure.
+
+City phase 5 was checked at the same desktop and phone viewport sizes for line hierarchy, street markings, face/contact shading, atmospheric fading, and white margins behind navigation. Geometry checks cover upward-facing road marks, street boundaries, opaque surface depth, contact-wash budgets, and material restoration; integration checks cover zoom-relative fading and shading visibility during entry and interrupted returns.
 
 ## GitHub Pages
 
 Push this repository and use **Settings → Pages → Deploy from a branch**, selecting the intended branch and `/(root)`. `.nojekyll` lets GitHub serve the files directly. Keep the vendored modules and local assets committed; `node_modules/` and `.preview/` are ignored.
 
-These edits are prepared locally. Committing and pushing publishes them through the existing GitHub Pages configuration.
+Committing and pushing publishes changes through the existing GitHub Pages configuration. The `Portfolio checks` workflow validates pushes and pull requests; the [maintenance guide](./MAINTENANCE.md) describes release verification and rollback.

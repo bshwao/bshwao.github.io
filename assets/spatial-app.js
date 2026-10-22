@@ -43,7 +43,6 @@ function selectRoom(index, { focus = false, moveCamera = true, writeRoute = true
   $('#interior-content').innerHTML = roomMarkup(content.rooms[index]);
   $('#interior-content').scrollTop = 0;
   $('#interior-panel').scrollTop = 0;
-  $('#interior-panel').scrollTop = 0;
   page.querySelectorAll('[data-station]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.station) === index)));
   if (moveCamera) spatial.focusRoom(index);
   if (focus || restoreFocus) $('#interior-room-title').focus({ preventScroll: true });
@@ -220,7 +219,7 @@ async function start() {
     <div class="drawing-reference" aria-hidden="true"><span>EH—001</span><span>STRUCTURES & SYSTEMS</span></div>
     <div class="spatial-tools"><button type="button" id="reset-spatial" aria-label="Reset the 3D camera" disabled>↺ <span>Reset view</span></button><button type="button" id="reading-view" aria-haspopup="dialog" aria-controls="room-dialog" hidden>Reading view</button></div>
     <nav class="tower-labels" id="tower-labels" aria-label="Portfolio sections" aria-hidden="true" inert>${sections.map(section => `<button type="button" class="tower-label" data-section="${section.id}"><span class="spatial-eyebrow">${section.number} / PORTFOLIO</span><span class="tower-label-name">${escape(section.name)}</span><span class="tower-label-subtitle">${section.subtitle}</span></button>`).join('')}</nav>
-    <div class="station-markers" id="station-markers" aria-label="Rooms in this interior" aria-hidden="true" inert></div>
+    <div class="station-markers" id="station-markers" role="group" aria-label="Rooms in this interior" aria-hidden="true" inert></div>
     <button type="button" class="structure-action" id="back-to-structure" hidden>↖ <span>Back to tower</span></button>
     <button type="button" class="structure-action" id="collapse-structure" hidden>↙ <span>Collapse structure</span></button>
     <header class="spatial-heading" id="spatial-heading" hidden><p class="spatial-eyebrow" id="spatial-level"></p><h2 id="spatial-title"></h2></header>

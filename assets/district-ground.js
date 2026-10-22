@@ -1,4 +1,5 @@
 import * as T from './vendor/three.module.min.js';
+import { applyDistrictDepth } from './district-style.js';
 
 // One world-space master plan, shared with future district buildings.
 // North is -Z. Dimensions are model units, rather than surveyed real-world metres.
@@ -74,18 +75,20 @@ export function createDistrictGround() {
     const material = surface
       ? new T.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false })
       : new T.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false });
+    applyDistrictDepth(material, surface ? .48 : .72);
     const item = { name, positions: [], material, opacity, surface, order };
     layers.set(name, item); return item;
   }
-  const minor = layer('draft-grid-minor', '#dce8f5', { opacity: .52, order: -12 });
-  const major = layer('draft-grid-major', '#bfd2e8', { opacity: .48, order: -11 });
-  const streets = layer('streets', '#edf3fa', { surface: true, order: -10 });
-  const walks = layer('sidewalks', '#e6eff9', { surface: true, order: -9 });
+  const minor = layer('draft-grid-minor', '#e0eaf6', { opacity: .38, order: -12 });
+  const major = layer('draft-grid-major', '#bfd2e8', { opacity: .5, order: -11 });
+  const streets = layer('streets', '#e5eef8', { surface: true, order: -10 });
+  const walks = layer('sidewalks', '#f3f7fc', { surface: true, order: -9 });
   const plaza = layer('central-plaza', '#f7faff', { surface: true, order: -8 });
   const parcels = layer('parcels', '#fafcff', { surface: true, order: -8 });
-  const boundaries = layer('curbs-and-parcels', '#96b3d4', { opacity: .65, order: -7 });
-  const details = layer('paving-and-road-marks', '#afc7e1', { opacity: .6, order: -6 });
-  const notes = layer('survey-annotations', '#789dc5', { opacity: .78, order: -5 });
+  const boundaries = layer('curbs-and-parcels', '#83a5cc', { opacity: .72, order: -7 });
+  const details = layer('paving-and-road-marks', '#b0c7e1', { opacity: .48, order: -6 });
+  const notes = layer('survey-annotations', '#789dc5', { opacity: .72, order: -5 });
+  const markings = layer('road-markings', '#92b1d4', { surface: true, opacity: .84, order: -5 });
 
   function segment(target, x1, z1, x2, z2, y = -.22) {
     target.positions.push(x1, y, z1, x2, y, z2);
@@ -99,6 +102,19 @@ export function createDistrictGround() {
   }
   function text(value, x, z, size = 2.1) {
     appendDraftingText(notes.positions, value, size, (dx, dy) => [x + dx, -.22, z - dy]);
+  }
+  function roadRect(center, a0, a1, b0, b1, axis) {
+    if (axis === 'z') rect(markings, center + a0, b0, center + a1, b1, -.2);
+    else rect(markings, b0, center + a0, b1, center + a1, -.2);
+  }
+  function arrow(center, lane, along, direction, axis) {
+    roadRect(center, lane - .12, lane + .12, along - 1.6, along + 1.6, axis);
+    const point = (across, forward) => axis === 'z' ? [center + across, -.2, forward] : [forward, -.2, center + across];
+    const triangle = [point(lane - .85, along + direction * .9), point(lane + .85, along + direction * .9), point(lane, along + direction * 2.3)];
+    // Keep both road orientations and travel directions facing the sky.
+    const normal = new T.Vector3().subVectors(new T.Vector3(...triangle[1]), new T.Vector3(...triangle[0])).cross(new T.Vector3().subVectors(new T.Vector3(...triangle[2]), new T.Vector3(...triangle[0])));
+    if (normal.y < 0) triangle.reverse();
+    markings.positions.push(...triangle.flat());
   }
 
   // Fade the outer drafting field into the white background using vertex colours.
@@ -130,8 +146,16 @@ export function createDistrictGround() {
         }
       }
       for (let dash = start + 2; dash < end - 2; dash += 6) {
-        segment(details, center, dash, center, dash + 2);
-        segment(details, dash, center, dash + 2, center);
+        // Leave the plaza crosswalks and stop lines free of center dashes.
+        if (dash < 9 && dash + 2 > -9) continue;
+        for (const axis of ['x', 'z']) roadRect(center, -.12, .12, dash, dash + 2.6, axis);
+      }
+    }
+    for (const axis of ['x', 'z']) {
+      for (const direction of [-1, 1]) {
+        const lane = axis === 'z' ? -direction : direction;
+        roadRect(center, lane > 0 ? .6 : -4.2, lane > 0 ? 4.2 : -.6, -direction * 5.8 - .16, -direction * 5.8 + .16, axis);
+        arrow(center, lane * 2.5, -direction * 19, direction, axis);
       }
     }
   }
@@ -161,8 +185,8 @@ export function createDistrictGround() {
 
   // Crosswalks lead to all four sides of the plaza, before the junctions.
   for (const side of [-1, 1]) for (let stripe = -3; stripe <= 3; stripe += 1.5) {
-    segment(notes, stripe, side * 38, stripe, side * 46);
-    segment(notes, side * 38, stripe, side * 46, stripe);
+    rect(markings, stripe - .35, Math.min(side * 38, side * 46), stripe + .35, Math.max(side * 38, side * 46), -.2);
+    rect(markings, Math.min(side * 38, side * 46), stripe - .35, Math.max(side * 38, side * 46), stripe + .35, -.2);
   }
 
   // Survey datum crosses and a dimension chain for the central 72-unit block.

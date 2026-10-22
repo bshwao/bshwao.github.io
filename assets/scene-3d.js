@@ -3,6 +3,7 @@ import { OrbitControls } from './vendor/OrbitControls.js';
 import { createTowerModel } from './tower-model.js';
 import { viewportLayout } from './spatial-layout.js';
 import { outdoorCameraPose } from './camera-framing.js';
+import { renderBudget } from './render-budget.js';
 
 const ease = t => t * t * t * (t * (t * 6 - 15) + 10);
 const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - start), 0, 1));
@@ -26,6 +27,8 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   const light = new T.DirectionalLight('#ffffff', 1.4); light.position.set(50, 120, 80); scene.add(light);
   const fill = new T.DirectionalLight('#d2e3fa', .6); fill.position.set(-80, 30, -60); scene.add(fill);
   const model = createTowerModel(); scene.add(model.root);
+  const depthReferences = [];
+  model.root.traverse(node => { if (node.material?.userData.districtDepth) depthReferences.push(node.material.userData.districtDepth); });
   const camera = new T.PerspectiveCamera(34, 1, .02, 2000);
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const controls = new OrbitControls(camera, canvas);
@@ -118,6 +121,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     model.district.setPresentation(expansion, 1 - districtVisibility);
     model.districtBuildings.setPresentation(expansion, 1 - districtVisibility);
     model.districtDetails.setPresentation(expansion, 1 - districtVisibility);
+    model.districtShadows.setPresentation(expansion, 1 - districtVisibility);
     model.root.updateMatrixWorld(true);
   }
   function labels() {
@@ -171,6 +175,8 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     updateProjection(); updateModel();
     const changed = controls.update();
     if (dirty || moving || changed) {
+      const distance = camera.position.distanceTo(controls.target);
+      for (const reference of depthReferences) reference.value = distance;
       renderer.render(scene, camera);
       onFrame?.({ mode, selectedId: selected?.id, labels: labels(), expansion, reveal, panel, focusedRoom, activeRoom, hoveredRoom,
         viewport: viewportLayout(width, height), moving: Boolean(animation), transitionType: animation?.kind || null,
@@ -333,7 +339,9 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     const targetAdjustment = controls.target.clone().sub(oldPose.target);
     const zoom = hasViewport ? offset.length() / oldPose.position.distanceTo(oldPose.target) : 1;
     width = bounds.width; height = bounds.height;
-    renderer.setPixelRatio(Math.min(devicePixelRatio, width <= 760 ? 1.5 : 1.75));
+    const budget = renderBudget(width, height, devicePixelRatio);
+    renderer.setPixelRatio(budget.pixelRatio); model.setCompact(budget.compact);
+    canvas.dataset.detail = budget.compact ? 'compact' : 'full';
     renderer.setSize(width, height);
     if (hasViewport) for (const [viewMode, saved] of savedViews) {
       const viewDirection = saved.position.clone().sub(saved.target);
@@ -382,6 +390,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   resize();
   goTo('tower', null, { instant: true });
   return {
+    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), width, height }; },
     goTo,
     focusRoom,
     overview,
@@ -397,6 +406,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       document.removeEventListener('visibilitychange', visibility); controls.dispose();
       reducedMotion.removeEventListener('change', motionChange);
       const geometries = new Set(), materials = new Set();
+      for (const module of model.modules) { geometries.add(module.lineGeometry); geometries.add(module.coarseLineGeometry); }
       scene.traverse(item => {
         if (item.geometry) geometries.add(item.geometry);
         if (item.material) (Array.isArray(item.material) ? item.material : [item.material]).forEach(material => materials.add(material));

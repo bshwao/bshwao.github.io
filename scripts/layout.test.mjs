@@ -3,6 +3,16 @@ import assert from 'node:assert/strict';
 import { viewportLayout, roomMarkerLayout, outdoorViewLayout, towerLabelLayout } from '../assets/spatial-layout.js';
 import { outdoorCameraPose, outdoorFramingPoints } from '../assets/camera-framing.js';
 import * as T from '../assets/vendor/three.module.min.js';
+import { renderBudget } from '../assets/render-budget.js';
+
+test('phone and large-screen raster budgets stay bounded without changing navigation regions', () => {
+  for (const [width, height, ratio] of [[390, 844, 3], [844, 390, 3], [1440, 900, 2], [3840, 2160, 2]]) {
+    const budget = renderBudget(width, height, ratio);
+    assert.ok(width * height * budget.pixelRatio ** 2 <= 2_400_001);
+    assert.ok(budget.pixelRatio > 0 && budget.pixelRatio <= ratio);
+    assert.equal(budget.compact, Math.min(width, height) <= 480);
+  }
+});
 
 test('outdoor cameras fit the district or tower inside the space reserved for controls', () => {
   for (const [width, height] of [[1440, 900], [1280, 720], [844, 390], [650, 390], [520, 360], [390, 844], [390, 600], [320, 568]]) {

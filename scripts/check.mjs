@@ -5,7 +5,7 @@ import { resolve, dirname } from 'node:path';
 const root = resolve(import.meta.dirname, '..');
 const assets = resolve(root, 'assets');
 const files = (await readdir(assets)).filter(file => file.endsWith('.js')).map(file => resolve(assets, file));
-files.push(resolve(root, 'scripts/serve.mjs'), resolve(root, 'scripts/reading.mjs'));
+files.push(resolve(root, 'scripts/serve.mjs'), resolve(root, 'scripts/reading.mjs'), resolve(root, 'scripts/browser-qa.js'), resolve(root, 'scripts/accessibility-qa.js'));
 for (const file of files) {
   const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
   if (result.status !== 0) { process.stderr.write(result.stderr); process.exit(1); }

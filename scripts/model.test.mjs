@@ -11,6 +11,21 @@ model.root.updateMatrixWorld(true);
 const round = value => Math.round(value * 1e5);
 const key = p => p.map(round).join(',');
 
+test('compact drawing preserves solid geometry and landmarks while reducing line work', () => {
+  const meshes = model.modules.map(module => module.mesh.geometry);
+  const full = model.modules.reduce((sum, module) => sum + module.lineGeometry.attributes.position.count, 0);
+  model.setCompact(true);
+  const compact = model.modules.reduce((sum, module) => sum + module.shell.children[1].geometry.attributes.position.count, 0);
+  assert.ok(compact < full * .5, `${compact} compact / ${full} full line vertices`);
+  assert.ok(model.modules.every((module, index) => module.mesh.geometry === meshes[index]), 'Solid surfaces and picking geometry retain their full profile');
+  assert.ok(model.modules.every(module => module.shell.children.filter(node => node.isMesh).length <= 4), 'Each section batches its internal floor plates into one draw');
+  assert.equal(model.districtBuildings.root.getObjectByName('building-outlines').visible, true);
+  assert.equal(model.districtDetails.root.getObjectByName('district-detail-ink').visible, true);
+  assert.equal(model.districtBuildings.root.getObjectByName('building-facades').visible, false);
+  model.setCompact(false);
+  assert.ok(model.modules.every(module => module.shell.children[1].geometry === module.lineGeometry), 'Desktop line detail is restored after rotation or resize');
+});
+
 test('the district reserves a clear tower plaza and non-overlapping parcels outside the streets', () => {
   const overlap = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
   const plaza = [-districtPlan.plazaHalf, -districtPlan.plazaHalf, districtPlan.plazaHalf, districtPlan.plazaHalf];
@@ -83,6 +98,58 @@ test('district buildings fit their parcels, keep the tower clear, and share a bo
     const ray = new T.Raycaster(origin, target.clone().sub(origin).normalize(), 0, origin.distanceTo(target));
     assert.equal(ray.intersectObjects(meshes).length, 0, `Opening view keeps the tower base visible from ${i * 15} degrees`);
   }
+});
+
+test('blueprint road marks have visible area, face upward, and stay inside the streets', () => {
+  const mesh = model.district.root.getObjectByName('road-markings');
+  assert.ok(mesh.isMesh, 'Lane marks and crossings have a world-space width');
+  const positions = mesh.geometry.attributes.position;
+  for (let i = 0; i < positions.count; i += 3) {
+    const points = [0, 1, 2].map(offset => new T.Vector3().fromBufferAttribute(positions, i + offset));
+    const normal = points[1].clone().sub(points[0]).cross(points[2].clone().sub(points[0]));
+    assert.ok(normal.y > 0, 'Road markings are visible from above without double-sided rendering');
+    for (const point of points) {
+      assert.ok(districtPlan.roadCenters.some(center => Math.abs(point.x - center) < districtPlan.roadWidth / 2 || Math.abs(point.z - center) < districtPlan.roadWidth / 2), 'Marks cannot spill onto the sidewalks or plaza');
+      assert.ok(point.y < 0 && Math.max(Math.abs(point.x), Math.abs(point.z)) <= 108);
+    }
+  }
+  const ray = new T.Raycaster(new T.Vector3(0, 10, 42), new T.Vector3(0, -1, 0));
+  assert.ok(ray.intersectObject(mesh).length, 'The central plaza crossing has a solid stripe');
+  ray.ray.origin.set(2.5, 10, 42);
+  assert.equal(ray.intersectObject(mesh).length, 0, 'A gap remains between crossing stripes');
+});
+
+test('district shading keeps opaque building depth and inexpensive contact washes', () => {
+  for (const group of [model.districtBuildings, model.districtDetails]) {
+    for (const mesh of group.root.children.filter(node => node.isMesh)) {
+      const colors = mesh.geometry.attributes.color;
+      assert.equal(colors.count, mesh.geometry.attributes.position.count);
+      assert.ok([...colors.array].every(value => value >= 0 && value <= 1), 'Baked face washes stay within the paper palette');
+      assert.ok(mesh.material.depthWrite && !mesh.material.transparent, 'White washes preserve solid surface occlusion');
+    }
+    const original = group.root.children.map(node => node.material.opacity);
+    group.setPresentation(1, 1); assert.equal(group.root.visible, false);
+    group.setPresentation(0, 0); assert.equal(group.root.visible, true);
+    assert.deepEqual(group.root.children.map(node => node.material.opacity), original, 'Presentation fades restore the original ink weights');
+    assert.ok(group.root.children.filter(node => node.isMesh).every(mesh => !mesh.material.transparent));
+  }
+  const mesh = model.districtShadows.root.children[0];
+  assert.equal(model.districtShadows.root.children.length, 1, 'All contact washes share one draw call');
+  assert.ok(mesh.geometry.attributes.position.count / 3 < 1500, 'The soft ground washes have a bounded geometry budget');
+  const alpha = mesh.geometry.attributes.color;
+  assert.equal(alpha.itemSize, 4);
+  assert.ok([...alpha.array].every(value => Number.isFinite(value) && value >= 0 && value <= 1));
+  assert.ok(alpha.array.some((value, index) => index % 4 === 3 && value === 0), 'The outer edge fades completely');
+  assert.ok(mesh.material.transparent && !mesh.material.depthWrite, 'Contact washes cannot hide the building geometry');
+  for (let i = 0; i < mesh.geometry.attributes.position.count; i++) {
+    assert.ok(mesh.geometry.attributes.position.getY(i) < 0, 'Contact washes stay on the ground');
+  }
+  model.districtShadows.setPresentation(1, 1); assert.equal(model.districtShadows.root.visible, false);
+  model.districtShadows.setPresentation(0, 0); assert.equal(model.districtShadows.root.visible, true);
+  for (const group of [model.district, model.districtBuildings, model.districtDetails, model.districtShadows]) {
+    assert.ok(group.root.children.every(node => node.material.userData.districtDepth), 'All city layers share camera-relative depth fading');
+  }
+  assert.ok(model.modules.every(module => !module.surface.userData.districtDepth && !module.line.userData.districtDepth), 'Atmospheric fading leaves the portfolio tower readable');
 });
 
 test('district landscaping and engineering references leave building volumes clear and stay inexpensive', () => {

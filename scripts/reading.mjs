@@ -36,7 +36,13 @@ export function renderReadingPage() {
   <meta property="og:description" content="Projects, experience, education, skills, and contact information in a complete, accessible portfolio.">
   <meta property="og:type" content="profile">
   <meta property="og:url" content="${site}reading.html">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="${site}assets/social-preview.png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="720">
+  <meta property="og:image:alt" content="Eric Hsu — Electrical engineering at McGill, with a blueprint tower and surrounding city.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${site}assets/social-preview.png">
+  <meta name="twitter:image:alt" content="Eric Hsu — Electrical engineering at McGill, with a blueprint tower and surrounding city.">
   <link rel="canonical" href="${site}reading.html">
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="stylesheet" href="./assets/reading.css">

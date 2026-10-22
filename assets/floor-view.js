@@ -46,8 +46,8 @@ export function createSectionReadingView({ onClose, onTower, onNavigate }) {
       const overflow = !stacked && body.scrollHeight > body.clientHeight + 3;
       const more = overflow && body.scrollTop + body.clientHeight < body.scrollHeight - 5;
       body.tabIndex = overflow ? 0 : -1;
-      if (overflow) body.setAttribute('aria-label', `Read more: ${room.querySelector('h3').textContent}`);
-      else body.removeAttribute('aria-label');
+      if (overflow) { body.setAttribute('role', 'region'); body.setAttribute('aria-label', `Read more: ${room.querySelector('h3').textContent}`); }
+      else { body.removeAttribute('role'); body.removeAttribute('aria-label'); }
       room.querySelector('.room-scroll-cue').hidden = !more;
     });
   }

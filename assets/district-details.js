@@ -1,5 +1,6 @@
 import * as T from './vendor/three.module.min.js';
 import { appendDraftingText } from './district-ground.js';
+import { applyDistrictDepth, shadeDistrictGeometry } from './district-style.js';
 
 /** Daytime architectural landscaping and engineering references; all static. */
 export function createDistrictDetails(buildings) {
@@ -9,9 +10,9 @@ export function createDistrictDetails(buildings) {
     paper: { color: '#fafcfe', mesh: true, positions: [] },
     blue: { color: '#cbddef', mesh: true, positions: [] },
     foliage: { color: '#e8f1fa', mesh: true, positions: [] },
-    paving: { color: '#f0f5fb', mesh: true, unlit: true, positions: [] },
-    ink: { color: '#87a8cc', opacity: .74, positions: [] },
-    fine: { color: '#aec6df', opacity: .66, positions: [] },
+    paving: { color: '#f0f5fb', mesh: true, positions: [] },
+    ink: { color: '#7d9fc5', opacity: .72, positions: [] },
+    fine: { color: '#abc3de', opacity: .46, positions: [] },
   };
   const sources = new Map();
   let active = null;
@@ -221,11 +222,11 @@ export function createDistrictDetails(buildings) {
   for (const [name, layer] of Object.entries(layers)) {
     const geometry = new T.BufferGeometry();
     geometry.setAttribute('position', new T.Float32BufferAttribute(layer.positions, 3));
-    if (layer.mesh) geometry.computeVertexNormals();
-    const options = { color: layer.color, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 };
-    const material = layer.mesh
-      ? layer.unlit ? new T.MeshBasicMaterial(options) : new T.MeshLambertMaterial(options)
-      : new T.LineBasicMaterial({ color: layer.color, transparent: true, opacity: layer.opacity, depthWrite: false });
+    if (layer.mesh) shadeDistrictGeometry(geometry, layer.color);
+    const options = { color: '#ffffff', vertexColors: true, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 };
+    const material = applyDistrictDepth(layer.mesh
+      ? new T.MeshBasicMaterial(options)
+      : new T.LineBasicMaterial({ color: layer.color, transparent: true, opacity: layer.opacity, depthWrite: false }));
     const object = layer.mesh ? new T.Mesh(geometry, material) : new T.LineSegments(geometry, material);
     object.name = `district-detail-${name}`; layer.material = material; root.add(object);
   }

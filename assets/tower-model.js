@@ -6,6 +6,7 @@ import { createDistrictGround } from './district-ground.js';
 import { createCapPlans } from './cap-plans.js';
 import { createDistrictBuildings } from './district-buildings.js';
 import { createDistrictDetails } from './district-details.js';
+import { createDistrictShadows } from './district-style.js';
 
 function capGeometry(height) {
   const points = footprint(height).map(([x, z]) => new T.Vector2(x, z));
@@ -32,13 +33,14 @@ export function createTowerModel() {
     if (section.high > 99.5) levels.push(99.498, 99.5);
     // A storey can coincide with a setback; merge it to avoid zero-area faces.
     levels = [...new Set(levels.map(y => Math.round(y * 1e4) / 1e4))].sort((a, b) => a - b);
-    const positions = [], indices = [], lines = [];
+    const positions = [], indices = [], lines = [], coarseLines = [];
     const count = 96;
     for (const y of levels) for (const [x, z] of footprint(profileHeight(y), count)) positions.push(x, y - section.low, z);
     for (let level = 0; level < levels.length - 1; level++) for (let i = 0; i < count; i++) {
       const a = level * count + i, b = level * count + (i + 1) % count;
       indices.push(a, a + count, b, b, a + count, b + count);
       lines.push(...positions.slice(a * 3, a * 3 + 3), ...positions.slice((a + count) * 3, (a + count) * 3 + 3));
+      if (i % 2 === 0) coarseLines.push(...positions.slice(a * 3, a * 3 + 3), ...positions.slice((a + count) * 3, (a + count) * 3 + 3));
     }
     const geometry = new T.BufferGeometry();
     geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
@@ -46,11 +48,11 @@ export function createTowerModel() {
     const mesh = new T.Mesh(geometry, surface);
     mesh.userData.sectionId = section.id;
     shell.add(mesh);
-    const ring = y => {
+    const ring = (y, target = lines) => {
       const points = footprint(profileHeight(y), count);
       for (let i = 0; i < count; i++) {
         const a = points[i], b = points[(i + 1) % count];
-        lines.push(a[0], y - section.low, a[1], b[0], y - section.low, b[1]);
+        target.push(a[0], y - section.low, a[1], b[0], y - section.low, b[1]);
       }
     };
     for (let y = Math.ceil(section.low / .57) * .57; y < Math.min(section.high, 99.5); y += .57) {
@@ -58,8 +60,13 @@ export function createTowerModel() {
     }
     for (const y of levels) if (setbacks.includes(y)) ring(y);
     ring(section.low); ring(section.high);
+    for (let y = Math.ceil(section.low / 1.14) * 1.14; y < Math.min(section.high, 99.5); y += 1.14) ring(y, coarseLines);
+    for (const y of levels) if (setbacks.includes(y)) ring(y, coarseLines);
+    ring(section.low, coarseLines); ring(section.high, coarseLines);
     const lineGeometry = new T.BufferGeometry();
     lineGeometry.setAttribute('position', new T.Float32BufferAttribute(lines, 3));
+    const coarseLineGeometry = new T.BufferGeometry();
+    coarseLineGeometry.setAttribute('position', new T.Float32BufferAttribute(coarseLines, 3));
     shell.add(new T.LineSegments(lineGeometry, line));
     for (const y of [section.low, section.high]) {
       const cap = new T.Mesh(capGeometry(profileHeight(y)), slabMaterial);
@@ -68,9 +75,18 @@ export function createTowerModel() {
       shell.add(cap);
     }
     // Structural plates occupy the full volume, including every exposed cut.
+    const platePositions = [], plateNormals = [];
     for (let y = section.low + 3.4; y < Math.min(section.high, 99.5); y += 3.4) {
-      const plate = new T.Mesh(capGeometry(y), slabMaterial);
-      plate.position.y = y - section.low; shell.add(plate);
+      const source = capGeometry(y), plate = source.toNonIndexed();
+      plate.translate(0, y - section.low, 0);
+      platePositions.push(...plate.attributes.position.array); plateNormals.push(...plate.attributes.normal.array);
+      source.dispose(); plate.dispose();
+    }
+    if (platePositions.length) {
+      const plates = new T.BufferGeometry();
+      plates.setAttribute('position', new T.Float32BufferAttribute(platePositions, 3));
+      plates.setAttribute('normal', new T.Float32BufferAttribute(plateNormals, 3));
+      shell.add(new T.Mesh(plates, slabMaterial));
     }
     const baseMaterial = new T.MeshLambertMaterial({ color: '#edf4fc', side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1 });
     const floorShape = new T.Shape(footprint(section.low + .005).map(([x, z]) => new T.Vector2(x, z)));
@@ -86,7 +102,7 @@ export function createTowerModel() {
     group.add(capPlans.group);
     const maxRadius = Math.max(...footprint(section.low).map(p => Math.hypot(...p)));
     group.position.y = section.low;
-    return { ...section, index, group, shell, clip, surface, line, slabMaterial, interior, capPlans, maxRadius, base, mesh };
+    return { ...section, index, group, shell, clip, surface, line, lineGeometry, coarseLineGeometry, slabMaterial, interior, capPlans, maxRadius, base, mesh };
   });
   const ground = new T.Group(); root.add(ground);
   const groundLine = new T.LineBasicMaterial({ color: '#9fb9d6', transparent: true, opacity: .45 });
@@ -104,5 +120,13 @@ export function createTowerModel() {
   const district = createDistrictGround(); root.add(district.root);
   const districtBuildings = createDistrictBuildings(); root.add(districtBuildings.root);
   const districtDetails = createDistrictDetails(districtBuildings.buildings); root.add(districtDetails.root);
-  return { root, modules, ground, groundLine, district, districtBuildings, districtDetails };
+  const districtShadows = createDistrictShadows(districtBuildings.buildings, districtDetails.features); root.add(districtShadows.root);
+  return { root, modules, ground, groundLine, district, districtBuildings, districtDetails, districtShadows,
+    setCompact(compact) {
+      for (const module of modules) module.shell.children[1].geometry = compact ? module.coarseLineGeometry : module.lineGeometry;
+      district.root.getObjectByName('draft-grid-minor').visible = !compact;
+      districtBuildings.root.getObjectByName('building-facades').visible = !compact;
+      districtDetails.root.getObjectByName('district-detail-fine').visible = !compact;
+    },
+  };
 }

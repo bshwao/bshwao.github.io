@@ -13,11 +13,14 @@ const root = resolve(import.meta.dirname, '..');
 const mobile = process.argv.includes('--mobile');
 const reduced = process.argv.includes('--reduced');
 const deepLink = process.argv.includes('--deep-link');
+const unavailable = process.argv.includes('--no-webgl');
 let viewportWidth = mobile ? 390 : 1280, viewportHeight = mobile ? 844 : 800;
 const originalViewport = [viewportWidth, viewportHeight];
 const previewURL = 'http://127.0.0.1:4173/?preview=integration';
 const dom = new JSDOM(await readFile(resolve(root, 'index.html'), 'utf8'), { url: `${previewURL}${deepLink ? '#projects/b' : ''}`, pretendToBeVisual: true });
 const w = dom.window;
+let pageHidden = false;
+Object.defineProperty(w.document, 'hidden', { get: () => pageHidden });
 const initialTitle = w.document.title;
 let clipboardDenied = false;
 const copiedURLs = [];
@@ -33,7 +36,7 @@ const resizeObservers = new Set(), motionListeners = new Set();
 let motionReduced = reduced;
 let lastScene, lastCamera, renders = 0;
 class Renderer {
-  constructor() { this.domElement = w.document.createElement('canvas'); }
+  constructor() { if (unavailable) throw new Error('WebGL unavailable'); this.domElement = w.document.createElement('canvas'); }
   setClearColor() {} setPixelRatio() {} setSize() {} dispose() {}
   render(scene, camera) { scene.updateMatrixWorld(); camera.updateMatrixWorld(); lastScene = scene; lastCamera = camera; renders++; }
 }
@@ -139,9 +142,18 @@ function assertRoomFramed(sectionIndex, roomIndex) {
 }
 const entry = await load(resolve(root, 'assets/spatial-app.js'));
 await entry.link(linker); await entry.evaluate();
-for (let i = 0; i < 300 && !w.document.querySelector('#main').dataset.mode; i++) await new Promise(resolve => setTimeout(resolve, 10));
+for (let i = 0; i < 300 && !w.document.querySelector('#main').dataset.mode && !w.document.querySelector('#main').classList.contains('unavailable'); i++) await new Promise(resolve => setTimeout(resolve, 10));
 await tick(5);
 const main = w.document.querySelector('#main');
+if (unavailable) {
+  assert.ok(main.classList.contains('unavailable'));
+  assert.equal(w.document.querySelector('#unavailable-portfolio').getAttribute('href'), './reading.html');
+  assert.equal(w.document.activeElement.id, 'unavailable-title');
+  assert.equal(w.document.querySelector('canvas'), null);
+  assert.equal(frames.size, 0);
+  console.log('Initial WebGL failure passes: complete reading portfolio remains accessible without a canvas or render loop.');
+  dom.window.close(); process.exit(0);
+}
 assert.ok(main.classList.contains('spatial'), '3D initialization succeeds');
 if (deepLink) {
   await settleCamera();
@@ -158,6 +170,11 @@ assert.equal(main.dataset.transition, 'idle');
 assert.equal(main.dataset.mode, 'tower');
 assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'The opening view includes the surrounding district buildings');
 assert.equal(lastScene.getObjectByName('district-character').visible, true, 'The opening view includes the landscaped district');
+assert.equal(lastScene.getObjectByName('district-contact-shadows').visible, true, 'The opening city includes its contact shading');
+assert.equal(w.document.querySelector('canvas').dataset.detail, mobile ? 'compact' : 'full');
+const cityDepthReferences = [];
+lastScene.traverse(node => { if (node.material?.userData.districtDepth) cityDepthReferences.push(node.material.userData.districtDepth); });
+assert.ok(cityDepthReferences.length > 0 && cityDepthReferences.every(reference => reference.value === cityDepthReferences[0].value && Number.isFinite(reference.value) && reference.value > 0), 'City layers share a finite camera-relative fading distance');
 assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Assembled tower hides the cap plans');
 assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the tower');
 assert.equal(w.document.title, initialTitle, 'The opening tower restores the page title');
@@ -225,12 +242,15 @@ if (mobile) {
 }
 
 await settleCamera();
+const depthBeforeZoom = cityDepthReferences[0].value;
 cameraKey('-'); await settleCamera();
+assert.ok(Math.abs(cityDepthReferences[0].value / depthBeforeZoom - 1 / .9) < .002, 'Atmospheric depth follows zoom instead of washing out at a fixed camera distance');
 const savedOutdoorPosition = lastCamera.position.clone(), savedOutdoorRotation = lastCamera.quaternion.clone();
 await resizeTo(320, 568); await settleCamera();
 assert.equal(w.document.querySelector('#tower-labels').dataset.layout, 'dock', 'Portrait exposes every section in a fixed dock');
 await resizeTo(650, 390); await settleCamera();
 assert.equal(w.document.querySelector('#tower-labels').dataset.layout, 'compact', 'Short landscape screens use compact section labels');
+assert.equal(canvas.dataset.detail, 'compact', 'Landscape phones keep the lighter drawing budget');
 await resizeTo(...originalViewport); await settleCamera();
 assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Outdoor resize round trips preserve orbit and relative zoom');
 
@@ -245,6 +265,7 @@ if (!reduced) {
 }
 assert.equal(lastScene.getObjectByName('district-buildings').visible, false, 'City buildings clear before the facade opens');
 assert.equal(lastScene.getObjectByName('district-character').visible, false, 'City furnishings clear before the facade opens');
+assert.equal(lastScene.getObjectByName('district-contact-shadows').visible, false, 'Ground washes clear before the facade opens');
 await tick(1400);
 assert.equal(main.dataset.mode, 'section'); assert.equal(main.dataset.transition, 'idle');
 assert.equal(canvas.dataset.section, 'about');
@@ -349,6 +370,14 @@ click('#floor-overview'); await tick(800);
 await settleCamera();
 const idleRenders = renders; await tick(500);
 assert.equal(renders, idleRenders, 'An idle scene stops rendering');
+click('#station-navigation [data-station="1"]'); await tick(100);
+pageHidden = true; w.document.dispatchEvent(new w.Event('visibilitychange'));
+const hiddenRenders = renders; await tick(2000);
+assert.equal(renders, hiddenRenders, 'Hidden tabs suspend rendering even during a room flight');
+pageHidden = false; w.document.dispatchEvent(new w.Event('visibilitychange')); await settleCamera();
+assert.equal(canvas.dataset.focusedRoom, '1', 'Visibility restoration safely completes the pending room flight');
+assertRoomFramed(0, 1);
+click('#floor-overview'); await settleCamera();
 
 click('#back-to-structure'); await settleCamera();
 assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Leaving an interior restores the expanded view after viewport changes');
@@ -388,6 +417,7 @@ assert.equal(canvas.dataset.section, '');
 assert.equal(lastScene.getObjectByName('blueprint-district').visible, true, 'Returning to the tower restores the district');
 assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'Cancelled flights restore the surrounding buildings');
 assert.equal(lastScene.getObjectByName('district-character').visible, true, 'Cancelled flights restore landscaping and workshop details');
+assert.equal(lastScene.getObjectByName('district-contact-shadows').visible, true, 'Cancelled flights restore the ground washes');
 assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Interrupted entry and collapse cannot leave cap plans floating over the assembled tower');
 const before = Number(main.dataset.azimuth);
 canvas.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true })); await tick(16);
