@@ -1,0 +1,216 @@
+{
+  "checkedAt": "2026-10-22T22:44:37.680Z",
+  "status": "PASS_LOCAL",
+  "published": false,
+  "scope": "All four MASSING-PLAN phases. Real Chromium 155 WebGL on this Windows/RTX 2060 host, with simulated phone viewports. Actual Edge and physical iPhone measurements remain separate.",
+  "phases": [
+    {
+      "number": 1,
+      "name": "Neutral massing study",
+      "status": "COMPLETE",
+      "evidence": [
+        "scripts/massing-qa.html",
+        "state/massing-views/neutral-study.jpg",
+        "scripts/massing.test.mjs"
+      ],
+      "result": "Seven nested chamfered profiles, elongated main block and shorter west wing, unequal setbacks and off-center 110-unit crown; no 120-degree repeat."
+    },
+    {
+      "number": 2,
+      "name": "Shared polygonal footprint",
+      "status": "COMPLETE",
+      "evidence": [
+        "assets/tower-geometry.js",
+        "assets/tower-model.js",
+        "scripts/massing.test.mjs",
+        "scripts/model.test.mjs"
+      ],
+      "result": "Consistent corner sampling, nonintersecting nested plates, vertical walls, exact horizontal polygon-difference terraces, positive-area faces, closed cap/shell seams and clear plaza."
+    },
+    {
+      "number": 3,
+      "name": "Floors and navigation",
+      "status": "COMPLETE",
+      "evidence": [
+        "scripts/interiors.test.mjs",
+        "scripts/reading-geometry.test.mjs",
+        "scripts/spatial.test.mjs",
+        "state/massing-integration.log",
+        "state/massing-views/about.jpg",
+        "state/massing-views/portrait-side-wing.jpg",
+        "state/massing-views/landscape-contact.jpg",
+        "state/massing-views/reading-desktop.jpg",
+        "state/massing-views/reading-portrait-map.jpg"
+      ],
+      "result": "All 19 furnished/selectable rooms fit shared disjoint regions; one aligned occupied-floor elevator/stair core; concave-safe rails; matching cut/reading maps and accessible hotspots. Actual slab/furniture camera fits and sampled 25/50/75-percent flights pass desktop, portrait and short landscape. Routes/content/keyboard/history/reading/fallback preserved."
+    },
+    {
+      "number": 4,
+      "name": "Material and performance pass",
+      "status": "COMPLETE",
+      "evidence": [
+        "scripts/theme.test.mjs",
+        "state/massing-views/webgl.json",
+        "state/massing-views/accessibility.json",
+        "state/massing-views/frame-timing.json",
+        "state/massing-views/tower-side.jpg",
+        "state/massing-views/tower-rear.jpg",
+        "assets/social-preview.png"
+      ],
+      "result": "Deterministic continuous stone/glazing materials, clean terrace shading/depth, original viewport quality and raster cap, stable allocations/disposal, idle/background suspension and refreshed sharing artwork."
+    }
+  ],
+  "sourceTests": {
+    "command": "npm run check",
+    "tests": 52,
+    "status": "PASS",
+    "syntaxModules": 32,
+    "generatedPaletteAndReading": "PASS"
+  },
+  "integration": {
+    "command": "npm test",
+    "status": "PASS",
+    "modes": [
+      "desktop",
+      "portrait",
+      "reduced-motion",
+      "fresh-room-deep-link",
+      "no-WebGL"
+    ],
+    "additionalViewports": [
+      "650x390 short landscape"
+    ],
+    "evidence": "state/massing-integration.log",
+    "cameraSampling": "Late section entry plus actual destination furniture at 25/50/75 percent of overview-to-room, room-to-room, and interrupted room flights."
+  },
+  "visual": {
+    "status": "PASS",
+    "screenshots": [
+      "state/massing-views/neutral-study.jpg",
+      "state/massing-views/tower.jpg",
+      "state/massing-views/tower-side.jpg",
+      "state/massing-views/tower-rear.jpg",
+      "state/massing-views/explore.jpg",
+      "state/massing-views/about.jpg",
+      "state/massing-views/portrait-about.jpg",
+      "state/massing-views/portrait-side-wing.jpg",
+      "state/massing-views/landscape-contact.jpg",
+      "state/massing-views/reading-desktop.jpg",
+      "state/massing-views/reading-portrait.jpg",
+      "state/massing-views/reading-portrait-map.jpg"
+    ],
+    "beforeAfter": {
+      "before": [
+        "state/natural-facade-views/front.jpg",
+        "state/natural-facade-views/side.jpg",
+        "state/natural-facade-views/rear.jpg",
+        "state/natural-facade-views/explore.jpg"
+      ],
+      "after": [
+        "state/massing-views/tower.jpg",
+        "state/massing-views/tower-side.jpg",
+        "state/massing-views/tower-rear.jpg",
+        "state/massing-views/explore.jpg"
+      ],
+      "note": "Saved comparison views document the old flower silhouette and new asymmetric form; viewport sizes and orbit poses differ."
+    }
+  },
+  "accessibility": {
+    "status": "PASS",
+    "views": 39,
+    "automatedViolations": 0,
+    "evidence": "state/massing-views/accessibility.json",
+    "scope": "WCAG A/AA automation plus visual reading-map/hotspot focus checks, not assistive-technology certification."
+  },
+  "webGL": {
+    "status": "PASS",
+    "evidence": "state/massing-views/webgl.json",
+    "runs": [
+      {
+        "viewport": "1440x900",
+        "requestedDpr": 1.25,
+        "samples": 12,
+        "idleFramesOver250ms": 0,
+        "stableGeometryCount": 185,
+        "stableGeometryAfterResize": 190,
+        "disposal": "PASS (browser harness final status)"
+      },
+      {
+        "viewport": "390x844",
+        "requestedDpr": 3,
+        "samples": 12,
+        "idleFramesOver250ms": 0,
+        "stableGeometryCount": 182,
+        "stableGeometryAfterResize": 190,
+        "disposal": "PASS (browser harness final status)"
+      },
+      {
+        "viewport": "844x390",
+        "requestedDpr": 3,
+        "samples": 12,
+        "idleFramesOver250ms": 0,
+        "stableGeometryCount": 182,
+        "stableGeometryAfterResize": 190,
+        "disposal": "PASS (browser harness final status)"
+      }
+    ],
+    "comparison": {
+      "baseline": "state/natural-facade-qa.json",
+      "tower": {
+        "drawsBefore": 56,
+        "drawsAfter": 56,
+        "trianglesBefore": 33362,
+        "trianglesAfter": 23578
+      },
+      "explore": {
+        "drawsBefore": 70,
+        "drawsAfter": 70,
+        "trianglesBefore": 33738,
+        "trianglesAfter": 24034
+      },
+      "interiorSourceGeometry": {
+        "drawsBefore": 105,
+        "drawsAfter": 115,
+        "trianglesBefore": 24076,
+        "trianglesAfter": 24844,
+        "note": "Aligned service core on every occupied floor, every room enclosed; eight stair treads batched into one mesh."
+      }
+    }
+  },
+  "frameTiming": {
+    "status": "PASS",
+    "evidence": "state/massing-views/frame-timing.json",
+    "normalFpsRange": [
+      161.8,
+      165
+    ],
+    "contextLossFallback": true,
+    "slowFrameDelayMs": 28,
+    "fullQualityRetained": true,
+    "note": "Normal run is near the host 165Hz ceiling; no reliable speedup or physical-phone performance claim."
+  },
+  "sharingArtwork": {
+    "path": "assets/social-preview.png",
+    "width": 1280,
+    "height": 720,
+    "bytes": 272435,
+    "visualInspection": "PASS"
+  },
+  "sourceSha256": {
+    "assets/tower-geometry.js": "145a240822d04f5d51e359c662b97da39ecf0ef8bbd9bf06fb0dcb929f24510e",
+    "assets/tower-model.js": "6ff424bfe8f6b5aba893de510e4559424ab543ca4e6bb9cea2d99635ac9e8ec7",
+    "assets/interiors.js": "ca21a3362e0d19096dc375eb8ab272ab9e607f3e204e616d7933e33440ab9fed",
+    "assets/cap-plans.js": "dfcc75774f40465116dfec6faba5d9ceedb60d8eeb40c155bc6479533dbd6cea",
+    "assets/camera-framing.js": "90a7e14811927fa8b5da097c90a0d2f9817fa4975a99b767d78c7cb807412512",
+    "assets/scene-3d.js": "aefb790269c6d0a75a5aed49acecc3cc5e137333a777fa9ff0753cb3a777b119",
+    "assets/floor-plans.js": "1dedb273bd20c5701a845737d4f8306f6dfc6e34d4c81a5115782536fe683748",
+    "assets/floor-view.js": "41112ed0eea8e1443731bdbfb9ff5315d594ca18f62eef1ef0ee7d86990a2567",
+    "assets/floor-view.css": "85549d29f262cffee69d3a92cb964dd8cdfd2ef3ddeb8f2300a174f1bb1088a0",
+    "assets/facade-materials.js": "5824d837868aaea2707d3b9bc09ad2b1bf35ab67741d6980f0bf9d0c7788339e",
+    "assets/social-preview.png": "e4f5777953dc9494388ba63e1b16c5e502e1bb6d5f53cf6c8444d709370b6a0a",
+    "scripts/massing.test.mjs": "2d3a25efd0958b3534c7f34c6499f2213debb18c83cf9b08e80f049933eeb8eb",
+    "scripts/interiors.test.mjs": "9eec695bf17b8162e1ec8bacec418cfcb0d169ea8216dda7fbdbd87849553ec5",
+    "scripts/reading-geometry.test.mjs": "3db7f59c58de77261228d5382925e58fffdb451bc92495c5af29a1f4228b7e08",
+    "scripts/spatial.test.mjs": "be3e5c408207559e31ee8ad9507ebf282ab035e3bbeba64ea2494400d9323b2d"
+  }
+}

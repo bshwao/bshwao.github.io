@@ -4,6 +4,8 @@ Status: all five phases are complete locally and release-ready. The palette, mod
 
 ## Visual direction
 
+Graphics correction — 2026-10-22: the user requested the original drawing quality after reviewing a screen recording. Automatic resolution/detail reduction is removed; the original viewport-based render budget is retained. Duplicate district roof lids and assembled tower cut faces are eliminated from rendering, and camera depth precision now follows zoom distance. Earlier adaptive-tier evidence below records the previous implementation rather than the current quality policy. Current repair evidence is in `state/graphics-repair-qa.json`.
+
 Use the supplied architectural drawing as the reference: warm ivory paper, fine graphite construction lines, and muted teal, coral, mustard, and blue surfaces. Color should describe materials, rooms, and navigation while the tower remains the visual focus. Keep the existing architectural typography, drafting frame, exploded geometry, and furnished cutaways.
 
 The recommended treatment is a **warm architectural atlas**: mostly neutral paper and structure, with several clearly visible colored surfaces in each principal view. Start around 75–80% neutral and 20–25% colored area, then tune from screenshots. This is a composition guide, not a measured property of the reference.
@@ -99,7 +101,7 @@ Completion: the whole website uses the multicolor system, including reading and 
 - Check text, control, and focus contrast on the actual backgrounds. Inspect grayscale and color-vision simulations to confirm that section/room choices remain understandable.
 - Run real WebGL resource checks and the complete-app frame benchmark against phase 1's baseline. Record timing variability and the browser/device scope honestly.
 - Verify full detail, each adaptive tier, resize, interrupted transitions, hidden-tab return, and context loss. Section colors must remain useful when decorative lines disappear.
-- Confirm stable GPU allocation and disposal, no extra idle rendering, and the existing raster cap. Preserve the automatic quality adjustment from the performance work.
+- Confirm stable GPU allocation and disposal, no extra idle rendering, and the existing raster cap. Preserve the original drawing quality under load, per the user's graphics correction.
 - Review final screenshots and update QA evidence. Publish through the existing checked release workflow when deployment is requested.
 
 Completion: performance and usability evidence accompany the visual redesign; the live release status is explicit.
@@ -108,7 +110,7 @@ Completion: performance and usability evidence accompany the visual redesign; th
 
 - Prefer recoloring existing surfaces, existing batched layers, or vertex colors. Track any change in draw calls, GPU programs, and geometry allocation against the baseline.
 - Keep opaque surfaces and existing lighting. New real-time shadows, reflections, postprocessing, and overlapping transparent color layers are outside this plan.
-- Keep the existing 2.4-million-pixel upper raster budget and adaptive quality tiers. Device adaptation changes detail and resolution, not section identity or content.
+- Keep the original 2.4-million-pixel upper raster budget and viewport-based phone detail. Frame timing must not lower resolution or desktop detail.
 - Generate colors and static styling once; avoid per-frame palette generation, material creation, or new DOM size reads.
 
 ## Source-specific risks to handle

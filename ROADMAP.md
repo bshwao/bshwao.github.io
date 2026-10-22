@@ -18,7 +18,7 @@ The exploded tower now includes simplified architectural plans on its exposed cu
 
 - An outer wall outline inset from the facade.
 - A central elevator and stair core.
-- Room partitions following the tower's three wings.
+- Room partitions following the shared main-block and side-wing occupied regions.
 - Sparse furniture silhouettes suited to each section: study furniture for About, workstations for Projects, lab benches for Experience, shelving for Résumé, and lounge seating for Contact.
 - Thin, light-blue linework that keeps the section labels and tower silhouette clear.
 - Plans that stay attached to the 3D caps as the tower rotates and expands, then clear away when the full furnished interior is revealed.
@@ -49,3 +49,11 @@ These are new redesign phases, separate from the six completed city phases:
 5. **Verification and release readiness — moderate:** accessibility, full/adaptive-quality comparisons, frame timing, stable GPU resources, and final QA evidence.
 
 All five redesign phases are complete. The detailed palette, implementation areas, completion criteria, and performance constraints are in [COLOR-PLAN.md](./COLOR-PLAN.md). Source checks, five integration modes, 39 browser accessibility views, responsive and color-vision review, real WebGL resource/disposal checks, and frame/adaptive-quality runs pass. See `state/multicolor-qa.json` and `QA.md` for evidence and scope. The redesign and preceding performance optimizations are release-ready locally and remain unpublished.
+
+Graphics correction after the user's recording: original drawing quality is restored without automatic resolution/detail drops. Roof and tower cut-face overlap, plus insufficient camera depth precision, are addressed. See `state/graphics-repair-qa.json` for current verification; earlier adaptive-tier runs describe the superseded policy. Actual Edge/iPhone device checks remain a separate follow-up.
+
+## Natural facade and tower-shape follow-up
+
+The facade now uses continuous limestone/glazing material zones, restrained fixed pane variation, and a warmer base. Its color assignment no longer repeats every three wings or resets at section boundaries. Assembled floor edges stay neutral; section accents appear as the structure unfolds.
+
+All four shape phases in [MASSING-PLAN.md](./MASSING-PLAN.md) are complete locally: a neutral four-view study, shared polygonal footprints, room/navigation migration, and the material/performance pass. The flower plan is replaced by a chamfered L-shaped main block and shorter side wing, unequal setbacks, an aligned recessed service core, and an off-center crown. All 19 rooms, cut drawings, reading maps, camera fits and flights use the new geometry. Source/integration checks, 39 accessibility views, real WebGL budgets/disposal at three viewport sizes, frame timing, and original-quality retention pass. See `state/massing-qa.json` and `QA.md`. Actual Edge/iPhone verification remains separate; the work is unpublished.

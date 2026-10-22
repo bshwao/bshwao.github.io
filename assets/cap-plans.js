@@ -1,13 +1,14 @@
 import * as T from './vendor/three.module.min.js';
 import { palette, sectionColors } from './color-theme.js';
-import { footprint, radius, wings } from './tower-geometry.js';
+import { floorLayout, insetFootprint } from './tower-geometry.js';
+import { floorContent } from './floor-content.js';
 
 // Small architectural sketches for the closed tower's exposed cut faces.
 // These are independent of the detailed, selectable interiors below the caps.
 export function createCapPlans(section, undersideY) {
   const group = new T.Group(); group.name = `cap-plans-${section.id}`;
   const walls = [], furniture = [];
-  const faces = [], features = new Set(['perimeter-walls', 'elevator', 'stairs', 'wing-partitions']);
+  const faces = [], features = new Set(['perimeter-walls', 'elevator', 'stairs', 'room-partitions']);
 
   const inside = (point, polygon) => {
     let result = false;
@@ -19,16 +20,15 @@ export function createCapPlans(section, undersideY) {
   };
 
   function face(height, y, side) {
-    const outline = footprint(height);
-    const extent = Math.max(...outline.map(([x, z]) => Math.hypot(x, z)));
-    // The spire tip has no occupiable floor. Its broad lower cut is drawn below.
-    if (extent < .2) return;
-    const boundary = outline.map(([x, z]) => [x * .91, z * .91]);
-    const unit = extent / 18;
-    const core = Math.min(...outline.map(([x, z]) => Math.hypot(x, z))) * .54;
-    faces.push({ height, y, side, boundary });
+    // Crown and spire levels are not occupied floors.
+    if (height >= 99.5) return;
+    const roomCount = floorContent[section.id].rooms.length;
+    const { outline, stations, core } = floorLayout(height, roomCount);
+    const boundary = insetFootprint(outline, .04);
+    const drawing = { height, y, side, boundary, roomCount, rooms: [] };
+    faces.push(drawing);
 
-    // Clip every stroke to the inset wall polygon, including concave wing necks.
+    // Clip every stroke to the inset shared polygon, including the L-shaped recess.
     function line(target, a, b) {
       const dx = b[0] - a[0], dz = b[1] - a[1];
       const stops = [0, 1];
@@ -63,35 +63,36 @@ export function createCapPlans(section, undersideY) {
     }
 
     // Two fine perimeter strokes read as wall thickness rather than a roof rim.
-    for (const scale of [.96, .99]) {
-      const contour = boundary.map(([x, z]) => [x * scale, z * scale]);
+    for (const distance of [.04, .11]) {
+      const contour = insetFootprint(boundary, distance);
       path(walls, [...contour, contour[0]]);
     }
-    box(walls, 0, 0, core * 1.65, core * 1.55);
-    box(walls, -core * .4, 0, core * .62, core * 1.25);
-    // Lift diagonals and a short doorway; the other half contains stair treads.
-    path(walls, [[-core * .71, -core * .62], [-core * .09, core * .62]]);
-    path(walls, [[-core * .71, core * .62], [-core * .09, -core * .62]]);
-    box(walls, core * .4, 0, core * .56, core * 1.25);
-    for (let i = 1; i < 7; i++) path(walls, [[core * .12, -core * .62 + i * core * .18], [core * .68, -core * .62 + i * core * .18]]);
-    path(walls, [[core * .4, core * .45], [core * .4, -core * .4], [core * .27, -core * .2]]);
+    const c = ([x, z]) => [core.x + x * core.width, core.z + z * core.depth];
+    box(walls, core.x, core.z, core.width * .9, core.depth * .9);
+    box(walls, -.22, 0, .36, .74, c);
+    path(walls, [[-.4, -.37], [-.04, .37]], c);
+    path(walls, [[-.4, .37], [-.04, -.37]], c);
+    box(walls, .22, 0, .34, .74, c);
+    for (let i = 1; i < 7; i++) path(walls, [[.05, -.37 + i * .106], [.39, -.37 + i * .106]], c);
+    path(walls, [[.22, .29], [.22, -.27], [.14, -.12]], c);
 
-    for (const [index, wing] of wings.entries()) {
-      const reach = radius(wing.angle, height);
-      const cos = Math.cos(wing.angle), sin = Math.sin(wing.angle);
-      // Furniture coordinates are in local room units: X across, Z along a wing.
-      const room = ([x, z]) => {
-        const along = reach * .59 + z * unit;
-        return [cos * along - sin * x * unit, sin * along + cos * x * unit];
-      };
-      const partition = ([x, z]) => {
-        const along = reach * .34 + z * unit;
-        return [cos * along - sin * x * unit, sin * along + cos * x * unit];
-      };
-      path(walls, [[-5, 0], [-.7, 0]], partition);
-      path(walls, [[.7, 0], [5, 0]], partition);
-      path(walls, [[-.7, 0], [-.7, 1.4]], partition);
-      arc(walls, -.7, 0, 1.4, 0, Math.PI / 2, partition);
+    for (const [index, station] of stations.entries()) {
+      const firstFurnitureVertex = furniture.length;
+      const region = station.region;
+      // The cap uses the same room centres and orthogonal regions as the interior.
+      const unit = Math.min(region.width / 8.4, region.depth / 7.6);
+      const room = ([x, z]) => [station.x + x * unit, station.z + z * unit];
+      const halfWidth = region.width * .43, halfDepth = region.depth * .43;
+      const entrySide = core.z < station.z ? -1 : 1;
+      const entryZ = station.z + entrySide * halfDepth;
+      const gap = Math.min(unit * .65, halfWidth * .25);
+      path(walls, [[station.x - gap, entryZ], [station.x - halfWidth, entryZ],
+        [station.x - halfWidth, station.z - entrySide * halfDepth],
+        [station.x + halfWidth, station.z - entrySide * halfDepth],
+        [station.x + halfWidth, entryZ], [station.x + gap, entryZ]]);
+      path(walls, [[station.x - gap, entryZ], [station.x - gap, entryZ - entrySide * gap * 2]]);
+      arc(walls, station.x - gap, entryZ, gap * 2,
+        entrySide > 0 ? -Math.PI / 2 : 0, entrySide > 0 ? 0 : Math.PI / 2);
 
       const rect = (x, z, w, d) => box(furniture, x, z, w, d, room);
       const stroke = points => path(furniture, points, room);
@@ -114,14 +115,15 @@ export function createCapPlans(section, undersideY) {
       }
 
       if (section.id === 'about') {
-        if (index === 0) { desk(); rect(2.9, .3, .8, 3.2); features.add('study-desk'); }
-        if (index === 1) {
+        if (index === 0) { rect(0, 0, 3.4, 1.8); chair(-1, -1.7); chair(1, 1.7); features.add('orientation-table'); }
+        if (index === 1) { desk(); rect(2.9, .3, .8, 3.2); features.add('study-desk'); }
+        if (index === 2) {
           stroke([[-1.5, -1], [1.5, -1], [1.5, -.4], [1.2, .5], [.7, 1.4], [-.3, 1.9], [-1.2, 1.4], [-1.5, .5], [-1.5, -1]]);
           rect(0, -1.2, 3, .4); rect(0, -2.4, 1.6, .65);
           for (let i = 0; i < 9; i++) stroke([[-1.2 + i * .3, -1.4], [-1.2 + i * .3, -1]]);
           features.add('piano');
         }
-        if (index === 2) { sofa(-2.1, 0, 1); sofa(2.1, 0, -1); circle(0, 0, .8); features.add('study-lounge'); }
+        if (index === 3) { sofa(-2.1, 0, 1); sofa(2.1, 0, -1); circle(0, 0, .8); features.add('study-lounge'); }
       } else if (section.id === 'projects') {
         if (index === 0) { desk(0, 0, 2); features.add('development-workstation'); }
         if (index === 1) {
@@ -133,11 +135,18 @@ export function createCapPlans(section, undersideY) {
         }
         if (index === 2) { desk(); rect(2.8, .5, .7, 3.6); features.add('simulation-desk'); }
       } else if (section.id === 'experience') {
-        if (index < 2) {
+        if (index === 0 || index === 2) {
           rect(0, 0, 4.8, 2); rect(-1.25, .2, 1.4, .8); rect(1, -.15, 1.1, .85); chair(0, -1.8);
           stroke([[-1.8, .2], [-1.55, .2], [-1.4, .45], [-1.2, -.05], [-1, .3], [-.8, .2]]);
           for (const x of [.7, 1, 1.3]) stroke([[x, -.7], [x, -.3]]);
           features.add('electronics-benches');
+          if (index === 2) { rect(2.8, 0, .65, 3); features.add('diagnostic-equipment'); }
+        } else if (index === 1) {
+          for (const x of [-1.5, 1.5]) {
+            rect(x, 0, 1.4, 3.5);
+            for (let z = -1.3; z <= 1.3; z += .5) stroke([[x - .6, z], [x + .6, z]]);
+          }
+          stroke([[-1.5, 2], [0, 2], [0, -2], [1.5, -2]]); features.add('network-racks');
         } else {
           stroke([[0, -2.4], [-.5, -1.6], [-.7, .2], [-1.2, 1.5], [1.2, 1.5], [.7, .2], [.5, -1.6], [0, -2.4]]);
           for (const x of [-1.2, 1.2]) for (const z of [-1.3, .9]) rect(x, z, .55, .85);
@@ -145,25 +154,34 @@ export function createCapPlans(section, undersideY) {
         }
       } else if (section.id === 'resume') {
         if (index === 0) { desk(); features.add('reference-desk'); }
-        else {
+        else if (index === 1) {
           for (const x of [-1.7, 1.7]) {
             rect(x, 0, .95, 4.5);
             for (let z = -1.8; z <= 1.8; z += .6) stroke([[x - .4, z], [x + .4, z]]);
           }
           features.add('archive-shelving');
+        } else if (index === 2) {
+          rect(0, 0, 4.8, 2.2); chair(0, -1.8);
+          rect(-1.2, 0, 1.4, 1.25); rect(1.1, 0, 1.6, 1.25); features.add('technical-reference');
+        } else {
+          desk(); rect(2.7, .4, 1, 3.8);
+          for (const z of [-1, -.3, .4, 1.1]) stroke([[2.3, z], [3.1, z]]);
+          features.add('document-cabinet');
         }
       } else if (section.id === 'contact') {
         if (index === 0) {
           stroke([[-2.5, 1], [2.5, 1], [2.5, -.2], [.5, -.2], [.5, -1.4], [-2.5, -1.4], [-2.5, 1]]);
           rect(-1, .2, 1.1, .25); chair(-1, -2.2); features.add('reception-counter');
         }
-        if (index === 1) { sofa(-2.1, 0, 1); sofa(2.1, 0, -1); circle(0, 0, .8); features.add('lounge-seating'); }
+        if (index === 1) { desk(0, 0, 2); features.add('code-exchange'); }
         if (index === 2) {
           circle(0, 0, 1.45);
           for (const x of [-2.1, 2.1]) chair(x, 0);
           chair(0, -2.1); chair(0, 2.1); features.add('meeting-table');
         }
+        if (index === 3) { sofa(-2.1, 0, 1); sofa(2.1, 0, -1); circle(0, 0, .8); features.add('lounge-seating'); }
       }
+      drawing.rooms.push({ index, region, segments: (furniture.length - firstFurnitureVertex) / 6 });
     }
   }
 

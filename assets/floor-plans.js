@@ -1,201 +1,138 @@
 import { palette, sectionColors } from './color-theme.js';
-/** Decorative concept plans. The readable, interactive portfolio content remains HTML. */
+import { sections, floorLayout } from './tower-geometry.js';
+import { floorContent } from './floor-content.js';
+
+// Text retains a readable grid. The drawing and its interactive anchors use the
+// same occupied floor plate as the 3D rooms, including the shorter side wing.
 const canvas = { x: 100, y: 120, width: 1000, height: 540 };
-const room = (column, row, number) => {
-  const [firstColumn, lastColumn] = column.split(' / ').map(Number);
-  const [firstRow, lastRow] = row.split(' / ').map(Number);
-  return {
-    number, column, row,
-    x: canvas.x + (firstColumn - 1) * canvas.width / 12,
-    y: canvas.y + (firstRow - 1) * canvas.height / 6,
-    width: (lastColumn - firstColumn) * canvas.width / 12,
-    height: (lastRow - firstRow) * canvas.height / 6,
+const textGrid = count => count === 3 ? [
+  ['1 / 7', '1 / 7'], ['7 / 13', '1 / 4'], ['7 / 13', '4 / 7'],
+] : [
+  ['1 / 7', '1 / 4'], ['7 / 13', '1 / 4'], ['1 / 7', '4 / 7'], ['7 / 13', '4 / 7'],
+];
+
+export const planLayouts = Object.fromEntries(sections.map(section => {
+  const content = floorContent[section.id];
+  const height = section.low + .02;
+  const floor = floorLayout(height, content.rooms.length);
+  const b = floor.bounds;
+  const scale = Math.min(canvas.width / (b.maxX - b.minX), canvas.height / (b.maxZ - b.minZ));
+  const mapPoint = ([x, z]) => [600 + (x - (b.minX + b.maxX) / 2) * scale, 390 + (z - (b.minZ + b.maxZ) / 2) * scale];
+  const mapRect = region => {
+    const [cx, cy] = mapPoint([region.x, region.z]);
+    return { x: cx - region.width * scale / 2, y: cy - region.depth * scale / 2,
+      width: region.width * scale, height: region.depth * scale };
   };
-};
-const fourRooms = () => [room('1 / 7', '1 / 4', '01'), room('7 / 13', '1 / 4', '02'), room('1 / 7', '4 / 7', '03'), room('7 / 13', '4 / 7', '04')];
+  return [section.id, {
+    columns: 12, rows: 6, canvas, height, scale, mapPoint,
+    outline: floor.outline.map(mapPoint), core: mapRect(floor.core),
+    rooms: floor.stations.map((station, index) => {
+      const [column, row] = textGrid(content.rooms.length)[index];
+      const [anchorX, anchorY] = mapPoint([station.x, station.z]);
+      return { ...mapRect(station.region), column, row, number: content.rooms[index].number,
+        anchorX, anchorY, worldRegion: station.region };
+    }),
+  }];
+}));
 
-export const planLayouts = {
-  about: { columns: 12, rows: 6, canvas, rooms: fourRooms() },
-  projects: { columns: 12, rows: 6, canvas, rooms: [room('1 / 7', '1 / 7', '01'), room('7 / 13', '1 / 4', '02'), room('7 / 13', '4 / 7', '03')] },
-  experience: { columns: 12, rows: 6, canvas, rooms: fourRooms() },
-  resume: { columns: 12, rows: 6, canvas, rooms: fourRooms() },
-  contact: { columns: 12, rows: 6, canvas, rooms: fourRooms() },
-};
-
-const plans = {
-  about: {
-    title: 'About', core: 'top', leftDoor: 280, rightDoor: 865,
-    outline: 'M154 84H430Q450 84 463 68Q469 60 484 60H716Q731 60 737 68Q750 84 770 84H1046Q1136 84 1136 174V606Q1136 696 1046 696H772L747 718H453L428 696H154Q64 696 64 606V174Q64 84 154 84Z',
-    furnishings: 'library',
-  },
-  projects: {
-    title: 'Projects', core: 'bottom', leftDoor: 0, rightDoor: 868,
-    outline: 'M154 84H414V64H786V84H1046Q1136 84 1136 174V300L1150 324V456L1136 480V606Q1136 696 1046 696H786V718H414V696H154Q64 696 64 606V480L50 456V324L64 300V174Q64 84 154 84Z',
-    furnishings: 'workshop',
-  },
-  experience: {
-    title: 'Experience', core: 'top', leftDoor: 350, rightDoor: 805,
-    outline: 'M180 76H438Q470 76 494 60Q600 30 706 60Q730 76 762 76H1020Q1140 76 1140 196V584Q1140 704 1020 704H180Q60 704 60 584V196Q60 76 180 76Z',
-    furnishings: 'laboratory',
-  },
-  resume: {
-    title: 'Résumé', core: 'top', leftDoor: 220, rightDoor: 945,
-    outline: 'M154 84H400V62H800V84H1046Q1136 84 1136 174V254L1150 274V506L1136 526V606Q1136 696 1046 696H800V718H400V696H154Q64 696 64 606V526L50 506V274L64 254V174Q64 84 154 84Z',
-    furnishings: 'archive',
-  },
-  contact: {
-    title: 'Contact', core: 'bottom', leftDoor: 350, rightDoor: 820,
-    outline: 'M150 90H416Q450 90 476 68Q600 28 724 68Q750 90 784 90H1050Q1140 90 1140 210V590Q1140 710 1050 710H782Q748 710 724 723Q600 752 476 723Q452 710 418 710H150Q60 710 60 590V210Q60 90 150 90Z',
-    furnishings: 'reception',
-  },
-};
-
+/** Architectural sketch of the actual lower occupied cut, with matching rooms. */
 export function createFloorPlan(sectionId) {
-  const id = Object.hasOwn(plans, sectionId) ? sectionId : 'about';
-  const plan = plans[id];
+  const id = Object.hasOwn(planLayouts, sectionId) ? sectionId : 'about';
+  const section = sections.find(item => item.id === id);
   const layout = planLayouts[id];
   const ink = sectionColors[id].ink;
-  const n = (value) => Number(value.toFixed(2));
-  const line = (x1, y1, x2, y2, extra = '') => `<line x1="${n(x1)}" y1="${n(y1)}" x2="${n(x2)}" y2="${n(y2)}" ${extra}/>`;
-  const rect = (x, y, width, height, extra = '') => `<rect x="${x}" y="${y}" width="${width}" height="${height}" ${extra}/>`;
-  const text = (x, y, label, extra = '') => `<text x="${x}" y="${y}" fill="${ink}" stroke="none" font-family="Consolas, 'Liberation Mono', monospace" ${extra}>${label}</text>`;
-  const wall = (d, width = 4.2) => `<path d="${d}" stroke="${ink}" stroke-width="${width}"/><path d="${d}" stroke="#fff" stroke-width="${width - 1.8}"/>`;
-  const doubleRect = (x, y, width, height) => rect(x, y, width, height, `fill="#fff" stroke="${ink}" stroke-width=".85"`) + rect(x + 3, y + 3, width - 6, height - 6, 'stroke-width=".65"');
+  const n = value => Number(value.toFixed(2));
+  const path = points => `M${points.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`;
+  const outline = path(layout.outline);
+  const line = (a, b, extra = '') => `<path d="M${n(a[0])} ${n(a[1])}L${n(b[0])} ${n(b[1])}" ${extra}/>`;
+  const rect = (x, y, width, height, extra = '') => `<rect x="${n(x)}" y="${n(y)}" width="${n(width)}" height="${n(height)}" ${extra}/>`;
+  const label = (x, y, value, extra = '') => `<text x="${n(x)}" y="${n(y)}" fill="${ink}" stroke="none" font-family="Consolas, 'Liberation Mono', monospace" ${extra}>${value}</text>`;
+  const wall = d => `<path d="${d}" stroke-width="5"/><path d="${d}" stroke="${palette.raised}" stroke-width="2.8"/>`;
 
-  function glazing() {
-    let result = '';
-    for (const x of [80, 1120]) {
-      result += line(x - 4, 185, x - 4, 595, 'stroke-width=".6"') + line(x + 4, 185, x + 4, 595, 'stroke-width=".6"');
-      for (let y = 188; y <= 594; y += 14) result += line(x - 5, y, x + 5, y, 'stroke-width=".55"');
-    }
-    for (const y of [99, 681]) {
-      for (const [start, end] of [[184, 405], [795, 1016]]) {
-        result += line(start, y - 4, end, y - 4, 'stroke-width=".6"') + line(start, y + 4, end, y + 4, 'stroke-width=".6"');
-        for (let x = start; x <= end; x += 14) result += line(x, y - 5, x, y + 5, 'stroke-width=".55"');
+  let glazing = '';
+  for (let i = 0; i < layout.outline.length; i++) {
+    const a = layout.outline[i], b = layout.outline[(i + 1) % layout.outline.length];
+    const dx = b[0] - a[0], dy = b[1] - a[1], length = Math.hypot(dx, dy);
+    if (length < 1) continue;
+    const inward = [-dy / length, dx / length];
+    const at = (t, inset) => [a[0] + dx * t + inward[0] * inset, a[1] + dy * t + inward[1] * inset];
+    glazing += line(at(0, 5), at(1, 5), 'stroke-width=".6"');
+    for (let distance = 9; distance < length - 3; distance += 18) glazing += line(at(distance / length, 2), at(distance / length, 7), 'stroke-width=".5"');
+  }
+
+  const core = layout.core;
+  const cx = core.x, cy = core.y, cw = core.width, ch = core.height;
+  let service = rect(cx, cy, cw, ch, `fill="${palette.raised}" stroke-width="2"`);
+  service += rect(cx + cw * .05, cy + ch * .12, cw * .4, ch * .76, 'stroke-width=".8"');
+  for (let i = 1; i < 7; i++) service += line([cx + cw * .05, cy + ch * (.12 + i * .108)], [cx + cw * .45, cy + ch * (.12 + i * .108)], 'stroke-width=".5"');
+  service += rect(cx + cw * .55, cy + ch * .12, cw * .38, ch * .76, 'stroke-width=".8"');
+  service += line([cx + cw * .55, cy + ch * .12], [cx + cw * .93, cy + ch * .88], 'stroke-width=".5"');
+  service += line([cx + cw * .93, cy + ch * .12], [cx + cw * .55, cy + ch * .88], 'stroke-width=".5"');
+
+  let partitions = '', furnishings = '', roomNumbers = '';
+  for (const [index, room] of layout.rooms.entries()) {
+    const { x, y, width, height } = room;
+    const left = x + 4, right = x + width - 4, top = y + 4, bottom = y + height - 4;
+    const center = room.anchorX;
+    const door = Math.min(23, width * .17, height * .27);
+    const entryTop = core.y + core.height / 2 < room.anchorY;
+    const entryY = entryTop ? top : bottom, oppositeY = entryTop ? bottom : top;
+    const direction = entryTop ? 1 : -1;
+    partitions += wall(`M${n(center - door / 2)} ${n(entryY)}H${n(left)}V${n(oppositeY)}H${n(right)}V${n(entryY)}H${n(center + door / 2)}`);
+    partitions += `<path class="plan-door" d="M${n(center - door / 2)} ${n(entryY)}v${n(door * direction)}M${n(center + door / 2)} ${n(entryY)}A${n(door)} ${n(door)} 0 0 ${entryTop ? 1 : 0} ${n(center - door / 2)} ${n(entryY + door * direction)}" stroke-width=".7"/>`;
+
+    const unit = Math.min(width / 8.4, height / 7.6);
+    const localRect = (lx, ly, w, h) => rect(room.anchorX + (lx - w / 2) * unit, room.anchorY + (ly - h / 2) * unit, w * unit, h * unit, `fill="${palette.raised}" stroke-width=".7"`);
+    const localLine = (a, b) => line([room.anchorX + a[0] * unit, room.anchorY + a[1] * unit], [room.anchorX + b[0] * unit, room.anchorY + b[1] * unit], 'stroke-width=".55"');
+    const table = () => localRect(0, 0, 3.8, 1.8) + localRect(0, -1.7, .85, .8) + localRect(0, 1.7, .85, .8);
+    const desk = () => localRect(0, 0, 3.8, 1.7) + localRect(0, .2, 1.3, .25) + localLine([0, .2], [0, -.15]) + localRect(0, -.5, 1.2, .3) + localRect(0, -1.7, .85, .8);
+    const shelves = () => {
+      let result = '';
+      for (const lx of [-1.65, 1.65]) {
+        result += localRect(lx, 0, 1, 4.3);
+        for (let ly = -1.7; ly <= 1.7; ly += .55) result += localLine([lx - .4, ly], [lx + .4, ly]);
       }
-    }
-    for (const [cx, cy, start] of [[154, 174, 180], [1046, 174, 270], [1046, 606, 0], [154, 606, 90]]) {
-      for (const radius of [73, 81]) {
-        const points = [];
-        for (let angle = start; angle <= start + 90; angle += 5) {
-          const a = angle * Math.PI / 180;
-          points.push(`${n(cx + Math.cos(a) * radius)},${n(cy + Math.sin(a) * radius)}`);
-        }
-        result += `<polyline points="${points.join(' ')}" stroke-width=".6"/>`;
-      }
-      for (let angle = start; angle <= start + 90; angle += 10) {
-        const a = angle * Math.PI / 180;
-        result += line(cx + Math.cos(a) * 72, cy + Math.sin(a) * 72, cx + Math.cos(a) * 82, cy + Math.sin(a) * 82, 'stroke-width=".55"');
-      }
-    }
-    return result;
+      return result;
+    };
+    if (id === 'about' && index === 2) {
+      const points = [[-1.5, -1], [1.5, -1], [1.5, -.2], [.8, 1.4], [-.3, 1.8], [-1.5, .8], [-1.5, -1]];
+      furnishings += `<path d="${path(points.map(([lx, ly]) => [room.anchorX + lx * unit, room.anchorY + ly * unit]))}" fill="${palette.raised}"/>`;
+      furnishings += localRect(0, -1.25, 3, .4) + localRect(0, -2.2, 1.4, .6);
+      for (let key = -1.2; key < 1.3; key += .3) furnishings += localLine([key, -1.4], [key, -1.05]);
+    } else if (id === 'experience' && index === 3) {
+      furnishings += `<path d="${path([[0, -2.4], [-.7, -.5], [-1.2, 1.5], [1.2, 1.5], [.7, -.5]].map(([lx, ly]) => [room.anchorX + lx * unit, room.anchorY + ly * unit]))}"/>`;
+      for (const lx of [-1.25, 1.25]) for (const ly of [-1.2, 1]) furnishings += localRect(lx, ly, .55, .85);
+    } else if ((id === 'resume' && index === 1) || (id === 'experience' && index === 1) || (id === 'projects' && index === 1)) {
+      furnishings += shelves();
+    } else if ((id === 'about' && index === 3) || (id === 'contact' && index === 3)) {
+      furnishings += localRect(-2, 0, 1.1, 3.4) + localRect(2, 0, 1.1, 3.4) + localRect(0, 0, 1.5, 1.5);
+      for (const ly of [-.55, .55]) furnishings += localLine([-2.5, ly], [-1.5, ly]) + localLine([1.5, ly], [2.5, ly]);
+    } else if (index === 0 && (id === 'about' || id === 'contact')) furnishings += table();
+    else furnishings += desk();
+    roomNumbers += `<g data-plan-number="${room.number}"><circle cx="${n(x + 17)}" cy="${n(y + 17)}" r="9" fill="${palette.raised}"/>${label(x + 17, y + 20, room.number, 'font-size="8" text-anchor="middle"')}</g>`;
   }
 
-  function core(x, y) {
-    let result = doubleRect(x, y, 210, 46);
-    result += doubleRect(x + 7, y + 6, 72, 34);
-    // Two flights and an intermediate landing, with a small direction arrow.
-    for (let i = 0; i <= 8; i += 1) result += line(x + 12 + i * 7.4, y + 9, x + 12 + i * 7.4, y + 22, 'stroke-width=".5"');
-    for (let i = 0; i <= 8; i += 1) result += line(x + 12 + i * 7.4, y + 25, x + 12 + i * 7.4, y + 37, 'stroke-width=".5"');
-    result += `<path d="M${x + 18} ${y + 15}H${x + 67}V${y + 31}H${x + 27}m5-3-5 3 5 3" stroke-width=".65"/>`;
-    for (const liftX of [x + 88, x + 126]) {
-      result += doubleRect(liftX, y + 6, 32, 34);
-      result += `<path d="M${liftX + 5} ${y + 11}l22 24m0-24-22 24" stroke-width=".4" opacity=".55"/>`;
-      result += line(liftX + 10, y + 40, liftX + 22, y + 40, 'stroke="#fff" stroke-width="3"');
-      result += line(liftX + 16, y + 35, liftX + 16, y + 43, 'stroke-width=".5"');
-    }
-    result += doubleRect(x + 166, y + 6, 36, 34);
-    result += rect(x + 172, y + 12, 9, 10, 'rx="2" stroke-width=".6"');
-    result += `<circle cx="${x + 191}" cy="${y + 17}" r="4.3" stroke-width=".6"/>`;
-    return result;
-  }
+  const minX = Math.min(...layout.outline.map(p => p[0])), maxX = Math.max(...layout.outline.map(p => p[0]));
+  const minY = Math.min(...layout.outline.map(p => p[1])), maxY = Math.max(...layout.outline.map(p => p[1]));
+  let dimensions = line([minX, minY - 28], [maxX, minY - 28], 'stroke-width=".45"');
+  for (const x of [minX, maxX]) dimensions += line([x - 3, minY - 24], [x + 3, minY - 32], 'stroke-width=".6"');
+  dimensions += line([minX - 28, minY], [minX - 28, maxY], 'stroke-width=".45"');
+  for (const y of [minY, maxY]) dimensions += line([minX - 32, y + 3], [minX - 24, y - 3], 'stroke-width=".6"');
+  dimensions += label((minX + maxX) / 2, minY - 38, 'MAIN VOLUME / SHARED FLOOR PLATE', 'font-size="7" text-anchor="middle" letter-spacing="1"');
 
-  // Keep door swings inside the room padding at every desktop plan scale.
-  const doorSize = 22;
-  function doorVertical(y, left = false) {
-    const direction = left ? -1 : 1;
-    const hingeY = left ? y + doorSize : y;
-    const endY = left ? y : y + doorSize;
-    return `<path class="plan-door" d="M600 ${hingeY}h${direction * doorSize}M600 ${endY}A${doorSize} ${doorSize} 0 0 0 ${600 + direction * doorSize} ${hingeY}" stroke-width=".7"/><circle cx="600" cy="${hingeY}" r="1.1" fill="${ink}" stroke="none"/>`;
-  }
-  function doorHorizontal(x, up = false) {
-    const endY = 390 + (up ? -doorSize : doorSize);
-    return `<path class="plan-door" d="M${x} 390V${endY}M${x + doorSize} 390A${doorSize} ${doorSize} 0 0 ${up ? 0 : 1} ${x} ${endY}" stroke-width=".7"/><circle cx="${x}" cy="390" r="1.1" fill="${ink}" stroke="none"/>`;
-  }
-  function partitions() {
-    let result = wall(`M600 115V251M600 ${251 + doorSize}V521M600 ${521 + doorSize}V667`);
-    result += doorVertical(251) + doorVertical(521, true);
-    if (id !== 'projects') {
-      result += wall(`M84 390H${plan.leftDoor}M${plan.leftDoor + doorSize} 390H598`);
-      result += doorHorizontal(plan.leftDoor);
-    }
-    result += wall(`M602 390H${plan.rightDoor}M${plan.rightDoor + doorSize} 390H1116`);
-    result += doorHorizontal(plan.rightDoor, true);
-    return result;
-  }
-
-  function bookshelf(x, y, width) {
-    let result = doubleRect(x, y, width, 20);
-    result += line(x + 4, y + 10, x + width - 4, y + 10, 'stroke-width=".45"');
-    for (let bookX = x + 8; bookX < x + width - 4; bookX += 8) result += line(bookX, y + 4, bookX, y + 16, 'stroke-width=".5"');
-    return result;
-  }
-  function bench(x, y, width, screens = false) {
-    let result = rect(x, y, width, 20, 'rx="1" fill="#fff" stroke-width=".7"');
-    result += line(x + 3, y + 16, x + width - 3, y + 16, 'stroke-width=".45"');
-    for (let itemX = x + 20; itemX < x + width - 15; itemX += 47) {
-      result += screens ? rect(itemX - 9, y + 3, 18, 9, 'stroke-width=".55"') + line(itemX, y + 12, itemX, y + 15, 'stroke-width=".55"') : rect(itemX - 7, y + 4, 14, 10, 'stroke-width=".45"');
-    }
-    return result;
-  }
-  function furniture() {
-    if (plan.furnishings === 'library') return bookshelf(205, 85, 166) + bench(825, 668, 168) + `<path d="M828 672h162M883 672v12M938 672v12" stroke-width=".6"/>`;
-    if (plan.furnishings === 'workshop') return bench(205, 85, 178, true) + bench(818, 85, 175, true) + bookshelf(208, 670, 166);
-    if (plan.furnishings === 'laboratory') return bench(216, 85, 174, true) + bench(810, 670, 170, true) + `<path d="M827 674h18v9h-18zM922 674h36v10h-36z" stroke-width=".45"/>`;
-    if (plan.furnishings === 'archive') return bookshelf(208, 85, 170) + bookshelf(822, 85, 170) + bench(812, 670, 170);
-    return `<path d="M440 101Q600 49 760 101L754 112Q600 66 446 112Z" fill="#fff" stroke-width=".75"/><path d="M459 102Q600 62 741 102" stroke-width=".4"/>` + bench(209, 672, 170) + bench(822, 672, 170);
-  }
-
-  function entrance() {
-    if (id === 'contact') return `<rect x="1104" y="348" width="43" height="72" fill="#fff" stroke="none"/><path d="M1140 350h-34M1140 384A34 34 0 0 1 1106 350M1140 418h-34M1140 384A34 34 0 0 0 1106 418" stroke-width=".75"/>`;
-    const top = id === 'projects';
-    const y = top ? 64 : id === 'experience' ? 704 : 718;
-    const inside = top ? y + 38 : y - 38;
-    return `<rect x="558" y="${y - 6}" width="84" height="12" fill="#fff" stroke="none"/><path d="M560 ${y}V${inside}M598 ${y}A38 38 0 0 ${top ? 1 : 0} 560 ${inside}M640 ${y}V${inside}M602 ${y}A38 38 0 0 ${top ? 0 : 1} 640 ${inside}" stroke-width=".75"/>`;
-  }
-
-  let dimensions = line(100, 44, 1100, 44, 'stroke-width=".45"');
-  for (let i = 0; i <= 12; i += 1) {
-    const x = 100 + i * 1000 / 12;
-    dimensions += line(x - 3, 48, x + 3, 40, 'stroke-width=".55"');
-    dimensions += text(n(x), 32, String.fromCharCode(65 + i), 'text-anchor="middle" font-size="6.5"');
-  }
-  dimensions += line(38, 120, 38, 660, 'stroke-width=".45"');
-  for (let i = 0; i <= 6; i += 1) {
-    const y = 120 + i * 90;
-    dimensions += line(34, y + 3, 42, y - 3, 'stroke-width=".55"') + text(25, y + 2, String(i + 1), 'text-anchor="middle" font-size="6.5"');
-  }
-  dimensions += text(600, 16, '12 DESIGN BAYS', 'text-anchor="middle" letter-spacing="1.2" font-size="6"');
-  dimensions += text(12, 390, '6 DESIGN BAYS', 'text-anchor="middle" transform="rotate(-90 12 390)" letter-spacing="1.2" font-size="6"');
-
-  const roomNumbers = layout.rooms.map((r) => `<g><circle cx="${r.x + 13}" cy="${r.y + 14}" r="7" fill="#fff" stroke-width=".5"/>${text(r.x + 13, r.y + 16.4, r.number, 'text-anchor="middle" font-size="6.2"')}</g>`).join('');
-  const coreY = plan.core === 'top' ? 65 : 670;
-  const coreX = 495;
-  const coreEntry = plan.core === 'top' ? '<path d="M584 113h32" stroke="#fff" stroke-width="6"/><path d="M584 113v-27M616 113A32 32 0 0 0 584 81" stroke-width=".65"/>' : '<path d="M584 670h32" stroke="#fff" stroke-width="6"/><path d="M584 670v27M616 670A32 32 0 0 1 584 702" stroke-width=".65"/>';
-  const drawing = `<svg class="floor-plan-drawing" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" fill="none" stroke="${ink}" stroke-width=".75" stroke-linejoin="round" stroke-linecap="round" font-size="7">
-    <defs><pattern id="plan-hatch-${id}" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M-2 2L2-2M0 7L7 0M5 9L9 5" stroke="${ink}" stroke-width=".4" opacity=".25"/></pattern></defs>
-    <path d="${plan.outline}" fill="#fff" stroke="none"/>
-    <path d="${plan.outline}" stroke="url(#plan-hatch-${id})" stroke-width="15" opacity=".45"/>
-    ${wall(plan.outline, 6.2)}
-    <g class="plan-glazing">${glazing()}</g>
-    <g class="plan-core">${core(coreX, coreY)}${coreEntry}</g>
-    <g class="plan-partitions">${partitions()}</g>
-    <g class="plan-furnishings" opacity=".85">${furniture()}</g>
-    <g class="plan-entrance">${entrance()}</g>
-    <g class="plan-room-numbers">${roomNumbers}</g>
+  return `<svg class="floor-plan-drawing" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" fill="none" stroke="${ink}" stroke-width=".75" stroke-linejoin="round" stroke-linecap="round">
+    <defs><clipPath id="plan-cut-${id}"><path d="${outline}"/></clipPath></defs>
+    <path class="plan-outline" d="${outline}" fill="${palette.raised}" stroke-width="6.2"/>
+    <path d="${outline}" stroke="${palette.raised}" stroke-width="3.7"/>
+    <g clip-path="url(#plan-cut-${id})">
+      <g class="plan-glazing">${glazing}</g>
+      <g class="plan-partitions">${partitions}</g>
+      <g class="plan-core">${service}</g>
+      <g class="plan-furnishings" opacity=".8">${furnishings}</g>
+      <g class="plan-room-numbers">${roomNumbers}</g>
+    </g>
     <g class="plan-dimensions" opacity=".7">${dimensions}</g>
-    <g class="plan-north-arrow"><path d="M1167 102V55m-5 13 5-13 5 13-5-4Z" fill="none" stroke-width=".75"/><circle cx="1167" cy="78" r="18" stroke-width=".4"/>${text(1167, 42, 'N', 'text-anchor="middle" letter-spacing="1" font-size="8"')}</g>
-    <g class="plan-title-block" opacity=".8"><path d="M84 743H1116M84 738v10M1116 738v10" stroke-width=".45"/>${text(84, 763, `E.H. / ${plan.title.toUpperCase()}`, 'letter-spacing="1.3"')}${text(600, 763, 'CONCEPT PLAN / NOT TO SCALE', 'text-anchor="middle" letter-spacing="1.15" font-size="6.5"')}${text(1116, 763, `0${Object.keys(plans).indexOf(id) + 1} / INTERIOR STUDY`, 'text-anchor="end" letter-spacing="1" font-size="6.5"')}</g>
+    <g class="plan-north-arrow"><path d="M1152 105V58m-5 13 5-13 5 13-5-4Z"/><circle cx="1152" cy="81" r="18" stroke-width=".4"/>${label(1152, 45, 'N', 'text-anchor="middle" font-size="8"')}</g>
+    <g class="plan-title-block" opacity=".8"><path d="M84 728H1116M84 723v10M1116 723v10" stroke-width=".45"/>${label(84, 750, `E.H. / ${section.name.toUpperCase()}`, 'font-size="8" letter-spacing="1.3"')}${label(600, 750, 'OCCUPIED LOWER CUT / NOT TO SCALE', 'font-size="7" text-anchor="middle" letter-spacing="1"')}${label(1116, 750, `${section.number} / INTERIOR STUDY`, 'text-anchor="end" font-size="7" letter-spacing="1"')}</g>
   </svg>`;
-  return drawing.replaceAll('#fff', palette.raised);
 }

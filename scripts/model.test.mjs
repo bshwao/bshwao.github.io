@@ -101,6 +101,25 @@ test('district buildings fit their parcels, keep the tower clear, and share a bo
   }
 });
 
+test('colored district roofs have no competing box lids or flat planes beneath pitched roofs', () => {
+  const district = model.districtBuildings;
+  const body = district.root.getObjectByName('building-surfaces').geometry;
+  for (let i = 0; i < body.attributes.normal.count; i++) {
+    assert.ok(body.attributes.normal.getY(i) < .001, 'The body does not duplicate an upward roof face');
+  }
+  const roof = district.root.getObjectByName('building-roofs').geometry;
+  const positions = roof.attributes.position, normals = roof.attributes.normal;
+  for (let i = 0; i < positions.count; i += 3) {
+    const center = new T.Vector3();
+    for (let j = 0; j < 3; j++) center.add(new T.Vector3().fromBufferAttribute(positions,i+j));
+    center.divideScalar(3);
+    const building = district.buildings.find(item => center.x > item.bounds.min.x && center.x < item.bounds.max.x && center.z > item.bounds.min.z && center.z < item.bounds.max.z);
+    if (building && ['gable','sawtooth','test-yard'].includes(building.form)) {
+      assert.ok(normals.getY(i) < .999, `${building.parcelId}: pitched roof has no overlapping flat lid`);
+    }
+  }
+});
+
 test('blueprint road marks have visible area, face upward, and stay inside the streets', () => {
   const mesh = model.district.root.getObjectByName('road-markings');
   assert.ok(mesh.isMesh, 'Lane marks and crossings have a world-space width');

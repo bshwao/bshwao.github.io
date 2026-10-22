@@ -25,6 +25,7 @@ export function createDistrictBuildings() {
   const buildings = [];
   const boxGeometry = new T.BoxGeometry(1, 1, 1).toNonIndexed();
   const boxPositions = boxGeometry.attributes.position;
+  const boxNormals = boxGeometry.attributes.normal;
   const base = -.4;
 
   function segment(target, a, b) { target.push(...a, ...b); }
@@ -47,14 +48,16 @@ export function createDistrictBuildings() {
     const building = { parcelId: parcel.id, ...scheme, bounds, parts };
     buildings.push(building);
 
-    function block(x, z, w, d, h, bottom = base, facade = true) {
+    function block(x, z, w, d, h, bottom = base, facade = true, flatRoof = true) {
       const x0 = x - w / 2, x1 = x + w / 2, z0 = z - d / 2, z1 = z + d / 2;
       const top = bottom + h;
       for (let i = 0; i < boxPositions.count; i++) {
+        // The colored roof owns the top surface; a second box lid underneath
+        // used to produce the alternating roof stripes while the camera moved.
+        if (boxNormals.getY(i) > .5) continue;
         surfaces.push(x + boxPositions.getX(i) * w, bottom + (boxPositions.getY(i) + .5) * h, z + boxPositions.getZ(i) * d);
       }
-      // A separate pale roof plane gives each volume a readable top in the plan.
-      quad(roofs, [x0, top + .025, z0], [x0, top + .025, z1], [x1, top + .025, z1], [x1, top + .025, z0]);
+      if (flatRoof) quad(roofs, [x0, top, z0], [x0, top, z1], [x1, top, z1], [x1, top, z0]);
       rectangle(outlines, x0, z0, x1, z1, bottom);
       rectangle(outlines, x0, z0, x1, z1, top + .035);
       for (const x of [x0, x1]) for (const z of [z0, z1]) segment(outlines, [x, bottom, z], [x, top, z]);
@@ -123,7 +126,7 @@ export function createDistrictBuildings() {
     } else {
       const hallDepth = scheme.form === 'test-yard' ? depth * .28 : depth;
       const hallZ = scheme.form === 'test-yard' ? cz + depth * .36 : cz;
-      const top = block(cx, hallZ, width, hallDepth, scheme.height);
+      const top = block(cx, hallZ, width, hallDepth, scheme.height, base, true, false);
       if (scheme.form === 'gable' || scheme.form === 'test-yard') {
         const ridge = top + 2.1;
         const x0 = cx - width / 2, x1 = cx + width / 2, z0 = hallZ - hallDepth / 2, z1 = hallZ + hallDepth / 2;

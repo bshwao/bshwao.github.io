@@ -1,0 +1,350 @@
+{
+  "checkedAt": "2026-10-22T18:02:28.209Z",
+  "status": "PASS_LOCAL",
+  "published": false,
+  "scope": "Natural facade color correction; massing is planned only. Chromium real-WebGL evidence, not a new Edge/iPhone test.",
+  "sourceTests": {
+    "command": "npm run check",
+    "tests": 40,
+    "status": "PASS"
+  },
+  "integration": {
+    "command": "npm test",
+    "status": "PASS",
+    "modes": [
+      "desktop",
+      "portrait",
+      "reduced-motion",
+      "room-deep-link",
+      "no-WebGL"
+    ]
+  },
+  "visual": {
+    "status": "PASS",
+    "views": [
+      "Front elevation",
+      "Side elevation",
+      "Rear elevation",
+      "Exploded structure"
+    ],
+    "screenshots": "state/natural-facade-views/",
+    "consoleWarnings": 0
+  },
+  "webGL": {
+    "status": "PASS",
+    "run": {
+      "viewport": "1354x870",
+      "requestedDpr": 1.25,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "readyMs": 492,
+      "idleFramesOver250ms": 0,
+      "stableGeometryCount": 172,
+      "stableGeometryAfterResize": 177,
+      "rows": [
+        {
+          "view": "tower",
+          "calls": 56,
+          "triangles": 33362,
+          "lines": 60369,
+          "geometries": 56,
+          "textures": 0,
+          "programs": 12,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 8.8,
+          "far": 1100,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "explore",
+          "calls": 70,
+          "triangles": 33738,
+          "lines": 63489,
+          "geometries": 70,
+          "textures": 0,
+          "programs": 15,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 6.1,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "about",
+          "calls": 27,
+          "triangles": 14878,
+          "lines": 17637,
+          "geometries": 91,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 0.7,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "about/room",
+          "calls": 12,
+          "triangles": 11118,
+          "lines": 14861,
+          "geometries": 91,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 0.2,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "projects",
+          "calls": 33,
+          "triangles": 10586,
+          "lines": 16233,
+          "geometries": 109,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 1.2,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "projects/room",
+          "calls": 30,
+          "triangles": 9764,
+          "lines": 16233,
+          "geometries": 109,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 0.4,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "experience",
+          "calls": 28,
+          "triangles": 10584,
+          "lines": 14613,
+          "geometries": 130,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 1.5,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "experience/room",
+          "calls": 13,
+          "triangles": 6340,
+          "lines": 11457,
+          "geometries": 130,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 0.4,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "resume",
+          "calls": 28,
+          "triangles": 7242,
+          "lines": 11657,
+          "geometries": 151,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 1.8,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "resume/room",
+          "calls": 13,
+          "triangles": 4554,
+          "lines": 9119,
+          "geometries": 151,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 0.6,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "contact",
+          "calls": 28,
+          "triangles": 6324,
+          "lines": 9367,
+          "geometries": 172,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 1.8,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        },
+        {
+          "view": "contact/room",
+          "calls": 15,
+          "triangles": 3348,
+          "lines": 7571,
+          "geometries": 172,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 0.5,
+          "far": 1000,
+          "width": 1354,
+          "height": 870
+        }
+      ]
+    },
+    "comparison": [
+      {
+        "view": "tower",
+        "callsBefore": 56,
+        "callsAfter": 56,
+        "trianglesBefore": 33362,
+        "trianglesAfter": 33362,
+        "programsBefore": 12,
+        "programsAfter": 12
+      },
+      {
+        "view": "explore",
+        "callsBefore": 70,
+        "callsAfter": 70,
+        "trianglesBefore": 33738,
+        "trianglesAfter": 33738,
+        "programsBefore": 15,
+        "programsAfter": 15
+      },
+      {
+        "view": "about",
+        "callsBefore": 27,
+        "callsAfter": 27,
+        "trianglesBefore": 14878,
+        "trianglesAfter": 14878,
+        "programsBefore": 16,
+        "programsAfter": 16
+      },
+      {
+        "view": "about/room",
+        "callsBefore": 12,
+        "callsAfter": 12,
+        "trianglesBefore": 11118,
+        "trianglesAfter": 11118,
+        "programsBefore": 16,
+        "programsAfter": 16
+      },
+      {
+        "view": "projects",
+        "callsBefore": 33,
+        "callsAfter": 33,
+        "trianglesBefore": 10586,
+        "trianglesAfter": 10586,
+        "programsBefore": 16,
+        "programsAfter": 16
+      },
+      {
+        "view": "projects/room",
+        "callsBefore": 30,
+        "callsAfter": 30,
+        "trianglesBefore": 9764,
+        "trianglesAfter": 9764,
+        "programsBefore": 16,
+        "programsAfter": 16
+      },
+      {
+        "view": "experience",
+        "callsBefore": 28,
+        "callsAfter": 28,
+        "trianglesBefore": 10584,
+        "trianglesAfter": 10584,
+        "programsBefore": 16,
+        "programsAfter": 16
+      },
+      {
+        "view": "experience/room",
+        "callsBefore": 13,
+        "callsAfter": 13,
+        "trianglesBefore": 6340,
+        "trianglesAfter": 6340,
+        "programsBefore": 16,
+        "programsAfter": 16
+      },
+      {
+        "view": "resume",
+        "callsBefore": 28,
+        "callsAfter": 28,
+        "trianglesBefore": 7242,
+        "trianglesAfter": 7242,
+        "programsBefore": 16,
+        "programsAfter": 16
+      },
+      {
+        "view": "resume/room",
+        "callsBefore": 13,
+        "callsAfter": 13,
+        "trianglesBefore": 4554,
+        "trianglesAfter": 4554,
+        "programsBefore": 16,
+        "programsAfter": 16
+      },
+      {
+        "view": "contact",
+        "callsBefore": 28,
+        "callsAfter": 28,
+        "trianglesBefore": 6324,
+        "trianglesAfter": 6324,
+        "programsBefore": 16,
+        "programsAfter": 16
+      },
+      {
+        "view": "contact/room",
+        "callsBefore": 15,
+        "callsAfter": 15,
+        "trianglesBefore": 3348,
+        "trianglesAfter": 3348,
+        "programsBefore": 16,
+        "programsAfter": 16
+      }
+    ]
+  },
+  "materials": {
+    "method": "Stable vertex colors from global azimuth/height, continuous across section cuts; no 120-degree tiling or per-frame noise.",
+    "newTextures": 0,
+    "newSurfaceDraws": 0,
+    "geometryChanged": false
+  },
+  "shapePlan": "MASSING-PLAN.md",
+  "shapeImplementation": "NOT_STARTED",
+  "sharingArtwork": {
+    "path": "assets/social-preview.png",
+    "bytes": 265723,
+    "status": "REGENERATED_AND_INSPECTED"
+  }
+}

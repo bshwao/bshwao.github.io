@@ -2,9 +2,10 @@ import * as T from './vendor/three.module.min.js';
 import { OrbitControls } from './vendor/OrbitControls.js';
 import { createTowerModel } from './tower-model.js';
 import { viewportLayout } from './spatial-layout.js';
-import { outdoorCameraPose } from './camera-framing.js';
-import { renderBudget, createFrameBudget } from './render-budget.js';
+import { outdoorCameraPose, cameraDepthRange } from './camera-framing.js';
+import { renderBudget } from './render-budget.js';
 import { palette } from './color-theme.js';
+import { footprint } from './tower-geometry.js';
 
 const ease = t => t * t * t * (t * (t * 6 - 15) + 10);
 const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - start), 0, 1));
@@ -28,9 +29,22 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   const light = new T.DirectionalLight('#ffffff', 1.4); light.position.set(50, 120, 80); scene.add(light);
   const fill = new T.DirectionalLight(palette.fill, .6); fill.position.set(-80, 30, -60); scene.add(fill);
   const model = createTowerModel(); scene.add(model.root);
+  const boxCorners = bounds => {
+    const points=[];
+    for(const x of [bounds.min.x,bounds.max.x]) for(const y of [bounds.min.y,bounds.max.y]) for(const z of [bounds.min.z,bounds.max.z]) points.push(new T.Vector3(x,y,z));
+    return points;
+  };
+  const interiorBounds = new Map(model.modules.map(module=>{
+    const rooms=module.interior.rooms.map(room=>({points:boxCorners(room.bounds),center:room.center,radius:room.radius}));
+    const points=footprint(module.low+.005,12).flatMap(([x,z])=>[
+      new T.Vector3(x,.035-module.base.geometry.parameters.options.depth,z),new T.Vector3(x,module.interior.unit*.6,z),
+    ]).concat(rooms.flatMap(room=>room.points));
+    const bounds=new T.Box3().setFromPoints(points);
+    return [module,{points,center:bounds.getCenter(new T.Vector3()),radius:bounds.getBoundingSphere(new T.Sphere()).radius,rooms}];
+  }));
   const depthReferences = [];
   model.root.traverse(node => { if (node.material?.userData.districtDepth) depthReferences.push(node.material.userData.districtDepth); });
-  const camera = new T.PerspectiveCamera(34, 1, .02, 2000);
+  const camera = new T.PerspectiveCamera(34, 1, .1, 1000);
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const controls = new OrbitControls(camera, canvas);
   controls.mouseButtons = { LEFT: T.MOUSE.ROTATE, MIDDLE: T.MOUSE.DOLLY, RIGHT: null };
@@ -53,8 +67,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   let pointerStart = null, hover = null;
   const savedViews = new Map();
   const activePointers = new Set();
-  const frameBudget = createFrameBudget();
-  let modelDirty = true, lastProjection = '', drawing = false, lastDrawEnd = 0;
+  let modelDirty = true, lastProjection = '';
   const cuts = model.modules.map(() => 0);
   const projectVector = new T.Vector3();
   const paper = new T.Color(palette.paper);
@@ -69,38 +82,57 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       screenCenter: new T.Vector2(pose.layout.centerX / frameWidth, pose.layout.centerY / frameHeight) };
   }
   function interiorFraming(module, roomIndex = null, position = module.group.position) {
-    const room = roomIndex === null ? null : module.interior.rooms[roomIndex];
-    const target = position.clone().add(room ? room.center : new T.Vector3(0, module.interior.unit * .6, 0));
+    const bounds=interiorBounds.get(module);
+    const frame=roomIndex===null?bounds:bounds.rooms[roomIndex];
+    const target = position.clone().add(frame.center);
     const offset = camera.position.clone().sub(controls.target);
     const angle = Math.atan2(offset.x, offset.z);
     const layout = viewportLayout(width, height);
     const tan = Math.tan(T.MathUtils.degToRad(camera.fov / 2));
     const usableAspect = (layout.rect.right - layout.rect.left) / height;
     const usableHeight = layout.rect.bottom - layout.rect.top;
-    const radius = room ? room.radius : module.maxRadius;
-    const polar = room ? .83 : layout.stacked ? .60 : .68;
+    const radius = frame.radius;
+    const polar = roomIndex!==null ? .83 : layout.stacked ? .60 : .68;
     const direction = new T.Vector3(Math.sin(angle) * Math.sin(polar), Math.cos(polar), Math.cos(angle) * Math.sin(polar));
-    let distance = radius * Math.max(3.5, 1.15 / (tan * usableAspect), .9 / tan * height / usableHeight);
-    if (room) {
-      // Fit the actual workspace bounds in the reserved viewport, rather than
-      // zooming out to enclose the empty corners of a bounding sphere.
-      const right = new T.Vector3().crossVectors(camera.up, direction).normalize();
-      const up = new T.Vector3().crossVectors(direction, right).normalize();
-      const horizontal = tan * usableAspect / 1.16, vertical = tan * usableHeight / height / 1.16;
-      distance = radius * 1.8;
-      for (const x of [room.bounds.min.x, room.bounds.max.x]) for (const y of [room.bounds.min.y, room.bounds.max.y]) for (const z of [room.bounds.min.z, room.bounds.max.z]) {
-        const point = new T.Vector3(x, y, z).sub(room.center);
-        distance = Math.max(distance, point.dot(direction) + Math.max(Math.abs(point.dot(right)) / horizontal, Math.abs(point.dot(up)) / vertical));
-      }
+    const right = new T.Vector3().crossVectors(camera.up, direction).normalize();
+    const up = new T.Vector3().crossVectors(direction, right).normalize();
+    const horizontal = tan * usableAspect / 1.16, vertical = tan * usableHeight / height / 1.16;
+    let distance = radius * 1.8;
+    for(const vertex of frame.points) {
+      const point=vertex.clone().sub(frame.center);
+      distance=Math.max(distance,point.dot(direction)+Math.max(Math.abs(point.dot(right))/horizontal,Math.abs(point.dot(up))/vertical));
     }
     return { target, position: target.clone().addScaledVector(direction, distance),
       screenCenter: new T.Vector2(layout.centerX / width, layout.centerY / height) };
   }
+  function containInteriorFlight() {
+    if(!animation||mode!=='section'||!selected) return;
+    if(animation.kind!=='room' && cuts[selected.index]<.25) return;
+    const bounds=interiorBounds.get(selected), targetBounds=focusedRoom===null?bounds:bounds.rooms[focusedRoom];
+    const {rect}=viewportLayout(width,height), cx=screenCenter.x*width,cy=screenCenter.y*height;
+    if(cx<=rect.left||cx>=rect.right||cy<=rect.top||cy>=rect.bottom) return;
+    const tangent=Math.tan(T.MathUtils.degToRad(camera.fov/2))*2/height;
+    const left=(cx-rect.left)*tangent/1.03,rightSpace=(rect.right-cx)*tangent/1.03;
+    const top=(cy-rect.top)*tangent/1.03,bottom=(rect.bottom-cy)*tangent/1.03;
+    const direction=camera.position.clone().sub(controls.target).normalize();
+    const right=new T.Vector3().crossVectors(camera.up,direction).normalize(),up=new T.Vector3().crossVectors(direction,right).normalize();
+    const initialDistance=camera.position.distanceTo(controls.target);
+    let distance=initialDistance;
+    for(const vertex of targetBounds.points) {
+      const point=vertex.clone().add(selected.group.position).sub(controls.target);
+      const x=point.dot(right),y=point.dot(up);
+      distance=Math.max(distance,point.dot(direction)+Math.max(x/(x>=0?rightSpace:-left),y/(y>=0?top:-bottom)));
+    }
+    const fit=animation.kind==='room'?phase(animation.progress,0,.2):phase(cuts[selected.index],.25,.55);
+    camera.position.copy(controls.target).addScaledVector(direction,lerp(initialDistance,distance,fit));
+  }
   function updateProjection() {
-    const key = `${width}:${height}:${screenCenter.x}:${screenCenter.y}`;
+    const { near, far } = cameraDepthRange(camera.position.distanceTo(controls.target));
+    const key = `${width}:${height}:${screenCenter.x}:${screenCenter.y}:${near}:${far}`;
     if (key === lastProjection) return;
     lastProjection = key;
     camera.aspect = width / height;
+    camera.near = near; camera.far = far;
     camera.setViewOffset(width, height, (.5 - screenCenter.x) * width, (.5 - screenCenter.y) * height, width, height);
   }
   function updateModel() {
@@ -110,16 +142,22 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       // Room flights keep the other floors isolated; only a scene entry can show them.
       module.group.visible = !surrounding || context > .001;
       const cut = cuts[index];
+      // Adjacent modules share the same cut plane in the assembled tower.
+      // Keep one shared face until floors separate. The upper face also covers
+      // the exposed ledge where the next module steps inward.
+      module.caps[0].visible = expansion > .001 || index === model.modules.length - 1;
+      module.caps[1].visible = true;
       module.capPlans.setPresentation(expansion, cut, context);
       module.clip.constant = module.group.position.y + (module.high - module.low) * (1 - cut) + module.interior.unit * .17;
       module.interior.group.visible = cut > .03;
       module.line.color.set(hover === module.id ? module.colors.ink : palette.muted);
-      module.line.opacity = .62 * context;
+      module.line.opacity = .34 * context;
       module.surface.color.copy(white);
       module.surface.emissive.copy(paper).multiplyScalar((1 - context) * .8);
-      module.slabMaterial.color.set(module.colors.tint).lerp(paper, 1 - context);
-      module.base.material.color.set(module.colors.tint).lerp(paper, module === selected ? focusAmount * .8 : 1 - context);
-      module.base.children[0].material.opacity = .8 * context * (module === selected ? 1 - focusAmount * .72 : 1);
+      module.slabMaterial.color.set(palette.structure).lerp(module.cutTint,expansion).lerp(paper, 1 - context);
+      module.base.material.color.set(palette.structure).lerp(module.cutTint,expansion).lerp(paper, module === selected ? focusAmount * .8 : 1 - context);
+      module.base.children[0].material.color.set(palette.muted).lerp(module.cutInk,expansion);
+      module.base.children[0].material.opacity = (.28 + .52 * expansion) * context * (module === selected ? 1 - focusAmount * .72 : 1);
       module.interior.setFocus?.(module === selected ? contextRoom : null, focusAmount);
     });
     model.ground.visible = districtVisibility > .005;
@@ -145,7 +183,6 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   }
   function draw(time = performance.now()) {
     if (disposed || document.hidden) { frame = 0; return; }
-    drawing = true;
     frame = 0;
     let moving = false;
     if (animation) {
@@ -179,11 +216,11 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       }
       moving = true;
     }
-    updateProjection();
     if (moving || modelDirty) { updateModel(); modelDirty = false; }
+    containInteriorFlight();
     const changed = controls.update();
+    updateProjection();
     if (dirty || moving || changed) {
-      if (frameBudget.sample(time)) applyBudget();
       const distance = camera.position.distanceTo(controls.target);
       for (const reference of depthReferences) reference.value = distance;
       renderer.render(scene, camera);
@@ -192,22 +229,18 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
         azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle() });
       dirty = false;
     }
-    lastDrawEnd = performance.now(); drawing = false;
     if (animation || changed) invalidate();
   }
   function applyBudget() {
-    const budget = renderBudget(width, height, devicePixelRatio, frameBudget.quality);
+    const budget = renderBudget(width, height, devicePixelRatio);
     renderer.setPixelRatio(budget.pixelRatio);
     model.setCompact(budget.compact);
     canvas.dataset.detail = budget.compact ? 'compact' : 'full';
-    canvas.dataset.quality = String(frameBudget.quality);
+    canvas.dataset.quality = '0';
   }
   function invalidate() {
     dirty = true;
     if (!frame && !disposed) {
-      // Measure motion, not a pause between separate interactions. Time spent
-      // waiting for an already-requested frame still counts as rendering load.
-      if (!drawing && performance.now() - lastDrawEnd > 80) frameBudget.reset();
       frame = requestAnimationFrame(draw);
     }
   }
@@ -362,7 +395,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     const targetAdjustment = controls.target.clone().sub(oldPose.target);
     const zoom = hasViewport ? offset.length() / oldPose.position.distanceTo(oldPose.target) : 1;
     width = bounds.width; height = bounds.height;
-    frameBudget.reset(); applyBudget();
+    applyBudget();
     renderer.setSize(width, height);
     if (hasViewport) for (const [viewMode, saved] of savedViews) {
       const viewDirection = saved.position.clone().sub(saved.target);
@@ -398,7 +431,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     controls.update(); invalidate();
   };
   const observer = new ResizeObserver(resize); observer.observe(container);
-  const visibility = () => { frameBudget.reset(); if (!document.hidden) invalidate(); };
+  const visibility = () => { if (!document.hidden) invalidate(); };
   const motionChange = () => {
     controls.enableDamping = !reducedMotion.matches;
     if (reducedMotion.matches && animation) { animation.start = performance.now(); animation.duration = 1; }
@@ -411,7 +444,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   resize();
   goTo('tower', null, { instant: true });
   return {
-    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: frameBudget.quality, width, height }; },
+    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: 0, near:camera.near, far:camera.far, width, height }; },
     refreshLabels() { invalidate(); },
     goTo,
     focusRoom,

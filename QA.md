@@ -2,6 +2,8 @@
 
 The sections before “Multicolor redesign” record the earlier blue-site release and performance follow-up. Current redesign evidence is recorded separately in the final section and `state/multicolor-*.json`.
 
+The latest user-requested graphics correction is recorded under “Original quality and color-flicker repair” below. It supersedes the automatic quality-tier policy in the earlier performance evidence.
+
 ## Implementation gates
 
 - `npm run check`: 31 passing geometry, layout, route, asset, metadata, and sharing checks; syntax and generated reading content also pass.
@@ -82,3 +84,41 @@ The comparison and representative QA screenshots are in `state/multicolor-views/
 All five redesign phases are release-ready locally. `state/multicolor-qa.json` indexes the evidence. No multicolor commit, push, or deployment has been performed; the earlier live release remains distinct from this working tree.
 
 Phase 5 closeout: the separate **Multicolor redesign verification** chat found no release-blocking gaps. Its sole documentation follow-up was the shader-program comparison above, which is now recorded in both the report and structured evidence. No Phase 5 gates remain open; publication remains a separate release action.
+
+## Original quality and color-flicker repair — 2026-10-22
+
+The user's screen recording showed striped colored roofs and softened graphics during navigation. Frame-rate-based quality reduction has been removed: desktop linework and raster resolution now stay at the original viewport-based settings, including under sustained slow frames. The original phone detail and 2.4-million-pixel cap remain; this correction does not alter camera framing or model scale.
+
+District roof faces now replace box lids instead of overlapping them, and pitched buildings no longer retain a flat roof beneath the slopes. Assembled tower sections render one shared cut face at each interface while preserving the exposed setback ledges. The camera's near/far range follows zoom distance, improving depth-buffer separation for close architectural layers without adding postprocessing or a new render pass.
+
+`npm run check` passes 39 tests, including new roof-overlap and depth-precision regressions; `npm test` passes all five integration modes. Real WebGL checks pass at desktop and simulated DPR-3 portrait sizes for all floors/close-ups, resource/raster budgets, idle, stable allocation, and disposal. A deliberate 28ms post-frame delay retains full desktop detail and the original drawing buffer through orbit, unfold, floor entry, and room flight. The delay run verifies quality retention, not a speed improvement.
+
+Browser visual review found no roof striping in the checked assembled, rotated/zoomed, and exploded views. Cutaways remain readable, and the inspected page has no console or shader warnings. Current evidence and screenshots are in `state/graphics-repair-qa.json` and `state/graphics-repair-views/`. Actual Edge and physical-iPhone checks remain outstanding; the repaired changes are local and unpublished.
+
+## Natural facade materials — 2026-10-22
+
+The repeated 32-column facade tile is replaced with continuous material zones across the whole elevation: limestone recesses, sea-glass and cooler rear glazing, a warmer base, and a quieter crown. Small pane variations are fixed at model construction. They do not animate or restart at section boundaries. Finer, lighter facade linework allows the material washes to read. Assembled structural/cut edges stay neutral, with section accents introduced as the structure unfolds.
+
+All 40 source checks and five integration modes pass. The material regression verifies that a 120-degree turn does not reproduce the same color row, colors remain identical across shared section heights, and rebuilding the model gives stable colors. Existing tests retain solid topology, room picking, compact-detail colors, full-resolution behavior under slow frames, and the depth/roof repairs.
+
+The real WebGL run passes all floor/close-up budgets, idle rendering, stable allocations, and disposal at 1354 × 870 with simulated DPR 1.25. Across the twelve paired views, draw calls, triangles, and shader-program counts match the graphics-repair baseline. No textures, new surface draws, or geometry changes are introduced by this material correction. Front/side/rear elevations and unfolding were inspected without console or shader warnings. Raw evidence and screenshots are in `state/natural-facade-qa.json` and `state/natural-facade-views/`.
+
+The sharing illustration was regenerated and inspected (1280 × 720, 265,723 bytes); its asset checks pass. The next shape redesign is planned in `MASSING-PLAN.md`; its implementation has not started. Current work remains local and unpublished, with actual Edge/iPhone testing still separate.
+
+## Asymmetric tower shape — four phases complete locally (2026-10-22)
+
+This section supersedes the planned-only shape status above. `state/massing-qa.json` indexes the final evidence; screenshots and raw browser runs are in `state/massing-views/`.
+
+- **Shape:** the neutral production-shell study shows top, front, side, and three-quarter views. Seven nested chamfered profiles form a long main block, shorter attached side wing, unequal setbacks, and an offset crown at the original 110-unit height, inside the existing plaza.
+- **Solidity:** source tests prove consistent perimeter winding, no self-intersections, supported terraces, every facade corner retained at all detail samples, nondegenerate vertical/horizontal shell faces, exact outer-minus-inner terrace coverage, and watertight shell/cap seams. Terraces use polygon holes rather than connecting changing concave corners; flat face normals avoid false diagonal shading.
+- **Interiors:** all 19 rooms have distinct furnished/pickable geometry, complete bounds inside disjoint usable rectangles, and clearance from the aligned service core. Rails and cut-plan strokes remain inside the L-shaped footprint, including across its recessed corner. Schematic reading maps, numbers, and accessible hotspots match the same floor plate; every hotspot reaches and focuses the original room heading.
+- **Navigation:** all five DOM/camera integration modes pass: desktop, portrait, reduced motion, fresh room deep link, and no WebGL. Tests also traverse every floor/room in short landscape, inspect actual destination furniture at 25/50/75% of room flights and late section entry, and cover keyboard/touch, history, reading return, motion changes, interruption, idle/hidden-tab suspension, and fallback.
+- **Browser:** real WebGL checks pass all twelve tower/explore/floor/room samples at 1440 × 900, 390 × 844, and 844 × 390 with requested DPR 1.25/3/3. Raster/draw budgets pass, textures stay at zero, navigation and repeated compact/full resizing stop growing allocations, idle frames stay at zero, and disposal releases the uploaded geometries. These phone dimensions are simulated Chromium viewports.
+- **Accessibility:** all 39 settled browser views pass automated WCAG A/AA checks, including the redesigned reading dialogs. Map hotspots retain 44px targets and visible/focused HTML content. This supplements the visual checks; it is not physical-device or assistive-technology certification.
+- **Materials/artwork:** glazing/stone colors are deterministic in world coordinates/height and physical bays, continuous across section seams, and stable through orbit, compact detail, unfold, isolation, and return. The sharing card was regenerated from the new model and inspected at 1280 × 720 (272,435 bytes).
+
+Compared with the natural-facade baseline, desktop tower/explore draw calls remain **56/70**. Tower triangles decrease **33,362 → 23,578** (29.3%); explore triangles decrease **33,738 → 24,034**. Interior source geometry increases **24,076 → 24,844 triangles** (+768, 3.2%) because all occupied floors now include the service core and all rooms have enclosures. Stair batching limits the combined interior draw increase to **105 → 115**. The recorded WebGL runs establish stable resource allocation and disposal despite this added interior detail.
+
+The complete-app frame run retains full desktop detail and original resolution through tower/explore orbit, unfold, floor entry, and room flight; a deliberate 28ms post-frame delay likewise retains quality level 0. The normal run remains near this host's 165Hz ceiling; the measurements describe Chromium 155 on an RTX 2060, not other devices or a reliable speedup. A real context-loss event releases the canvas and exposes the complete reading fallback. Raw timings and quality traces are in `state/massing-views/frame-timing.json`.
+
+All four shape phases are complete locally and unpublished. Actual Edge and physical iPhone verification remain separate from these Chromium measurements.

@@ -102,7 +102,7 @@ function sendMouse(type, x, y, button = 0, pointerType = 'mouse', pointerId = 1)
   Object.defineProperties(event, { pointerId: { value: pointerId }, pointerType: { value: pointerType } });
   w.document.querySelector('canvas').dispatchEvent(event);
 }
-function assertFloorFramed(id) {
+function assertFloorFramed(id, stage = 'settled') {
   const index = ['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id);
   const root = lastScene.children.find(node => node.isGroup);
   const module = root.children[index];
@@ -118,7 +118,7 @@ function assertFloorFramed(id) {
     bounds.left = Math.min(bounds.left, x); bounds.right = Math.max(bounds.right, x);
     bounds.top = Math.min(bounds.top, y); bounds.bottom = Math.max(bounds.bottom, y);
   }
-  assert.ok(bounds.left > 8 && bounds.right < right && bounds.top > layout.rect.top - 10 && bounds.bottom < bottom, `${id}: the floor fits beside the content (${JSON.stringify(bounds)})`);
+  assert.ok(bounds.left > 8 && bounds.right < right && bounds.top > layout.rect.top - 10 && bounds.bottom < bottom, `${id} (${stage}): the floor fits beside the content (${JSON.stringify(bounds)})`);
 }
 const settleCamera = async () => { for (let i = 0; i < 160 && frames.size; i++) await tick(16); };
 const resizeTo = async (width, height) => {
@@ -127,19 +127,38 @@ const resizeTo = async (width, height) => {
   for (const observer of [...resizeObservers]) observer.callback();
   await tick(16);
 };
-function assertRoomFramed(sectionIndex, roomIndex) {
+function assertRoomFramed(sectionIndex, roomIndex, stage = 'settled') {
   const root = lastScene.children.find(node => node.isGroup);
   const zone = root.children[sectionIndex].children[2].children[roomIndex];
   const { rect } = viewportLayout(viewportWidth, viewportHeight);
+  const bounds = { left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity, near: Infinity, far: -Infinity };
   zone.traverse(mesh => {
     if (!mesh.isMesh) return;
     const points = mesh.geometry.attributes.position;
     for (let i = 0; i < points.count; i++) {
       const point = new THREE.Vector3().fromBufferAttribute(points, i).applyMatrix4(mesh.matrixWorld).project(lastCamera);
       const x = (point.x + 1) * viewportWidth / 2, y = (1 - point.y) * viewportHeight / 2;
-      assert.ok(x >= rect.left - 1 && x <= rect.right + 1 && y >= rect.top - 1 && y <= rect.bottom + 1, `Room ${roomIndex}: furniture stays in the visible model area (${x.toFixed(1)},${y.toFixed(1)})`);
+      bounds.left = Math.min(bounds.left, x); bounds.right = Math.max(bounds.right, x);
+      bounds.top = Math.min(bounds.top, y); bounds.bottom = Math.max(bounds.bottom, y);
+      bounds.near = Math.min(bounds.near, point.z); bounds.far = Math.max(bounds.far, point.z);
     }
   });
+  assert.ok(bounds.left >= rect.left - 1 && bounds.right <= rect.right + 1 && bounds.top >= rect.top - 1 && bounds.bottom <= rect.bottom + 1 && bounds.near > -1 && bounds.far < 1,
+    `${sections[sectionIndex].id} room ${roomIndex} (${stage}): furniture stays in the visible model area (${JSON.stringify(bounds)})`);
+}
+async function sampleRoomFlight(sectionIndex, roomIndex) {
+  for (const progress of [.25, .5, .75]) {
+    await tick(190);
+    assertRoomFramed(sectionIndex, roomIndex, `${progress * 100}% of room flight`);
+  }
+  await tick(230);
+}
+async function sampleSectionEntry(id) {
+  await tick(1387.5);
+  assertFloorFramed(id, '75% of section entry');
+  await tick(277.5);
+  assertFloorFramed(id, '90% of section entry');
+  await tick(335);
 }
 const entry = await load(resolve(root, 'assets/spatial-app.js'));
 await entry.link(linker); await entry.evaluate();
@@ -267,7 +286,11 @@ if (!reduced) {
 assert.equal(lastScene.getObjectByName('district-buildings').visible, false, 'City buildings clear before the facade opens');
 assert.equal(lastScene.getObjectByName('district-character').visible, false, 'City furnishings clear before the facade opens');
 assert.equal(lastScene.getObjectByName('district-contact-shadows').visible, false, 'Ground washes clear before the facade opens');
-await tick(1400);
+await tick(787.5);
+assertFloorFramed('about', '75% of section entry'); // The facade has almost fully cut away.
+await tick(277.5);
+assertFloorFramed('about', '90% of section entry'); // Inspect the visible cut before settling.
+await tick(335);
 assert.equal(main.dataset.mode, 'section'); assert.equal(main.dataset.transition, 'idle');
 assert.equal(canvas.dataset.section, 'about');
 assert.equal(lastScene.getObjectByName('blueprint-district').visible, false, 'The district clears away for interior reading');
@@ -301,13 +324,18 @@ assert.ok(furniturePoint, 'The room has a visible selectable furniture surface')
 const furnitureX = (furniturePoint.x + 1) * viewportWidth / 2, furnitureY = (1 - furniturePoint.y) * viewportHeight / 2;
 sendMouse('pointerdown', furnitureX, furnitureY); sendMouse('pointerup', furnitureX, furnitureY);
 canvas.dispatchEvent(new w.MouseEvent('click', { bubbles: true, clientX: furnitureX, clientY: furnitureY }));
-await tick(240);
+await tick(190);
+assertRoomFramed(0, 2, '25% of overview-to-room flight');
 assert.equal(lastScene.children.find(node => node.isGroup).children.slice(0, 5).filter(node => node.visible).length, 1, 'Other tower sections stay hidden throughout a room close-up');
 assert.equal(w.location.hash, '#about/c', 'Room selection has a stable shareable URL');
 assert.equal(w.document.title, `${floorContent.about.rooms[2].title} · About — Eric Hsu`);
 assert.ok(w.document.querySelector('#interior-content').textContent.includes('Piano'));
 assert.equal(w.document.querySelector('#station-markers [data-station="2"]').getAttribute('aria-pressed'), 'true');
-await tick(800);
+await tick(190);
+assertRoomFramed(0, 2, '50% of overview-to-room flight');
+await tick(190);
+assertRoomFramed(0, 2, '75% of overview-to-room flight');
+await tick(470);
 assert.equal(canvas.dataset.focusedRoom, '2');
 assertRoomFramed(0, 2);
 assert.equal(main.dataset.cameraMotion, 'idle');
@@ -332,7 +360,7 @@ clipboardDenied = false;
 click('#station-navigation [data-station="1"]'); await tick(200);
 assert.equal(manualLink.hidden, true, 'Changing the route clears the manual copy field');
 assert.equal(w.document.querySelector('#share-status').textContent, '');
-click('#station-navigation [data-station="3"]'); await tick(800);
+click('#station-navigation [data-station="3"]'); await sampleRoomFlight(0, 3);
 assert.equal(canvas.dataset.focusedRoom, '3', 'Rapid room changes keep the most recent camera destination');
 assertRoomFramed(0, 3);
 w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await tick(800);
@@ -391,19 +419,37 @@ assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Unfolding
 // Move between all interior models and check the document/source links.
 for (const id of ['projects', 'experience', 'resume', 'contact']) {
   w.history.pushState(null, '', `#${id}`); w.dispatchEvent(new w.HashChangeEvent('hashchange'));
-  await tick(2000);
+  await sampleSectionEntry(id);
   assert.equal(canvas.dataset.section, id); assert.equal(main.dataset.transition, 'idle');
   assert.equal(w.document.querySelector('#complete-portfolio').getAttribute('href'), `./reading.html#${id === 'resume' ? 'education' : id}`, 'The complete portfolio opens the corresponding reading section');
   assertFloorFramed(id);
   assert.ok(w.document.querySelector('#interior-content').textContent.trim().length > 40);
   const count = w.document.querySelectorAll('#station-navigation button').length;
   for (let i = 0; i < count; i++) {
-    click(`#station-navigation [data-station="${i}"]`); await tick(800);
+    click(`#station-navigation [data-station="${i}"]`);
+    await sampleRoomFlight(['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id), i);
     assert.equal(w.location.hash, `#${id}/${floorContent[id].rooms[i].id}`);
     if (id === 'projects') assert.equal(w.document.querySelector('#complete-portfolio').getAttribute('href'), `./reading.html#project-${floorContent.projects.rooms[i].projectId}`, 'Each project opens its own complete case study');
     assertRoomFramed(['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id), i);
   }
   click('#floor-overview'); await tick(800);
+}
+if (mobile) {
+  // Actual furniture projections in the short landscape layout, including all
+  // three intermediate flight samples, supplement the portrait phone pass.
+  await resizeTo(650, 390); await settleCamera();
+  for (const [sectionIndex, { id }] of sections.entries()) {
+    w.history.pushState(null, '', `#${id}`); w.dispatchEvent(new w.HashChangeEvent('hashchange'));
+    await sampleSectionEntry(id);
+    assertFloorFramed(id);
+    for (let roomIndex = 0; roomIndex < floorContent[id].rooms.length; roomIndex++) {
+      click(`#station-navigation [data-station="${roomIndex}"]`);
+      await sampleRoomFlight(sectionIndex, roomIndex);
+      assertRoomFramed(sectionIndex, roomIndex);
+    }
+    click('#floor-overview'); await tick(800);
+  }
+  await resizeTo(...originalViewport); await settleCamera();
 }
 click('#station-navigation [data-station="3"]');
 assert.equal(w.document.querySelector('#interior-content a[download]').getAttribute('href'), './assets/eric-hsu-resume.pdf');
@@ -490,16 +536,16 @@ assert.equal(canvas.isConnected, true);
 assert.equal(w.document.querySelector('#reading-view').hidden, true);
 w.history.pushState(null, '', '#resume/d'); w.dispatchEvent(new w.PopStateEvent('popstate')); await settleCamera();
 if (!reduced) {
-  // A sustained slow flight changes rendering cost, not camera framing or routes.
+  // A sustained slow flight must retain the user's original graphics quality.
   w.history.pushState(null, '', '#projects'); w.dispatchEvent(new w.PopStateEvent('popstate'));
   for (let i = 0; i < 58; i++) await tick(34);
-  assert.ok(Number(canvas.dataset.quality) >= 1, 'Slow active frames lower quality automatically');
-  assert.equal(canvas.dataset.detail, 'compact');
+  assert.equal(canvas.dataset.quality, '0', 'Slow frames never lower the rendering resolution');
+  assert.equal(canvas.dataset.detail, mobile ? 'compact' : 'full', 'Desktop line detail stays full under load');
   assert.equal(canvas.dataset.section, 'projects');
   assertFloorFramed('projects');
   const quality = canvas.dataset.quality;
   await resizeTo(...originalViewport);
-  assert.equal(canvas.dataset.quality, quality, 'Resizing retains the learned device budget');
+  assert.equal(canvas.dataset.quality, quality, 'Resizing preserves original graphics quality');
   w.history.pushState(null, '', '#resume/d'); w.dispatchEvent(new w.PopStateEvent('popstate')); await settleCamera();
 }
 click('#reading-view');

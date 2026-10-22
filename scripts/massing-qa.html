@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asymmetric tower — neutral massing study</title>
+<style>
+  * { box-sizing: border-box; }
+  html { color: #383a39; background: #eeefed; font-family: Arial, sans-serif; }
+  body { margin: 0; padding: 26px; }
+  h1 { margin: 0 0 8px; font-size: 21px; font-weight: 500; }
+  p { margin: 0; font-size: 12px; line-height: 1.6; }
+  #views { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
+  figure { margin: 0; border: 1px solid #cbd0cd; background: #f7f8f6; padding: 15px; }
+  figcaption { font-size: 11px; letter-spacing: .13em; }
+  .view { height: max(320px, calc((100vh - 210px) / 2)); }
+  canvas { position: fixed; inset: 0; pointer-events: none; }
+  footer { margin-top: 14px; font-size: 11px; }
+  @media (max-width: 600px) { body { padding: 14px; } #views { gap: 10px; } figure { padding: 9px; } .view { height: 300px; } }
+</style>
+<h1>Asymmetric stepped tower</h1>
+<p>Neutral massing study · elongated main volume / shorter west wing / recessed service spine / offset lantern</p>
+<div id="views">
+  <figure><figcaption>01 / TOP</figcaption><div class="view" data-view="top"></div></figure>
+  <figure><figcaption>02 / FRONT</figcaption><div class="view" data-view="front"></div></figure>
+  <figure><figcaption>03 / SIDE</figcaption><div class="view" data-view="side"></div></figure>
+  <figure><figcaption>04 / THREE-QUARTER</figcaption><div class="view" data-view="perspective"></div></figure>
+</div>
+<footer id="status">Loading actual production shell geometry…</footer>
+<script type="module" src="./massing-qa.js"></script>
+</html>

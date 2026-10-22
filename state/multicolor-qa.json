@@ -20,10 +20,10 @@
       ],
       "additionalCoverage": [
         "Interrupted transitions",
-        "Resize and learned quality retention",
+        "Resize at original graphics quality",
         "Hidden-tab suspension and return",
         "Reduced motion",
-        "Quality recovery hysteresis",
+        "Slow frames preserve original quality",
         "Context-loss cleanup"
       ]
     },
@@ -43,7 +43,7 @@
       "path": "assets/social-preview.png",
       "width": 1280,
       "height": 720,
-      "bytes": 267113,
+      "bytes": 265723,
       "method": "Geometry vector projection and Pillow rasterization; inspected with image viewer. This is not a browser screenshot."
     },
     "whitespace": {
@@ -68,25 +68,15 @@
     },
     "realWebGL": {
       "status": "PASS",
-      "evidence": "state/multicolor-browser-qa.json",
-      "scope": "Desktop, portrait, simulated DPR 3 and 4K DPR 2. All floors and one close-up per floor, draw/raster budgets, zero textures, idle rendering, stable allocation and disposal.",
-      "baselineComparison": "state/multicolor-browser-qa.json#baselineComparison"
+      "evidence": "state/natural-facade-qa.json",
+      "scope": "Current natural materials: paired desktop views retain draw/triangle/program counts; all floors, close-ups, idle, allocation and disposal pass. Earlier graphics-repair evidence also covers simulated DPR-3 portrait."
     },
     "frames": {
       "status": "PASS",
-      "evidence": "state/multicolor-frame-qa.json",
-      "normalFpsRange": [
-        162.5,
-        165
-      ],
-      "adaptiveTiers": [
-        0,
-        1,
-        2,
-        3
-      ],
-      "realContextLossFallback": true,
-      "scope": "One Chromium/RTX 2060 run, near 165Hz ceiling; injected 28ms CPU delay verifies adaptation only. Edge performance remains unmeasured."
+      "evidence": "state/graphics-repair-qa.json",
+      "scope": "Repaired build: deliberate slow-frame run retains full desktop detail and original resolution through all six interactions. Earlier normal-load FPS measurements are historical.",
+      "qualityPolicy": "Fixed viewport-based quality",
+      "previousEvidence": "state/multicolor-frame-qa.json"
     },
     "visual": {
       "status": "PASS",
@@ -138,5 +128,21 @@
     "findings": "No release-blocking gaps. The shader-program delta was the only documentation omission; it is now recorded in QA.md and the WebGL evidence.",
     "documentationFollowup": "CLOSED",
     "closedOn": "2026-10-22"
+  },
+  "graphicsCorrection": {
+    "status": "PASS_LOCAL",
+    "evidence": "state/graphics-repair-qa.json",
+    "qualityPolicy": "Original viewport quality; no automatic resolution/detail downgrades",
+    "supersedes": "Earlier adaptive-quality evidence describes the implementation before the user-requested correction."
+  },
+  "naturalFacade": {
+    "status": "PASS_LOCAL",
+    "evidence": "state/natural-facade-qa.json",
+    "scope": "Material correction only; deterministic, non-repeating elevation colors. Geometry and original graphics quality preserved."
+  },
+  "shapePlan": {
+    "path": "MASSING-PLAN.md",
+    "status": "PLANNED_NOT_IMPLEMENTED",
+    "direction": "Asymmetric stepped main volume, shorter side wing, recessed core, unequal setbacks."
   }
 }

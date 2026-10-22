@@ -49,6 +49,17 @@
   .room-scroll-cue { position: absolute; right: 33px; bottom: 12px; font: 6px/1.5 var(--mono); letter-spacing: .07em; color: var(--muted); background: var(--raised); padding-left: 7px; pointer-events: none; }
   .floor-description { margin: 0 auto; max-width: 1000px; padding: 0 15px 10px; text-align: center; font: 9px/1.6 var(--mono); color: var(--muted); }
 
+  /* The shared L-shaped plan is a navigable map; text keeps its own generous grid. */
+  .floor-sheet.has-shared-plan { width: min(1120px, 100%); min-width: 0; aspect-ratio: auto; }
+  .has-shared-plan .plan-map { position: relative; width: min(900px, 100%); aspect-ratio: 3 / 2; margin: 0 auto 18px; pointer-events: auto; }
+  .has-shared-plan .floor-plan-art { position: absolute; inset: 0; }
+  .has-shared-plan .plan-hotspots { display: block; position: absolute; inset: 0; }
+  .has-shared-plan .plan-hotspots button { position: absolute; transform: translate(-50%, -50%); min-width: 44px; min-height: 44px; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: rgba(var(--raised-rgb),0.941); font: 10px/1 var(--mono); }
+  .has-shared-plan .plan-hotspots button:hover { background: var(--accent-tint); }
+  .has-shared-plan .hotspot-label { position: absolute; top: calc(100% + 5px); left: 50%; transform: translateX(-50%); width: 120px; color: var(--muted); font: 8px/1.4 var(--mono); text-align: center; }
+  .has-shared-plan .floor-rooms { position: relative; inset: auto; height: clamp(640px, 80dvh, 820px); border-top: 1px solid var(--line); }
+  .has-shared-plan .floor-room { border-bottom: 1px solid var(--line); }
+
   @media (min-width: 851px) and (max-height: 700px) {
     .floor-topbar { min-height: 64px; padding-block: 8px; }
     .floor-sheet { width: min(1200px, calc((100dvh - 92px) * 1.5)); }
@@ -74,6 +85,9 @@
     .plan-hotspots button:hover { background: var(--accent-tint); }
     .hotspot-label { position: absolute; top: calc(100% + 5px); left: 50%; transform: translateX(-50%); width: 120px; color: var(--muted); font: 8px/1.4 var(--mono); text-align: center; }
     .floor-rooms { position: relative; inset: auto; display: flex; flex-direction: column; gap: 0; padding: 0 12px; }
+    .has-shared-plan .floor-rooms { height: auto; border-top: 0; }
+    .has-shared-plan .plan-map { margin-bottom: 8px; }
+    .has-shared-plan .hotspot-label { width: 100px; }
     .floor-room { display: flex; grid-area: auto !important; padding: 28px 25px; border: 3px double var(--line); margin-bottom: -3px; min-height: 180px; }
     .floor-room::before { content: ''; position: absolute; left: 35px; bottom: -3px; width: 32px; height: 3px; background: var(--raised); z-index: 1; }
     .floor-room::after { content: ''; position: absolute; left: 35px; bottom: -3px; width: 32px; height: 32px; border: 1px solid var(--line); border-left: 0; border-bottom: 0; border-top-right-radius: 100%; pointer-events: none; }

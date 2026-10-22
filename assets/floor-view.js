@@ -57,6 +57,7 @@ export function createSectionReadingView({ onClose, onTower, onNavigate }) {
     const section = rooms.find(room => room.id === id);
     const content = floorContent[id];
     const layout = planLayouts[id];
+    sheet.classList.add('has-shared-plan');
     document.querySelector('#room-location').textContent = `LEVEL ${section.number} / INTERIOR PLAN`;
     document.querySelector('#room-title').textContent = section.name;
     document.querySelector('#floor-description').textContent = content.note;
@@ -66,9 +67,9 @@ export function createSectionReadingView({ onClose, onTower, onNavigate }) {
     document.querySelector('#floor-navigation').innerHTML = `<a href="#${previous.id}" data-room="${previous.id}" aria-label="Previous floor: ${escape(previous.name)}">← <span>${escape(previous.name)}</span></a><a href="#${next.id}" data-room="${next.id}" aria-label="Next floor: ${escape(next.name)}"><span>${escape(next.name)}</span> →</a>`;
     sheet.innerHTML = `<div class="plan-map"><div class="floor-plan-art">${createFloorPlan(id)}</div><div class="plan-hotspots">${content.rooms.map((room, i) => {
       const position = layout.rooms[i];
-      const x = (position.x + position.width / 2) / 12;
-      const y = (position.y + position.height / 2) / 8;
-      return `<button type="button" data-plan-room="plan-${id}-${room.id}" style="left:${x}%;top:${y}%" aria-label="Go to room ${room.number}: ${escape(room.title)}"><span>${escape(room.number)}</span><span class="hotspot-label" aria-hidden="true">${escape(room.title)}</span></button>`;
+      const x = position.anchorX / 12;
+      const y = position.anchorY / 8;
+      return `<button type="button" data-plan-room="plan-${id}-${room.id}" aria-controls="plan-${id}-${room.id}" style="left:${x}%;top:${y}%" aria-label="Go to room ${room.number}: ${escape(room.title)}"><span>${escape(room.number)}</span><span class="hotspot-label" aria-hidden="true">${escape(room.title)}</span></button>`;
     }).join('')}</div></div><div class="floor-rooms">${content.rooms.map((room, index) => renderRoom(id, room, layout.rooms[index])).join('')}</div>`;
     document.querySelector('.floor-scroll').scrollTop = 0;
   }

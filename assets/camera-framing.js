@@ -1,15 +1,20 @@
 import * as T from './vendor/three.module.min.js';
 import { districtPlan } from './district-ground.js';
-import { sections, footprint } from './tower-geometry.js';
+import { sections, setbacks, footprint } from './tower-geometry.js';
 import { outdoorViewLayout } from './spatial-layout.js';
 
 const openingAzimuth = Math.atan2(.57, 1);
 
+/** Keep fine facade/roof layers distinguishable in the depth buffer at any zoom. */
+export function cameraDepthRange(distance) {
+  return { near: Math.max(.1, Math.floor(distance * .2) / 10), far: Math.max(1000, Math.ceil((distance + 600) / 100) * 100) };
+}
+
 export function outdoorFramingPoints(mode, width) {
   const points = [];
   if (mode === 'tower') {
-    for (const height of [0, 14.5, 31.5, 52.5, 78.5, 99.5, 110]) {
-      for (const [x, z] of footprint(height, 24)) points.push(new T.Vector3(x, height, z));
+    for (const height of [0, ...setbacks.flatMap(y => [y-.002,y]), 110]) {
+      for (const [x, z] of footprint(height, 12)) points.push(new T.Vector3(x, height, z));
     }
     if (width <= 480) {
       // Portrait keeps the tower and plaza prominent; the outer district is context.
@@ -24,7 +29,8 @@ export function outdoorFramingPoints(mode, width) {
   } else {
     for (const [index, section] of sections.entries()) {
       const offset = (index % 2 ? 1 : -1) * (index === 4 ? 10 : 8);
-      for (const y of [section.low, section.high]) for (const [x, z] of footprint(y === section.high ? y - .002 : y, 24)) {
+      const levels=[section.low,section.high,...setbacks.filter(y=>y>section.low&&y<section.high).flatMap(y=>[y-.002,y])];
+      for (const y of levels) for (const [x, z] of footprint(y === section.high ? y - .002 : y, 12)) {
         points.push(new T.Vector3(x + offset, y + (4 - index) * 10, z));
       }
     }

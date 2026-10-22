@@ -8,6 +8,7 @@ import { applyDistrictDepth } from '../assets/district-style.js';
 import { createFloorPlan } from '../assets/floor-plans.js';
 import { JSDOM } from 'jsdom';
 import { simulateVision, visionMatrices } from './vision-simulation.js';
+import { facadeColor } from '../assets/facade-materials.js';
 
 const luminance = hex => {
   const linear = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4);
@@ -41,8 +42,7 @@ test('facade and cut-plan colors survive compact detail without extra geometry o
     assert.equal(colors.count, module.mesh.geometry.attributes.position.count);
     const swatches = new Set();
     for (let i = 0; i < colors.count; i++) swatches.add(new T.Color().fromBufferAttribute(colors, i).getHexString());
-    assert.ok(swatches.has(palette.teal.slice(1)) && swatches.has(palette.structure.slice(1)));
-    assert.ok(swatches.size >= 3, 'Facade includes glazing, structure and warm detail');
+    assert.ok(swatches.size >= 12, 'Facade includes softly varied architectural materials');
     const body = module.mesh.geometry, plate = module.base.geometry, original = [...colors.array];
     model.setCompact(true); model.setCompact(false);
     assert.equal(module.mesh.geometry, body); assert.equal(module.base.geometry, plate);
@@ -53,6 +53,34 @@ test('facade and cut-plan colors survive compact detail without extra geometry o
     assert.ok(module.interior.rooms.every(room => room.surfaces.length <= 4), 'Rooms retain four batched surface draws');
     const roomColors = new Set(module.interior.rooms.flatMap(room => room.surfaces.map(surface => surface.color.getHexString())));
     assert.ok(roomColors.has(palette.timber.slice(1)) && roomColors.has(palette.coral.slice(1)) && roomColors.has(palette.glass.slice(1)));
+  }
+});
+
+test('facade materials do not repeat every wing or restart at a section boundary', () => {
+  for (const height of [8,24,45,72,90]) {
+    const row = Array.from({length:96},(_,i)=>facadeColor(i/96*Math.PI*2,height));
+    for (const offset of [32,64]) {
+      const difference = row.reduce((sum,color,i)=>{
+        const other=row[(i+offset)%96];
+        return sum+Math.hypot(color.r-other.r,color.g-other.g,color.b-other.b);
+      },0)/96;
+      assert.ok(difference > .04, `No 120-degree color repeat at height ${height}`);
+    }
+    assert.deepEqual(row.map(color=>color.toArray()),Array.from({length:96},(_,i)=>facadeColor(i/96*Math.PI*2,height).toArray()),'Material variation is stable on reload');
+  }
+  const model = createTowerModel();
+  for (let i=0;i<model.modules.length-1;i++) {
+    const upper=model.modules[i], lower=model.modules[i+1];
+    const boundary=(module,y)=>{
+      const {position,color}=module.mesh.geometry.attributes, result=new Map();
+      for(let vertex=0;vertex<position.count;vertex++) if(Math.abs(position.getY(vertex)-y)<1e-4) {
+        result.set(`${position.getX(vertex).toFixed(4)}:${position.getZ(vertex).toFixed(4)}`,new T.Color().fromBufferAttribute(color,vertex).toArray());
+      }
+      return result;
+    };
+    const top=boundary(upper,0), bottom=boundary(lower,lower.high-lower.low);
+    assert.equal(top.size,96,'The shared facade seam retains every bay');
+    assert.deepEqual(top,bottom,'Shared cut height and physical bay preserve the same facade materials');
   }
 });
 

@@ -1,0 +1,2381 @@
+[
+  {
+    "viewport": "1440x900",
+    "axeVersion": "4.14.0",
+    "rows": [
+      {
+        "view": "tower",
+        "checksPassed": 23,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "explore",
+        "checksPassed": 23,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  ".drawing-edition"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "about",
+        "checksPassed": 23,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "projects/b",
+        "checksPassed": 26,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "section:nth-child(2) > p"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "experience",
+        "checksPassed": 27,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "resume/d",
+        "checksPassed": 23,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  ".station-marker[data-station=\"0\"][data-caption-hidden=\"true\"] > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "contact",
+        "checksPassed": 23,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "contact reading dialog",
+        "checksPassed": 16,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"resume\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"about\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"250.88\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"499.28\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"747.68\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"244.4\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "text[x=\"84\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"600\"][y=\"750\"][font-size=\"7\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1116\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-d\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "about reading dialog",
+        "checksPassed": 16,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"contact\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"projects\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"186.8\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"480.8\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"774.8\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"176\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "text[x=\"84\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"600\"][y=\"750\"][font-size=\"7\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1116\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-d\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "projects reading dialog",
+        "checksPassed": 21,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "div[aria-label=\"Read more: flowst8\"] > .project-status[data-status=\"complete\"]"
+                ],
+                "summary": "Fix all of the following:\n  Axe encountered an error; test the page for this type of problem manually"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "experience reading dialog",
+        "checksPassed": 18,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"projects\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"resume\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"225.5\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"491.41\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"757.32\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"218.14\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "text[x=\"84\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"600\"][y=\"750\"][font-size=\"7\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1116\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-d\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "resume reading dialog",
+        "checksPassed": 16,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"experience\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"contact\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"250.88\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"499.28\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"747.68\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"244.4\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "text[x=\"84\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"600\"][y=\"750\"][font-size=\"7\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1116\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-d\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "complete reading portfolio",
+        "checksPassed": 25,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": []
+      }
+    ]
+  },
+  {
+    "viewport": "390x844",
+    "axeVersion": "4.14.0",
+    "rows": [
+      {
+        "view": "tower",
+        "checksPassed": 23,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "explore",
+        "checksPassed": 23,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "about",
+        "checksPassed": 24,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "projects/b",
+        "checksPassed": 26,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "experience",
+        "checksPassed": 28,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "#station-navigation > button[data-station=\"3\"][data-hovered=\"false\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "resume/d",
+        "checksPassed": 24,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "#station-navigation > button[data-station=\"3\"][aria-label=\"Explore room 04: Document room\"][data-hovered=\"false\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "contact",
+        "checksPassed": 24,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "contact reading dialog",
+        "checksPassed": 16,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"resume\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"about\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"250.88\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"499.28\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"747.68\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"244.4\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "text[x=\"84\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"600\"][y=\"750\"][font-size=\"7\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1116\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-d\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "about reading dialog",
+        "checksPassed": 16,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"contact\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"projects\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"186.8\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"480.8\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"774.8\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"176\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "text[x=\"84\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"600\"][y=\"750\"][font-size=\"7\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1116\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-d\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "projects reading dialog",
+        "checksPassed": 22,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"about\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"experience\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"206.32\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"625.53\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"197.79\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "text[x=\"84\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"600\"][y=\"750\"][font-size=\"7\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1116\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-projects-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-projects-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-projects-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "experience reading dialog",
+        "checksPassed": 18,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"projects\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"resume\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"225.5\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"491.41\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"757.32\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"218.14\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "text[x=\"84\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"600\"][y=\"750\"][font-size=\"7\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1116\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it partially overlaps other elements"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-d\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "resume reading dialog",
+        "checksPassed": 16,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"experience\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"contact\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"250.88\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"499.28\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"747.68\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"244.4\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "text[x=\"84\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"600\"][y=\"750\"][font-size=\"7\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1116\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-d\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  ".floor-tags > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "complete reading portfolio",
+        "checksPassed": 25,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": []
+      }
+    ]
+  },
+  {
+    "viewport": "844x390",
+    "axeVersion": "4.14.0",
+    "rows": [
+      {
+        "view": "tower",
+        "checksPassed": 23,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "explore",
+        "checksPassed": 23,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  ".drawing-edition"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "about",
+        "checksPassed": 24,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "#station-navigation > button[data-station=\"3\"][aria-label=\"Explore room 04: Conversation\"][data-hovered=\"false\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "projects/b",
+        "checksPassed": 26,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "button[data-station=\"0\"][aria-label=\"Explore room 01: Main workshop\"][data-caption-hidden=\"true\"] > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+              },
+              {
+                "target": [
+                  "#station-navigation > button[data-station=\"2\"][data-hovered=\"false\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "experience",
+        "checksPassed": 28,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "#station-navigation > button[data-station=\"2\"][data-hovered=\"false\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "resume/d",
+        "checksPassed": 24,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "#station-navigation > button[data-station=\"2\"][data-hovered=\"false\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "contact",
+        "checksPassed": 24,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "help": "ARIA attributes must conform to valid values",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "#reading-view"
+                ],
+                "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"room-dialog\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  ".drawing-reference > span:nth-child(2)"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "small"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "#reset-spatial"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "#station-navigation > button[data-station=\"2\"][aria-label=\"Explore room 03: Connections\"][data-hovered=\"false\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "contact reading dialog",
+        "checksPassed": 16,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"resume\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"about\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"250.88\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"499.28\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"747.68\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-contact-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "about reading dialog",
+        "checksPassed": 16,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"contact\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"projects\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"186.8\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"480.8\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"774.8\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-about-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "projects reading dialog",
+        "checksPassed": 22,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"about\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"experience\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"206.32\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"625.53\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-projects-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-projects-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "experience reading dialog",
+        "checksPassed": 18,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"projects\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"resume\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"225.5\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"491.41\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"757.32\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-experience-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "resume reading dialog",
+        "checksPassed": 16,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "url": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "target": [
+                  "a[data-room=\"experience\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "a[data-room=\"contact\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+              },
+              {
+                "target": [
+                  "text[x=\"250.88\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"499.28\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"747.68\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[y=\"82\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+              },
+              {
+                "target": [
+                  "text[x=\"1152\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-a\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-b\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              },
+              {
+                "target": [
+                  "button[data-plan-room=\"plan-resume-c\"] > .hotspot-label[aria-hidden=\"true\"]"
+                ],
+                "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "view": "complete reading portfolio",
+        "checksPassed": 25,
+        "controlsResolve": true,
+        "violations": [],
+        "manualReview": []
+      }
+    ]
+  }
+]

@@ -1,11 +1,12 @@
 import * as T from './vendor/three.module.min.js';
-import { stationPositions, radius, footprint } from './tower-geometry.js';
+import { floorLayout, insetFootprint } from './tower-geometry.js';
 import { palette, sectionColors, roomAccents } from './color-theme.js';
 
 /** Tangible architectural furniture at the tower's real floor scale. */
 export function createInterior(section, content) {
   const group = new T.Group();
-  const stations = stationPositions(section, content.rooms.length);
+  const layout = floorLayout(section.low + .02, content.rooms.length);
+  const stations = layout.stations;
   const reach = Math.max(...stations.map(p => p.reach));
   const unit = reach / 18;
   const theme = sectionColors[section.id];
@@ -226,6 +227,19 @@ export function createInterior(section, content) {
     }
   }
 
+  function combineGeometry(parts, attributes) {
+    const geometry = new T.BufferGeometry();
+    for (const name of attributes) {
+      const length = parts.reduce((sum, part) => sum + part.attributes[name].array.length, 0);
+      const values = new Float32Array(length); let offset = 0;
+      for (const part of parts) { values.set(part.attributes[name].array, offset); offset += part.attributes[name].array.length; }
+      geometry.setAttribute(name, new T.BufferAttribute(values, 3));
+    }
+    geometry.computeBoundingBox(); geometry.computeBoundingSphere();
+    for (const part of parts) part.dispose();
+    return geometry;
+  }
+
   // Bake static primitives by surface. Detailed rooms cost four solid draws
   // and one outline draw, rather than a draw for every key, vent, or book.
   function batchRoom(zone, index) {
@@ -244,70 +258,69 @@ export function createInterior(section, content) {
       if (!shared.has(mesh.geometry)) mesh.geometry.dispose();
     }
     zone.clear();
-    const combine = (parts, attributes) => {
-      const geometry = new T.BufferGeometry();
-      for (const name of attributes) {
-        const length = parts.reduce((sum, part) => sum + part.attributes[name].array.length, 0);
-        const values = new Float32Array(length); let offset = 0;
-        for (const part of parts) { values.set(part.attributes[name].array, offset); offset += part.attributes[name].array.length; }
-        geometry.setAttribute(name, new T.BufferAttribute(values, 3));
-      }
-      geometry.computeBoundingBox(); geometry.computeBoundingSphere();
-      for (const part of parts) part.dispose();
-      return geometry;
-    };
     const surfaces = [];
     for (const [name, geometries] of buckets) {
       const material = materials[name].clone();
       const color = name === 'equipment' ? roomAccents[index % roomAccents.length] : colors[name];
       material.color.set(color);
-      const mesh = new T.Mesh(combine(geometries, ['position', 'normal']), material);
+      const mesh = new T.Mesh(combineGeometry(geometries, ['position', 'normal']), material);
       mesh.userData.roomIndex = index; mesh.userData.surface = name;
       zone.add(mesh); pickables.push(mesh);
       surfaces.push({ material, color: new T.Color(color) });
     }
     const roomLine = lineMaterial.clone();
     // Preserve the public hierarchy: first room mesh owns the room outline.
-    const outlines = new T.LineSegments(combine(edgeParts, ['position']), roomLine);
+    const outlines = new T.LineSegments(combineGeometry(edgeParts, ['position']), roomLine);
     outlines.userData.roomIndex = index;
     zone.children[0].add(outlines);
     return { group: zone, line: roomLine, surfaces, detailCount: sources.length, features: [...(zone.userData.features || [])] };
   }
   stations.forEach((position, index) => {
     const zone = new T.Group();
-    zone.position.set(position.x, .18 * unit, position.z); zone.rotation.y = position.angle;
-    const centralRoom = content.rooms.length === 4 && index === 0;
-    zone.scale.setScalar(unit * (centralRoom ? .62 : position.reach / reach));
     zone.userData.roomIndex = index;
     group.add(zone); furnish(zone, index);
-    if (index > 0 || content.rooms.length === 3) {
-      box(zone, -3.9, .6, 0, .13, 1.2, 4.6, 'glass');
-      box(zone, 3.9, .6, 0, .13, 1.2, 4.6, 'glass');
-      box(zone, 0, .025, 0, 7.6, .03, 5.4, 'glass');
-      for (const z of [-2.4, 2.4]) box(zone, 0, .046, z, 7.15, .009, .018, 'equipment');
-      for (const x of [-3.55, 3.55]) box(zone, x, .046, 0, .018, .009, 4.8, 'equipment');
-    }
-    roomModels.push(batchRoom(zone, index));
+    box(zone, -3.9, .6, 0, .13, 1.2, 4.6, 'glass');
+    box(zone, 3.9, .6, 0, .13, 1.2, 4.6, 'glass');
+    box(zone, 0, .025, 0, 7.6, .03, 5.4, 'glass');
+    for (const z of [-2.4, 2.4]) box(zone, 0, .046, z, 7.15, .009, .018, 'equipment');
+    for (const x of [-3.55, 3.55]) box(zone, x, .046, 0, .018, .009, 4.8, 'equipment');
+    const room = batchRoom(zone, index);
+    // Fit the complete room after batching: piano benches, cable runs, plants,
+    // low dividers and floor inlays all contribute to its real occupied bounds.
+    // A single scale keeps every piece of furniture in proportion.
+    const bounds = new T.Box3().setFromObject(zone);
+    const size = bounds.getSize(new T.Vector3()), center = bounds.getCenter(new T.Vector3());
+    const region = position.region;
+    const margin = Math.min(region.width, region.depth) * .035;
+    const scale = Math.min(position.scale, (region.width - margin * 2) / size.x, (region.depth - margin * 2) / size.z);
+    zone.scale.setScalar(scale);
+    zone.position.set(region.x - center.x * scale, .18 * unit - bounds.min.y * scale, region.z - center.z * scale);
+    room.region = { ...region };
+    room.scale = scale;
+    roomModels.push(room);
     anchors.push(new T.Vector3(position.x, unit * 4.7, position.z));
   });
-  // Low rail and stair/elevator core follow the real three-wing floor plate.
-  const outline = footprint(section.low + .02, 96), vertices = [];
+  // The rail, elevator and stair use the same stepped floor plan as the shell.
+  const outline = insetFootprint(layout.outline, .16), vertices = [];
   for (let i = 0; i < outline.length; i++) {
     const a = outline[i], b = outline[(i + 1) % outline.length];
-    vertices.push(a[0] * .98, unit * .6, a[1] * .98, b[0] * .98, unit * .6, b[1] * .98);
-    if (i % 3 === 0) vertices.push(a[0] * .98, .1, a[1] * .98, a[0] * .98, unit * .6, a[1] * .98);
+    vertices.push(a[0], unit * .6, a[1], b[0], unit * .6, b[1]);
+    if (i % 3 === 0) vertices.push(a[0], .1, a[1], a[0], unit * .6, a[1]);
   }
   const outlineGeometry = new T.BufferGeometry(); outlineGeometry.setAttribute('position', new T.Float32BufferAttribute(vertices, 3));
-  const perimeter = new T.LineSegments(outlineGeometry, lineMaterial); group.add(perimeter);
+  const perimeter = new T.LineSegments(outlineGeometry, lineMaterial); perimeter.name = 'interior-perimeter-rail'; group.add(perimeter);
   const contextSurfaces = [];
-  const coreSize = radius(0, section.low + .02) * .48;
-  if (content.rooms.length === 3) {
-    const core = box(group, 0, unit * .65, 0, coreSize, unit * 1.3, coreSize, 'glass');
-    core.add(new T.LineSegments(new T.EdgesGeometry(core.geometry), lineMaterial));
-    for (let i = 0; i < 8; i++) box(group, coreSize * .9, i * unit * .12, (i - 4) * unit * .28, unit * .9, unit * .1, unit * .26);
-    // Core and stair share these source materials; room surfaces are clones.
-    for (const material of [materials.glass, materials.structure]) contextSurfaces.push({ material, color: material.color.clone() });
-  }
+  const core = layout.core;
+  const elevator = box(group, core.x - core.width * .2, unit * .65, core.z, core.width * .48, unit * 1.3, core.depth * .84, 'glass');
+  elevator.name = 'service-core-elevator';
+  elevator.add(new T.LineSegments(new T.EdgesGeometry(elevator.geometry), lineMaterial));
+  const treads = Array.from({ length: 8 }, (_, i) => unitBox.toNonIndexed()
+    .scale(core.width * .3, unit * .1, core.depth * .095)
+    .translate(core.x + core.width * .28, (i + .5) * unit * .12, core.z + (i - 3.5) * core.depth * .1));
+  const stair = new T.Mesh(combineGeometry(treads, ['position', 'normal']), materials.structure);
+  stair.name = 'service-core-stair'; group.add(stair);
+  // Core and stair share these source materials; room surfaces are clones.
+  for (const material of [materials.glass, materials.structure]) contextSurfaces.push({ material, color: material.color.clone() });
   group.visible = false; group.updateMatrixWorld(true);
   roomModels.forEach((room, index) => {
     room.bounds = new T.Box3().setFromObject(room.group);
@@ -321,6 +334,9 @@ export function createInterior(section, content) {
     let retained = false; group.traverse(node => { if (node.geometry === geometry) retained = true; });
     if (!retained) geometry.dispose();
   }
+  const retainedMaterials = new Set();
+  group.traverse(node => { if (node.material) retainedMaterials.add(node.material); });
+  for (const material of Object.values(materials)) if (!retainedMaterials.has(material)) material.dispose();
   function paintRooms() {
     const contextFade = focusedRoom === null ? 0 : focusAmount;
     lineMaterial.color.set(palette.muted).lerp(white, contextFade * .65);
