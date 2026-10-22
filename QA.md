@@ -33,6 +33,12 @@ Both canonical entry pages reference the validated 1280 × 720 PNG social card. 
 
 `MAINTENANCE.md` documents content/resume updates, regeneration, QA, sharing artwork, release checks, and rollback. Repository checks run on pushes and pull requests. Future content updates remain ongoing maintenance; a custom domain has not been requested.
 
-## Deployment gate
+## Deployment verification
 
-The checked release is ready for publication through the existing GitHub Pages branch. The published commit, workflow results, and live asset verification will be recorded after deployment succeeds.
+Release `c030ae7022b6377c717e22195ca6722c3c0eeb4e` is published at [bshwao.github.io](https://bshwao.github.io/). Both [Portfolio checks](https://github.com/bshwao/bshwao.github.io/actions/runs/39716756840) and [Pages deployment](https://github.com/bshwao/bshwao.github.io/actions/runs/39716756623) completed successfully.
+
+Workflow and step results are recorded in `state/workflows.json`; dependency installation, `npm run check`, and `npm test` all completed successfully on the hosted runner.
+
+The live home/reading pages, model/style modules, sharing card, résumé, sitemap, crawler configuration, and release documentation returned HTTP 200 over HTTPS and matched the committed snapshot. PNG/PDF comparisons use exact bytes; text comparisons normalize line endings. Evidence is in `state/deployment.json`; the repeatable command is `node scripts/verify-live.mjs`.
+
+Live browser checks confirmed `#projects/b` opens the Systems lab and its Test-Shell content, Copy link reports success, and Reading view opens the matching section dialog without console or shader warnings. The initial CI attempt exhausted a five-minute cold-install limit; the workflow now allows fifteen minutes, prefers the npm cache, and retains all checks.

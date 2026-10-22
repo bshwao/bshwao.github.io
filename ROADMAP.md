@@ -30,7 +30,7 @@ The pointed spire stays intact; About's broad lower cut carries its plan. Geomet
 All six numbered city phases are implemented.
 
 - [x] **Final quality pass:** automated and real WebGL checks, representative portrait/landscape layouts, keyboard navigation, no-JavaScript entry, and accessibility audit. Evidence and test scope are recorded in `QA.md`.
-- [ ] **Deployment verification:** publish the checked release through the existing GitHub Pages branch and verify its workflow and live assets.
+- [x] **Deployment verification:** published through the existing HTTPS GitHub Pages branch; CI, Pages, live file hashes, room deep links, sharing, and reading mode are verified. Evidence is recorded in `QA.md` and `state/deployment.json`.
 - [x] **Search and sharing:** a 1280 × 720 social preview image, canonical page metadata, structured profile data, sitemap, and crawler configuration.
 - [x] **Maintenance setup:** content/update instructions, reproducible QA pages, automated repository checks, and a release/rollback guide in `MAINTENANCE.md`.
 

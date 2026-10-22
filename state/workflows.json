@@ -1,0 +1,77 @@
+{
+  "verifiedAt": "2026-10-22 03:28:38 UTC",
+  "commit": "c030ae7022b6377c717e22195ca6722c3c0eeb4e",
+  "workflows": [
+    {
+      "id": 39716756840,
+      "name": "Portfolio checks",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bshwao/bshwao.github.io/actions/runs/39716756840",
+      "sha": "c030ae7022b6377c717e22195ca6722c3c0eeb4e"
+    },
+    {
+      "id": 39716756623,
+      "name": "pages build and deployment",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bshwao/bshwao.github.io/actions/runs/39716756623",
+      "sha": "c030ae7022b6377c717e22195ca6722c3c0eeb4e"
+    }
+  ],
+  "jobs": [
+    {
+      "id": 119620582687,
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7.0.1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7.1.0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --prefer-offline --timing",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm test",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7.1.0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7.0.1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}
