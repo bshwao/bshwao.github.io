@@ -1,29 +1,37 @@
-/** Shared world-space geometry. Y is up; the complete tower is 110 units tall. */
+/** Shared world-space geometry. Y is up; heights use illustrative model units. */
+export const towerHeight = 148.5;
+// Lengthen the bundled shafts without changing their footprints or room scale.
+// Keep common elevations exact so wall, terrace and cap seams share one level.
+const elevation = height => Math.round(height * towerHeight / 110 * 1e4) / 1e4;
+export const towerRoofHeight = elevation(99.5);
 export const sections = [
   { id: 'about', name: 'About', number: '01', low: 78.5, high: 110, theme: 'The personal study', subtitle: 'THE PERSON BEHIND THE PLANS' },
   { id: 'projects', name: 'Projects', number: '02', low: 52.5, high: 78.5, theme: 'The makers’ workshop', subtitle: 'IDEAS / EXPERIMENTS / BUILDS' },
   { id: 'experience', name: 'Experience', number: '03', low: 31.5, high: 52.5, theme: 'The electronics laboratory', subtitle: 'CIRCUITS / SYSTEMS / THE TRACK' },
   { id: 'resume', name: 'Résumé', number: '04', low: 14.5, high: 31.5, theme: 'The reference archive', subtitle: 'EDUCATION / SKILLS / THE PDF' },
   { id: 'contact', name: 'Contact', number: '05', low: 0, high: 14.5, theme: 'The conversation lounge', subtitle: 'LET’S BUILD SOMETHING' },
-];
+].map(section => ({ ...section, low: elevation(section.low), high: elevation(section.high) }));
 
-// Twelve corresponding corners keep the long main block and shorter west wing
-// legible from every side. Profiles are nested; setbacks are horizontal terraces.
+// A podium and three bundled shafts end at unequal heights. Almost aligned
+// west/north faces carry a continuous spine instead of a repeating pyramid.
 const plate = (height, minX, maxX, minZ, join, wingRight, maxZ, chamfer) => ({
-  height, minX, maxX, minZ, join, wingRight, maxZ, chamfer,
+  height: elevation(height), minX, maxX, minZ, join, wingRight, maxZ, chamfer,
   polygon: [[minX+chamfer,minZ],[maxX-chamfer,minZ],[maxX,minZ+chamfer],
     [maxX,join-chamfer],[maxX-chamfer,join],[wingRight+chamfer,join],
     [wingRight,join+chamfer],[wingRight,maxZ-chamfer],[wingRight-chamfer,maxZ],
     [minX+chamfer,maxZ],[minX,maxZ-chamfer],[minX,minZ+chamfer]],
 });
 export const floorProfiles = [
-  plate(0,-18,18,-10,4,-3,15,1.2),
-  plate(18,-17,17,-9,3.7,-3.5,13,1),
-  plate(38,-16,15,-8,3,-4,11,.9),
-  plate(59,-13,13,-7,2.7,-5,8,.8),
-  plate(80,-10,10,-6,1.7,-5.3,5.5,.6),
-  plate(94,-7,5,-5,1,-5.5,3,.4),
-  plate(99.5,-4.7,-1.3,-2.7,.1,-3,.7,.2),
+  plate(0,-21,21,-13,6,2,17,.65),
+  plate(8,-18,18,-11.5,5.7,1.7,13.5,.45),
+  plate(44,-17.7,10.5,-11.2,5.4,1.4,13.2,.4),
+  plate(70,-17.4,7,-10.9,5.1,1.1,12.9,.35),
+  plate(96,-17.1,-3.6,-10.6,4.8,-7.3,12.6,.3),
+  plate(99.5,-12.24,-11.76,-4.24,-3.9,-12,-3.76,.035),
+];
+export const towerAntennas=[
+  {x:-12,z:-4,base:towerRoofHeight,top:towerHeight,radius:.24,integrated:true},
+  {x:-7,z:-4,base:towerRoofHeight,top:elevation(107.6),radius:.16,integrated:false},
 ];
 export const setbacks = floorProfiles.slice(1).map(profile => profile.height);
 export function profileAt(height) {
@@ -31,9 +39,10 @@ export function profileAt(height) {
 }
 export function footprint(height, count = 96) {
   const profile = profileAt(height);
-  // A slender, offset lantern tapers into the needle without recentering it.
-  const scale = height >= 99.5 ? Math.max(.003, (110-height)/10.5) : 1;
-  const corners = profile.polygon.map(([x,z]) => height >= 99.5 ? [-3+(x+3)*scale,-1+(z+1)*scale] : [x,z]);
+  // The primary antenna is part of the watertight shell; the second mounts on
+  // its neighboring roof and travels with the same About section.
+  const scale=height>=towerRoofHeight?1-.3*Math.min(1,(height-towerRoofHeight)/(towerHeight-towerRoofHeight)):1;
+  const corners=profile.polygon.map(([x,z])=>height>=towerRoofHeight?[-12+(x+12)*scale,-4+(z+4)*scale]:[x,z]);
   const samples = Math.max(1,Math.round(count/corners.length));
   return corners.flatMap((point,index) => Array.from({length:samples},(_,i) => {
     const next = corners[(index+1)%corners.length], t=i/samples;
@@ -57,10 +66,11 @@ export function radius(angle,height) {
 export function floorLayout(height,count=4) {
   const p=profileAt(height), outline=footprint(height);
   const inset=.75, corridor=1.8, mainCount=count-1;
+  const mainTop=Math.min(p.join-corridor,2);
   const bay=(p.maxX-p.minX-inset*2)/mainCount;
   const regions=Array.from({length:mainCount},(_,i)=>({
-    x:p.minX+inset+bay*(i+.5), z:(p.minZ+inset+p.join-corridor)/2,
-    width:bay-.6,depth:p.join-corridor-p.minZ-inset,
+    x:p.minX+inset+bay*(i+.5), z:(p.minZ+inset+mainTop)/2,
+    width:bay-.6,depth:mainTop-p.minZ-inset,
   }));
   regions.push({x:(p.minX+p.wingRight)/2,z:(p.join+p.maxZ)/2,
     width:p.wingRight-p.minX-inset*2,depth:p.maxZ-p.join-inset*2});

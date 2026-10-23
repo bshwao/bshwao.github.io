@@ -1,30 +1,26 @@
 import * as T from './vendor/three.module.min.js';
-import { districtPlan } from './district-ground.js';
-import { sections, setbacks, footprint } from './tower-geometry.js';
+import { cityEnvelopes } from './city-layout.js';
+import { sections, setbacks, footprint, towerHeight } from './tower-geometry.js';
 import { outdoorViewLayout } from './spatial-layout.js';
 
-const openingAzimuth = Math.atan2(.57, 1);
+const openingAzimuth = Math.atan2(.42, 1);
 
 /** Keep fine facade/roof layers distinguishable in the depth buffer at any zoom. */
 export function cameraDepthRange(distance) {
   return { near: Math.max(.1, Math.floor(distance * .2) / 10), far: Math.max(1000, Math.ceil((distance + 600) / 100) * 100) };
 }
 
-export function outdoorFramingPoints(mode, width) {
+export function outdoorFramingPoints(mode, width, height=900) {
   const points = [];
   if (mode === 'tower') {
-    for (const height of [0, ...setbacks.flatMap(y => [y-.002,y]), 110]) {
+    for (const height of [0, ...setbacks.flatMap(y => [y-.002,y]), towerHeight]) {
       for (const [x, z] of footprint(height, 12)) points.push(new T.Vector3(x, height, z));
     }
-    if (width <= 480) {
-      // Portrait keeps the tower and plaza prominent; the outer district is context.
-      for (let i = 0; i < 32; i++) points.push(new T.Vector3(Math.cos(i / 16 * Math.PI) * 31, 0, Math.sin(i / 16 * Math.PI) * 31));
-    } else {
-      for (const { bounds } of districtPlan.parcels) {
-        for (const x of [bounds[0] - 2, bounds[2] + 2]) for (const z of [bounds[1] - 2, bounds[3] + 2]) {
-          for (const y of [0, 17]) points.push(new T.Vector3(x, y, z));
-        }
-      }
+    // Compose the landmark and nearby skyline rather than fitting an entire
+    // square map. Outer streets/buildings intentionally continue off-frame.
+    for(const x of [-23,23]) for(const z of [-23,23]) points.push(new T.Vector3(x,0,z));
+    if(width>480&&(width>760||width>=height)) for(const bounds of cityEnvelopes.filter(b=>['02','04'].includes(b.lotId))) {
+      for(const x of [bounds.minX,bounds.maxX]) for(const z of [bounds.minZ,bounds.maxZ]) points.push(new T.Vector3(x,bounds.maxY,z));
     }
   } else {
     for (const [index, section] of sections.entries()) {
@@ -43,17 +39,21 @@ export function outdoorCameraPose(mode, width, height, direction = null) {
   if (!direction || direction.lengthSq() < 1e-8) direction = null;
   const layout = outdoorViewLayout(width, height, mode);
   const azimuth = direction ? Math.atan2(direction.x, direction.z) : openingAzimuth;
-  const polar = direction ? Math.acos(T.MathUtils.clamp(direction.y / direction.length(), -1, 1)) : mode === 'tower' ? 1.02 : 1.13;
+  const polar = direction ? Math.acos(T.MathUtils.clamp(direction.y / direction.length(), -1, 1)) : mode === 'tower' ? 1.70 : 1.13;
   // Very steep user orbits still navigate to a legible view above the district.
-  const phi = T.MathUtils.clamp(polar, .6, 1.4);
+  let phi = T.MathUtils.clamp(polar, .6, 1.72);
+  // Wide, short viewports need a longer fit. Raise its angle just enough to
+  // keep that extra distance from putting the opening camera below the street.
+  for(let attempt=0;attempt<18;attempt++,phi-=.01) {
   const view = new T.Vector3(Math.sin(azimuth) * Math.sin(phi), Math.cos(phi), Math.cos(azimuth) * Math.sin(phi));
   const right = new T.Vector3().crossVectors(new T.Vector3(0, 1, 0), view).normalize();
   const up = new T.Vector3().crossVectors(view, right).normalize();
   const tangent = Math.tan(T.MathUtils.degToRad(17));
-  const horizontal = tangent * (layout.rect.right - layout.rect.left) / height / 1.07;
-  const vertical = tangent * (layout.rect.bottom - layout.rect.top) / height / 1.07;
+  const margin=mode==='tower'?1.24:1.07;
+  const horizontal = tangent * (layout.rect.right - layout.rect.left) / height / margin;
+  const vertical = tangent * (layout.rect.bottom - layout.rect.top) / height / margin;
   let upper = -Infinity, lower = -Infinity, sideways = 0;
-  for (const point of outdoorFramingPoints(mode, width)) {
+  for (const point of outdoorFramingPoints(mode, width, height)) {
     const depth = point.dot(view), y = point.dot(up);
     upper = Math.max(upper, depth + y / vertical);
     lower = Math.max(lower, depth - y / vertical);
@@ -62,5 +62,7 @@ export function outdoorCameraPose(mode, width, height, direction = null) {
   const shift = vertical * (upper - lower) / 2;
   const target = new T.Vector3(0, shift / up.y, 0);
   const distance = Math.max(sideways, (upper + lower) / 2) - target.dot(view);
-  return { target, position: target.clone().addScaledVector(view, distance), layout };
+  const position=target.clone().addScaledVector(view,distance);
+  if(position.y>=2||attempt===17) return {target,position,layout};
+  }
 }

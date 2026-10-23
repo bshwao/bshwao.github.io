@@ -40,10 +40,10 @@ export function renderReadingPage() {
   <meta property="og:image" content="${site}assets/social-preview.png">
   <meta property="og:image:width" content="1280">
   <meta property="og:image:height" content="720">
-  <meta property="og:image:alt" content="Eric Hsu — Electrical engineering at McGill, with a multicolor architectural tower and surrounding city.">
+  <meta property="og:image:alt" content="Eric Hsu — Electrical engineering at McGill, beside a dark stepped tower in a sunset city.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="${site}assets/social-preview.png">
-  <meta name="twitter:image:alt" content="Eric Hsu — Electrical engineering at McGill, with a multicolor architectural tower and surrounding city.">
+  <meta name="twitter:image:alt" content="Eric Hsu — Electrical engineering at McGill, beside a dark stepped tower in a sunset city.">
   <link rel="canonical" href="${site}reading.html">
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="stylesheet" href="./assets/reading.css">

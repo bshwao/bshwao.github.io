@@ -9,6 +9,7 @@ import { createFloorPlan } from '../assets/floor-plans.js';
 import { JSDOM } from 'jsdom';
 import { simulateVision, visionMatrices } from './vision-simulation.js';
 import { facadeColor } from '../assets/facade-materials.js';
+import { cityPalette } from '../assets/city-environment.js';
 
 const luminance = hex => {
   const linear = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4);
@@ -84,12 +85,13 @@ test('facade materials do not repeat every wing or restart at a section boundary
   }
 });
 
-test('district shaders fade toward the same paper used by the website and canvas', () => {
+test('district shaders fade toward the exterior sky haze while reading surfaces retain paper', () => {
   const material = applyDistrictDepth(new T.MeshBasicMaterial());
   const shader = { uniforms: {}, vertexShader: '#include <project_vertex>', fragmentShader: '#include <tonemapping_fragment>' };
   material.onBeforeCompile(shader);
-  assert.equal(shader.uniforms.districtPaper.value.getHexString(), palette.paper.slice(1));
-  assert.ok(shader.fragmentShader.includes('mix(gl_FragColor.rgb, districtPaper, districtFade)'));
+  assert.equal(shader.uniforms.districtHaze.value.getHexString(), cityPalette.haze.slice(1));
+  assert.ok(shader.fragmentShader.includes('mix(gl_FragColor.rgb, districtHaze, districtFade)'));
+  assert.notEqual(cityPalette.haze,palette.paper);
 });
 
 test('every reading plan resolves its palette into valid SVG colors', () => {

@@ -6,13 +6,14 @@ import { outdoorCameraPose, cameraDepthRange } from './camera-framing.js';
 import { renderBudget } from './render-budget.js';
 import { palette } from './color-theme.js';
 import { footprint } from './tower-geometry.js';
+import { createCityEnvironment, cityPalette, citySun } from './city-environment.js';
 
 const ease = t => t * t * t * (t * (t * 6 - 15) + 10);
 const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - start), 0, 1));
 const lerp = T.MathUtils.lerp;
 
 /** One persistent scene and camera: tower, exploded assembly, and inhabited cutaway. */
-export function createSpatialScene({ container, onSelectSection, onSelectRoom, onFrame, onContextLost }) {
+export function createSpatialScene({ container, onSelectSection, onSelectRoom, onFrame, onContextLost, shadowComparison = false }) {
   const renderer = new T.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'default' });
   renderer.setClearColor(palette.paper);
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
@@ -22,13 +23,24 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   canvas.className = 'spatial-canvas';
   canvas.tabIndex = 0;
   canvas.setAttribute('role', 'img');
-  canvas.setAttribute('aria-label', 'Interactive 3D blueprint skyscraper. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold.');
+  canvas.setAttribute('aria-label', 'Interactive 3D city skyline. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold the main tower.');
   container.append(canvas);
   const scene = new T.Scene();
-  scene.add(new T.HemisphereLight(palette.sky, palette.bounce, 2.25));
-  const light = new T.DirectionalLight('#ffffff', 1.4); light.position.set(50, 120, 80); scene.add(light);
+  const ambient=new T.HemisphereLight(palette.sky,palette.bounce,2.25);scene.add(ambient);
+  const light = new T.DirectionalLight('#ffffff', 1.4); light.position.copy(citySun).multiplyScalar(220); scene.add(light);
   const fill = new T.DirectionalLight(palette.fill, .6); fill.position.set(-80, 30, -60); scene.add(fill);
   const model = createTowerModel(); scene.add(model.root);
+  const environment=createCityEnvironment();scene.add(environment.root);
+  // Diagnostic comparison only: production uses baked face/contact shading.
+  if(shadowComparison){
+    renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
+    light.castShadow=true;light.shadow.mapSize.set(1024,1024);
+    Object.assign(light.shadow.camera,{left:-180,right:180,top:180,bottom:-180,near:1,far:600});
+    light.shadow.bias=-.0003;light.shadow.normalBias=.08;
+    model.root.traverse(node=>{if(node.isMesh)node.castShadow=true;});
+    const receiver=new T.Mesh(new T.PlaneGeometry(360,360),new T.ShadowMaterial({opacity:.28}));
+    receiver.rotation.x=-Math.PI/2;receiver.position.y=-.23;receiver.receiveShadow=true;receiver.name='comparison-shadow-receiver';environment.root.add(receiver);
+  }
   const boxCorners = bounds => {
     const points=[];
     for(const x of [bounds.min.x,bounds.max.x]) for(const y of [bounds.min.y,bounds.max.y]) for(const z of [bounds.min.z,bounds.max.z]) points.push(new T.Vector3(x,y,z));
@@ -71,6 +83,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   const cuts = model.modules.map(() => 0);
   const projectVector = new T.Vector3();
   const paper = new T.Color(palette.paper);
+  const exteriorAmbient=new T.Color('#a5bce0'),exteriorSun=new T.Color(cityPalette.sunlight),exteriorFill=new T.Color('#7895bf');
   const white = new T.Color('#ffffff');
   const projection = world => {
     projectVector.copy(world).project(camera);
@@ -150,12 +163,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       module.capPlans.setPresentation(expansion, cut, context);
       module.clip.constant = module.group.position.y + (module.high - module.low) * (1 - cut) + module.interior.unit * .17;
       module.interior.group.visible = cut > .03;
-      module.line.color.set(hover === module.id ? module.colors.ink : palette.muted);
-      module.line.opacity = .34 * context;
+      module.line.color.set(hover === module.id ? module.colors.ink : '#171f2b').lerp(module.cutInk,expansion*.5);
+      module.line.opacity = .42 * context;
       module.surface.color.copy(white);
       module.surface.emissive.copy(paper).multiplyScalar((1 - context) * .8);
-      module.slabMaterial.color.set(palette.structure).lerp(module.cutTint,expansion).lerp(paper, 1 - context);
-      module.base.material.color.set(palette.structure).lerp(module.cutTint,expansion).lerp(paper, module === selected ? focusAmount * .8 : 1 - context);
+      module.slabMaterial.color.set(cityPalette.roof).lerp(module.cutTint,expansion).lerp(paper, 1 - context);
+      module.base.material.color.set(cityPalette.metal).lerp(module.cutTint,expansion).lerp(paper, module === selected ? focusAmount * .8 : 1 - context);
       module.base.children[0].material.color.set(palette.muted).lerp(module.cutInk,expansion);
       module.base.children[0].material.opacity = (.28 + .52 * expansion) * context * (module === selected ? 1 - focusAmount * .72 : 1);
       module.interior.setFocus?.(module === selected ? contextRoom : null, focusAmount);
@@ -197,7 +210,8 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       expansion = lerp(animation.from.expansion, animation.to.expansion, e);
       reveal = lerp(animation.from.reveal, animation.to.reveal, e);
       districtVisibility = lerp(animation.from.districtVisibility, animation.to.districtVisibility,
-        entering ? phase(t, 0, .24) : leaving ? phase(t, .62, 1) : e);
+        animation.to.districtVisibility<animation.from.districtVisibility ? phase(t,0,.24)
+          : animation.to.districtVisibility>animation.from.districtVisibility ? phase(t,.66,1) : e);
       screenCenter.lerpVectors(animation.from.screenCenter, animation.to.screenCenter, entering ? phase(t, .22, .9) : e);
       panel = lerp(animation.from.panel, animation.to.panel, entering ? phase(t, .48, .96) : leaving ? phase(t, 0, .55) : e);
       focusAmount = lerp(animation.from.focusAmount, animation.to.focusAmount, e);
@@ -218,11 +232,18 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     }
     if (moving || modelDirty) { updateModel(); modelDirty = false; }
     containInteriorFlight();
+    if(!selected&&!animation) controls.maxPolarAngle=Math.acos(T.MathUtils.clamp((1.5-controls.target.y)/camera.position.distanceTo(controls.target),-1,1));
     const changed = controls.update();
     updateProjection();
     if (dirty || moving || changed) {
       const distance = camera.position.distanceTo(controls.target);
       for (const reference of depthReferences) reference.value = distance;
+      environment.update(camera,districtVisibility);
+      ambient.color.set(palette.sky).lerp(exteriorAmbient,districtVisibility);
+      ambient.intensity=lerp(2.25,1.65,districtVisibility);
+      light.color.set('#ffffff').lerp(exteriorSun,districtVisibility);
+      light.intensity=lerp(1.4,2.7,districtVisibility);
+      fill.color.set(palette.fill).lerp(exteriorFill,districtVisibility);
       renderer.render(scene, camera);
       onFrame?.({ mode, selectedId: selected?.id, labels: labels(), expansion, reveal, panel, focusedRoom, activeRoom, hoveredRoom,
         viewport: viewportLayout(width, height), moving: Boolean(animation), transitionType: animation?.kind || null,
@@ -250,6 +271,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     const pose = selected ? null : framing(mode);
     const outdoor = pose ? pose.position.distanceTo(pose.target) : 0;
     controls.maxDistance = selected ? selected.maxRadius * 16 : Math.max(650, outdoor * 2.2);
+    controls.maxPolarAngle=selected?Math.PI-.12:Math.acos(T.MathUtils.clamp((1.5-controls.target.y)/camera.position.distanceTo(controls.target),-1,1));
   }
   function move(to, duration, done, kind = 'scene') {
     // Drain orbital inertia before taking the new animation's starting pose.
@@ -270,6 +292,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   function goTo(nextMode, id, { instant = false, onComplete, reset = false } = {}) {
     const previousMode = mode;
     const direction = camera.position.clone().sub(controls.target);
+    const exploreDirection=new T.Vector3(direction.x,Math.hypot(direction.x,direction.z)/Math.tan(1.13),direction.z);
     if (previousMode !== 'section' && previousMode !== nextMode && !reset) {
       // Interrupted outdoor flights remember their destination, not a half-pose.
       const pose = animation?.kind === 'scene' ? animation.to : { position: camera.position, target: controls.target, screenCenter };
@@ -284,7 +307,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     selected?.interior.setActiveRoom(0);
     selected?.interior.setHoveredRoom(null);
     if (nextMode === 'section' && !selected) throw new Error('Unknown section');
-    if (nextMode === 'section' && !savedViews.has('explore')) savedViews.set('explore', framing('explore', width, height, direction));
+    if (nextMode === 'section' && !savedViews.has('explore')) savedViews.set('explore', framing('explore', width, height, exploreDirection));
     // Resolve expanded transforms before calculating the destination floor's position.
     const desiredExpansion = nextMode === 'tower' ? 0 : 1;
     const modulePositions = model.modules.map((module, index) => new T.Vector3(
@@ -293,12 +316,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     let pose;
     if (selected) pose = interiorFraming(selected, null, modulePositions[selected.index]);
     else if (!reset && previousMode !== nextMode && savedViews.has(nextMode)) pose = savedViews.get(nextMode);
-    else pose = framing(nextMode, width, height, reset ? null : direction);
-    const to = { ...pose, expansion: desiredExpansion, districtVisibility: selected ? 0 : 1, reveal: selected ? 1 : 0, panel: selected ? 1 : 0, modules: modulePositions, cuts: model.modules.map(module => module === selected ? 1 : 0) };
+    else pose = framing(nextMode, width, height, reset ? null : nextMode==='explore'?exploreDirection:direction);
+    const to = { ...pose, expansion: desiredExpansion, districtVisibility: nextMode==='tower' ? 1 : 0, reveal: selected ? 1 : 0, panel: selected ? 1 : 0, modules: modulePositions, cuts: model.modules.map(module => module === selected ? 1 : 0) };
     move(to, instant ? 1 : nextMode === 'section' ? 1850 : previousMode === 'section' ? 1550 : 1300, onComplete);
     canvas.dataset.mode = nextMode;
     canvas.dataset.section = selected?.id || '';
-    canvas.setAttribute('aria-label', selected ? `3D cutaway of ${selected.name}: ${selected.theme}. Left mouse drag or arrow keys to orbit. Select a numbered room to read its contents.` : 'Interactive 3D blueprint skyscraper. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold.');
+    canvas.setAttribute('aria-label', selected ? `3D cutaway of ${selected.name}: ${selected.theme}. Left mouse drag or arrow keys to orbit. Select a numbered room to read its contents.` : 'Interactive 3D city skyline. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold the main tower.');
   }
   function focusRoom(index, { instant = false } = {}) {
     if (!selected || animation?.kind === 'scene' || !Number.isInteger(index) || !selected.interior.rooms[index]) return;
@@ -466,7 +489,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
         if (item.geometry) geometries.add(item.geometry);
         if (item.material) (Array.isArray(item.material) ? item.material : [item.material]).forEach(material => materials.add(material));
       });
-      geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); renderer.dispose(); canvas.remove();
+      geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose());light.shadow.map?.dispose();renderer.dispose(); canvas.remove();
     },
   };
 }

@@ -2,18 +2,20 @@ import { palette } from './color-theme.js';
 import * as T from './vendor/three.module.min.js';
 import { appendDraftingText } from './district-ground.js';
 import { applyDistrictDepth, shadeDistrictGeometry } from './district-style.js';
+import { cityPalette } from './city-environment.js';
+import { districtPlan } from './city-layout.js';
 
 /** Daytime architectural landscaping and engineering references; all static. */
 export function createDistrictDetails(buildings) {
   const root = new T.Group(); root.name = 'district-character';
   const features = [];
   const layers = {
-    paper: { color: palette.structure, mesh: true, positions: [] },
-    blue: { color: palette.mustard, mesh: true, positions: [] },
-    foliage: { color: palette.sage, mesh: true, positions: [] },
-    paving: { color: palette.paving, mesh: true, positions: [] },
-    ink: { color: palette.draft, opacity: .72, positions: [] },
-    fine: { color: palette.line, opacity: .46, positions: [] },
+    paper: { color: cityPalette.limestone, mesh: true, positions: [] },
+    blue: { color: cityPalette.metal, mesh: true, positions: [] },
+    foliage: { color: cityPalette.foliage, mesh: true, positions: [] },
+    paving: { color: cityPalette.pavement, mesh: true, positions: [] },
+    ink: { color: '#3c4855', opacity: .72, positions: [] },
+    fine: { color: '#69747b', opacity: .46, positions: [] },
   };
   const sources = new Map();
   let active = null;
@@ -126,6 +128,36 @@ export function createDistrictDetails(buildings) {
     }
   }
 
+  // Street clusters occupy the shared sidewalk strip outside the carriageway.
+  const sidewalkLine=Math.abs(districtPlan.roadCenters[0])+districtPlan.roadWidth/2+districtPlan.sidewalkWidth-.5;
+  for(const side of [-1,1]) for(const along of [-90,-58,58,90]) {
+    tree(side*sidewalkLine,along,1.5);
+    tree(along,side*sidewalkLine,1.5);
+  }
+  for(const side of [-1,1]) for(const along of [-58,58]) {
+    light(side*sidewalkLine,along+5,side*Math.PI/2);
+    light(along+5,side*sidewalkLine,side>0?0:Math.PI);
+  }
+  const foregroundWalk=districtPlan.extent-14;
+  for(const side of [-1,1]) {
+    feature('foreground-garden',()=>paving(side*82,foregroundWalk,34,3));
+    for(const along of [74,82,90])tree(side*along,foregroundWalk,2.2);
+    bench(side*82,foregroundWalk+3,Math.PI);
+  }
+  // Modest retail signs sit on actual shopfront elevations, beneath the canopies.
+  for(const building of buildings.filter(b=>b.form==='shopfront')) {
+    const part=building.parts[0],x=part.x,z=part.z+part.depth/2+.075;
+    feature('shop-sign',()=>{
+      box('blue',x,3.85,z,Math.min(5,building.bounds.max.x-building.bounds.min.x-1),.65,.1);
+      const points=[];
+      // Vector lettering shares the existing line batch.
+      const label=['CAFE','LAB','OFFICE','LOFT'][Number(building.parcelId.slice(1))%4];
+      appendDraftingText(points,label,.35,(dx,dy)=>[x+dx,3.7+dy,z+.06]);
+      layers.fine.positions.push(...points);
+      for(let i=0;i<points.length;i+=3)trackBounds(points.slice(i,i+3));
+    },'attached');
+  }
+
   // The existing U-shaped buildings frame usable, planted courtyard spaces.
   for (const building of buildings.filter(building => building.form === 'court')) {
     const cx = (building.bounds.min.x + building.bounds.max.x) / 2;
@@ -161,6 +193,12 @@ export function createDistrictDetails(buildings) {
       for (const z of [-.35, 0, .35]) segment('ink', [wx + 2.2, ground + 1.42, wz + dz + z], [wx + 3, ground + 1.42, wz + dz + z]);
     }
   }, 'attached');
+  for(const z of [workshop.bounds.min.z-.9,workshop.bounds.max.z+.9]) feature('parked-car',()=>{
+    const x=wx+3.4;
+    box('paper',x,ground+.55,z,1.65,.7,3.5);
+    box('blue',x,ground+1.06,z,1.4,.5,1.9);
+    for(const dx of [-.78,.78])for(const dz of [-1.05,1.05])box('blue',x+dx,ground+.3,z+dz,.2,.5,.6);
+  });
 
   // A compact, illustrative test yard keeps the two personal references visible.
   const garage = buildings.find(building => building.form === 'test-yard');

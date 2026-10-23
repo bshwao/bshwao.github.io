@@ -1,0 +1,354 @@
+{
+  "checkedAt": "2026-10-22T23:29:13.411Z",
+  "status": "PASS_LOCAL_PHASES_1_TO_3",
+  "published": false,
+  "objective": "Complete up to phase 3 of SKYLINE-PLAN.md",
+  "scope": "Architecture checkpoint with preserved portfolio behavior. Existing palette retained. Real Chromium 155 WebGL on this Windows host with simulated phone sizes; actual Edge and physical iPhone were not measured.",
+  "phases": [
+    {
+      "number": 1,
+      "name": "Skyline composition and neutral blockout",
+      "status": "COMPLETE",
+      "result": "38 buildings, three secondary towers, foreground/urban/distant layers, smaller plaza, clear streets and axial approaches, lower actual-bounds camera.",
+      "evidence": [
+        "assets/city-layout.js",
+        "assets/camera-framing.js",
+        "scripts/skyline.test.mjs",
+        "scripts/skyline-qa.html",
+        "state/skyline-phase3-views/neutral-city.jpg",
+        "state/skyline-phase3-views/opening-desktop.jpg",
+        "state/skyline-phase3-views/opening-portrait.jpg",
+        "state/skyline-phase3-views/opening-landscape.jpg"
+      ]
+    },
+    {
+      "number": 2,
+      "name": "Main tower architecture",
+      "status": "COMPLETE",
+      "result": "Podium and long bundled shafts, flat crown, unequal closed antennae, shared profiles, aligned core, all five closed sections and 19 fitted/selectable rooms.",
+      "evidence": [
+        "assets/tower-geometry.js",
+        "assets/tower-model.js",
+        "scripts/massing.test.mjs",
+        "scripts/interiors.test.mjs",
+        "scripts/reading-geometry.test.mjs",
+        "state/skyline-phase3-views/explore.jpg",
+        "state/skyline-phase3-views/about.jpg",
+        "state/skyline-phase3-views/projects.jpg",
+        "state/skyline-phase3-views/experience.jpg",
+        "state/skyline-phase3-views/resume.jpg",
+        "state/skyline-phase3-views/contact.jpg",
+        "state/skyline-phase3-views/reading-contact.jpg",
+        "state/skyline-phase3-views/about-side-wing-portrait.jpg"
+      ]
+    },
+    {
+      "number": 3,
+      "name": "Surrounding architecture and street density",
+      "status": "COMPLETE",
+      "result": "Six architectural families, distinct facades and roofs, supported terraces/roof plant, entrances/cornices/parapets/canopies, 3D distant city. Shared lot descriptors and actual building picking bounds; five building rendering layers.",
+      "evidence": [
+        "assets/city-layout.js",
+        "assets/district-buildings.js",
+        "assets/district-ground.js",
+        "assets/district-style.js",
+        "scripts/skyline.test.mjs",
+        "scripts/model.test.mjs",
+        "state/skyline-phase3-views/side.jpg",
+        "state/skyline-phase3-views/rear.jpg"
+      ]
+    },
+    {
+      "number": 4,
+      "name": "Materials, sky, and golden-hour lighting",
+      "status": "PENDING"
+    },
+    {
+      "number": 5,
+      "name": "Street foreground and environmental detail",
+      "status": "PENDING"
+    },
+    {
+      "number": 6,
+      "name": "Portfolio transitions and responsive integration",
+      "status": "PENDING",
+      "note": "Existing behavior is regression-tested; complete integration and polish pass remains pending."
+    },
+    {
+      "number": 7,
+      "name": "Performance, final QA, and release artwork",
+      "status": "PENDING",
+      "note": "Checkpoint source/integration/resource checks pass; final frame/accessibility/device scope and sharing artwork remain pending."
+    }
+  ],
+  "city": {
+    "buildings": 38,
+    "parcels": 29,
+    "families": [
+      "campus",
+      "glass",
+      "brick",
+      "limestone",
+      "landmark",
+      "workshop"
+    ],
+    "foreground": 8,
+    "urban": 21,
+    "distant": 9,
+    "secondaryHeights": [
+      60,
+      62,
+      76
+    ],
+    "mainHeight": 110,
+    "plazaHalfWidth": 24,
+    "buildingDrawLayers": 5,
+    "mainAntennaHeights": [
+      110,
+      107.6
+    ]
+  },
+  "sourceTests": {
+    "command": "npm run check",
+    "status": "PASS",
+    "tests": 56,
+    "syntaxModules": 34,
+    "generatedThemeAndReading": "PASS",
+    "log": "state/skyline-phase3-views/source-check.log"
+  },
+  "integration": {
+    "command": "npm test",
+    "status": "PASS",
+    "modes": [
+      "desktop",
+      "portrait",
+      "reduced-motion",
+      "fresh-room-deep-link",
+      "no-webgl"
+    ],
+    "allRooms": 19,
+    "shortLandscape": true,
+    "actualFloorAndFurnitureFits": true,
+    "roomFlightSamples": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "towerOcclusionAtStreetHeights": [
+      2,
+      5,
+      9,
+      15,
+      25
+    ],
+    "log": "state/skyline-phase3-views/integration.log"
+  },
+  "webgl": {
+    "status": "PASS",
+    "raw": "state/skyline-phase3-views/webgl.json",
+    "scope": "Twelve samples per run: tower, explore, all five floors and one close-up per floor; strict existing draw ceilings 65/75/45. Raster, no textures, idle, stable navigation/resize allocations and complete GPU disposal passed.",
+    "runs": [
+      {
+        "viewport": "1440x900",
+        "requestedDpr": 1.25,
+        "idleFramesOver250ms": 0,
+        "stableGeometryCount": 181,
+        "stableGeometryAfterResize": 186,
+        "samples": 12,
+        "tower": {
+          "view": "tower",
+          "calls": 52,
+          "triangles": 42532,
+          "lines": 69528,
+          "geometries": 52,
+          "textures": 0,
+          "programs": 13,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 5.5,
+          "far": 1000,
+          "width": 1440,
+          "height": 900
+        },
+        "explore": {
+          "view": "explore",
+          "calls": 66,
+          "triangles": 42988,
+          "lines": 73039,
+          "geometries": 66,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 6.4,
+          "far": 1000,
+          "width": 1440,
+          "height": 900
+        }
+      },
+      {
+        "viewport": "390x844",
+        "requestedDpr": 3,
+        "idleFramesOver250ms": 0,
+        "stableGeometryCount": 179,
+        "stableGeometryAfterResize": 186,
+        "samples": 12,
+        "tower": {
+          "view": "tower",
+          "calls": 50,
+          "triangles": 42532,
+          "lines": 18785,
+          "geometries": 50,
+          "textures": 0,
+          "programs": 13,
+          "pixelRatio": 1.35,
+          "quality": 0,
+          "near": 6.3,
+          "far": 1000,
+          "width": 390,
+          "height": 844
+        },
+        "explore": {
+          "view": "explore",
+          "calls": 64,
+          "triangles": 42988,
+          "lines": 22296,
+          "geometries": 64,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.35,
+          "quality": 0,
+          "near": 8.3,
+          "far": 1100,
+          "width": 390,
+          "height": 844
+        }
+      },
+      {
+        "viewport": "844x390",
+        "requestedDpr": 3,
+        "idleFramesOver250ms": 0,
+        "stableGeometryCount": 179,
+        "stableGeometryAfterResize": 186,
+        "samples": 12,
+        "tower": {
+          "view": "tower",
+          "calls": 50,
+          "triangles": 42532,
+          "lines": 18785,
+          "geometries": 50,
+          "textures": 0,
+          "programs": 13,
+          "pixelRatio": 1.35,
+          "quality": 0,
+          "near": 8.5,
+          "far": 1100,
+          "width": 844,
+          "height": 390
+        },
+        "explore": {
+          "view": "explore",
+          "calls": 64,
+          "triangles": 42988,
+          "lines": 22296,
+          "geometries": 64,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.35,
+          "quality": 0,
+          "near": 9.9,
+          "far": 1100,
+          "width": 844,
+          "height": 390
+        }
+      }
+    ]
+  },
+  "baselineComparison": {
+    "source": "state/massing-qa.json",
+    "desktop": {
+      "tower": {
+        "draws": {
+          "before": 56,
+          "after": 52
+        },
+        "triangles": {
+          "before": 23578,
+          "after": 42532
+        }
+      },
+      "explore": {
+        "draws": {
+          "before": 70,
+          "after": 66
+        },
+        "triangles": {
+          "before": 24034,
+          "after": 42988
+        }
+      }
+    },
+    "note": "Denser architecture increases triangles while five batched building layers and removal of old grid/apron rings keep draws lower. No frame-speed improvement is claimed."
+  },
+  "visualReview": {
+    "status": "PASS",
+    "views": [
+      "neutral opening/side/rear/overhead",
+      "production desktop opening/side/rear",
+      "unfolded",
+      "all five furnished floors",
+      "Contact reading map",
+      "portrait opening",
+      "landscape opening",
+      "portrait side-wing room"
+    ],
+    "consoleWarningsOrErrors": 0,
+    "evidenceDirectory": "state/skyline-phase3-views/"
+  },
+  "limitations": [
+    "Existing paper/teal exterior remains until phase 4; this is not the finished reference color/atmosphere.",
+    "Full responsive/transition polish is phase 6, despite passing preservation checks.",
+    "No new complete-app timing benchmark or full browser accessibility sweep at this checkpoint; scheduled for phase 7.",
+    "Earlier social artwork is retained until phase 7.",
+    "Actual Edge and physical iPhone measurements are not included.",
+    "Changes remain local and unpublished."
+  ],
+  "sourceSha256": {
+    "assets/app.js": "b40489e38bee6e1338355086a00ad4f34c7a6f60531cddc4d0dee72aae381b83",
+    "assets/camera-framing.js": "826024a5fbb21c0bb7eaa4cae0f67a0ecc7964b31871e84f1c5f096c8b90298d",
+    "assets/cap-plans.js": "dfcc75774f40465116dfec6faba5d9ceedb60d8eeb40c155bc6479533dbd6cea",
+    "assets/city-layout.js": "b1a098fce9df3d0adad65fcf62166451ef861bfc4d2d22405f9c8ccd1ddbd967",
+    "assets/color-theme.js": "1e71620c80b37bc3d8ed69f87adec7671c7d89242265eec89b77246f3174d1ed",
+    "assets/content.js": "97491eb4865dc9556cf6a770e03b71a0759a8be376d2bba9f9477d8d53e67f8f",
+    "assets/district-buildings.js": "a50f6dd550979ce89296f6ca851353ff6d8d7ecf030dcd1ec4bdde45f7ef8a4a",
+    "assets/district-details.js": "056edf44ef7bf62806020456b736916ec08714aeb8dd4f8d100e9c387aa87dbe",
+    "assets/district-ground.js": "478a1bcba70dff2f7cdd09ec49b35420165e0a7282ba82861a12b1a310693f6a",
+    "assets/district-style.js": "fcc96e28e0c38c49bb51495951c3778a47f0db1d879526c5aa5eeb167273f0f2",
+    "assets/facade-materials.js": "5824d837868aaea2707d3b9bc09ad2b1bf35ab67741d6980f0bf9d0c7788339e",
+    "assets/floor-content.js": "e8c48a2686e8f1275cccc6ab35c5feef4d0e0371053bf94a18f9bae987f9eb2c",
+    "assets/floor-plans.js": "1dedb273bd20c5701a845737d4f8306f6dfc6e34d4c81a5115782536fe683748",
+    "assets/floor-view.js": "41112ed0eea8e1443731bdbfb9ff5315d594ca18f62eef1ef0ee7d86990a2567",
+    "assets/interiors.js": "ca21a3362e0d19096dc375eb8ab272ab9e607f3e204e616d7933e33440ab9fed",
+    "assets/project-story.js": "3faf695ae5e4272a192b61a14b29a5539fd59a6d613fa7e3e55d328b79829594",
+    "assets/render-budget.js": "34a553c19cbac7fcba7a1f56dffdfcfcb2d5dadea7732e8962b539621b556b6a",
+    "assets/routes.js": "40acf07a8bbccf9f4dfb06135746f461e5e5fae8c9e26b43550bdcaf81a6c1c5",
+    "assets/scene-3d.js": "aefb790269c6d0a75a5aed49acecc3cc5e137333a777fa9ff0753cb3a777b119",
+    "assets/spatial-app.js": "6d2f22618448df028c8a6f2040fd4160bec350aa0e118861c69798c21a5196c3",
+    "assets/spatial-layout.js": "01ca87b32a8e4ea3a903a1e1fe0f7055f405fba3e2b3dfad23350c1546056d69",
+    "assets/tower-geometry.js": "874a1013ffeec724b6c270e1cc79b049a1faec369f03e588806632c530130755",
+    "assets/tower-model.js": "92e2fbff073f347071b8e5c2c37597065a572f2637ab09402f2b12e62e0d9b94",
+    "package.json": "dd43b85ade6dea5d5f7b51999fb269604bf5c5fd0683d82e1037983444a22309",
+    "scripts/check.mjs": "518fecd5bbe7d5cae1fec3eabb24d0ab92a882379cc9eaca9e4285f3c6bde5b6",
+    "scripts/skyline.test.mjs": "f29b1784173c2695b9cea0597b0d691db71e58ac388e2cc9907fc60486c7d0e7",
+    "scripts/model.test.mjs": "4e67da507e574f220205ef780261fcb9f5a32a86abad63d7e75a30cc97d59dd4",
+    "scripts/massing.test.mjs": "2d3a25efd0958b3534c7f34c6499f2213debb18c83cf9b08e80f049933eeb8eb",
+    "scripts/interiors.test.mjs": "9eec695bf17b8162e1ec8bacec418cfcb0d169ea8216dda7fbdbd87849553ec5",
+    "scripts/layout.test.mjs": "bf4dde756f820a84c4c8e5c90a44e45ebfe03023c5e018696aa1198485200209",
+    "scripts/reading-geometry.test.mjs": "3db7f59c58de77261228d5382925e58fffdb451bc92495c5af29a1f4228b7e08",
+    "scripts/spatial.test.mjs": "201757e3469f965b65751806d9e0ef6f56405eda75250c2fddd27cbd5268bca2",
+    "scripts/skyline-qa.js": "8e86e220833532f1918a15c298b07def44d330482bc1c5366695b1e120b7df90",
+    "scripts/skyline-qa.html": "4d61cbcc8567655c8dd307b9b22caca337bdf57a496dcf700cca7b088f458a09",
+    "scripts/massing-qa.js": "eb3a4c81ea868afb321baef6200de64decf56003801d70a8b5c37692810fe29d",
+    "scripts/massing-qa.html": "a0068bb354ebebf4bcdcfa71282359428af9cc8ef3a57c0bbeea151731489f64"
+  }
+}

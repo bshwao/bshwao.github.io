@@ -34,7 +34,7 @@ test('outdoor cameras fit the district or tower inside the space reserved for co
       camera.position.copy(position); camera.lookAt(target);
       camera.setViewOffset(width, height, width / 2 - layout.centerX, height / 2 - layout.centerY, width, height);
       camera.updateMatrixWorld();
-      for (const point of outdoorFramingPoints(mode, width)) {
+      for (const point of outdoorFramingPoints(mode, width, height)) {
         const p = point.clone().project(camera);
         const x = (p.x + 1) * width / 2, y = (1 - p.y) * height / 2;
         assert.ok(x >= layout.rect.left - 1 && x <= layout.rect.right + 1 && y >= layout.rect.top - 1 && y <= layout.rect.bottom + 1,

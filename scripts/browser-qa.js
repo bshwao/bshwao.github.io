@@ -20,15 +20,15 @@ async function settled() {
 function sample(view, limit) {
   const metrics = spatial.metrics();
   assert(metrics.calls <= limit, `${view}: ${metrics.calls} draws exceeds ${limit}`);
-  assert(metrics.textures === 0, `${view}: unexpected WebGL texture allocation`);
+  assert(metrics.textures <= (params.has('shadows')?1:0), `${view}: unexpected WebGL texture allocation`);
   assert(metrics.width * metrics.height * metrics.pixelRatio ** 2 <= 2_400_001, 'Raster budget exceeded');
   rows.push({ view, ...metrics });
 }
 try {
   const started = performance.now();
-  spatial = createSpatialScene({ container: stage, onFrame(state) { latest = state; frames++; } });
+  spatial = createSpatialScene({ container: stage, shadowComparison:params.has('shadows'), onFrame(state) { latest = state; frames++; } });
   await settled(); const readyMs = Math.round(performance.now() - started);
-  sample('tower', 65);
+  sample('tower', params.has('shadows')?85:65);
   spatial.goTo('explore', null, { instant: true }); await settled(); sample('explore', 75);
   for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
     spatial.goTo('section', id, { instant: true }); await settled(); sample(id, 45);

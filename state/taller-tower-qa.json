@@ -1,0 +1,184 @@
+{
+  "checkedAt": "2026-10-22T23:35:13.007Z",
+  "status": "PASS_LOCAL",
+  "published": false,
+  "request": "Make the building taller",
+  "height": {
+    "before": 110,
+    "after": 148.5,
+    "percentIncrease": 35,
+    "roof": 134.325,
+    "antennae": [
+      148.5,
+      145.26
+    ],
+    "sectionElevations": [
+      {
+        "id": "about",
+        "low": 105.975,
+        "high": 148.5
+      },
+      {
+        "id": "projects",
+        "low": 70.875,
+        "high": 105.975
+      },
+      {
+        "id": "experience",
+        "low": 42.525,
+        "high": 70.875
+      },
+      {
+        "id": "resume",
+        "low": 19.575,
+        "high": 42.525
+      },
+      {
+        "id": "contact",
+        "low": 0,
+        "high": 19.575
+      }
+    ],
+    "setbackElevations": [
+      0,
+      10.8,
+      59.4,
+      94.5,
+      129.6,
+      134.325
+    ]
+  },
+  "implementation": "Extended shared vertical elevations, retaining horizontal footprints and furniture scale; camera framing, roof/cap occupancy and facade zones use the shared tower height.",
+  "sourceTests": {
+    "command": "npm run check",
+    "status": "PASS",
+    "tests": 56,
+    "syntaxModules": 34,
+    "generatedThemeAndReading": "PASS"
+  },
+  "integration": {
+    "command": "npm test",
+    "status": "PASS",
+    "modes": [
+      "desktop",
+      "portrait",
+      "reduced-motion",
+      "fresh-room-deep-link",
+      "no-webgl"
+    ],
+    "rooms": 19
+  },
+  "webgl": {
+    "status": "PASS",
+    "raw": "state/taller-tower-views/webgl.json",
+    "runs": [
+      {
+        "viewport": "1440x900",
+        "requestedDpr": 1.25,
+        "samples": 12,
+        "idleFrames": 0,
+        "stableGeometry": 181,
+        "stableGeometryAfterResize": 186,
+        "tower": {
+          "view": "tower",
+          "calls": 52,
+          "triangles": 45670,
+          "lines": 82392,
+          "geometries": 52,
+          "textures": 0,
+          "programs": 13,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 7.5,
+          "far": 1000,
+          "width": 1440,
+          "height": 900
+        },
+        "explore": {
+          "view": "explore",
+          "calls": 66,
+          "triangles": 46126,
+          "lines": 85903,
+          "geometries": 66,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 8.1,
+          "far": 1100,
+          "width": 1440,
+          "height": 900
+        }
+      },
+      {
+        "viewport": "390x844",
+        "requestedDpr": 3,
+        "samples": 12,
+        "idleFrames": 0,
+        "stableGeometry": 179,
+        "stableGeometryAfterResize": 186,
+        "tower": {
+          "view": "tower",
+          "calls": 50,
+          "triangles": 45670,
+          "lines": 22193,
+          "geometries": 50,
+          "textures": 0,
+          "programs": 13,
+          "pixelRatio": 1.35,
+          "quality": 0,
+          "near": 7.9,
+          "far": 1000,
+          "width": 390,
+          "height": 844
+        },
+        "explore": {
+          "view": "explore",
+          "calls": 64,
+          "triangles": 46126,
+          "lines": 25704,
+          "geometries": 64,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.35,
+          "quality": 0,
+          "near": 10.5,
+          "far": 1200,
+          "width": 390,
+          "height": 844
+        }
+      }
+    ],
+    "checks": [
+      "draw/raster limits",
+      "all floors and room close-ups",
+      "idle",
+      "stable navigation/resize allocation",
+      "GPU disposal"
+    ]
+  },
+  "visualReview": {
+    "status": "PASS",
+    "screenshots": [
+      "state/taller-tower-views/opening-desktop.jpg",
+      "state/taller-tower-views/opening-portrait.jpg"
+    ],
+    "consoleWarningsOrErrors": 0
+  },
+  "limitations": [
+    "Local and unpublished.",
+    "Phone WebGL run uses a simulated Chromium viewport; no new physical-device or Edge measurement.",
+    "Phases 4–7 remain pending.",
+    "Earlier phase 3 metrics/source hashes describe the pre-height checkpoint."
+  ],
+  "sourceSha256": {
+    "assets/tower-geometry.js": "df11686dfc8c16a297364721f9be77a9f3d24da6e97690bed69189a67e5b9f4e",
+    "assets/tower-model.js": "f47b9f9670fe2c5bbfa505184cba0ba787a7d14ab48cec4e047fbd8793058bc5",
+    "assets/camera-framing.js": "cc73acda0ea4d39f3caa6dd21c94a62a992ec21a99275dd7fcfe49857405f887",
+    "assets/cap-plans.js": "6263f36dc7aa1c3f247e855ef6690953d0fe8c3b1749a4945fe837b88851ded1",
+    "assets/facade-materials.js": "0a60adc054471ec01b458748f62877882db2b28478cd6ccb98ec4d4101262fec",
+    "scripts/massing-qa.js": "8eee962911d37e177a919ac0e78e832e093ab10c19aa8e05dd780560e80d6551",
+    "scripts/massing.test.mjs": "957ec4a53271543169eb18a45032a5cb478e7f1d8c9b676f2aa5a43aaa5cb8ad",
+    "scripts/skyline.test.mjs": "4b9a3ce0468d17fdf657ec2be8c278de470d9f0bba5c3c651b3f3fb10533a26b"
+  }
+}

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from '../assets/vendor/three.module.min.js';
-import { floorProfiles, footprint, floorLayout, sections, setbacks } from '../assets/tower-geometry.js';
+import { floorProfiles, footprint, floorLayout, sections, setbacks, towerRoofHeight } from '../assets/tower-geometry.js';
 import { createTowerModel } from '../assets/tower-model.js';
 import { floorContent } from '../assets/floor-content.js';
 import { outdoorCameraPose } from '../assets/camera-framing.js';
@@ -88,7 +88,7 @@ test('shared occupied regions, service core, and room anchors fit the entire flo
     const layout = floorLayout(section.low + .02, count);
     alignedCore ??= layout.core;
     assert.deepEqual(layout.core, alignedCore, `${section.id}: occupied floors share a continuous vertical service core`);
-    if (section.high < 99.5) assert.deepEqual(floorLayout(section.high - .002, count).core, alignedCore, `${section.id}: upper cut retains the same service shaft`);
+    if (section.high < towerRoofHeight) assert.deepEqual(floorLayout(section.high - .002, count).core, alignedCore, `${section.id}: upper cut retains the same service shaft`);
     assert.equal(layout.regions.length, count);
     assert.equal(layout.stations.length, count);
     for (const region of [...layout.regions, layout.core]) {
@@ -138,7 +138,7 @@ test('real shell faces have area and setbacks remain horizontal rather than slop
       const normal = points[1].clone().sub(points[0]).cross(points[2].clone().sub(points[0]));
       assert.ok(normal.lengthSq() > 1e-12, `${module.id}: no degenerate shell triangle`);
       const worldY = points.map(p => p.y + module.low);
-      if (Math.min(...worldY) >= 99.5 - epsilon && Math.max(...worldY) - Math.min(...worldY) > epsilon) continue; // The final lantern intentionally tapers.
+      if (Math.min(...worldY) >= towerRoofHeight - epsilon && Math.max(...worldY) - Math.min(...worldY) > epsilon) continue; // The primary antenna intentionally tapers.
       const vertical = Math.abs(normal.normalize().y);
       assert.ok(vertical < 1e-4 || vertical > .9999, `${module.id}: a wall is vertical or a terrace is horizontal`);
       if (vertical > .9999) {

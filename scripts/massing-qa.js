@@ -1,6 +1,6 @@
 import * as T from '../assets/vendor/three.module.min.js';
 import { createTowerModel } from '../assets/tower-model.js';
-import { floorProfiles } from '../assets/tower-geometry.js';
+import { floorProfiles, towerHeight } from '../assets/tower-geometry.js';
 
 // This is the production shell, with its facade and context removed for review.
 const model = createTowerModel();
@@ -10,7 +10,7 @@ const light = new T.DirectionalLight('#ffffff', 2.1); light.position.set(80, 130
 const solid = new T.MeshLambertMaterial({ color: '#c9ceca', side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
 const ink = new T.LineBasicMaterial({ color: '#68726c', transparent: true, opacity: .7 });
 const shell = new T.Group(); scene.add(shell);
-for (const module of model.modules) for (const source of [module.mesh, ...module.caps]) {
+for (const module of model.modules) for (const source of [module.mesh, ...module.caps,...module.antennas]) {
   const mesh = new T.Mesh(source.geometry, solid);
   mesh.position.copy(source.position); mesh.position.y += module.low;
   shell.add(mesh);
@@ -44,7 +44,7 @@ function render() {
     renderer.setScissor(rect.left, innerHeight - rect.bottom, rect.width, rect.height);
     renderer.render(scene, camera);
   }
-  document.querySelector('#status').textContent = `READY · ${floorProfiles.length} deliberate profiles · 110 world units high · four views of the actual closed shell`;
+  document.querySelector('#status').textContent = `READY · ${floorProfiles.length} deliberate profiles · ${towerHeight} world units high · four views of the actual closed shell`;
   window.massingStudy = { ready: true, profiles: floorProfiles.map(({ height, polygon }) => ({ height, polygon })), geometry: renderer.info.memory.geometries };
 }
 render();

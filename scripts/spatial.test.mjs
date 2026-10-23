@@ -201,12 +201,16 @@ assert.equal(w.document.title, initialTitle, 'The opening tower restores the pag
 // At street level a solid foreground building must block the tower behind it.
 const outdoorCanvas = w.document.querySelector('canvas');
 const cameraKey = key => outdoorCanvas.dispatchEvent(new w.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
-for (let i = 0; i < 6; i++) { cameraKey('ArrowDown'); await tick(16); }
+for(let i=0;i<24;i++){cameraKey('ArrowDown');await tick(16);}
+await settleCamera();assert.ok(lastCamera.position.y>=1.49,'Outdoor orbit stops above street level');
+click('#reset-spatial');await settleCamera();
+// The skyline opening is already at street level. The old six-step downward
+// preparation would now move the camera underneath the ground plane.
 const towerMeshes = lastScene.children.find(node => node.isGroup).children.slice(0, 5).flatMap(module => module.children[0].children.filter(node => node.isMesh));
 const sceneryMeshes = ['district-buildings', 'district-character'].flatMap(name => lastScene.getObjectByName(name).children.filter(node => node.isMesh));
 let blockedPoint;
 for (let i = 0; i < 49 && !blockedPoint; i++) {
-  for (const height of [2, 5, 9]) {
+  for (const height of [2, 5, 9, 15, 25]) {
     const point = new THREE.Vector3(0, height, 0);
     const ray = new THREE.Raycaster(lastCamera.position, point.clone().sub(lastCamera.position).normalize());
     const towerHit = ray.intersectObjects(towerMeshes)[0], obstacle = ray.intersectObjects(sceneryMeshes)[0];
@@ -233,6 +237,8 @@ w.document.querySelector('canvas').dispatchEvent(new w.MouseEvent('click', { bub
 assert.equal(w.location.hash, '#explore', 'The browser click following a canvas tap cannot override the tower selection');
 await tick(550);
 assert.equal(main.dataset.transition, reduced ? 'idle' : 'moving');
+assert.equal(lastScene.getObjectByName('district-buildings').visible,false,'Tall city buildings clear before unfolded sections can cross them');
+assert.equal(lastScene.getObjectByName('city-environment').visible,false,'Sunset environment clears with the city for section navigation');
 const middle = lastCamera.position.clone();
 await tick(900);
 assert.equal(main.dataset.mode, 'explore');

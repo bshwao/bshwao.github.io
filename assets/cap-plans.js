@@ -1,6 +1,6 @@
 import * as T from './vendor/three.module.min.js';
 import { palette, sectionColors } from './color-theme.js';
-import { floorLayout, insetFootprint } from './tower-geometry.js';
+import { floorLayout, insetFootprint, towerRoofHeight } from './tower-geometry.js';
 import { floorContent } from './floor-content.js';
 
 // Small architectural sketches for the closed tower's exposed cut faces.
@@ -21,7 +21,7 @@ export function createCapPlans(section, undersideY) {
 
   function face(height, y, side) {
     // Crown and spire levels are not occupied floors.
-    if (height >= 99.5) return;
+    if (height >= towerRoofHeight) return;
     const roomCount = floorContent[section.id].rooms.length;
     const { outline, stations, core } = floorLayout(height, roomCount);
     const boundary = insetFootprint(outline, .04);

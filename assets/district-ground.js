@@ -1,30 +1,12 @@
 import { palette } from './color-theme.js';
 import * as T from './vendor/three.module.min.js';
 import { applyDistrictDepth } from './district-style.js';
+import { districtPlan } from './city-layout.js';
+import { cityPalette } from './city-environment.js';
+export { districtPlan } from './city-layout.js';
 
 // One world-space master plan, shared with future district buildings.
 // North is -Z. Dimensions are model units, rather than surveyed real-world metres.
-export const districtPlan = {
-  extent: 120,
-  plazaHalf: 36,
-  roadCenters: [-42, 42],
-  roadWidth: 10,
-  sidewalkWidth: 3,
-  parcels: [
-    { id: '01', bounds: [-96, -96, -51, -51] },
-    { id: '02', bounds: [-33, -96, -4, -51] },
-    { id: '03', bounds: [4, -96, 33, -51] },
-    { id: '04', bounds: [51, -96, 96, -51] },
-    { id: '05', bounds: [-96, -33, -51, -4] },
-    { id: '06', bounds: [51, -33, 96, -4] },
-    { id: '07', bounds: [-96, 4, -51, 33] },
-    { id: '08', bounds: [51, 4, 96, 33] },
-    { id: '09', bounds: [-96, 51, -51, 96] },
-    { id: '10', bounds: [-33, 51, -4, 96] },
-    { id: '11', bounds: [4, 51, 33, 96] },
-    { id: '12', bounds: [51, 51, 96, 96] },
-  ],
-};
 
 // Simple drafting lettering stays sharp at every zoom; no font or texture loads.
 const glyphs = {
@@ -82,14 +64,14 @@ export function createDistrictGround() {
   }
   const minor = layer('draft-grid-minor', palette.grid, { opacity: .38, order: -12 });
   const major = layer('draft-grid-major', palette.line, { opacity: .5, order: -11 });
-  const streets = layer('streets', palette.street, { surface: true, order: -10 });
-  const walks = layer('sidewalks', palette.paving, { surface: true, order: -9 });
-  const plaza = layer('central-plaza', palette.raised, { surface: true, order: -8 });
-  const parcels = layer('parcels', palette.paper, { surface: true, order: -8 });
-  const boundaries = layer('curbs-and-parcels', palette.draft, { opacity: .72, order: -7 });
+  const streets = layer('streets', cityPalette.road, { surface: true, order: -10 });
+  const walks = layer('sidewalks', cityPalette.pavement, { surface: true, order: -9 });
+  const plaza = layer('central-plaza', '#b1a797', { surface: true, order: -8 });
+  const parcels = layer('parcels', cityPalette.pavement, { surface: true, order: -8 });
+  const boundaries = layer('curbs-and-parcels', '#6b6e71', { opacity: .72, order: -7 });
   const details = layer('paving-and-road-marks', palette.line, { opacity: .48, order: -6 });
   const notes = layer('survey-annotations', palette.draft, { opacity: .72, order: -5 });
-  const markings = layer('road-markings', palette.muted, { surface: true, opacity: .84, order: -5 });
+  const markings = layer('road-markings', '#e7d9b5', { surface: true, opacity: .84, order: -5 });
 
   function segment(target, x1, z1, x2, z2, y = -.22) {
     target.positions.push(x1, y, z1, x2, y, z2);
@@ -120,20 +102,15 @@ export function createDistrictGround() {
 
   // Fade the outer drafting field into the white background using vertex colours.
   const extent = districtPlan.extent;
-  for (let n = -extent; n <= extent; n += 5) {
-    const target = n % 20 === 0 ? major : minor;
-    for (let step = -extent; step < extent; step += 10) {
-      segment(target, n, step, n, step + 10, -.8);
-      segment(target, step, n, step + 10, n, -.8);
-    }
-  }
+  // The city is framed from its streets; the old tabletop drafting field is
+  // retained as an empty optional layer rather than uploading invisible lines.
 
   const roadHalf = districtPlan.roadWidth / 2;
   for (const center of districtPlan.roadCenters) {
     const lo = center - roadHalf, hi = center + roadHalf;
     // Split at intersections, avoiding stacked transparent surfaces.
-    rect(streets, lo, -108, hi, 108, -.65);
-    for (const [left, right] of [[-108, -47], [-37, 37], [47, 108]]) rect(streets, left, lo, right, hi, -.65);
+    rect(streets, lo, -170, hi, 170, -.65);
+    for (const [left, right] of [[-170, -47], [-37, 37], [47, 170]]) rect(streets, left, lo, right, hi, -.65);
     for (const [start, end] of [[-102, -48], [-36, 36], [48, 102]]) {
       for (const edge of [lo, hi]) {
         const outward = edge === lo ? -1 : 1;
@@ -167,8 +144,8 @@ export function createDistrictGround() {
   outline(details, -p + 2, -p + 2, p - 2, p - 2);
   // Four paved approaches meet the existing circular tower apron.
   for (const side of [-1, 1]) for (const offset of [-4, 4]) {
-    segment(details, offset, side * 29.3, offset, side * (p - 2));
-    segment(details, side * 29.3, offset, side * (p - 2), offset);
+    segment(details, offset, side * p, offset, side * 36);
+    segment(details, side * p, offset, side * 36, offset);
   }
   text('PLAZA', 0, 33.5, 1.45);
 
@@ -225,6 +202,7 @@ export function createDistrictGround() {
     }
     const object = item.surface ? new T.Mesh(geometry, item.material) : new T.LineSegments(geometry, item.material);
     object.name = item.name; object.renderOrder = item.order;
+    if([minor,major,notes].includes(item)) object.visible=false;
     root.add(object);
   }
 

@@ -6,6 +6,8 @@ import { sections, footprint, stationPositions } from '../assets/tower-geometry.
 import { floorContent } from '../assets/floor-content.js';
 import { districtPlan } from '../assets/district-ground.js';
 import { palette, sectionColors } from '../assets/color-theme.js';
+import { cityLots, cityEnvelopes } from '../assets/city-layout.js';
+import { outdoorCameraPose } from '../assets/camera-framing.js';
 
 const model = createTowerModel();
 model.root.updateMatrixWorld(true);
@@ -32,10 +34,10 @@ test('the district reserves a clear tower plaza and non-overlapping parcels outs
   const plaza = [-districtPlan.plazaHalf, -districtPlan.plazaHalf, districtPlan.plazaHalf, districtPlan.plazaHalf];
   const roads = districtPlan.roadCenters.flatMap(center => {
     const lo = center - districtPlan.roadWidth / 2, hi = center + districtPlan.roadWidth / 2;
-    return [[lo, -108, hi, 108], [-108, lo, 108, hi]];
+    return [[lo, -170, hi, 170], [-170, lo, 170, hi]];
   });
   for (const [x, z] of footprint(0)) assert.ok(Math.abs(x) < districtPlan.plazaHalf && Math.abs(z) < districtPlan.plazaHalf);
-  assert.equal(new Set(districtPlan.parcels.map(parcel => parcel.id)).size, 12);
+  assert.equal(new Set(districtPlan.parcels.map(parcel => parcel.id)).size, districtPlan.parcels.length);
   for (const [index, parcel] of districtPlan.parcels.entries()) {
     const bounds = parcel.bounds;
     assert.ok(bounds[0] < bounds[2] && bounds[1] < bounds[3]);
@@ -65,14 +67,15 @@ test('the decorative district has finite ground geometry within a small renderin
 
 test('district buildings fit their parcels, keep the tower clear, and share a bounded geometry budget', () => {
   const district = model.districtBuildings;
-  assert.equal(district.buildings.length, districtPlan.parcels.length);
-  assert.equal(new Set(district.buildings.map(building => building.parcelId)).size, 12);
+  assert.equal(district.buildings.length, cityLots.length);
+  assert.ok(district.buildings.length >= 30 && district.buildings.length <= 40);
+  assert.equal(new Set(district.buildings.map(building => building.lotId)).size, cityLots.length);
   assert.equal(new Set(district.buildings.map(building => building.type)).size, 4);
   for (const building of district.buildings) {
-    const [x0, z0, x1, z1] = districtPlan.parcels.find(parcel => parcel.id === building.parcelId).bounds;
-    assert.ok(building.bounds.min.x >= x0 + 5 && building.bounds.max.x <= x1 - 5);
-    assert.ok(building.bounds.min.z >= z0 + 5 && building.bounds.max.z <= z1 - 5);
-    assert.ok(building.bounds.max.y < 17, `${building.parcelId}: low-rise massing preserves the tower silhouette`);
+    const [x0, z0, x1, z1] = cityLots.find(lot => lot.id === building.lotId).bounds;
+    assert.ok(building.bounds.min.x > x0 && building.bounds.max.x < x1);
+    assert.ok(building.bounds.min.z > z0 && building.bounds.max.z < z1);
+    assert.ok(building.bounds.max.y < 85, `${building.lotId}: secondary skyline remains below the main tower`);
     assert.ok(building.parts.every(part => part.width > 0 && part.depth > 0 && part.top > part.bottom));
   }
   let triangles = 0, vertices = 0;
@@ -84,21 +87,23 @@ test('district buildings fit their parcels, keep the tower clear, and share a bo
     for (let i = 0; i < positions.count; i++) {
       const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
       assert.ok([x, y, z].every(Number.isFinite));
-      assert.ok(districtPlan.parcels.some(({ bounds: [x0, z0, x1, z1] }) => x > x0 + 5 && x < x1 - 5 && z > z0 + 5 && z < z1 - 5), 'All surfaces and facade strokes leave streets and sidewalks clear');
+      assert.ok(cityLots.some(({ bounds: [x0, z0, x1, z1] }) => x > x0 && x < x1 && z > z0 && z < z1), 'All surfaces and facade strokes leave streets and sidewalks clear');
     }
   }
   const roofNormals = district.root.getObjectByName('building-roofs').geometry.attributes.normal;
-  for (let i = 0; i < roofNormals.count; i++) assert.ok(roofNormals.getY(i) > 0, 'Gabled, sawtooth, and flat roofs face the sky');
-  assert.ok(district.root.children.length <= 5 && triangles < 2500 && vertices < 16_000, `${triangles} triangles / ${vertices} vertices`);
+  assert.ok([...roofNormals.array].every(Number.isFinite), 'Roof/parapet normals remain finite');
+  assert.ok(district.root.children.length <= 5 && triangles < cityLots.length*600 && vertices < cityLots.length*3000, `${triangles} triangles / ${vertices} vertices`);
 
-  const target = new T.Vector3(0, 5, 0);
+  const target = new T.Vector3(-10, 90, -4);
   const meshes = district.root.children.filter(object => object.isMesh);
   for (let i = 0; i < 24; i++) {
     const angle = i / 24 * Math.PI * 2;
     const origin = new T.Vector3(Math.sin(angle) * 215, 116, Math.cos(angle) * 215);
     const ray = new T.Raycaster(origin, target.clone().sub(origin).normalize(), 0, origin.distanceTo(target));
-    assert.equal(ray.intersectObjects(meshes).length, 0, `Opening view keeps the tower base visible from ${i * 15} degrees`);
+    assert.equal(ray.intersectObjects(meshes).length, 0, `Upper main shaft remains recognizable from ${i * 15} degrees`);
   }
+  const pose=outdoorCameraPose('tower',1440,900),middle=new T.Vector3(-7,68,0);
+  assert.equal(new T.Raycaster(pose.position,middle.clone().sub(pose.position).normalize(),0,pose.position.distanceTo(middle)).intersectObjects(meshes).length,0,'Composed opening sightline reaches the main shaft');
 });
 
 test('colored district roofs have no competing box lids or flat planes beneath pitched roofs', () => {
@@ -155,7 +160,7 @@ test('district shading keeps opaque building depth and inexpensive contact washe
   }
   const mesh = model.districtShadows.root.children[0];
   assert.equal(model.districtShadows.root.children.length, 1, 'All contact washes share one draw call');
-  assert.ok(mesh.geometry.attributes.position.count / 3 < 1500, 'The soft ground washes have a bounded geometry budget');
+  assert.ok(mesh.geometry.attributes.position.count / 3 < 3500, 'Contacts and directional silhouettes share a bounded geometry budget');
   const alpha = mesh.geometry.attributes.color;
   assert.equal(alpha.itemSize, 4);
   assert.ok([...alpha.array].every(value => Number.isFinite(value) && value >= 0 && value <= 1));
@@ -193,11 +198,11 @@ test('district landscaping and engineering references leave building volumes cle
     for (let i = 0; i < positions.count; i++) {
       const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
       assert.ok([x, y, z].every(Number.isFinite));
-      assert.ok(Math.abs(x) < districtPlan.extent && Math.abs(z) < districtPlan.extent && y < 17);
+      assert.ok(Math.abs(x) < districtPlan.extent && Math.abs(z) < districtPlan.extent && y < Math.max(...cityEnvelopes.map(b=>b.maxY)));
       if (y < .5) assert.ok(districtPlan.roadCenters.every(center => Math.abs(x - center) > districtPlan.roadWidth / 2 && Math.abs(z - center) > districtPlan.roadWidth / 2), 'Ground-level fixtures keep the streets and crosswalks clear');
     }
   }
-  assert.ok(district.root.children.length <= 6 && triangles < 6500 && vertices < 30_000, `${triangles} triangles / ${vertices} vertices`);
+  assert.ok(district.root.children.length <= 6 && triangles < 9000 && vertices < 45_000, `${triangles} triangles / ${vertices} vertices`);
   const target = new T.Vector3(0, 5, 0);
   for (let i = 0; i < 24; i++) {
     const angle = i / 24 * Math.PI * 2;

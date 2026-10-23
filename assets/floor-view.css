@@ -104,5 +104,8 @@
     .room-scroll-cue { display: none; }
     .floor-description { padding: 20px 22px 0; font-size: 8px; }
   }
+  @media (max-width: 600px) {
+    .has-shared-plan .hotspot-label { display: none; }
+  }
   @media (prefers-reduced-motion: reduce) { .floor-view, .floor-sheet { transition: none !important; } }
 }

@@ -1,0 +1,33 @@
+{
+  "baked": {
+    "calls": 52,
+    "triangles": 50657,
+    "lines": 16169,
+    "geometries": 52,
+    "textures": 0,
+    "programs": 15,
+    "pixelRatio": 1,
+    "quality": 0,
+    "near": 10.5,
+    "far": 1200,
+    "width": 691,
+    "height": 480
+  },
+  "mapped": {
+    "calls": 53,
+    "triangles": 50659,
+    "lines": 16169,
+    "geometries": 53,
+    "textures": 1,
+    "programs": 17,
+    "pixelRatio": 1,
+    "quality": 0,
+    "near": 10.5,
+    "far": 1200,
+    "width": 691,
+    "height": 480
+  },
+  "selected": "baked",
+  "mapSize": 1024,
+  "note": "Renderer-reported main-pass counts. The mapped prototype additionally renders a shadow depth pass."
+}

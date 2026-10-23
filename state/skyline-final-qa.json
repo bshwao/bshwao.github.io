@@ -1,0 +1,938 @@
+{
+  "checkedAt": "2026-10-23T00:14:10.043Z",
+  "localDate": "2026-10-22",
+  "status": "PASS_LOCAL_ALL_SEVEN_SKYLINE_PHASES",
+  "objective": "Complete phase 4-7",
+  "published": false,
+  "remainingRequiredWork": [],
+  "phases": [
+    {
+      "number": 4,
+      "name": "Materials, sky, and golden-hour lighting",
+      "status": "COMPLETE",
+      "requirements": [
+        {
+          "requirement": "Charcoal main metal/glazing and warm reflected elevations; complementary neighboring material families",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/facade-materials.js",
+            "assets/city-environment.js",
+            "assets/district-buildings.js",
+            "state/skyline-final-views/opening-desktop.jpg",
+            "state/skyline-final-views/side.jpg",
+            "state/skyline-final-views/rear.jpg"
+          ],
+          "note": "Fixed world-position colors remain stable through rotation; dark rear and warm selected faces remain distinct."
+        },
+        {
+          "requirement": "Architectural bays/storeys and deterministic restrained groups of warm windows",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/tower-model.js",
+            "assets/city-environment.js",
+            "assets/district-buildings.js",
+            "scripts/theme.test.mjs",
+            "state/skyline-final-views/source-check.log"
+          ],
+          "note": "Physical 1.4-unit tower bays / 1.7-unit storeys, fixed grouped panes, and family-specific district rhythms."
+        },
+        {
+          "requirement": "Blue sky, softly lit clouds, warm sun, cool fill and distance haze",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/city-environment.js",
+            "assets/scene-3d.js",
+            "state/skyline-final-views/opening-portrait.jpg",
+            "state/skyline-final-views/side.jpg"
+          ],
+          "note": "Static procedural sky; no texture or animation uniform. The sun direction is shared with baked face/ground shading."
+        },
+        {
+          "requirement": "Exterior haze follows the sky and scene remains coherent during orbit/transition",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/district-style.js",
+            "assets/city-environment.js",
+            "scripts/theme.test.mjs",
+            "scripts/skyline.test.mjs",
+            "state/skyline-final-views/explore.jpg",
+            "state/skyline-final-views/integration.log"
+          ],
+          "note": "Exterior haze replaces paper fading; environment clears to the light architectural presentation for portfolio navigation."
+        },
+        {
+          "requirement": "Compare baked and bounded directional shadows and record rendering costs",
+          "status": "VERIFIED",
+          "evidence": [
+            "scripts/shadow-study.html",
+            "scripts/shadow-study.js",
+            "state/skyline-final-views/shadow-comparison.json",
+            "state/skyline-final-views/shadow-comparison.jpg"
+          ],
+          "note": "Baked selected. Mapped comparison adds one 1024px map texture, two cached programs and a main-pass receiver draw, plus its shadow depth pass. Production has no textures or postprocessing."
+        },
+        {
+          "requirement": "Opaque readable navigation and lighter interiors/plans",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/color-system.css",
+            "assets/floor-view.css",
+            "scripts/theme.test.mjs",
+            "state/skyline-final-views/accessibility.json",
+            "state/skyline-final-views/about.jpg",
+            "state/skyline-final-views/reading-desktop.jpg"
+          ],
+          "note": "All 39 audits have zero automated violations; palette contrast and retained manual-review categories were examined."
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "name": "Street foreground and environmental detail",
+      "status": "COMPLETE",
+      "requirements": [
+        {
+          "requirement": "Street trees, sidewalks, lamps, entrances, awnings, signs and modest static vehicles",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/district-details.js",
+            "assets/district-buildings.js",
+            "assets/district-ground.js",
+            "state/skyline-final-views/opening-default.jpg"
+          ],
+          "note": "46 trees, 14 benches, 16 lamps, eight shop signs/canopies, two parked cars and two test vehicles; roofs retain 24 supported equipment groups."
+        },
+        {
+          "requirement": "Foreground concentration and simpler distant detail",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/district-details.js",
+            "assets/district-buildings.js",
+            "assets/city-layout.js",
+            "state/skyline-final-views/opening-portrait.jpg"
+          ],
+          "note": "Foreground gardens and inner shop fronts provide pedestrian scale; distant volumes omit fine facade strokes."
+        },
+        {
+          "requirement": "Workshop/engineering references fit real streets and service areas",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/district-details.js",
+            "scripts/model.test.mjs",
+            "state/skyline-final-views/source-check.log"
+          ],
+          "note": "Campus/residential courts, MFE/LAB apron and Poltergeist garage/test loop retained; fixture AABBs avoid occupied volumes."
+        },
+        {
+          "requirement": "Clear roads/walking routes, shared batches and contact shading within measured budgets",
+          "status": "VERIFIED",
+          "evidence": [
+            "scripts/model.test.mjs",
+            "scripts/skyline.test.mjs",
+            "assets/district-style.js",
+            "state/skyline-final-views/webgl.json"
+          ],
+          "note": "Six detail layers use 8,456 triangles; one shading layer uses 3,021. Source ceilings revised to 9,000/3,500 with the added street fixtures and silhouettes, within the whole-scene budget."
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "name": "Portfolio transitions and responsive integration",
+      "status": "COMPLETE",
+      "requirements": [
+        {
+          "requirement": "Actual-bound reset/opening framing in portrait and short landscape",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/camera-framing.js",
+            "scripts/skyline.test.mjs",
+            "scripts/massing.test.mjs",
+            "state/skyline-final-views/opening-desktop.jpg",
+            "state/skyline-final-views/opening-portrait.jpg",
+            "state/skyline-final-views/opening-landscape.jpg"
+          ],
+          "note": "Opening fitter raises long short-landscape fits above street level; orbit clamps its lower limit above ground."
+        },
+        {
+          "requirement": "Tall neighbors block selection of hidden tower surfaces",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/scene-3d.js",
+            "scripts/spatial.test.mjs",
+            "state/skyline-final-views/integration.log"
+          ],
+          "note": "Actual scene meshes occlude tower picking across street-level orbits."
+        },
+        {
+          "requirement": "City clears before moving sections/rooms and returns coherently",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/scene-3d.js",
+            "scripts/spatial.test.mjs",
+            "state/skyline-final-views/explore.jpg",
+            "state/skyline-final-views/explore-portrait.jpg",
+            "state/skyline-final-views/integration.log"
+          ],
+          "note": "First unfold exposes cut plans; city/sky clear in the first 24%, return after 66% of collapse; no ghost city overlaps floors."
+        },
+        {
+          "requirement": "Section labels, room markers, panels, flights, interruption and resize remain usable",
+          "status": "VERIFIED",
+          "evidence": [
+            "scripts/layout.test.mjs",
+            "scripts/spatial.test.mjs",
+            "state/skyline-final-views/portrait-room.jpg",
+            "state/skyline-final-views/landscape-room.jpg",
+            "state/skyline-final-views/reading-portrait-map.jpg",
+            "state/skyline-final-views/integration.log"
+          ],
+          "note": "All 19 rooms and actual furniture are fitted. 25/50/75% room flights and late section entry are sampled; phone map names no longer overlap."
+        },
+        {
+          "requirement": "Independent views, routes/history, touch/keyboard, reduced motion, reading and context-loss fallback",
+          "status": "VERIFIED",
+          "evidence": [
+            "scripts/spatial.test.mjs",
+            "state/skyline-final-views/integration.log",
+            "state/skyline-final-views/frame-timing.json",
+            "state/skyline-final-views/no-script.jpg",
+            "state/skyline-final-views/no-webgl.jpg",
+            "state/skyline-final-views/complete-reading.jpg"
+          ],
+          "note": "All five integration modes pass; actual browser Enter unfolding, Escape reading return, disabled-script entry and real WebGL context loss were checked."
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "name": "Performance, final QA, and release artwork",
+      "status": "COMPLETE",
+      "requirements": [
+        {
+          "requirement": "Batch/instance repeated geometry and retain viewport-appropriate detail",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/district-buildings.js",
+            "assets/district-details.js",
+            "assets/render-budget.js",
+            "state/skyline-final-views/webgl.json"
+          ],
+          "note": "Five building layers, six detail layers, one shading layer; shared room primitives and compact line policy retained."
+        },
+        {
+          "requirement": "Original viewport quality, raster cap, cached labels, idle/background, stable allocation and disposal",
+          "status": "VERIFIED",
+          "evidence": [
+            "assets/scene-3d.js",
+            "assets/render-budget.js",
+            "scripts/spatial.test.mjs",
+            "state/skyline-final-views/webgl.json",
+            "state/skyline-final-views/frame-timing.json"
+          ],
+          "note": "Zero idle frames; repeated navigation/resize stabilizes; disposal releases uploaded geometry. Original quality 0/raster size survives deliberate slow frames; source integration checks hidden-tab suspension."
+        },
+        {
+          "requirement": "85/100 outdoor and 45 interior draw ceilings; assembled triangles below 150,000",
+          "status": "VERIFIED",
+          "evidence": [
+            "state/skyline-final-views/webgl.json",
+            "scripts/browser-qa.js"
+          ],
+          "note": "Desktop tower/explore 54/46 calls, 50,657/18,682 triangles. The stricter existing 65/75 outdoor harness limits also pass."
+        },
+        {
+          "requirement": "Meaningful skyline bounds/roofs/occlusion/navigation plus topology/rooms/accessibility regressions",
+          "status": "VERIFIED",
+          "evidence": [
+            "scripts/model.test.mjs",
+            "scripts/skyline.test.mjs",
+            "scripts/massing.test.mjs",
+            "scripts/interiors.test.mjs",
+            "scripts/reading-geometry.test.mjs",
+            "state/skyline-final-views/source-check.log",
+            "state/skyline-final-views/integration.log"
+          ],
+          "note": "58 tests plus syntax/asset/generated-content checks and five integration modes pass."
+        },
+        {
+          "requirement": "Real WebGL, timings, accessibility, visual/keyboard, context-loss, reading/fallback, reduced/interrupted/resized states",
+          "status": "VERIFIED",
+          "evidence": [
+            "state/skyline-final-views/webgl.json",
+            "state/skyline-final-views/frame-timing.json",
+            "state/skyline-final-views/accessibility.json",
+            "state/skyline-final-views/integration.log",
+            "state/skyline-final-views/vision-grayscale.jpg",
+            "state/skyline-final-views/no-script.jpg"
+          ],
+          "note": "36 WebGL samples, 39 accessibility views, normal desktop/phone-layout and deliberate-load runs; actual loss, fallback and keyboard/reading inspection complete."
+        },
+        {
+          "requirement": "Separate desktop/simulated phone evidence from actual Edge/physical iPhone measurements",
+          "status": "VERIFIED",
+          "evidence": [
+            "state/skyline-final-views/webgl.json",
+            "state/skyline-final-views/frame-timing.json",
+            "QA.md"
+          ],
+          "note": "Chromium 155 / Windows / RTX 2060. Phone sizes/DPR are simulated. Actual Edge and physical iPhone were unavailable and not measured."
+        },
+        {
+          "requirement": "Final before/after/orbit/floor/room/reading evidence, refreshed sharing card and current documentation",
+          "status": "VERIFIED",
+          "evidence": [
+            "state/skyline-final-views/opening-desktop.jpg",
+            "state/taller-tower-views/opening-desktop.jpg",
+            "state/skyline-final-views/side.jpg",
+            "state/skyline-final-views/rear.jpg",
+            "state/skyline-final-views/about.jpg",
+            "state/skyline-final-views/projects.jpg",
+            "state/skyline-final-views/experience.jpg",
+            "state/skyline-final-views/resume.jpg",
+            "state/skyline-final-views/contact.jpg",
+            "state/skyline-final-views/projects-room.jpg",
+            "state/skyline-final-views/portrait-room.jpg",
+            "state/skyline-final-views/reading-desktop.jpg",
+            "state/skyline-final-views/reading-portrait-map.jpg",
+            "assets/social-preview.png",
+            "scripts/social-preview.html",
+            "scripts/render-social.py",
+            "README.md",
+            "ROADMAP.md",
+            "QA.md",
+            "SKYLINE-PLAN.md",
+            "MAINTENANCE.md"
+          ],
+          "note": "Final sharing card is a captured production skyline plus fixed typography, optimized PNG 1280x720 / 173,894 bytes. Publication is a separate release action."
+        }
+      ]
+    }
+  ],
+  "architecture": {
+    "mainHeight": 148.5,
+    "buildings": 38,
+    "rooms": 19,
+    "families": 6,
+    "features": {
+      "plaza-garden": 4,
+      "tree": 46,
+      "bench": 14,
+      "streetlight": 16,
+      "foreground-garden": 2,
+      "shop-sign": 8,
+      "campus-quad": 1,
+      "residential-courtyard": 1,
+      "engineering-workshop": 1,
+      "parked-car": 2,
+      "test-garage-frontage": 1,
+      "vehicle-test-loop": 1,
+      "formula-test-car": 1,
+      "autonomous-test-car": 1,
+      "roof-equipment": 24
+    },
+    "buildingGeometry": {
+      "layers": 5,
+      "triangles": 20528,
+      "vertices": 108454
+    },
+    "detailGeometry": {
+      "layers": 6,
+      "triangles": 8456,
+      "vertices": 40370
+    },
+    "shadingGeometry": {
+      "layers": 1,
+      "triangles": 3021,
+      "vertices": 9063
+    }
+  },
+  "sourceTests": {
+    "command": "npm run check",
+    "status": "PASS",
+    "tests": 58,
+    "syntaxModules": 36,
+    "generatedPaletteAndReading": "PASS",
+    "log": "state/skyline-final-views/source-check.log"
+  },
+  "integration": {
+    "command": "npm test",
+    "status": "PASS",
+    "modes": [
+      "desktop",
+      "portrait",
+      "reduced-motion",
+      "fresh-room-deep-link",
+      "no-webgl"
+    ],
+    "allRooms": 19,
+    "roomFlightSamples": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "shortLandscape": true,
+    "aboveGroundOrbit": true,
+    "earlyCityClearance": true,
+    "log": "state/skyline-final-views/integration.log"
+  },
+  "webgl": {
+    "status": "PASS",
+    "raw": "state/skyline-final-views/webgl.json",
+    "samples": 36,
+    "runs": [
+      {
+        "viewport": "1440x900",
+        "requestedDpr": 1.25,
+        "idleFrames": 0,
+        "stableGeometries": 183,
+        "stableAfterResize": 188,
+        "tower": {
+          "view": "tower",
+          "calls": 54,
+          "triangles": 50657,
+          "lines": 54894,
+          "geometries": 54,
+          "textures": 0,
+          "programs": 15,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 7.4,
+          "far": 1000,
+          "width": 1440,
+          "height": 900
+        },
+        "explore": {
+          "view": "explore",
+          "calls": 46,
+          "triangles": 18682,
+          "lines": 26837,
+          "geometries": 68,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.25,
+          "quality": 0,
+          "near": 7.8,
+          "far": 1000,
+          "width": 1440,
+          "height": 900
+        },
+        "maxInteriorDraws": 31
+      },
+      {
+        "viewport": "390x844",
+        "requestedDpr": 3,
+        "idleFrames": 0,
+        "stableGeometries": 181,
+        "stableAfterResize": 188,
+        "tower": {
+          "view": "tower",
+          "calls": 52,
+          "triangles": 50657,
+          "lines": 16169,
+          "geometries": 52,
+          "textures": 0,
+          "programs": 15,
+          "pixelRatio": 1.35,
+          "quality": 0,
+          "near": 7.8,
+          "far": 1000,
+          "width": 390,
+          "height": 844
+        },
+        "explore": {
+          "view": "explore",
+          "calls": 46,
+          "triangles": 18682,
+          "lines": 12965,
+          "geometries": 66,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.35,
+          "quality": 0,
+          "near": 10.1,
+          "far": 1200,
+          "width": 390,
+          "height": 844
+        },
+        "maxInteriorDraws": 31
+      },
+      {
+        "viewport": "844x390",
+        "requestedDpr": 3,
+        "idleFrames": 0,
+        "stableGeometries": 181,
+        "stableAfterResize": 188,
+        "tower": {
+          "view": "tower",
+          "calls": 52,
+          "triangles": 50657,
+          "lines": 16169,
+          "geometries": 52,
+          "textures": 0,
+          "programs": 15,
+          "pixelRatio": 1.35,
+          "quality": 0,
+          "near": 11.4,
+          "far": 1200,
+          "width": 844,
+          "height": 390
+        },
+        "explore": {
+          "view": "explore",
+          "calls": 46,
+          "triangles": 18682,
+          "lines": 12965,
+          "geometries": 66,
+          "textures": 0,
+          "programs": 16,
+          "pixelRatio": 1.35,
+          "quality": 0,
+          "near": 12.1,
+          "far": 1300,
+          "width": 844,
+          "height": 390
+        },
+        "maxInteriorDraws": 31
+      }
+    ],
+    "checks": [
+      "raster <= 2.4 million pixels",
+      "zero textures",
+      "original viewport quality 0",
+      "all five floors/room close-ups",
+      "stable repeated navigation/resize allocation",
+      "idle stops",
+      "disposal removes canvas and uploaded geometry"
+    ]
+  },
+  "accessibility": {
+    "status": "PASS",
+    "raw": "state/skyline-final-views/accessibility.json",
+    "views": 39,
+    "violations": 0,
+    "axeVersion": "4.14.0",
+    "viewportScopes": [
+      "1280x720",
+      "390x844",
+      "650x390"
+    ],
+    "manualReviewOccurrences": {
+      "color-contrast": 36,
+      "aria-valid-attr-value": 15
+    },
+    "manualReviewResolution": "Opaque paper controls plus numeric palette/CVD contrast and accessible symbol names; native-dialog target exists in every audit view and opens/returns correctly. Not a WCAG certification or screen-reader audit.",
+    "portraitRepeatedAfterMapFix": true
+  },
+  "frameTiming": {
+    "raw": "state/skyline-final-views/frame-timing.json",
+    "host": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "normalDesktop": {
+      "viewport": "1280x720",
+      "simulatedFrameDelayMs": 0,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "contextLossFallback": true,
+      "qualityTrace": [
+        {
+          "quality": "0",
+          "detail": "full",
+          "width": 1280,
+          "height": 720,
+          "time": 250
+        }
+      ],
+      "rows": [
+        {
+          "name": "tower orbit",
+          "frames": 652,
+          "fps": 163,
+          "medianMs": 6.1,
+          "p95Ms": 6.2,
+          "callbackP95Ms": 0.9,
+          "detail": "full",
+          "quality": "0"
+        },
+        {
+          "name": "unfold",
+          "frames": 215,
+          "fps": 164.2,
+          "medianMs": 6.1,
+          "p95Ms": 6.3,
+          "callbackP95Ms": 1.5,
+          "detail": "full",
+          "quality": "0"
+        },
+        {
+          "name": "explore orbit",
+          "frames": 660,
+          "fps": 165,
+          "medianMs": 6.1,
+          "p95Ms": 6.2,
+          "callbackP95Ms": 1.1,
+          "detail": "full",
+          "quality": "0"
+        },
+        {
+          "name": "open projects",
+          "frames": 297,
+          "fps": 157.6,
+          "medianMs": 6.1,
+          "p95Ms": 6.2,
+          "callbackP95Ms": 1.1,
+          "detail": "full",
+          "quality": "0"
+        },
+        {
+          "name": "floor orbit",
+          "frames": 656,
+          "fps": 163.8,
+          "medianMs": 6.1,
+          "p95Ms": 6.3,
+          "callbackP95Ms": 0.7,
+          "detail": "full",
+          "quality": "0"
+        },
+        {
+          "name": "room flight",
+          "frames": 125,
+          "fps": 162.4,
+          "medianMs": 6.1,
+          "p95Ms": 6.3,
+          "callbackP95Ms": 1.2,
+          "detail": "full",
+          "quality": "0"
+        }
+      ]
+    },
+    "deliberateLoad": {
+      "viewport": "1280x720",
+      "simulatedFrameDelayMs": 28,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "contextLossFallback": null,
+      "qualityTrace": [
+        {
+          "quality": "0",
+          "detail": "full",
+          "width": 1280,
+          "height": 720,
+          "time": 150.8
+        }
+      ],
+      "rows": [
+        {
+          "name": "tower orbit",
+          "frames": 138,
+          "fps": 34.4,
+          "medianMs": 30.3,
+          "p95Ms": 30.4,
+          "callbackP95Ms": 1.2,
+          "detail": "full",
+          "quality": "0"
+        },
+        {
+          "name": "unfold",
+          "frames": 44,
+          "fps": 32.9,
+          "medianMs": 30.3,
+          "p95Ms": 36.4,
+          "callbackP95Ms": 1.5,
+          "detail": "full",
+          "quality": "0"
+        },
+        {
+          "name": "explore orbit",
+          "frames": 134,
+          "fps": 33.3,
+          "medianMs": 30.3,
+          "p95Ms": 30.4,
+          "callbackP95Ms": 1,
+          "detail": "full",
+          "quality": "0"
+        },
+        {
+          "name": "open projects",
+          "frames": 61,
+          "fps": 32.2,
+          "medianMs": 30.3,
+          "p95Ms": 36.4,
+          "callbackP95Ms": 1,
+          "detail": "full",
+          "quality": "0"
+        },
+        {
+          "name": "floor orbit",
+          "frames": 135,
+          "fps": 33.8,
+          "medianMs": 30.3,
+          "p95Ms": 30.4,
+          "callbackP95Ms": 0.6,
+          "detail": "full",
+          "quality": "0"
+        },
+        {
+          "name": "room flight",
+          "frames": 27,
+          "fps": 33.5,
+          "medianMs": 30.3,
+          "p95Ms": 30.4,
+          "callbackP95Ms": 0.9,
+          "detail": "full",
+          "quality": "0"
+        }
+      ]
+    },
+    "phoneLayoutOnSameHost": {
+      "viewport": "390x844",
+      "simulatedFrameDelayMs": 0,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "contextLossFallback": null,
+      "qualityTrace": [
+        {
+          "quality": "0",
+          "detail": "compact",
+          "width": 390,
+          "height": 844,
+          "time": 160.2
+        }
+      ],
+      "rows": [
+        {
+          "name": "tower orbit",
+          "frames": 659,
+          "fps": 164.5,
+          "medianMs": 6.1,
+          "p95Ms": 6.2,
+          "callbackP95Ms": 1,
+          "detail": "compact",
+          "quality": "0"
+        },
+        {
+          "name": "unfold",
+          "frames": 214,
+          "fps": 164.1,
+          "medianMs": 6.1,
+          "p95Ms": 6.2,
+          "callbackP95Ms": 1.3,
+          "detail": "compact",
+          "quality": "0"
+        },
+        {
+          "name": "explore orbit",
+          "frames": 661,
+          "fps": 165,
+          "medianMs": 6.1,
+          "p95Ms": 6.2,
+          "callbackP95Ms": 1.4,
+          "detail": "compact",
+          "quality": "0"
+        },
+        {
+          "name": "open projects",
+          "frames": 307,
+          "fps": 163.4,
+          "medianMs": 6.1,
+          "p95Ms": 6.2,
+          "callbackP95Ms": 1,
+          "detail": "compact",
+          "quality": "0"
+        },
+        {
+          "name": "floor orbit",
+          "frames": 661,
+          "fps": 165,
+          "medianMs": 6.1,
+          "p95Ms": 6.3,
+          "callbackP95Ms": 0.9,
+          "detail": "compact",
+          "quality": "0"
+        },
+        {
+          "name": "room flight",
+          "frames": 127,
+          "fps": 165,
+          "medianMs": 6.1,
+          "p95Ms": 6.3,
+          "callbackP95Ms": 1.1,
+          "detail": "compact",
+          "quality": "0"
+        }
+      ]
+    },
+    "contextLossFallback": true,
+    "note": "Near host 165Hz ceiling; no speedup or physical-phone performance claim. Callback p95 excludes asynchronous GPU and subsequent layout/paint. Deliberate 28ms load verifies original quality retention."
+  },
+  "shadowComparison": {
+    "raw": "state/skyline-final-views/shadow-comparison.json",
+    "baked": {
+      "calls": 52,
+      "triangles": 50657,
+      "lines": 16169,
+      "geometries": 52,
+      "textures": 0,
+      "programs": 15,
+      "pixelRatio": 1,
+      "quality": 0,
+      "near": 10.5,
+      "far": 1200,
+      "width": 691,
+      "height": 480
+    },
+    "mapped": {
+      "calls": 53,
+      "triangles": 50659,
+      "lines": 16169,
+      "geometries": 53,
+      "textures": 1,
+      "programs": 17,
+      "pixelRatio": 1,
+      "quality": 0,
+      "near": 10.5,
+      "far": 1200,
+      "width": 691,
+      "height": 480
+    },
+    "selected": "baked",
+    "mapSize": 1024,
+    "note": "Renderer-reported main-pass counts. The mapped prototype additionally renders a shadow depth pass.",
+    "disposed": true
+  },
+  "visualReview": {
+    "status": "PASS",
+    "directory": "state/skyline-final-views/",
+    "views": [
+      "opening desktop/portrait/short landscape",
+      "side/rear orbit",
+      "clean unfolded desktop/portrait",
+      "all five furnished floors",
+      "desktop/portrait/short-landscape room close-ups",
+      "desktop/phone reading maps and retained reading context",
+      "keyboard Enter and Escape",
+      "no-script/no-WebGL entry",
+      "complete reading",
+      "grayscale/protanopia/deuteranopia/tritanopia"
+    ],
+    "productionWarningsOrErrors": 0,
+    "phoneMapLabelOverlap": "Corrected with numbered visible hotspots and full accessible names/content headings."
+  },
+  "sharing": {
+    "path": "assets/social-preview.png",
+    "sourceCapture": "state/skyline-final-views/sharing-source.jpg",
+    "preview": "scripts/social-preview.html",
+    "export": "python scripts/render-social.py state/skyline-final-views/sharing-source.jpg",
+    "format": "PNG, optimized 256-color palette",
+    "width": 1280,
+    "height": 720,
+    "bytes": 173894,
+    "sha256": "ef8c5cdca75cb0e4d33bf7a3d69fdacb717eb308779cce5acac741fb1dcfb884"
+  },
+  "baseline": {
+    "report": "state/taller-tower-qa.json",
+    "desktop": {
+      "tower": {
+        "draws": 52,
+        "triangles": 45670,
+        "lines": 82392
+      },
+      "explore": {
+        "draws": 66,
+        "triangles": 46126,
+        "lines": 85903
+      }
+    },
+    "explanation": "Sky/ground add two assembled draws; street/shadow geometry adds 4,987 assembled triangles. Physical storey linework reduces lines; removing city during expansion reduces unfolded rendering."
+  },
+  "limitations": [
+    "Local and unpublished; no commit, push or deployment performed.",
+    "Simulated Chromium phone sizes/DPR, not physical-iPhone measurements; actual Edge unavailable.",
+    "No live screen-reader or WCAG certification.",
+    "Baked directional silhouettes approximate shadows; no ray-traced or shadow-map production pass.",
+    "Frame timings describe this host and refresh ceiling, not a reliable speedup or other devices."
+  ],
+  "sourceSha256": {
+    "assets/app.js": "b40489e38bee6e1338355086a00ad4f34c7a6f60531cddc4d0dee72aae381b83",
+    "assets/camera-framing.js": "17cb7280d8b33816aeaaabae04b0afb0e226f5bed74a40569814d9ab86c316f0",
+    "assets/cap-plans.js": "6263f36dc7aa1c3f247e855ef6690953d0fe8c3b1749a4945fe837b88851ded1",
+    "assets/city-environment.js": "a695f916512aa3863048d36cde978819df33218b69ddaec709897a1c0a5f998c",
+    "assets/city-layout.js": "36e3ee415cc98ef2eb47dbdd0be44b2eaf556ce1b1a1b94f630f1152f5b980d5",
+    "assets/color-system.css": "ac8324692ead85f40671a303ad4b82302c8b4a4432495f153ed46456013306f6",
+    "assets/color-theme.js": "1e71620c80b37bc3d8ed69f87adec7671c7d89242265eec89b77246f3174d1ed",
+    "assets/content.js": "97491eb4865dc9556cf6a770e03b71a0759a8be376d2bba9f9477d8d53e67f8f",
+    "assets/district-buildings.js": "3285b995cf2afbd478d9d9656d73b0b953e28e7ba784a1a4ec36b73d0c36aba2",
+    "assets/district-details.js": "9bc00e3e26b33e1fe13f45c4ead0efe7d68600865b7b867372c5a21b6ed65756",
+    "assets/district-ground.js": "529fc552fa0067641294dd40ed283867321e6be513b7bdec037bd8146632bbbc",
+    "assets/district-style.js": "b811c94ac5f3a4e5b557d99de9fd8a00a810605e123883fe06ded07974038c66",
+    "assets/facade-materials.js": "c220215b3c37adc1893e5aed36d0c30f44e023ec7bec7e46e6b7b0f8c0059d8e",
+    "assets/floor-content.js": "e8c48a2686e8f1275cccc6ab35c5feef4d0e0371053bf94a18f9bae987f9eb2c",
+    "assets/floor-plans.js": "1dedb273bd20c5701a845737d4f8306f6dfc6e34d4c81a5115782536fe683748",
+    "assets/floor-view.css": "28e39fcc929345aa81ab4f89a046a1d18811753c375b4e6519333ae365bb8d99",
+    "assets/floor-view.js": "41112ed0eea8e1443731bdbfb9ff5315d594ca18f62eef1ef0ee7d86990a2567",
+    "assets/interiors.js": "ca21a3362e0d19096dc375eb8ab272ab9e607f3e204e616d7933e33440ab9fed",
+    "assets/project-story.css": "2bbf3b0522140e94a6e16b9547d2413e4f7b3e9ebf2ad5822394d46ebe0c7c31",
+    "assets/project-story.js": "3faf695ae5e4272a192b61a14b29a5539fd59a6d613fa7e3e55d328b79829594",
+    "assets/reading.css": "c571d0b1741fbb29cb96cb21ccf28e357f7c411494b5ac98b0582e2ad5f1b7ca",
+    "assets/render-budget.js": "34a553c19cbac7fcba7a1f56dffdfcfcb2d5dadea7732e8962b539621b556b6a",
+    "assets/routes.js": "40acf07a8bbccf9f4dfb06135746f461e5e5fae8c9e26b43550bdcaf81a6c1c5",
+    "assets/scene-3d.js": "4836c5a4b1b7546b61d4f9d885d2c3e12c7dc25fa15629fc7832dc64b18f826f",
+    "assets/spatial-app.js": "b279a9c0eeed2cca1e61ea474f0bb6db9e0ec70e12b6967205dafeb05be5ea44",
+    "assets/spatial-layout.js": "01ca87b32a8e4ea3a903a1e1fe0f7055f405fba3e2b3dfad23350c1546056d69",
+    "assets/spatial.css": "d32ceb618e385c5ede5d495bc288150837b2fe723848e3d69af09d3e6daf9501",
+    "assets/styles.css": "23219379129d51d5caa49bd6aec43cf54b61e9fb70234d7997c0cbdd1d13daa0",
+    "assets/theme.css": "27fc84825d69cade5b77528964f8f3fbdbc21b6330d8bbec16135155a9910779",
+    "assets/tower-geometry.js": "df11686dfc8c16a297364721f9be77a9f3d24da6e97690bed69189a67e5b9f4e",
+    "assets/tower-model.js": "90c9e650427f0faf7444f57e6a86fef088e165945be5a876980fdff1916f52a4",
+    "scripts/accessibility-qa.html": "089306c2ed8be4e9e65d0061501beb2d1e6ef97f8236c83bce390c891778bc95",
+    "scripts/accessibility-qa.js": "fa4fef3e6d8731736240243b5cc473b5e8dbf8b23c83be503c352ecc09cc13dc",
+    "scripts/browser-qa.html": "666a0f6ead5e8e572a54b2590f265d7a8653f506941c7a4d4235754d4c67cf1f",
+    "scripts/browser-qa.js": "16f08e40e8b7008965bca663e739afa1aabf4f9328edd4482b018721c968848b",
+    "scripts/check.mjs": "f971460524114525914e938ff7fb60c8bd20aef3802e37fc634707ddf31151ad",
+    "scripts/color-review.html": "4b1e580b30642d98502cced163c0e758870d770d94d88a6e5cf5472798f719dd",
+    "scripts/color-review.js": "8a48255f5f5547eacf7e65031afff51699912e92d730fba2b9914efaf276dc37",
+    "scripts/device-qa.html": "98e09e65084b6c95c16e6f2e99b2f1547c777cc852c242bd6ea70e3eed4f7fcc",
+    "scripts/device-qa.js": "11c1fd07a1a2052d3ca61e745f143e63baf55ea7f9eee4f9cfcbb4ab77ae58b8",
+    "scripts/device-serve.mjs": "5e2285403f6c7f539c1c7334081c5424311f597e8bcf62592e86c17d7a78e061",
+    "scripts/frame-probe.html": "bcba37488ed08ff0b21618f83cb980ae9e96958dfeefae93ed59d7375d8e87ff",
+    "scripts/frame-qa.html": "6efd37d5a825f353ccbfde0a5c53be3c100f33e6e6e90d194cd08e4cde78c23a",
+    "scripts/frame-qa.js": "5fba8de71d6945753faaea2a931753a2776d39b143c57d34e71d108bf8b5c0d1",
+    "scripts/interiors.test.mjs": "9eec695bf17b8162e1ec8bacec418cfcb0d169ea8216dda7fbdbd87849553ec5",
+    "scripts/layout.test.mjs": "bf4dde756f820a84c4c8e5c90a44e45ebfe03023c5e018696aa1198485200209",
+    "scripts/massing-qa.html": "a0068bb354ebebf4bcdcfa71282359428af9cc8ef3a57c0bbeea151731489f64",
+    "scripts/massing-qa.js": "8eee962911d37e177a919ac0e78e832e093ab10c19aa8e05dd780560e80d6551",
+    "scripts/massing.test.mjs": "957ec4a53271543169eb18a45032a5cb478e7f1d8c9b676f2aa5a43aaa5cb8ad",
+    "scripts/model.test.mjs": "e20765a7be1c6cfa3ffbca71c8c310ae71e2657e68a5a5e67d5fc81734662c46",
+    "scripts/no-script-qa.html": "ab3cfe0cdad000cd950e071c0abb2a00f7a7c5900d953794dc782651c5cc30db",
+    "scripts/palette.html": "d2b29766302618577e9e264cc00b72ef041a156c996cba706688c109113988f3",
+    "scripts/reading-geometry.test.mjs": "3db7f59c58de77261228d5382925e58fffdb451bc92495c5af29a1f4228b7e08",
+    "scripts/reading.mjs": "380e2b994410c25fe0c4f211f0f2b47409cdc26d3375f6650904a99b5e7d30a1",
+    "scripts/render-social.py": "fed7e335647b0025d18dfb76b2f6c53e76bb1cb132d6d536e444e514dab4bccd",
+    "scripts/routes.test.mjs": "95f73ecfa5ba00ec5f9e2645df9c1dbb26e476d490b2d17ef3837f9a8cf49684",
+    "scripts/serve.mjs": "166556e62e3321be92e239b1c8fd6ca6a954c5b23060b8d2755edfddac54d9dc",
+    "scripts/shadow-study.html": "efba9416fee16381bc4c932129a43a6a021c6d8bd0d8d442fdb7015e35f0a6a9",
+    "scripts/shadow-study.js": "4c7e486df20d4009adcbe6f8d24f39c6bd723cc4a5d62696bbe9833e145a87cb",
+    "scripts/site.test.mjs": "3493103b9fdd76f2bd58b21f7852980d40f2343558cea6f1f7dbcbda0b540adc",
+    "scripts/skyline-qa.html": "4d61cbcc8567655c8dd307b9b22caca337bdf57a496dcf700cca7b088f458a09",
+    "scripts/skyline-qa.js": "8e86e220833532f1918a15c298b07def44d330482bc1c5366695b1e120b7df90",
+    "scripts/skyline.test.mjs": "ef490d29ad6dee4836aa0b51a8bef2feef7b2e060854f893b6246ff8eea19853",
+    "scripts/social-card.html": "315aaae887c3677bbd4af16e94a7b057a26c901a24c2f12da8bb61b607edde19",
+    "scripts/social-card.js": "69cb7df6a7fba9bae4dc444da3224d213d4aacb0ad317969b780e676169dbc19",
+    "scripts/social-preview.html": "e28ae0033ccb09800f48f90fd980b42e811c098144d82bddf174d7725ff0bc1b",
+    "scripts/spatial.test.mjs": "c0e01c8623c5045c208763c4e711b309b1a5148b9e6a8f443f7e40f54ba7ebd3",
+    "scripts/theme.mjs": "3a677b5e161a8e22f13f44c4796046fa30b2a2782b5617fb94f99fd717b63628",
+    "scripts/theme.test.mjs": "7c50ab0ff57d28dec3bf4976e69be78e11f6d2bb576292813638574343ad672d",
+    "scripts/verify-live.mjs": "d2b089906b94fe3741484dc9651da6a10077e6192383bd121234a46ab387bedd",
+    "scripts/viewport-qa.html": "229da2c9fe189b60d6c506f188de5b8fb3821e185621680ca9e3b494d2dc5837",
+    "scripts/vision-simulation.js": "8c47ae54582a115aa5e3d635d87a408bca7ed84a1f7e14addc02f4b9c74890de",
+    "index.html": "0a9a8045f7e2155e41b509d5f995cba328b353d5535d24479bc928a2eb4f8589",
+    "reading.html": "12e0635b8a68415cbf900cea990daa80fe12b5f04c876b20e0aeeaa71e1943f9",
+    "package.json": "dd43b85ade6dea5d5f7b51999fb269604bf5c5fd0683d82e1037983444a22309",
+    "README.md": "9f8a469e03d71093d8c568da31af81ab7c1d8812a62ad1a0055b480212dd3179",
+    "ROADMAP.md": "00cb3204093741cda0fd83de6ca52f18f096a001e957240cd84c3a56301c8b45",
+    "QA.md": "d75f31d6bce006a243796d7aae22742fbe2b0573754c16a651b75861f7f1b088",
+    "SKYLINE-PLAN.md": "bac83dae70298d4cea6966b52a781b87cedbc48d7e49fbe5df929755d22075e8",
+    "MAINTENANCE.md": "36e1a6d537a792802c2509fe1d87a9d8019d935526ba59621f154a21c06a8e15",
+    "assets/social-preview.png": "ef8c5cdca75cb0e4d33bf7a3d69fdacb717eb308779cce5acac741fb1dcfb884"
+  }
+}

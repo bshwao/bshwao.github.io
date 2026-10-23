@@ -1,5 +1,5 @@
 import * as T from './vendor/three.module.min.js';
-import { sections, setbacks, footprint, radius } from './tower-geometry.js';
+import { sections, setbacks, footprint, radius, towerAntennas, towerRoofHeight } from './tower-geometry.js';
 import { createInterior } from './interiors.js';
 import { floorContent } from './floor-content.js';
 import { createDistrictGround } from './district-ground.js';
@@ -9,6 +9,7 @@ import { createDistrictDetails } from './district-details.js';
 import { createDistrictShadows } from './district-style.js';
 import { palette, sectionColors } from './color-theme.js';
 import { facadeColor } from './facade-materials.js';
+import { applyTowerGlazing, cityPalette } from './city-environment.js';
 
 // Triangulate deliberate corners, then subdivide the triangle boundaries at
 // every facade bay. Earcut on many nearly collinear bay samples can produce
@@ -55,8 +56,9 @@ export function createTowerModel() {
     const colors = sectionColors[section.id];
     const cutTint = new T.Color(colors.tint), cutInk = new T.Color(colors.ink);
     const surface = new T.MeshLambertMaterial({ color: '#ffffff', vertexColors: true, side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1, clippingPlanes: [clip] });
-    const line = new T.LineBasicMaterial({ color: palette.muted, transparent: true, opacity: .34, clippingPlanes: [clip] });
-    const slabMaterial = new T.MeshLambertMaterial({ color: palette.structure, side: T.DoubleSide, clippingPlanes: [clip] });
+    applyTowerGlazing(surface,section.low);
+    const line = new T.LineBasicMaterial({ color: '#171f2b', transparent: true, opacity: .42, clippingPlanes: [clip] });
+    const slabMaterial = new T.MeshLambertMaterial({ color: cityPalette.roof, side: T.DoubleSide, clippingPlanes: [clip] });
     let heights = [section.low, section.high];
     for (const y of setbacks) if (y > section.low && y < section.high) heights.push(y);
     for (let y = Math.ceil(section.low / 3.4) * 3.4; y < section.high; y += 3.4) if (y > section.low) heights.push(y);
@@ -90,7 +92,7 @@ export function createTowerModel() {
     // terrace, especially obvious in the neutral massing study.
     const walls = geometry.toNonIndexed(); geometry.dispose();
     const facePositions=[...walls.attributes.position.array], faceColors=[...walls.attributes.color.array];
-    const roofColor=new T.Color(palette.structure).toArray();
+    const roofColor=new T.Color(cityPalette.roof).toArray();
     // Triangulate the polygon difference. Connecting matching L-shaped corners
     // can cross into the next volume when the recessed corner changes position.
     for(const y of setbacks.filter(y=>y>section.low&&y<section.high)) {
@@ -115,12 +117,12 @@ export function createTowerModel() {
         target.push(a[0], y - section.low, a[1], b[0], y - section.low, b[1]);
       }
     };
-    for (let y = Math.ceil(section.low / .57) * .57; y < Math.min(section.high, 99.5); y += .57) {
-      ring(y); if (y + .075 < section.high) ring(y + .075);
+    for (let y = Math.ceil(section.low / 1.7) * 1.7; y < Math.min(section.high, towerRoofHeight); y += 1.7) {
+      ring(y); if (y + .12 < Math.min(section.high,towerRoofHeight)) ring(y + .12);
     }
     for (const y of heights) if (setbacks.includes(y)) { ring(y); ring(y,lines,y-.002); }
     ring(section.low); ring(section.high);
-    for (let y = Math.ceil(section.low / 1.14) * 1.14; y < Math.min(section.high, 99.5); y += 1.14) ring(y, coarseLines);
+    for (let y = Math.ceil(section.low / 3.4) * 3.4; y < Math.min(section.high, towerRoofHeight); y += 3.4) ring(y, coarseLines);
     for (const y of heights) if (setbacks.includes(y)) { ring(y,coarseLines); ring(y,coarseLines,y-.002); }
     ring(section.low, coarseLines); ring(section.high, coarseLines);
     const lineGeometry = new T.BufferGeometry();
@@ -138,7 +140,7 @@ export function createTowerModel() {
     }
     // Structural plates occupy the full volume, including every exposed cut.
     const platePositions = [], plateNormals = [];
-    for (let y = section.low + 3.4; y < Math.min(section.high, 99.5); y += 3.4) {
+    for (let y = section.low + 3.4; y < Math.min(section.high, towerRoofHeight); y += 3.4) {
       const source = capGeometry(y), plate = source.clone();
       plate.translate(0, y - section.low, 0);
       platePositions.push(...plate.attributes.position.array); plateNormals.push(...plate.attributes.normal.array);
@@ -149,6 +151,16 @@ export function createTowerModel() {
       plates.setAttribute('position', new T.Float32BufferAttribute(platePositions, 3));
       plates.setAttribute('normal', new T.Float32BufferAttribute(plateNormals, 3));
       shell.add(new T.Mesh(plates, slabMaterial));
+    }
+    const antennas=[];
+    if(index===0) {
+      const mounts=new T.Group();mounts.name='tower-antennas';shell.add(mounts);
+      for(const antenna of towerAntennas.filter(a=>!a.integrated)) {
+        const geometry=new T.CylinderGeometry(antenna.radius*.7,antenna.radius,antenna.top-antenna.base,12);
+        const material=new T.MeshLambertMaterial({color:palette.muted,clippingPlanes:[clip]});
+        const pole=new T.Mesh(geometry,material);pole.position.set(antenna.x,(antenna.base+antenna.top)/2-section.low,antenna.z);
+        pole.name='secondary-antenna';pole.userData.sectionId=section.id;mounts.add(pole);antennas.push(pole);
+      }
     }
     const baseMaterial = new T.MeshLambertMaterial({ color: palette.structure, side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1 });
     const floorShape = new T.Shape(footprint(section.low + .005).map(([x, z]) => new T.Vector2(x, z)));
@@ -164,19 +176,12 @@ export function createTowerModel() {
     group.add(capPlans.group);
     const maxRadius = Math.max(...footprint(section.low).map(p => Math.hypot(...p)));
     group.position.y = section.low;
-    return { ...section, colors, cutTint, cutInk, index, group, shell, clip, surface, line, lineGeometry, coarseLineGeometry, slabMaterial, caps, interior, capPlans, maxRadius, base, mesh };
+    return { ...section, colors, cutTint, cutInk, index, group, shell, clip, surface, line, lineGeometry, coarseLineGeometry, slabMaterial, caps, interior, capPlans, maxRadius, base, mesh, antennas };
   });
   const ground = new T.Group(); root.add(ground);
   const groundLine = new T.LineBasicMaterial({ color: palette.draft, transparent: true, opacity: .45 });
-  for (const r of [27, 29]) {
-    const points = Array.from({ length: 121 }, (_, i) => new T.Vector3(Math.cos(i / 120 * Math.PI * 2) * r, -.12, Math.sin(i / 120 * Math.PI * 2) * r));
-    ground.add(new T.Line(new T.BufferGeometry().setFromPoints(points), groundLine));
-  }
   const marks = [];
-  for (let i = 0; i < 48; i++) {
-    const a = i / 48 * Math.PI * 2;
-    marks.push(Math.cos(a) * 28.5, -.1, Math.sin(a) * 28.5, Math.cos(a) * (i % 4 ? 29.3 : 30), -.1, Math.sin(a) * (i % 4 ? 29.3 : 30));
-  }
+  for(const side of [-1,1]) for(const offset of [-3,3]) marks.push(offset,-.1,side*19,offset,-.1,side*24);
   const markGeometry = new T.BufferGeometry(); markGeometry.setAttribute('position', new T.Float32BufferAttribute(marks, 3));
   ground.add(new T.LineSegments(markGeometry, groundLine));
   const district = createDistrictGround(); root.add(district.root);
@@ -186,7 +191,7 @@ export function createTowerModel() {
   return { root, modules, ground, groundLine, district, districtBuildings, districtDetails, districtShadows,
     setCompact(compact) {
       for (const module of modules) module.shell.children[1].geometry = compact ? module.coarseLineGeometry : module.lineGeometry;
-      district.root.getObjectByName('draft-grid-minor').visible = !compact;
+      district.root.getObjectByName('draft-grid-minor').visible = false;
       districtBuildings.root.getObjectByName('building-facades').visible = !compact;
       districtDetails.root.getObjectByName('district-detail-fine').visible = !compact;
     },

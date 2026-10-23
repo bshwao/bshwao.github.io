@@ -5,7 +5,9 @@ import { resolve, dirname } from 'node:path';
 const root = resolve(import.meta.dirname, '..');
 const assets = resolve(root, 'assets');
 const files = (await readdir(assets)).filter(file => file.endsWith('.js')).map(file => resolve(assets, file));
-files.push(resolve(root, 'scripts/serve.mjs'), resolve(root, 'scripts/reading.mjs'), resolve(root, 'scripts/theme.mjs'), resolve(root, 'scripts/social-card.mjs'), resolve(root, 'scripts/browser-qa.js'), resolve(root, 'scripts/frame-qa.js'), resolve(root, 'scripts/color-review.js'), resolve(root, 'scripts/vision-simulation.js'), resolve(root, 'scripts/accessibility-qa.js'), resolve(root, 'scripts/verify-live.mjs'));
+files.push(resolve(root, 'scripts/serve.mjs'), resolve(root, 'scripts/reading.mjs'), resolve(root, 'scripts/theme.mjs'), resolve(root, 'scripts/social-card.js'), resolve(root, 'scripts/browser-qa.js'), resolve(root, 'scripts/frame-qa.js'), resolve(root, 'scripts/color-review.js'), resolve(root, 'scripts/vision-simulation.js'), resolve(root, 'scripts/accessibility-qa.js'), resolve(root, 'scripts/verify-live.mjs'));
+files.push(resolve(root,'scripts/skyline-qa.js'));
+files.push(resolve(root,'scripts/shadow-study.js'));
 for (const file of files) {
   const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
   if (result.status !== 0) { process.stderr.write(result.stderr); process.exit(1); }

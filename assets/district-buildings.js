@@ -1,192 +1,143 @@
 import { palette } from './color-theme.js';
 import * as T from './vendor/three.module.min.js';
-import { districtPlan } from './district-ground.js';
+import { cityLots, buildingVolumes } from './city-layout.js';
 import { applyDistrictDepth, shadeDistrictGeometry } from './district-style.js';
+import { cityPalette } from './city-environment.js';
 
-const schemes = [
-  { type: 'campus', height: 9, form: 'court' },
-  { type: 'apartments', height: 15, form: 'bar' },
-  { type: 'office', height: 15, form: 'stepped' },
-  { type: 'apartments', height: 12, form: 'pair' },
-  { type: 'workshop', height: 6, form: 'gable' },
-  { type: 'campus', height: 9, form: 'corner' },
-  { type: 'office', height: 12, form: 'stepped' },
-  { type: 'workshop', height: 6, form: 'sawtooth' },
-  { type: 'apartments', height: 12, form: 'court' },
-  { type: 'workshop', height: 6, form: 'test-yard' },
-  { type: 'campus', height: 9, form: 'bar' },
-  { type: 'office', height: 12, form: 'stepped' },
-];
-
-/** Solid white district buildings, baked into five shared rendering layers. */
+/** Thirty-eight solid buildings; architecture shares five rendering layers. */
 export function createDistrictBuildings() {
-  const root = new T.Group(); root.name = 'district-buildings';
-  const surfaces = [], roofs = [], glazing = [], outlines = [], details = [];
-  const buildings = [];
-  const boxGeometry = new T.BoxGeometry(1, 1, 1).toNonIndexed();
-  const boxPositions = boxGeometry.attributes.position;
-  const boxNormals = boxGeometry.attributes.normal;
-  const base = -.4;
-
-  function segment(target, a, b) { target.push(...a, ...b); }
-  function path(target, points) {
-    for (let i = 1; i < points.length; i++) segment(target, points[i - 1], points[i]);
-  }
-  function rectangle(target, x0, z0, x1, z1, y) {
-    path(target, [[x0, y, z0], [x1, y, z0], [x1, y, z1], [x0, y, z1], [x0, y, z0]]);
-  }
-  function quad(target, a, b, c, d) { target.push(...a, ...b, ...c, ...a, ...c, ...d); }
-
-  for (const [index, parcel] of districtPlan.parcels.entries()) {
-    const scheme = schemes[index];
-    const [px0, pz0, px1, pz1] = parcel.bounds;
-    const cx = (px0 + px1) / 2, cz = (pz0 + pz1) / 2;
-    // Keep a broad pedestrian strip on every side, including all roof overhangs.
-    const width = px1 - px0 - 12, depth = pz1 - pz0 - 12;
-    const bounds = new T.Box3();
-    const parts = [];
-    const building = { parcelId: parcel.id, ...scheme, bounds, parts };
-    buildings.push(building);
-
-    function block(x, z, w, d, h, bottom = base, facade = true, flatRoof = true) {
-      const x0 = x - w / 2, x1 = x + w / 2, z0 = z - d / 2, z1 = z + d / 2;
-      const top = bottom + h;
-      for (let i = 0; i < boxPositions.count; i++) {
-        // The colored roof owns the top surface; a second box lid underneath
-        // used to produce the alternating roof stripes while the camera moved.
-        if (boxNormals.getY(i) > .5) continue;
-        surfaces.push(x + boxPositions.getX(i) * w, bottom + (boxPositions.getY(i) + .5) * h, z + boxPositions.getZ(i) * d);
-      }
-      if (flatRoof) quad(roofs, [x0, top, z0], [x0, top, z1], [x1, top, z1], [x1, top, z0]);
-      rectangle(outlines, x0, z0, x1, z1, bottom);
-      rectangle(outlines, x0, z0, x1, z1, top + .035);
-      for (const x of [x0, x1]) for (const z of [z0, z1]) segment(outlines, [x, bottom, z], [x, top, z]);
-      bounds.expandByPoint(new T.Vector3(x0, bottom, z0));
-      bounds.expandByPoint(new T.Vector3(x1, top + .05, z1));
-      parts.push({ x, z, width: w, depth: d, bottom, top });
-      if (facade) elevation(x0, z0, x1, z1, bottom, h);
-      return top;
+  const root=new T.Group(); root.name='district-buildings';
+  const surfaces=[],roofs=[],glazing=[],outlines=[],details=[],buildings=[];
+  const coloredArrays=[surfaces,roofs,glazing],ranges=coloredArrays.map(()=>[]);
+  const cube=new T.BoxGeometry(1,1,1).toNonIndexed();
+  const cp=cube.attributes.position,cn=cube.attributes.normal;
+  const segment=(target,a,b)=>target.push(...a,...b);
+  const path=(target,points)=>{for(let i=1;i<points.length;i++) segment(target,points[i-1],points[i]);};
+  const quad=(target,a,b,c,d)=>target.push(...a,...b,...c,...a,...c,...d);
+  const rectangle=(target,x0,z0,x1,z1,y)=>path(target,[[x0,y,z0],[x1,y,z0],[x1,y,z1],[x0,y,z1],[x0,y,z0]]);
+  function box(target,x,y,z,w,h,d,edges=false) {
+    for(let i=0;i<cp.count;i++) target.push(x+cp.getX(i)*w,y+cp.getY(i)*h,z+cp.getZ(i)*d);
+    if(edges) {
+      rectangle(outlines,x-w/2,z-d/2,x+w/2,z+d/2,y+h/2);
+      for(const dx of [-w/2,w/2]) for(const dz of [-d/2,d/2]) segment(outlines,[x+dx,y-h/2,z+dz],[x+dx,y+h/2,z+dz]);
     }
-
-    function elevation(x0, z0, x1, z1, bottom, h) {
-      const storey = scheme.type === 'workshop' ? h : 3;
-      const count = Math.max(1, Math.round(h / storey));
-      for (let floor = 0; floor < count; floor++) {
-        const low = bottom + (floor + .31) * h / count;
-        const high = bottom + (floor + .75) * h / count;
-        // Four elevations use the same bay rhythm; no billboard-facing facades.
-        for (const [a0, a1, fixed, axis, facing] of [
-          [x0, x1, z0 - .045, 'x', -1], [x0, x1, z1 + .045, 'x', 1],
-          [z0, z1, x0 - .045, 'z', -1], [z0, z1, x1 + .045, 'z', 1],
-        ]) {
-          const point = (a, y) => axis === 'x' ? [a, y, fixed] : [fixed, y, a];
-          const span = a1 - a0;
-          const pitch = scheme.type === 'apartments' ? 3.8 : scheme.type === 'workshop' ? 6 : 5.2;
-          const bays = Math.max(1, Math.floor((span - 2) / pitch));
-          const bay = (span - 2) / bays;
-          const inset = scheme.type === 'apartments' ? .7 : .35;
-          for (let i = 0; i < bays; i++) {
-            const left = a0 + 1 + i * bay + inset / 2;
-            const right = a0 + 1 + (i + 1) * bay - inset / 2;
-            let points = [point(left, low), point(right, low), point(right, high), point(left, high)];
-            // Front-facing winding on each side keeps glass surfaces solid.
-            if ((axis === 'x' && facing < 0) || (axis === 'z' && facing > 0)) points = points.reverse();
-            quad(glazing, ...points);
-            path(details, [...points, points[0]]);
-            if (scheme.type === 'office' || scheme.type === 'campus') {
-              const mid = (left + right) / 2;
-              segment(details, point(mid, low), point(mid, high));
+  }
+  // Subtract supported upper shafts so a lower roof never competes with their lids.
+  function exposedRoof(part,parts) {
+    let patches=[[part.x-part.width/2,part.z-part.depth/2,part.x+part.width/2,part.z+part.depth/2]];
+    for(const upper of parts.filter(p=>Math.abs(p.bottom-part.top)<1e-6)) {
+      const cut=[upper.x-upper.width/2,upper.z-upper.depth/2,upper.x+upper.width/2,upper.z+upper.depth/2];
+      patches=patches.flatMap(([x0,z0,x1,z1])=>{
+        const a=Math.max(x0,cut[0]),b=Math.max(z0,cut[1]),c=Math.min(x1,cut[2]),d=Math.min(z1,cut[3]);
+        if(a>=c||b>=d) return [[x0,z0,x1,z1]];
+        return [[x0,z0,a,z1],[c,z0,x1,z1],[a,z0,c,b],[a,d,c,z1]].filter(p=>p[2]-p[0]>1e-7&&p[3]-p[1]>1e-7);
+      });
+    }
+    for(const [x0,z0,x1,z1] of patches) quad(roofs,[x0,part.top,z0],[x0,part.top,z1],[x1,part.top,z1],[x1,part.top,z0]);
+  }
+  for(const lot of cityLots) {
+    const starts=coloredArrays.map(array=>array.length/3);
+    const parts=buildingVolumes(lot),bounds=new T.Box3(),building={...lot,lotId:lot.id,parts,bounds};
+    buildings.push(building);
+    for(const part of parts) {
+      const {x,z,width:w,depth:d,bottom,top}=part,x0=x-w/2,x1=x+w/2,z0=z-d/2,z1=z+d/2,h=top-bottom;
+      for(let i=0;i<cp.count;i++) {
+        if(cn.getY(i)>.5) continue;
+        surfaces.push(x+cp.getX(i)*w,bottom+(cp.getY(i)+.5)*h,z+cp.getZ(i)*d);
+      }
+      bounds.expandByPoint(new T.Vector3(x0,bottom,z0)); bounds.expandByPoint(new T.Vector3(x1,top,z1));
+      rectangle(outlines,x0,z0,x1,z1,top+.035);
+      for(const px of [x0,x1]) for(const pz of [z0,z1]) segment(outlines,[px,bottom,pz],[px,top,pz]);
+      if(part.roof==='flat') exposedRoof(part,parts);
+      else if(part.roof==='gable') {
+        const ridge=top+2.1;
+        quad(roofs,[x0,top,z0],[x0,top,z1],[x,ridge,z1],[x,ridge,z0]);
+        quad(roofs,[x,ridge,z0],[x,ridge,z1],[x1,top,z1],[x1,top,z0]);
+        surfaces.push(x1,top,z0,x0,top,z0,x,ridge,z0,x0,top,z1,x1,top,z1,x,ridge,z1);
+        for(const pz of [z0,z1]) path(outlines,[[x0,top,pz],[x,ridge,pz],[x1,top,pz]]);
+        segment(outlines,[x,ridge,z0],[x,ridge,z1]); bounds.max.y=ridge;
+      } else {
+        for(let bay=0;bay<3;bay++) {
+          const a=z0+bay*d/3,b=a+d/3,high=top+1.8;
+          quad(roofs,[x0,top,a],[x0,high,b],[x1,high,b],[x1,top,a]);
+          quad(glazing,[x0,top,b],[x1,top,b],[x1,high,b],[x0,high,b]);
+          surfaces.push(x0,top,b,x0,high,b,x0,top,a,x1,top,a,x1,high,b,x1,top,b);
+          for(const px of [x0,x1]) path(outlines,[[px,top,a],[px,high,b],[px,top,b]]);
+          segment(outlines,[x0,high,b],[x1,high,b]); bounds.max.y=high;
+        }
+      }
+      const heritage=['brick','limestone','landmark','campus'].includes(lot.family);
+      const floors=Math.max(1,Math.round(h/(lot.family==='workshop'?h:3.1)));
+      for(const [a0,a1,fixed,axis,facing] of [[x0,x1,z0-.045,'x',-1],[x0,x1,z1+.045,'x',1],[z0,z1,x0-.045,'z',-1],[z0,z1,x1+.045,'z',1]]) {
+        const point=(a,y)=>axis==='x'?[a,y,fixed]:[fixed,y,a];
+        const pitch=lot.family==='glass'?2.2:lot.family==='brick'?3:lot.family==='workshop'?6:3.8;
+        const bays=Math.max(1,Math.floor((a1-a0-1.4)/pitch)),bay=(a1-a0-1.4)/bays;
+        for(let floor=0;floor<floors;floor++) {
+          const lo=bottom+(floor+(heritage?.25:.1))*h/floors,hi=bottom+(floor+(heritage?.76:.87))*h/floors;
+          for(let i=0;i<bays;i++) {
+            const left=a0+.7+i*bay+bay*(heritage?.14:.035),right=a0+.7+(i+1)*bay-bay*(heritage?.14:.035);
+            let face=[point(left,lo),point(right,lo),point(right,hi),point(left,hi)];
+            if((axis==='x'&&facing<0)||(axis==='z'&&facing>0)) face.reverse();
+            quad(glazing,...face);
+            if(lot.layer!=='distant') path(details,[...face,face[0]]);
+            if(heritage&&lot.layer!=='distant') {
+              segment(details,point(left-.1,lo-.11),point(right+.1,lo-.11));
+              if(lot.family==='landmark'&&floor===0) segment(outlines,point(left-.15,bottom),point(left-.15,top));
             }
           }
+          if(floor>0&&lot.layer!=='distant'&&lot.family!=='glass') segment(details,point(a0,bottom+floor*h/floors),point(a1,bottom+floor*h/floors));
         }
-        if (floor > 0) rectangle(details, x0 - .05, z0 - .05, x1 + .05, z1 + .05, bottom + floor * h / count);
-      }
-    }
-
-    if (scheme.form === 'court') {
-      const bar = Math.min(width, depth) * .28;
-      // Three independent wings leave a real, open courtyard facing the plaza.
-      const sign = cz < 0 ? -1 : 1;
-      block(cx - (width - bar) / 2, cz, bar, depth, scheme.height);
-      block(cx + (width - bar) / 2, cz, bar, depth, scheme.height);
-      block(cx, cz + sign * (depth - bar) / 2, width - bar * 2, bar, scheme.height - 3);
-    } else if (scheme.form === 'pair') {
-      const w = width * .36;
-      block(cx - width * .29, cz, w, depth * .84, scheme.height);
-      block(cx + width * .29, cz, w, depth * .84, scheme.height + 3);
-      block(cx, cz, width * .22, depth * .24, 3, base, false);
-    } else if (scheme.form === 'corner') {
-      block(cx, cz - depth * .25, width, depth * .5, scheme.height);
-      block(cx - width * .33, cz + depth * .25, width * .34, depth * .5, scheme.height - 3);
-    } else if (scheme.form === 'stepped') {
-      const podium = block(cx, cz, width, depth, 3);
-      block(cx, cz, width * .7, depth * .68, scheme.height - 3, podium);
-    } else if (scheme.form === 'bar') {
-      block(cx, cz, width * .85, depth * .9, scheme.height);
-    } else {
-      const hallDepth = scheme.form === 'test-yard' ? depth * .28 : depth;
-      const hallZ = scheme.form === 'test-yard' ? cz + depth * .36 : cz;
-      const top = block(cx, hallZ, width, hallDepth, scheme.height, base, true, false);
-      if (scheme.form === 'gable' || scheme.form === 'test-yard') {
-        const ridge = top + 2.1;
-        const x0 = cx - width / 2, x1 = cx + width / 2, z0 = hallZ - hallDepth / 2, z1 = hallZ + hallDepth / 2;
-        quad(roofs, [x0, top, z0], [x0, top, z1], [cx, ridge, z1], [cx, ridge, z0]);
-        quad(roofs, [cx, ridge, z0], [cx, ridge, z1], [x1, top, z1], [x1, top, z0]);
-        surfaces.push(x1, top, z0, x0, top, z0, cx, ridge, z0,
-          x0, top, z1, x1, top, z1, cx, ridge, z1);
-        for (const z of [z0, z1]) path(outlines, [[x0, top, z], [cx, ridge, z], [x1, top, z]]);
-        segment(outlines, [cx, ridge, z0], [cx, ridge, z1]);
-        bounds.max.y = ridge;
-      } else {
-        const x0 = cx - width / 2, x1 = cx + width / 2;
-        for (let roof = 0; roof < 3; roof++) {
-          const z0 = cz - depth / 2 + roof * depth / 3, z1 = z0 + depth / 3;
-          const high = top + 1.8;
-          quad(roofs, [x0, top, z0], [x0, high, z1], [x1, high, z1], [x1, top, z0]);
-          quad(glazing, [x0, top, z1], [x1, top, z1], [x1, high, z1], [x0, high, z1]);
-          // Solid triangular ends close each sawtooth rather than leaving holes.
-          surfaces.push(x0, top, z1, x0, high, z1, x0, top, z0,
-            x1, top, z0, x1, high, z1, x1, top, z1);
-          for (const x of [x0, x1]) path(outlines, [[x, top, z0], [x, high, z1], [x, top, z1]]);
-          segment(outlines, [x0, high, z1], [x1, high, z1]);
-          bounds.max.y = high;
+        if(bottom<0&&lot.layer!=='distant') {
+          const middle=(a0+a1)/2,entry=Math.min(1.2,(a1-a0)*.16);
+          path(outlines,[point(middle-entry,.02),point(middle-entry,2.8),point(middle+entry,2.8),point(middle+entry,.02)]);
+          segment(details,point(middle,0),point(middle,2.6));
         }
       }
+      if(heritage&&part.roof==='flat'&&lot.layer!=='distant') {
+        const cy=top+.22;
+        box(roofs,x,cy,z0,w+.3,.36,.22); box(roofs,x,cy,z1,w+.3,.36,.22);
+        box(roofs,x0,cy,z,.22,.36,d); box(roofs,x1,cy,z,.22,.36,d);
+        bounds.expandByPoint(new T.Vector3(x0-.15,cy+.18,z0-.15)); bounds.expandByPoint(new T.Vector3(x1+.15,cy+.18,z1+.15));
+      }
+      if(lot.form==='shopfront') {
+        box(roofs,x,3.1,z1+.22,w*.85,.16,.65,true);
+        bounds.max.z=Math.max(bounds.max.z,z1+.55);
+      }
     }
+    coloredArrays.forEach((array,index)=>ranges[index].push({start:starts[index],end:array.length/3,lot}));
   }
-  boxGeometry.dispose();
-
-  const layers = [
-    { name: 'building-surfaces', positions: surfaces, color: palette.stone, mesh: true },
-    { name: 'building-roofs', positions: roofs, color: palette.coral, mesh: true },
-    { name: 'building-glazing', positions: glazing, color: palette.glass, mesh: true },
-    { name: 'building-outlines', positions: outlines, color: palette.draft, opacity: .8 },
-    { name: 'building-facades', positions: details, color: palette.draft, opacity: .46 },
+  cube.dispose();
+  const layers=[
+    {name:'building-surfaces',positions:surfaces,color:cityPalette.limestone,mesh:true},
+    {name:'building-roofs',positions:roofs,color:cityPalette.roof,mesh:true},
+    {name:'building-glazing',positions:glazing,color:cityPalette.glazing,mesh:true},
+    {name:'building-outlines',positions:outlines,color:'#474851',opacity:.65},
+    {name:'building-facades',positions:details,color:'#4f535d',opacity:.38},
   ];
-  for (const layer of layers) {
-    const geometry = new T.BufferGeometry();
-    geometry.setAttribute('position', new T.Float32BufferAttribute(layer.positions, 3));
-    if (layer.mesh) shadeDistrictGeometry(geometry, layer.color);
-    const material = applyDistrictDepth(layer.mesh
-      ? new T.MeshBasicMaterial({ color: '#ffffff', vertexColors: true, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
-      : new T.LineBasicMaterial({ color: layer.color, transparent: true, opacity: layer.opacity, depthWrite: false }), layer.mesh ? .52 : .72);
-    const object = layer.mesh ? new T.Mesh(geometry, material) : new T.LineSegments(geometry, material);
-    object.name = layer.name;
-    layer.material = material;
-    root.add(object);
+  for(const layer of layers) {
+    const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(layer.positions,3));
+    if(layer.mesh) {
+      const spans=ranges[coloredArrays.indexOf(layer.positions)];let spanIndex=0;
+      const families={glass:cityPalette.glazing,brick:cityPalette.brick,limestone:cityPalette.limestone,landmark:cityPalette.bronze,workshop:cityPalette.concrete,campus:cityPalette.limestone};
+      shadeDistrictGeometry(geometry,i=>{
+        while(i>=spans[spanIndex].end&&spanIndex<spans.length-1)spanIndex++;
+        const span=spans[spanIndex];
+        if(layer.positions===surfaces)return families[span.lot.family];
+        if(layer.positions===roofs)return cityPalette.roof;
+        const group=Math.floor((i-span.start)/48),seed=Number(span.lot.parcelId.replace(/\D/g,''))||1;
+        return Math.sin(group*19.1+seed*7.3)>.68?'#caa773':span.lot.family==='glass'?'#4b657f':'#4b515d';
+      });
+    }
+    const material=applyDistrictDepth(layer.mesh?new T.MeshBasicMaterial({color:'#ffffff',vertexColors:true,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})
+      :new T.LineBasicMaterial({color:layer.color,transparent:true,opacity:layer.opacity,depthWrite:false}),layer.mesh?.35:.54);
+    const object=layer.mesh?new T.Mesh(geometry,material):new T.LineSegments(geometry,material);
+    object.name=layer.name;layer.material=material;root.add(object);
   }
-  return {
-    root, buildings,
-    setPresentation(expansion, reveal) {
-      const amount = (1 - T.MathUtils.clamp(reveal, 0, 1)) * (1 - T.MathUtils.clamp(expansion, 0, 1) * .7);
-      root.visible = amount > .005;
-      for (const layer of layers) {
-        const material = layer.material;
-        material.opacity = (layer.opacity ?? 1) * amount;
-        if (layer.mesh && material.transparent !== (amount < .999)) {
-          material.transparent = amount < .999; material.needsUpdate = true;
-        }
-      }
-    },
-  };
+  return {root,buildings,setPresentation(expansion,reveal) {
+    const amount=(1-T.MathUtils.clamp(reveal,0,1))*(1-T.MathUtils.clamp(expansion,0,1)*.7);root.visible=amount>.005;
+    for(const layer of layers) {
+      const m=layer.material;m.opacity=(layer.opacity??1)*amount;
+      if(layer.mesh&&m.transparent!==(amount<.999)){m.transparent=amount<.999;m.needsUpdate=true;}
+    }
+  }};
 }

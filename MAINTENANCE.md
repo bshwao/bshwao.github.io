@@ -23,6 +23,9 @@ The checks cover page assets and room URLs, generated content, watertight model 
 
 With the preview server running, open these local QA pages:
 
+- `http://127.0.0.1:4173/scripts/shadow-study.html` (baked versus bounded directional-shadow comparison; dispose both scenes when finished)
+- `http://127.0.0.1:4173/scripts/skyline-qa.html` (neutral architecture study)
+
 - `http://127.0.0.1:4173/scripts/browser-qa.html?width=1280&height=720`
 - `http://127.0.0.1:4173/scripts/browser-qa.html?width=390&height=844&dpr=3`
 - `http://127.0.0.1:4173/scripts/browser-qa.html?width=844&height=390&dpr=3`
@@ -34,7 +37,7 @@ With the preview server running, open these local QA pages:
 
 The WebGL harness exercises every floor and a room close-up, checks draw/raster budgets, detects continued idle rendering or growing GPU allocations, and verifies disposal. The accessibility harness uses the development-only axe dependency and checks thirteen settled views at WCAG A/AA tags, including every section's reading dialog. It requires `npm ci` and is intended for local preview. Automated checks supplement visual and keyboard inspection; they do not certify a screen reader or physical device.
 
-The frame-timing harness loads the actual app with its HTML overlays and exercises continuous keyboard orbit, unfolding, floor entry, and room focus. Keep the tab foregrounded. It reports rendered-frame intervals and JavaScript callback time; callback duration excludes asynchronous GPU work and browser layout/paint after the callback. Results describe the connected machine and browser. `delay=28` deliberately adds 28ms of CPU work after each rendered frame to verify adaptation; it is not a slower-GPU benchmark or evidence of a frame-rate improvement.
+The frame-timing harness loads the actual app with its HTML overlays and exercises continuous keyboard orbit, unfolding, floor entry, and room focus. Keep the tab foregrounded. It reports rendered-frame intervals and JavaScript callback time; callback duration excludes asynchronous GPU work and browser layout/paint after the callback. Results describe the connected machine and browser. `delay=28` deliberately adds 28ms of CPU work after each rendered frame to verify quality retention; it is not a slower-GPU benchmark or evidence of a frame-rate improvement.
 
 Rendering retains the original viewport-based quality at all frame rates. The automatic quality tiers were removed at the user's request because their resolution/detail drops made the drawing too soft. Desktop linework stays full; the original phone detail and 2.4-million-pixel raster cap remain. `delay=28` can verify that slow frames no longer change the canvas resolution or detail. Cached label sizes, camera-only update savings, and idle/hidden-tab suspension remain in place.
 
@@ -46,7 +49,7 @@ Inspect the opening and expanded views, upper/lower cross-sections, room caption
 
 The canonical site is `https://bshwao.github.io/`. Keep `index.html`, the metadata in `scripts/reading.mjs`, `robots.txt`, and `sitemap.xml` aligned if the public address changes. Hash routes share individual rooms; search engines get the complete content from the canonical reading page.
 
-`assets/social-preview.png` is the 1280 × 720 sharing card. Its vector projection comes from `scripts/social-card.mjs`, using the actual model and palette. Regenerate with `node scripts/social-card.mjs | python scripts/render-social.py` (Python with Pillow and compatible serif/sans fonts); inspect `scripts/social-card.html` afterward. This artwork renderer is separate from browser QA. `npm run check` verifies the file format, dimensions, size, and page metadata. The card is not loaded by the 3D experience.
+`assets/social-preview.png` is the 1280 × 720 sharing card. Open `/scripts/social-preview.html` on the local preview server at a 1280 × 720 browser viewport. Wait for “READY — production skyline sharing artwork” in `#status`, then save a viewport screenshot. This page uses the actual production city, procedural sunset sky, and fixed HTML typography; `scripts/social-card.js` is its browser module. Export/validate a captured file with `python scripts/render-social.py PATH_TO_SCREENSHOT` (Python with Pillow), then inspect `/scripts/social-card.html`. Keep the source capture with the QA evidence. `npm run check` verifies the PNG format, dimensions, size, and page metadata. The sharing image is not loaded by the 3D experience.
 
 ## Release and rollback
 
