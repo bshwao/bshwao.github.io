@@ -433,9 +433,11 @@ assert.equal(w.location.hash,clockRoute);assert.ok(lastCamera.position.distanceT
 const clockSky=lastScene.getObjectByName('local-time-sky').material.uniforms;
 assert.equal(clockSky.starVisibility.value,1);assert.equal(clockSky.sunVisibility.value,0);assert.equal(clockSky.moonVisibility.value,1);
 assert.match(w.document.querySelector('.material-key small').textContent,/NIGHT/);
+assert.equal(w.document.querySelector('#local-clock').textContent,'10:00:00 PM','The top bar catches up to the device clock independently of the scene');
 localDate=new Date(2026,9,23,10,0,0);
 w.document.dispatchEvent(new w.Event('visibilitychange'));await settleCamera();
 assert.equal(canvas.dataset.timeOfDay,'morning');
+assert.equal(w.document.querySelector('#local-clock').textContent,'10:00:00 AM');
 assert.equal(clockSky.starVisibility.value,0);assert.equal(clockSky.sunVisibility.value,1);
 click('#station-navigation [data-station="1"]'); await tick(100);
 pageHidden = true; w.document.dispatchEvent(new w.Event('visibilitychange'));

@@ -39,6 +39,12 @@ test('reading SVG uses the actual occupied section cut and matching numbered reg
       assert.ok(Math.abs(room.anchorX - (600 + (floor.stations[index].x - (minX + maxX) / 2) * scale)) < 1e-7);
       assert.ok(Math.abs(room.anchorY - (390 + (floor.stations[index].z - (minZ + maxZ) / 2) * scale)) < 1e-7);
     }
+    for(const [kind,shape]of Object.entries(floor.service)) {
+      const rect=dom.window.document.querySelector(`.plan-${kind}`),[x,y]=layout.mapPoint([shape.x,shape.z]);
+      const width=(kind==='stair'?shape.run:shape.width)*scale,depth=(kind==='stair'?shape.width:shape.depth)*scale;
+      assert.ok(Math.abs(Number(rect.getAttribute('width'))-width)<.01&&Math.abs(Number(rect.getAttribute('height'))-depth)<.01,`${section.id}: reading ${kind} uses the 3D footprint and orientation`);
+      assert.ok(Math.abs(Number(rect.getAttribute('x'))+width/2-x)<.01&&Math.abs(Number(rect.getAttribute('y'))+depth/2-y)<.01,`${section.id}: reading ${kind} is aligned to the 3D core`);
+    }
     dom.window.close();
   }
 });

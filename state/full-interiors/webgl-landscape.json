@@ -1,0 +1,782 @@
+{
+  "viewport": "844x390",
+  "requestedDpr": 3,
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+  "readyMs": 719,
+  "idleFramesOver250ms": 0,
+  "maxFrameCalls": 93,
+  "stableGeometryCount": 211,
+  "stableGeometryAfterResize": 218,
+  "clockChanges": [
+    {
+      "hour": 22,
+      "phase": "night",
+      "daylight": 0,
+      "sun": 0,
+      "moon": 1,
+      "stars": 1
+    },
+    {
+      "hour": 6,
+      "phase": "dawn",
+      "daylight": 0.25925925925925924,
+      "sun": 0.10811360056901896,
+      "moon": 0.30889600162576764,
+      "stars": 0.5486968449931412
+    },
+    {
+      "hour": 18,
+      "phase": "evening",
+      "daylight": 0.5,
+      "sun": 0.20850480109739422,
+      "moon": 0.20850480109739372,
+      "stars": 0.25
+    },
+    {
+      "hour": 10,
+      "phase": "morning",
+      "daylight": 1,
+      "sun": 1,
+      "moon": 0,
+      "stars": 0
+    },
+    {
+      "hour": 10,
+      "phase": "morning",
+      "daylight": 1,
+      "sun": 1,
+      "moon": 0,
+      "stars": 0
+    }
+  ],
+  "rows": [
+    {
+      "view": "tower",
+      "calls": 61,
+      "triangles": 72527,
+      "lines": 17065,
+      "geometries": 61,
+      "textures": 0,
+      "programs": 28,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "sharp",
+      "backdrop": {
+        "width": 0,
+        "height": 0
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 11.4,
+      "far": 1200,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "explore",
+      "calls": 47,
+      "triangles": 18684,
+      "lines": 13074,
+      "geometries": 76,
+      "textures": 2,
+      "programs": 54,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 12.1,
+      "far": 1300,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "about",
+      "calls": 36,
+      "triangles": 20108,
+      "lines": 15855,
+      "geometries": 104,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 1.8,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "about/a",
+      "calls": 35,
+      "triangles": 20060,
+      "lines": 15855,
+      "geometries": 104,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.8,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "about/b",
+      "calls": 35,
+      "triangles": 20060,
+      "lines": 15855,
+      "geometries": 104,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.8,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "about/c",
+      "calls": 35,
+      "triangles": 20060,
+      "lines": 15855,
+      "geometries": 104,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.8,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "about/d",
+      "calls": 35,
+      "triangles": 20060,
+      "lines": 15855,
+      "geometries": 104,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.6,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "projects",
+      "calls": 31,
+      "triangles": 15066,
+      "lines": 11795,
+      "geometries": 127,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 2.1,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "projects/a",
+      "calls": 31,
+      "triangles": 15066,
+      "lines": 11795,
+      "geometries": 127,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.9,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "projects/b",
+      "calls": 60,
+      "triangles": 69369,
+      "lines": 19402,
+      "geometries": 127,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.9,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "projects/c",
+      "calls": 30,
+      "triangles": 14952,
+      "lines": 11795,
+      "geometries": 127,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.6,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "experience",
+      "calls": 36,
+      "triangles": 19990,
+      "lines": 15794,
+      "geometries": 155,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 2.2,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "experience/a",
+      "calls": 66,
+      "triangles": 74295,
+      "lines": 23401,
+      "geometries": 155,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.9,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "experience/b",
+      "calls": 36,
+      "triangles": 19990,
+      "lines": 15794,
+      "geometries": 155,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.9,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "experience/c",
+      "calls": 36,
+      "triangles": 19990,
+      "lines": 15794,
+      "geometries": 155,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.9,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "experience/d",
+      "calls": 36,
+      "triangles": 19990,
+      "lines": 15794,
+      "geometries": 155,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.6,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "resume",
+      "calls": 36,
+      "triangles": 16686,
+      "lines": 14945,
+      "geometries": 183,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 2.2,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "resume/a",
+      "calls": 36,
+      "triangles": 16686,
+      "lines": 14945,
+      "geometries": 183,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.9,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "resume/b",
+      "calls": 36,
+      "triangles": 16686,
+      "lines": 14945,
+      "geometries": 183,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.9,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "resume/c",
+      "calls": 36,
+      "triangles": 16686,
+      "lines": 14945,
+      "geometries": 183,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.9,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "resume/d",
+      "calls": 67,
+      "triangles": 70991,
+      "lines": 22556,
+      "geometries": 183,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.6,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "contact",
+      "calls": 36,
+      "triangles": 17540,
+      "lines": 13495,
+      "geometries": 211,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 2.7,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "contact/a",
+      "calls": 36,
+      "triangles": 17540,
+      "lines": 13495,
+      "geometries": 211,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 1.1,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "contact/b",
+      "calls": 36,
+      "triangles": 17540,
+      "lines": 13495,
+      "geometries": 211,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 1.1,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "contact/c",
+      "calls": 36,
+      "triangles": 17540,
+      "lines": 13495,
+      "geometries": 211,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 1.1,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    },
+    {
+      "view": "contact/d",
+      "calls": 67,
+      "triangles": 71845,
+      "lines": 21106,
+      "geometries": 211,
+      "textures": 2,
+      "programs": 55,
+      "pixelRatio": 1.35,
+      "quality": 0,
+      "background": "blurred",
+      "backdrop": {
+        "width": 1139,
+        "height": 526
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "near": 0.9,
+      "far": 1000,
+      "width": 844,
+      "height": 390
+    }
+  ]
+}

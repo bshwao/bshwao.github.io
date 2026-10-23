@@ -1,0 +1,38 @@
+{
+  "objective": "Fill out the entire tower (all floors) furnished, and with actual structure; right now the rooms kind of feel empty",
+  "date": "2026-10-23",
+  "scope": { "floors": ["about", "projects", "experience", "resume", "contact"], "rooms": 19 },
+  "requirements": [
+    {
+      "requirement": "Furnish every floor and room",
+      "status": "verified",
+      "evidence": ["geometry.json: all five floors and 19 per-room furnishing inventories", "source-check.log: 70 passing tests", "webgl-desktop.json: 26 views including all 19 rooms", "*-overview.jpg: rendered overview of each floor"],
+      "details": "Original furniture retains uniform proportions; secondary work, storage and seating zones fill spare bay dimensions. Furniture bounds exclude architectural floors and walls. Every room spans at least 72% of each usable bay dimension."
+    },
+    {
+      "requirement": "Add actual architectural structure across the floors",
+      "status": "verified",
+      "evidence": ["../../assets/interior-structure.js", "../../scripts/interior-structure.test.mjs", "source-check.log", "reading-plan.jpg"],
+      "details": "Full room finishes, solid cutaway partitions, open door frames, window bays, columns/spandrels and a furnished continuous hall. Tests sample actual floor/wall meshes and raycast all door landings/corridors; shared plan coordinates drive reading/cap drawings."
+    },
+    {
+      "requirement": "Replace the empty furnishing-island appearance",
+      "status": "verified",
+      "evidence": ["about-overview.jpg", "projects-overview.jpg", "experience-overview.jpg", "resume-overview.jpg", "contact-overview.jpg", "about-room.jpg", "projects-room.jpg", "experience-room.jpg", "resume-room.jpg", "contact-room.jpg"],
+      "details": "All five complete floor overviews were inspected. Rear-wing cut faces and cabinets remain low enough to expose the main furniture. Portrait and landscape night views were also reviewed."
+    },
+    {
+      "requirement": "Preserve navigation, framing and bounded rendering",
+      "status": "verified",
+      "evidence": ["integration.log", "webgl-desktop.json", "webgl-phone-night.json", "webgl-landscape.json", "phone-overview-night.jpg", "phone-room-night.jpg", "landscape-room-night.jpg"],
+      "details": "Five integration modes and all 26 GPU views pass on each of three viewports. Original raster/detail budgets remain in place. Idle adds zero frames; navigation/resize allocations stabilize; geometry/textures dispose fully."
+    }
+  ],
+  "sourceModulesChecked": 46,
+  "sourceTestsPassed": 70,
+  "integrationModesPassed": 5,
+  "gpuViewsPerViewport": 26,
+  "viewports": ["1280x720", "390x844 requested DPR 3", "844x390 requested DPR 3"],
+  "limitations": ["Browser viewport simulations, not physical-phone testing", "No new FPS benchmark"],
+  "requiredWorkRemaining": []
+}

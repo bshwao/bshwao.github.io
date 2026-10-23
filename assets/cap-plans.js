@@ -2,6 +2,7 @@ import * as T from './vendor/three.module.min.js';
 import { palette, sectionColors } from './color-theme.js';
 import { floorLayout, insetFootprint, towerRoofHeight } from './tower-geometry.js';
 import { floorContent } from './floor-content.js';
+import { planInteriorStructure } from './interior-structure.js';
 
 // Small architectural sketches for the closed tower's exposed cut faces.
 // These are independent of the detailed, selectable interiors below the caps.
@@ -23,7 +24,8 @@ export function createCapPlans(section, undersideY) {
     // Crown and spire levels are not occupied floors.
     if (height >= towerRoofHeight) return;
     const roomCount = floorContent[section.id].rooms.length;
-    const { outline, stations, core } = floorLayout(height, roomCount);
+    const layout=floorLayout(height,roomCount),{ outline, stations, core,service } = layout;
+    const architecture=planInteriorStructure(layout,Math.max(...stations.map(station=>station.scale)));
     const boundary = insetFootprint(outline, .04);
     const drawing = { height, y, side, boundary, roomCount, rooms: [] };
     faces.push(drawing);
@@ -67,14 +69,19 @@ export function createCapPlans(section, undersideY) {
       const contour = insetFootprint(boundary, distance);
       path(walls, [...contour, contour[0]]);
     }
-    const c = ([x, z]) => [core.x + x * core.width, core.z + z * core.depth];
-    box(walls, core.x, core.z, core.width * .9, core.depth * .9);
-    box(walls, -.22, 0, .36, .74, c);
-    path(walls, [[-.4, -.37], [-.04, .37]], c);
-    path(walls, [[-.4, .37], [-.04, -.37]], c);
-    box(walls, .22, 0, .34, .74, c);
-    for (let i = 1; i < 7; i++) path(walls, [[.05, -.37 + i * .106], [.39, -.37 + i * .106]], c);
-    path(walls, [[.22, .29], [.22, -.27], [.14, -.12]], c);
+    const {elevator:lift,stair}=service;
+    box(walls, core.x, core.z, core.width * .96, core.depth * .96);
+    box(walls,lift.x,lift.z,lift.width,lift.depth);
+    path(walls,[[lift.x-lift.width/2,lift.z-lift.depth/2],[lift.x+lift.width/2,lift.z+lift.depth/2]]);
+    path(walls,[[lift.x-lift.width/2,lift.z+lift.depth/2],[lift.x+lift.width/2,lift.z-lift.depth/2]]);
+    box(walls,stair.x,stair.z,stair.run,stair.width);
+    for(let i=1;i<stair.count;i++) {
+      const x=stair.x-stair.run/2+i*stair.going;
+      path(walls,[[x,stair.z-stair.width/2],[x,stair.z+stair.width/2]]);
+    }
+    path(walls,[[stair.x-stair.run*.38,stair.z],[stair.x+stair.run*.38,stair.z],
+      [stair.x+stair.run*.23,stair.z-stair.width*.22]]);
+    for(const route of architecture.circulation.paths)path(walls,route.points);
 
     for (const [index, station] of stations.entries()) {
       const firstFurnitureVertex = furniture.length;
@@ -82,16 +89,15 @@ export function createCapPlans(section, undersideY) {
       // The cap uses the same room centres and orthogonal regions as the interior.
       const unit = Math.min(region.width / 8.4, region.depth / 7.6);
       const room = ([x, z]) => [station.x + x * unit, station.z + z * unit];
-      const halfWidth = region.width * .43, halfDepth = region.depth * .43;
-      const entrySide = core.z < station.z ? -1 : 1;
-      const entryZ = station.z + entrySide * halfDepth;
-      const gap = Math.min(unit * .65, halfWidth * .25);
-      path(walls, [[station.x - gap, entryZ], [station.x - halfWidth, entryZ],
+      const halfWidth = region.width / 2 + .16, halfDepth = region.depth / 2 + .16;
+      const opening=architecture.rooms[index].opening,{entrySide}=opening,entryZ=opening.z;
+      const gap=opening.width/2,entryX=opening.x;
+      path(walls, [[entryX - gap, entryZ], [station.x - halfWidth, entryZ],
         [station.x - halfWidth, station.z - entrySide * halfDepth],
         [station.x + halfWidth, station.z - entrySide * halfDepth],
-        [station.x + halfWidth, entryZ], [station.x + gap, entryZ]]);
-      path(walls, [[station.x - gap, entryZ], [station.x - gap, entryZ - entrySide * gap * 2]]);
-      arc(walls, station.x - gap, entryZ, gap * 2,
+        [station.x + halfWidth, entryZ], [entryX + gap, entryZ]]);
+      path(walls, [[entryX - gap, entryZ], [entryX - gap, entryZ - entrySide * gap * 2]]);
+      arc(walls, entryX - gap, entryZ, gap * 2,
         entrySide > 0 ? -Math.PI / 2 : 0, entrySide > 0 ? 0 : Math.PI / 2);
 
       const rect = (x, z, w, d) => box(furniture, x, z, w, d, room);

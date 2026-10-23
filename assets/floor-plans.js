@@ -1,6 +1,7 @@
 import { palette, sectionColors } from './color-theme.js';
 import { sections, floorLayout } from './tower-geometry.js';
 import { floorContent } from './floor-content.js';
+import { planInteriorStructure } from './interior-structure.js';
 
 // Text retains a readable grid. The drawing and its interactive anchors use the
 // same occupied floor plate as the 3D rooms, including the shorter side wing.
@@ -23,14 +24,21 @@ export const planLayouts = Object.fromEntries(sections.map(section => {
     return { x: cx - region.width * scale / 2, y: cy - region.depth * scale / 2,
       width: region.width * scale, height: region.depth * scale };
   };
+  const service=floor.service;
+  const architecture=planInteriorStructure(floor,Math.max(...floor.stations.map(station=>station.scale)));
   return [section.id, {
     columns: 12, rows: 6, canvas, height, scale, mapPoint,
     outline: floor.outline.map(mapPoint), core: mapRect(floor.core),
+    circulation: architecture.circulation.paths.map(route=>({...route,points:route.points.map(mapPoint)})),
+    hall: architecture.circulation.floor.map(r=>mapRect({x:(r.minX+r.maxX)/2,z:(r.minZ+r.maxZ)/2,width:r.maxX-r.minX,depth:r.maxZ-r.minZ})),
+    service:{elevator:mapRect(service.elevator),stair:mapRect({x:service.stair.x,z:service.stair.z,width:service.stair.run,depth:service.stair.width}),steps:service.stair.count},
     rooms: floor.stations.map((station, index) => {
       const [column, row] = textGrid(content.rooms.length)[index];
       const [anchorX, anchorY] = mapPoint([station.x, station.z]);
+      const entry=architecture.rooms[index].opening,[entryX,entryY]=mapPoint([entry.x,entry.z]);
       return { ...mapRect(station.region), column, row, number: content.rooms[index].number,
-        anchorX, anchorY, worldRegion: station.region };
+        anchorX, anchorY, worldRegion: station.region,
+        opening:{x:entryX,y:entryY,width:entry.width*scale,entrySide:entry.entrySide} };
     }),
   }];
 }));
@@ -63,23 +71,31 @@ export function createFloorPlan(sectionId) {
   const core = layout.core;
   const cx = core.x, cy = core.y, cw = core.width, ch = core.height;
   let service = rect(cx, cy, cw, ch, `fill="${palette.raised}" stroke-width="2"`);
-  service += rect(cx + cw * .05, cy + ch * .12, cw * .4, ch * .76, 'stroke-width=".8"');
-  for (let i = 1; i < 7; i++) service += line([cx + cw * .05, cy + ch * (.12 + i * .108)], [cx + cw * .45, cy + ch * (.12 + i * .108)], 'stroke-width=".5"');
-  service += rect(cx + cw * .55, cy + ch * .12, cw * .38, ch * .76, 'stroke-width=".8"');
-  service += line([cx + cw * .55, cy + ch * .12], [cx + cw * .93, cy + ch * .88], 'stroke-width=".5"');
-  service += line([cx + cw * .93, cy + ch * .12], [cx + cw * .55, cy + ch * .88], 'stroke-width=".5"');
+  const lift=layout.service.elevator,stair=layout.service.stair;
+  service+=rect(lift.x,lift.y,lift.width,lift.height,'class="plan-elevator" stroke-width=".8"');
+  service+=line([lift.x,lift.y],[lift.x+lift.width,lift.y+lift.height],'stroke-width=".5"');
+  service+=line([lift.x+lift.width,lift.y],[lift.x,lift.y+lift.height],'stroke-width=".5"');
+  service+=rect(stair.x,stair.y,stair.width,stair.height,'class="plan-stair" stroke-width=".8"');
+  for(let i=1;i<layout.service.steps;i++) {
+    const x=stair.x+stair.width*i/layout.service.steps;
+    service+=line([x,stair.y],[x,stair.y+stair.height],'stroke-width=".5"');
+  }
+  const stairMid=stair.y+stair.height/2;
+  service+=line([stair.x+stair.width*.12,stairMid],[stair.x+stair.width*.88,stairMid],'stroke-width=".5"');
+  service+=line([stair.x+stair.width*.88,stairMid],[stair.x+stair.width*.73,stairMid-stair.height*.22],'stroke-width=".5"');
 
-  let partitions = '', furnishings = '', roomNumbers = '';
+  let partitions = '', furnishings = '', roomNumbers = '', finishes = '';
   for (const [index, room] of layout.rooms.entries()) {
     const { x, y, width, height } = room;
-    const left = x + 4, right = x + width - 4, top = y + 4, bottom = y + height - 4;
-    const center = room.anchorX;
-    const door = Math.min(23, width * .17, height * .27);
-    const entryTop = core.y + core.height / 2 < room.anchorY;
-    const entryY = entryTop ? top : bottom, oppositeY = entryTop ? bottom : top;
+    finishes += rect(x,y,width,height,`class="plan-room-finish" data-plan-room="${index}" fill="${sectionColors[id].tint}" fill-opacity=".35" stroke="none"`);
+    const left = x - .16*layout.scale, right = x + width + .16*layout.scale;
+    const top = y - .16*layout.scale, bottom = y + height + .16*layout.scale;
+    const center = room.opening.x, door = room.opening.width;
+    const entryTop = room.opening.entrySide < 0;
+    const entryY = room.opening.y, oppositeY = entryTop ? bottom : top;
     const direction = entryTop ? 1 : -1;
     partitions += wall(`M${n(center - door / 2)} ${n(entryY)}H${n(left)}V${n(oppositeY)}H${n(right)}V${n(entryY)}H${n(center + door / 2)}`);
-    partitions += `<path class="plan-door" d="M${n(center - door / 2)} ${n(entryY)}v${n(door * direction)}M${n(center + door / 2)} ${n(entryY)}A${n(door)} ${n(door)} 0 0 ${entryTop ? 1 : 0} ${n(center - door / 2)} ${n(entryY + door * direction)}" stroke-width=".7"/>`;
+    partitions += `<path class="plan-door" data-plan-door="${index}" d="M${n(center - door / 2)} ${n(entryY)}v${n(door * direction)}M${n(center + door / 2)} ${n(entryY)}A${n(door)} ${n(door)} 0 0 ${entryTop ? 1 : 0} ${n(center - door / 2)} ${n(entryY + door * direction)}" stroke-width=".7"/>`;
 
     const unit = Math.min(width / 8.4, height / 7.6);
     const localRect = (lx, ly, w, h) => rect(room.anchorX + (lx - w / 2) * unit, room.anchorY + (ly - h / 2) * unit, w * unit, h * unit, `fill="${palette.raised}" stroke-width=".7"`);
@@ -109,6 +125,20 @@ export function createFloorPlan(sectionId) {
       for (const ly of [-.55, .55]) furnishings += localLine([-2.5, ly], [-1.5, ly]) + localLine([1.5, ly], [2.5, ly]);
     } else if (index === 0 && (id === 'about' || id === 'contact')) furnishings += table();
     else furnishings += desk();
+    // Secondary work/seating areas occupy the long axis, matching the inhabited
+    // wings and perimeter storage instead of a single isolated furniture icon.
+    if (width > height * 1.6) {
+      for (const side of [-1,1]) {
+        const tx=room.anchorX+side*width*.32,ty=room.anchorY;
+        furnishings+=rect(tx-width*.09,ty-height*.1,width*.18,height*.2,`fill="${palette.raised}"`);
+        for(const dy of [-height*.19,height*.19])furnishings+=rect(tx-7,ty+dy-6,14,12,`fill="${palette.raised}"`);
+        furnishings+=rect(tx-width*.1,y+height*.85,width*.2,height*.09,`fill="${palette.raised}"`);
+      }
+    } else if (height > width * .85) {
+      furnishings+=rect(x+width*.12,y+height*.05,width*.76,height*.075,`fill="${palette.raised}"`);
+      for(const [a,b]of [[x+width*.12,center-door*.7],[center+door*.7,x+width*.88]])if(b-a>8)
+        furnishings+=rect(a,y+height*.88,b-a,height*.075,`fill="${palette.raised}"`);
+    }
     roomNumbers += `<g data-plan-number="${room.number}"><circle cx="${n(x + 17)}" cy="${n(y + 17)}" r="9" fill="${palette.raised}"/>${label(x + 17, y + 20, room.number, 'font-size="8" text-anchor="middle"')}</g>`;
   }
 
@@ -125,8 +155,10 @@ export function createFloorPlan(sectionId) {
     <path class="plan-outline" d="${outline}" fill="${palette.raised}" stroke-width="6.2"/>
     <path d="${outline}" stroke="${palette.raised}" stroke-width="3.7"/>
     <g clip-path="url(#plan-cut-${id})">
+      <g class="plan-finishes">${layout.hall.map(r=>rect(r.x,r.y,r.width,r.height,`fill="${palette.glass}" fill-opacity=".5" stroke="none"`)).join('')}${finishes}</g>
       <g class="plan-glazing">${glazing}</g>
       <g class="plan-partitions">${partitions}</g>
+      <g class="plan-circulation" stroke-dasharray="3 3" opacity=".55">${layout.circulation.map(route=>`<path data-plan-route="${route.roomIndex}" d="M${route.points.map(([x,y])=>`${n(x)} ${n(y)}`).join('L')}"/>`).join('')}</g>
       <g class="plan-core">${service}</g>
       <g class="plan-furnishings" opacity=".8">${furnishings}</g>
       <g class="plan-room-numbers">${roomNumbers}</g>

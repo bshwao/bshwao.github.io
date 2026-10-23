@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-23",
+  "scope": "Frosted glass backgrounds for spatial UI and the reading overlay",
+  "sourceCheck": { "status": "PASS", "modules": 44, "tests": 65 },
+  "integration": { "status": "PASS", "modes": ["desktop", "mobile", "reduced motion", "room deep link", "no WebGL"] },
+  "accessibility": { "status": "PASS", "automatedViews": 13, "violations": 0, "compositedContrast": "Manually reviewed in day and night scenes; gradient surfaces require manual review in axe." },
+  "visualViewports": ["1280x720", "390x844", "844x390", "640x390"],
+  "productionConsoleWarningsOrErrors": [],
+  "performance": "No new FPS benchmark; no scene resolution, geometry, render pass or animation changes.",
+  "published": false
+}

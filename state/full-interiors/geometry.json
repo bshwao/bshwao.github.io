@@ -1,0 +1,401 @@
+{
+  "date": "2026-10-23",
+  "floors": [
+    {
+      "id": "about",
+      "draws": 28,
+      "triangles": 15292,
+      "architecturePrimitives": 197,
+      "rooms": [
+        {
+          "id": "a",
+          "parts": 172,
+          "extensions": 48,
+          "coverage": {
+            "width": 0.8666666878594291,
+            "depth": 0.9298918028826975
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Welcome display and drawing cabinet",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Architectural study model and portfolio display shelf",
+            "Orientation gallery: map archive, model storage and visitor seating",
+            "Reading and study rear fit-out 1",
+            "Reading and study entry fit-out 1",
+            "Reading and study entry fit-out 2"
+          ]
+        },
+        {
+          "id": "b",
+          "parts": 223,
+          "extensions": 48,
+          "coverage": {
+            "width": 0.8666666878594291,
+            "depth": 0.9298917722127873
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Study desk and screen",
+            "Reference books and shelves",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Articulated study lamp, notebook and desk stationery",
+            "Study suite: supply cupboards, reading bench and side worktable",
+            "Reading and study rear fit-out 1",
+            "Reading and study entry fit-out 1",
+            "Reading and study entry fit-out 2"
+          ]
+        },
+        {
+          "id": "c",
+          "parts": 213,
+          "extensions": 48,
+          "coverage": {
+            "width": 0.8666666878594291,
+            "depth": 0.9298917722127873
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Grand piano, separate keys and bench",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Music stand, acoustic panels and metronome",
+            "Music room: score archive, instrument case and audience seating",
+            "Reading and study rear fit-out 1",
+            "Reading and study entry fit-out 1",
+            "Reading and study entry fit-out 2"
+          ]
+        },
+        {
+          "id": "d",
+          "parts": 178,
+          "extensions": 64,
+          "coverage": {
+            "width": 0.8539847071030562,
+            "depth": 0.8640000025431316
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Conversation sofas and coffee table",
+            "Low paneled wing divider and numbered plaque",
+            "Language library, wall clock and coat stand",
+            "Conversation suite: refreshment cabinet and extra lounge chairs",
+            "Reading and study extension 1: table, seating and perimeter storage",
+            "Reading and study extension 2: table, seating and perimeter storage"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "draws": 23,
+      "triangles": 10580,
+      "architecturePrimitives": 145,
+      "rooms": [
+        {
+          "id": "a",
+          "parts": 149,
+          "extensions": 0,
+          "coverage": {
+            "width": 0.8666666878594295,
+            "depth": 0.7296686638470796
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Dual monitor development desk",
+            "Workstation tower",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Maker pegboard, hand tools and wearable prototype station",
+            "Maker workshop: prototype assembly bench, component archive and review seat"
+          ]
+        },
+        {
+          "id": "b",
+          "parts": 230,
+          "extensions": 0,
+          "coverage": {
+            "width": 0.8666666878594295,
+            "depth": 0.8488620923385725
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Ventilated server racks and cable runs",
+            "Systems terminal",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Patch panel, switch ports and cable management",
+            "Systems lab: backup equipment bank, spare-parts cart and service console"
+          ]
+        },
+        {
+          "id": "c",
+          "parts": 194,
+          "extensions": 70,
+          "coverage": {
+            "width": 0.841130642457442,
+            "depth": 0.8640000025431316
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Low experiment reference library",
+            "Driving simulation analysis desk",
+            "Low paneled wing divider and numbered plaque",
+            "Simulator steering wheel, pedals and telemetry tablet",
+            "Simulation lab: telemetry console, sample archive and observer bench",
+            "Prototype preparation extension 1: table, seating and perimeter storage",
+            "Prototype preparation extension 2: table, seating and perimeter storage"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "draws": 28,
+      "triangles": 16308,
+      "architecturePrimitives": 185,
+      "rooms": [
+        {
+          "id": "a",
+          "parts": 169,
+          "extensions": 22,
+          "coverage": {
+            "width": 0.8666666878594296,
+            "depth": 0.9007363861682369
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Electronics bench, oscilloscope, probes and PCB",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Component drawers, multimeter and solder reel",
+            "Electronics suite: assembly workbench, component stock and test seating",
+            "Component preparation rear fit-out 1",
+            "Component preparation entry fit-out 2"
+          ]
+        },
+        {
+          "id": "b",
+          "parts": 241,
+          "extensions": 24,
+          "coverage": {
+            "width": 0.8666666878594294,
+            "depth": 0.9007363861682369
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Infrastructure racks with vents and cable runs",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Network cable tray, service labels and patch terminal",
+            "Network operations suite: UPS bank and paired maintenance desks",
+            "Component preparation rear fit-out 1",
+            "Component preparation entry fit-out 1",
+            "Component preparation entry fit-out 2"
+          ]
+        },
+        {
+          "id": "c",
+          "parts": 218,
+          "extensions": 24,
+          "coverage": {
+            "width": 0.8666666878594296,
+            "depth": 0.9007363861682369
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Sensor workbench, oscilloscope and PCB",
+            "Lab reference shelves",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Diagnostic trolley, coiled test leads and inspection clipboard",
+            "Diagnostic suite: instrument lockers, calibration worktable and technician seat",
+            "Component preparation rear fit-out 1",
+            "Component preparation entry fit-out 1",
+            "Component preparation entry fit-out 2"
+          ]
+        },
+        {
+          "id": "d",
+          "parts": 176,
+          "extensions": 70,
+          "coverage": {
+            "width": 0.7874170152764572,
+            "depth": 0.889999988831972
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Formula chassis, wheels and roll hoop",
+            "Low paneled wing divider and numbered plaque",
+            "Brake hubs, suspension links, pit tools and inspection stand",
+            "Inspection workshop: rear repair bench, wheel rack and safety stores",
+            "Component preparation extension 1: table, seating and perimeter storage",
+            "Component preparation extension 2: table, seating and perimeter storage"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resume",
+      "draws": 28,
+      "triangles": 13856,
+      "architecturePrimitives": 185,
+      "rooms": [
+        {
+          "id": "a",
+          "parts": 176,
+          "extensions": 42,
+          "coverage": {
+            "width": 0.8666666878594296,
+            "depth": 0.9007363861682369
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Résumé documents and filing cabinet",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Academic display, mortarboard and brochure rack",
+            "Academic archive suite: diploma storage, reading desk and visitor chairs",
+            "Document review rear fit-out 1",
+            "Document review entry fit-out 2"
+          ]
+        },
+        {
+          "id": "b",
+          "parts": 273,
+          "extensions": 44,
+          "coverage": {
+            "width": 0.8666666878594294,
+            "depth": 0.9007363861682369
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Double reference archive with book spines",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Library catalogue drawers, shelf labels and book trolley",
+            "Code library: peripheral reference stacks and catalogue reading station",
+            "Document review rear fit-out 1",
+            "Document review entry fit-out 1",
+            "Document review entry fit-out 2"
+          ]
+        },
+        {
+          "id": "c",
+          "parts": 232,
+          "extensions": 44,
+          "coverage": {
+            "width": 0.8666666878594296,
+            "depth": 0.9007363861682369
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Research reading desk",
+            "Education reference shelves",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Technical drawing board, caliper and task lamp",
+            "Technical reference suite: drawing console, plan chest and review chair",
+            "Document review rear fit-out 1",
+            "Document review entry fit-out 1",
+            "Document review entry fit-out 2"
+          ]
+        },
+        {
+          "id": "d",
+          "parts": 212,
+          "extensions": 80,
+          "coverage": {
+            "width": 0.8298846024733324,
+            "depth": 0.8663333257039387
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Document cabinet and printed résumé",
+            "Low archive shelf",
+            "Low paneled wing divider and numbered plaque",
+            "Document scanner, printer and output paper trays",
+            "Document suite: scanning bench, collection trolley and reading seats",
+            "Document review extension 1: table, seating and perimeter storage",
+            "Document review extension 2: table, seating and perimeter storage"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "draws": 28,
+      "triangles": 14776,
+      "architecturePrimitives": 191,
+      "rooms": [
+        {
+          "id": "a",
+          "parts": 136,
+          "extensions": 24,
+          "coverage": {
+            "width": 0.8666666878594294,
+            "depth": 0.8948889024076406
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Reception counter and guest chair",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Reception terminal, desk bell and correspondence cubbies",
+            "Correspondence suite: mail archive and paired waiting benches",
+            "Visitor conversation rear fit-out 1",
+            "Visitor conversation entry fit-out 1",
+            "Visitor conversation entry fit-out 2"
+          ]
+        },
+        {
+          "id": "b",
+          "parts": 156,
+          "extensions": 24,
+          "coverage": {
+            "width": 0.8666666878594292,
+            "depth": 0.8948888544450725
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Connection desk and twin screens",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Device charging station, desktop lamp and connected devices",
+            "Code exchange suite: device library, shared worktable and review bench",
+            "Visitor conversation rear fit-out 1",
+            "Visitor conversation entry fit-out 1",
+            "Visitor conversation entry fit-out 2"
+          ]
+        },
+        {
+          "id": "c",
+          "parts": 130,
+          "extensions": 24,
+          "coverage": {
+            "width": 0.8666666878594291,
+            "depth": 0.8948889024076405
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Conversation lounge with coffee table",
+            "Paneled room backdrop, numbered plaque and framed display",
+            "Tea service, side table and framed lounge artwork",
+            "Connections lounge: hospitality credenza, tea cabinet and visitor armchairs",
+            "Visitor conversation rear fit-out 1",
+            "Visitor conversation entry fit-out 1",
+            "Visitor conversation entry fit-out 2"
+          ]
+        },
+        {
+          "id": "d",
+          "parts": 194,
+          "extensions": 64,
+          "coverage": {
+            "width": 0.9210930284603623,
+            "depth": 0.8706666946411133
+          },
+          "floorBottom": 0.052,
+          "features": [
+            "Résumé consultation counter",
+            "Visitor seating",
+            "Low paneled wing divider and numbered plaque",
+            "Globe consultation table, map stand and visitor notes",
+            "Coordinates suite: map library, refreshment console and consultation seating",
+            "Visitor conversation extension 1: table, seating and perimeter storage",
+            "Visitor conversation extension 2: table, seating and perimeter storage"
+          ]
+        }
+      ]
+    }
+  ]
+}

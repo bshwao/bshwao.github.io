@@ -1,4 +1,5 @@
 import { createSpatialScene } from '../assets/scene-3d.js';
+import { floorContent } from '../assets/floor-content.js';
 
 const params = new URLSearchParams(location.search);
 const width = Math.max(320, Math.min(3840, Number(params.get('width')) || 1280));
@@ -45,7 +46,9 @@ try {
   for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
     // Count both the sharp interior and the small scenery/blur passes.
     spatial.goTo('section', id, { instant: true }); await settled(); sample(id, 75);
-    spatial.focusRoom(1, { instant: true }); await settled(); sample(`${id}/room`, 75);
+    for (const [index, room] of floorContent[id].rooms.entries()) {
+      spatial.focusRoom(index, { instant: true }); await settled(); sample(`${id}/${room.id}`, 75);
+    }
   }
   const idle = frames; await delay(250); const idleFrames = frames - idle; assert(idleFrames === 0, 'Idle scene continues rendering');
   spatial.goTo('tower', null, { instant: true }); await settled();

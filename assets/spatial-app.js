@@ -5,13 +5,14 @@ import { parseRoute, routeHash } from './routes.js';
 import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus } from './project-story.js';
 import { createSectionReadingView } from './floor-view.js';
 import { palette } from './color-theme.js';
+import { createLocalClock } from './local-clock.js';
 
 const page = document.querySelector('#main');
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 let spatial, currentId = null, currentRoomIndex = null, revision = 0;
 const defaultTitle = document.title;
 let routeKey = '', fallbackActive = false;
-let readingView;
+let readingView, localClock;
 const $ = selector => page.querySelector(selector);
 const labelSizes = new WeakMap();
 const labelObserver = new ResizeObserver(entries => {
@@ -231,6 +232,7 @@ function useFallback() {
   fallbackActive = true; revision++;
   labelObserver.disconnect();
   readingView?.close({ focus: false });
+  localClock?.dispose();
   spatial?.dispose();
   page.className = 'tower-page unavailable';
   for (const name of [...page.attributes].map(attribute => attribute.name)) if (name.startsWith('data-') || name === 'style') page.removeAttribute(name);
@@ -248,7 +250,7 @@ async function start() {
     <h1 class="sr-only">Eric Hsu — Electrical Engineering, Projects, and Experience</h1>
     <div class="spatial-stage" id="spatial-stage"></div>
     <div class="drawing-reference" aria-hidden="true"><span>EH—001</span><span>STRUCTURES & SYSTEMS</span></div>
-    <div class="material-key" aria-hidden="true">${['teal', 'blue', 'coral', 'mustard', 'rose'].map(key => `<span style="--swatch:${palette[key]}"></span>`).join('')}<small>CITY / LOCAL TIME</small></div>
+    <div class="material-key">${['teal', 'blue', 'coral', 'mustard', 'rose'].map(key => `<span aria-hidden="true" style="--swatch:${palette[key]}"></span>`).join('')}<small aria-hidden="true">CITY / LOCAL TIME</small><time id="local-clock" aria-live="off"></time></div>
     <div class="spatial-tools"><button type="button" id="reset-spatial" aria-label="Reset the 3D camera" disabled>↺ <span>Reset view</span></button><button type="button" id="reading-view" aria-haspopup="dialog" aria-controls="room-dialog" hidden>Reading view</button></div>
     <nav class="tower-labels" id="tower-labels" aria-label="Portfolio sections" aria-hidden="true" inert>${sections.map(section => `<button type="button" class="tower-label" data-section="${section.id}"><span class="spatial-eyebrow">${section.number} / PORTFOLIO</span><span class="tower-label-name">${escape(section.name)}</span><span class="tower-label-subtitle">${section.subtitle}</span></button>`).join('')}</nav>
     <div class="station-markers" id="station-markers" role="group" aria-label="Rooms in this interior" aria-hidden="true" inert></div>
@@ -265,6 +267,7 @@ async function start() {
     <div class="page-identity"><span class="identity-name">ERIC HSU</span><span>ELECTRICAL ENGINEERING · McGILL</span></div>
     <div class="spatial-bottom"><button type="button" id="unfold-structure" aria-label="Unfold the structure" disabled>+ <span id="spatial-hint" aria-live="polite">DRAWING THE STRUCTURE…</span></button><p id="orbit-instructions">LEFT DRAG TO ORBIT <span>·</span> SCROLL TO ZOOM</p></div>
     <span class="drawing-edition" aria-hidden="true">PORTFOLIO / 2026</span>`;
+  localClock = createLocalClock($('#local-clock'));
   readingView = createSectionReadingView({
     onClose: () => $('#reading-view')?.focus({ preventScroll: true }),
     onTower: () => navigate('explore'),

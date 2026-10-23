@@ -180,7 +180,3 @@
   .interior-content { flex: 0 0 auto; overflow-y: visible; }
 }
 @media (prefers-reduced-motion: reduce) { .spatial *, .spatial *::before, .spatial *::after { transition: none !important; } }
-
-/* Text controls retain a predictable paper background over the live drawing. */
-.spatial-tools button, .structure-action, .spatial-heading, .spatial-bottom, .tower-label, .station-marker, .station-marker-label, .interior-panel, #unfold-structure { background: var(--raised); }
-.station-marker[aria-pressed="true"] { background: var(--ink); }

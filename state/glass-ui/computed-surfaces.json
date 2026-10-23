@@ -1,0 +1,86 @@
+[
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "8px",
+    "name": "drawing-reference",
+    "text": "rgb(45, 61, 53)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "20px",
+    "name": "material-key",
+    "text": "rgb(35, 55, 46)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "12px",
+    "name": "reset-spatial",
+    "text": "rgb(45, 61, 53)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "12px",
+    "name": "tower-label",
+    "text": "rgb(35, 55, 46)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "12px",
+    "name": "tower-label",
+    "text": "rgb(35, 55, 46)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "12px",
+    "name": "tower-label",
+    "text": "rgb(35, 55, 46)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "12px",
+    "name": "tower-label",
+    "text": "rgb(35, 55, 46)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "12px",
+    "name": "tower-label",
+    "text": "rgb(35, 55, 46)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "12px",
+    "name": "collapse-structure",
+    "text": "rgb(35, 55, 46)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "12px",
+    "name": "page-identity",
+    "text": "rgb(35, 55, 46)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "12px",
+    "name": "spatial-bottom",
+    "text": "rgb(35, 55, 46)"
+  },
+  {
+    "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+    "blur": "blur(14px) saturate(1.35)",
+    "borderRadius": "8px",
+    "name": "drawing-edition",
+    "text": "rgb(45, 61, 53)"
+  }
+]

@@ -1,8 +1,45 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readCityTime,createCityClock} from '../assets/city-time.js';
+import {readLocalClock,createLocalClock} from '../assets/local-clock.js';
+import {JSDOM} from 'jsdom';
 
 const at=hour=>new Date(2026,9,23,Math.floor(hour),Math.round((hour%1)*60),0);
+test('the live clock uses device-local fields through midnight and noon',()=>{
+  assert.equal(readLocalClock(new Date(2026,9,23,0,4,5)).text,'12:04:05 AM');
+  assert.equal(readLocalClock(new Date(2026,9,23,12,4,5)).text,'12:04:05 PM');
+  const date=new Date(2026,9,23,23,59,59),state=readLocalClock(date);
+  assert.equal(state.text,'11:59:59 PM');assert.equal(state.source,'local');
+  assert.equal(state.dateTime,date.toISOString());
+});
+test('unavailable local time falls back to fixed EST across the UTC date boundary',()=>{
+  for(const fail of [()=>NaN,()=>{throw new Error('Unavailable local zone');}]) {
+    const date=new Date('2026-07-23T03:04:05Z');date.getTimezoneOffset=fail;
+    const state=readLocalClock(date);
+    assert.equal(state.text,'10:04:05 PM EST');assert.equal(state.source,'est');
+    assert.equal(state.dateTime,'2026-07-23T03:04:05.000Z');
+  }
+  assert.throws(()=>readLocalClock(new Date('invalid')),TypeError);
+});
+test('the live clock advances each second, sleeps when hidden and disposes its timer',()=>{
+  const dom=new JSDOM('<time></time>'),doc=dom.window.document,element=doc.querySelector('time');
+  let date=new Date(2026,9,23,10,0,23,250),hidden=false,next=0;
+  Object.defineProperty(doc,'hidden',{get:()=>hidden});
+  const pending=new Map();
+  const clock=createLocalClock(element,{now:()=>date,
+    schedule:(run,delay)=>{pending.set(++next,{run,delay});return next;},cancel:id=>pending.delete(id)});
+  assert.equal(element.textContent,'10:00:23 AM');assert.equal(pending.get(next).delay,760);
+  const tick=pending.get(next).run;date=new Date(2026,9,23,10,0,24,10);tick();
+  assert.equal(element.textContent,'10:00:24 AM');assert.equal(pending.size,1);
+  hidden=true;doc.dispatchEvent(new dom.window.Event('visibilitychange'));
+  assert.equal(pending.size,0,'Hidden tabs have no clock timer');
+  date=new Date(2026,9,24,7,30,0);assert.equal(element.textContent,'10:00:24 AM');
+  hidden=false;doc.dispatchEvent(new dom.window.Event('visibilitychange'));
+  assert.equal(element.textContent,'07:30:00 AM');assert.equal(pending.size,1);
+  const stale=pending.get(next).run;clock.dispose();stale();
+  assert.equal(pending.size,0,'A disposed callback cannot restart the clock');
+  dom.window.close();
+});
 test('visitor-local morning and night select the sun, moon, stars and coordinated city lighting',()=>{
   const morning=readCityTime(at(10)),night=readCityTime(at(22));
   assert.equal(morning.hour,10);assert.equal(morning.phase,'morning');

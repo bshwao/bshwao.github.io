@@ -1,0 +1,104 @@
+/* One glass surface per floating panel; text and nested controls stay unfiltered. */
+.spatial, dialog.floor-view, .skip-portfolio {
+  --ink: #23372e;
+  --muted: #2d3d35;
+  --glass-rgb: 248, 252, 250;
+  --glass-top: .96;
+  --glass-bottom: .94;
+  --glass-blur: 14px;
+  --glass-edge: rgba(255, 255, 255, .65);
+  --glass-shadow: 0 8px 24px rgba(17, 36, 42, .09), inset 0 1px 0 rgba(255, 255, 255, .72);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .spatial, dialog.floor-view, .skip-portfolio { --glass-top: .72; --glass-bottom: .68; }
+  .spatial .interior-panel, dialog.floor-view { --glass-top: .84; --glass-bottom: .80; }
+}
+
+.spatial :is(.drawing-reference, .material-key, .page-identity, .drawing-edition,
+    .tower-label, .structure-action, .spatial-heading, .spatial-bottom,
+    .station-marker, .station-marker-label, .interior-panel),
+.spatial-tools button, .skip-portfolio, dialog.floor-view {
+  background: linear-gradient(145deg, rgba(var(--glass-rgb), var(--glass-top)), rgba(var(--glass-rgb), var(--glass-bottom)));
+  border: 1px solid var(--glass-edge);
+  border-radius: 12px;
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+}
+
+.spatial .drawing-reference, .spatial .drawing-edition { padding: 5px 9px; border-radius: 8px; }
+.spatial .page-identity { padding: 9px 12px; }
+.spatial .material-key { padding: 7px 10px; border-radius: 20px; }
+.spatial-tools { gap: 10px; }
+.spatial-tools button { padding-inline: 12px; }
+.structure-action { padding-inline: 12px; }
+.spatial .tower-label { border-left: 2px solid var(--accent); padding-block: 9px; }
+.tower-label:hover, .tower-label:focus-visible { --glass-top: .86; --glass-bottom: .80; }
+.tower-label:hover .tower-label-name, .tower-label:focus-visible .tower-label-name { color: var(--ink); }
+.spatial .spatial-heading { border-top: 2px solid var(--accent); padding: 7px 17px 10px; }
+.spatial-bottom { padding: 3px 7px 6px; }
+#unfold-structure, #orbit-instructions, .station-marker-action { background: transparent; }
+#unfold-structure { border-radius: 8px; }
+.spatial .station-marker { border-radius: 50%; color: var(--ink); border-color: var(--accent-ink); }
+.station-marker[aria-pressed="true"] {
+  color: var(--ink);
+  border-color: var(--accent-ink);
+  box-shadow: var(--glass-shadow), 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.spatial .station-marker-label { border-radius: 8px; color: var(--ink); padding: 6px 9px; }
+.station-marker-action { color: var(--muted); }
+.station-marker[data-hovered="true"], .station-marker:focus-visible { box-shadow: var(--glass-shadow), 0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent); }
+.spatial .interior-panel { border-radius: 18px; padding: 15px 18px 8px; }
+.station-navigation button[aria-pressed="true"], .station-navigation button[data-hovered="true"], .station-navigation button:focus-visible,
+.interior-facts dt, .floor-facts strong { color: color-mix(in srgb, var(--accent-ink) 75%, #18251e); }
+.station-navigation button[data-hovered="true"], .station-navigation button:focus-visible { background: rgba(255, 255, 255, .36); }
+.interior-viewbar button:disabled { color: var(--muted); opacity: .55; }
+#share-url { background: rgba(255, 255, 255, .32); border-radius: 7px; }
+.spatial .project-status, .floor-view .project-status { background: rgba(255, 255, 255, .30); border-radius: 7px; color: var(--ink); }
+.spatial .project-image-action, .floor-view .project-image-action { background: rgba(var(--glass-rgb), .90); border-radius: 7px; }
+
+/* The reading overlay shares one backdrop, avoiding a blur pass for every room. */
+dialog.floor-view { border: 0; border-radius: 0; --glass-blur: 18px; }
+dialog.floor-view::backdrop { background: rgba(18, 32, 43, .08); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.floor-view .floor-room, .floor-view .floor-room-scroll { background: transparent; }
+.floor-view .floor-topbar { background: rgba(255, 255, 255, .18); }
+.floor-view .plan-hotspots button { background: rgba(var(--glass-rgb), .80); color: var(--ink); box-shadow: var(--glass-shadow); }
+.floor-view .room-scroll-cue { background: rgba(var(--glass-rgb), .88); border-radius: 5px; }
+
+@media (max-width: 760px) {
+  .spatial .drawing-reference, .spatial .drawing-edition { padding: 4px 6px; }
+  .spatial .page-identity { padding: 7px 9px; }
+  .spatial .material-key { padding: 5px 7px; }
+  .spatial-tools { gap: 6px; }
+  .spatial-tools button { padding-inline: 8px; }
+  .spatial .tower-label { padding-block: 5px; border-radius: 10px; }
+  .tower-labels[data-layout="dock"] { bottom: 132px; }
+  .spatial .spatial-heading { top: 102px; padding: 5px 14px 7px; }
+  .spatial-bottom { padding: 2px 4px 4px; }
+  .spatial .interior-panel { padding: 12px 14px 6px; }
+}
+@media (min-width: 520px) and (max-width: 760px) and (max-height: 520px) {
+  .spatial .spatial-heading { top: 17px; left: calc(56% - 12px); max-width: calc(56% - 88px); transform: translateX(-100%); }
+  .spatial #back-to-structure { width: 44px; padding-inline: 0; gap: 0; justify-content: center; font-size: 16px; }
+  .spatial #back-to-structure span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+@media (min-width: 761px) and (max-height: 600px) {
+  .spatial .interior-panel { top: 76px; }
+}
+@media (min-width: 761px) and (max-width: 1000px) and (max-height: 600px) {
+  .spatial[data-mode="section"] .drawing-reference > span:last-child { display: none; }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .spatial, .spatial .interior-panel, dialog.floor-view, .skip-portfolio { --glass-top: 1; --glass-bottom: 1; --glass-blur: 0px; }
+}
+@media (forced-colors: active) {
+  :is(.spatial .drawing-reference, .spatial .material-key, .spatial .page-identity,
+      .spatial .drawing-edition, .spatial-tools button, .tower-label, .structure-action,
+      .spatial-heading, .spatial-bottom, .station-marker, .station-marker-label,
+      .interior-panel, .skip-portfolio, dialog.floor-view) {
+    background: Canvas; color: CanvasText; border-color: CanvasText;
+    box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+}

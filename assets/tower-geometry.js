@@ -76,12 +76,17 @@ export function floorLayout(height,count=4) {
     width:p.wingRight-p.minX-inset*2,depth:p.maxZ-p.join-inset*2});
   // One aligned lift/stair spine through all occupied cuts, in their shared
   // junction corridor. Setbacks must not shift the elevator between floors.
-  const core={x:-6.5,z:2.85,width:2.3,depth:1.1};
+  const core={x:-9,z:3.45,width:7.6,depth:2.4};
   const stations=regions.map(region=>{
     const scale=Math.min(region.width/9,region.depth/7.5);
     return {...region,angle:0,scale,reach:scale*18,region};
   });
-  return {outline,regions,core,stations,bounds:{minX:p.minX,maxX:p.maxX,minZ:p.minZ,maxZ:p.maxZ}};
+  const unit=Math.max(...stations.map(station=>station.scale));
+  const service={
+    elevator:{x:core.x-core.width*.335,z:core.z,width:1.45*unit,depth:1.4*unit,height:2.75*unit,baseY:.04},
+    stair:{x:core.x+core.width*.19,z:core.z,width:1.2*unit,count:8,going:.35*unit,rise:.19*unit,run:2.8*unit,baseY:.04},
+  };
+  return {outline,regions,core,stations,service,bounds:{minX:p.minX,maxX:p.maxX,minZ:p.minZ,maxZ:p.maxZ}};
 }
 export function stationPositions(section,count) { return floorLayout(section.low+.02,count).stations; }
 /** Offset along inward edge normals, including the L's reentrant corner. */

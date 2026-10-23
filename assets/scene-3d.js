@@ -56,7 +56,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     const rooms=module.interior.rooms.map(room=>({points:boxCorners(room.bounds),center:room.center,radius:room.radius}));
     const points=footprint(module.low+.005,12).flatMap(([x,z])=>[
       new T.Vector3(x,.035-module.base.geometry.parameters.options.depth,z),new T.Vector3(x,module.interior.unit*.6,z),
-    ]).concat(rooms.flatMap(room=>room.points));
+    ]).concat(rooms.flatMap(room=>room.points),boxCorners(module.interior.architecture.bounds));
     const bounds=new T.Box3().setFromPoints(points);
     return [module,{points,center:bounds.getCenter(new T.Vector3()),radius:bounds.getBoundingSphere(new T.Sphere()).radius,rooms}];
   }));

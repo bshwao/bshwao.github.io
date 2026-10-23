@@ -9,6 +9,9 @@ const files = ['index.html', 'reading.html', 'assets/scene-3d.js', 'assets/tower
 files.push('assets/city-layout.js','assets/city-environment.js','assets/city-backdrop.js','assets/city-waterfront.js','assets/tower-geometry.js','assets/camera-framing.js','assets/facade-materials.js');
 files.push('assets/city-time.js','assets/city-palette.js','assets/city-landscape.js','assets/ground-materials.js');
 files.push('assets/interior-details.js');
+files.push('assets/glass.css');
+files.push('assets/interior-structure.js','assets/room-extensions.js');
+files.push('assets/local-clock.js');
 const hash = (data, binary) => createHash('sha256').update(binary ? data : data.toString('utf8').replaceAll('\r\n', '\n')).digest('hex');
 const results = await Promise.allSettled(files.map(async path => {
   const response = await fetch(`${origin}${path === 'index.html' ? '' : path}?release=${commit}`, { signal: AbortSignal.timeout(30_000), cache: 'no-store' });

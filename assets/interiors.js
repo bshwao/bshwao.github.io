@@ -2,6 +2,16 @@ import * as T from './vendor/three.module.min.js';
 import { floorLayout, insetFootprint } from './tower-geometry.js';
 import { palette, sectionColors, roomAccents } from './color-theme.js';
 import { furnishInteriorDetails } from './interior-details.js';
+import { furnishRoomExtensions } from './room-extensions.js';
+import { createInteriorStructure } from './interior-structure.js';
+
+// Separate shell pieces and cushions avoid exposed coplanar faces after batching.
+export const sofaPanels = [
+  {position:[0,.5,0],size:[3.5,.5,1.5],surface:'equipment'},
+  {position:[0,1.22,-.62],size:[2.88,.9,.25],surface:'structure'},
+  ...[-1.6,1.6].map(x=>({position:[x,1.1,.01],size:[.3,.66,1.48],surface:'structure'})),
+  ...[-.73,.73].map(x=>({position:[x,.88,.13],size:[1.4,.2,1.1],surface:'glass'})),
+];
 
 /** Tangible architectural furniture at the tower's real floor scale. */
 export function createInterior(section, content) {
@@ -10,6 +20,7 @@ export function createInterior(section, content) {
   const stations = layout.stations;
   const reach = Math.max(...stations.map(p => p.reach));
   const unit = reach / 18;
+  const architecture = createInteriorStructure(section, content, layout, unit);
   const theme = sectionColors[section.id];
   const colors = { structure: palette.timber, equipment: palette.blue, ink: palette.ink, glass: palette.glass };
   const materials = Object.fromEntries(Object.entries(colors).map(([name, color]) => [name, new T.MeshLambertMaterial({ color })]));
@@ -67,12 +78,13 @@ export function createInterior(section, content) {
     cylinder(p, x, .45, z, .09, .8, 'ink');
     box(p, x, .12, z, 1, .08, .15, 'ink'); box(p, x, .12, z, .15, .08, 1, 'ink');
   }
-  function bookcase(p, x, z, width = 3.8) {
-    for (const dx of [-width / 2, width / 2]) box(p, x + dx, 1.8, z, .12, 3.6, .7, 'equipment');
-    box(p, x, 1.8, z - .34, width, 3.6, .08, 'glass');
-    for (const y of [.12, 1.2, 2.35, 3.55]) {
+  function bookcase(p, x, z, width = 3.8, low = false) {
+    const height=low?1.32:3.6;
+    for (const dx of [-width / 2, width / 2]) box(p, x + dx, height/2, z, .12, height, .7, 'equipment');
+    box(p, x, height/2, z - .34, width, height, .08, 'glass');
+    for (const y of low?[.12,1.27]:[.12, 1.2, 2.35, 3.55]) {
       box(p, x, y, z, width, .12, .7);
-      if (y > 3) continue;
+      if (y > height-.5) continue;
       for (let i = 0; i < 8; i++) {
         const bx = x - width * .4 + i * width * .105;
         const h = .7 + i % 2 * .14;
@@ -90,10 +102,7 @@ export function createInterior(section, content) {
   }
   function sofa(p, x, z, turn = 0) {
     const g = new T.Group(); g.position.set(x, 0, z); g.rotation.y = turn; p.add(g);
-    box(g, 0, .6, 0, 3.5, .7, 1.45, 'equipment');
-    box(g, 0, 1.25, -.65, 3.5, .9, .25);
-    for (const dx of [-1.6, 1.6]) box(g, dx, 1, 0, .3, .7, 1.5);
-    for (const dx of [-.8, .8]) box(g, dx, 1, .04, 1.4, .12, 1.2, 'glass');
+    for(const panel of sofaPanels)box(g,...panel.position,...panel.size,panel.surface);
     for (const dx of [-1.3, 1.3]) for (const dz of [-.45, .45]) cylinder(g, dx, .18, dz, .06, .3, 'ink');
   }
   function lounge(p) {
@@ -212,7 +221,7 @@ export function createInterior(section, content) {
     } else if (section.id === 'projects') {
       if (index === 0) { add('Dual monitor development desk', () => desk(p, 0, 0, 2)); add('Workstation tower', () => { box(p, -2.6, .8, -1, .9, 1.6, 1.1, 'equipment'); for (let y = .3; y < 1.5; y += .2) box(p, -2.6, y, -.43, .64, .035, .02, 'ink'); }); }
       if (index === 1) { add('Ventilated server racks and cable runs', () => { server(p, -2, -1); server(p, 0, -1); }); add('Systems terminal', () => desk(p, 0, 2)); }
-      if (index === 2) { add('Experiment reference library', () => bookcase(p, 0, -2)); add('Driving simulation analysis desk', () => desk(p)); }
+      if (index === 2) { add('Low experiment reference library', () => bookcase(p, 0, -2,3.8,true)); add('Driving simulation analysis desk', () => desk(p, -.6)); }
     } else if (section.id === 'experience') {
       if (index === 0) add('Electronics bench, oscilloscope, probes and PCB', () => electronics(p));
       if (index === 1) add('Infrastructure racks with vents and cable runs', () => { server(p, -1.6, 0); server(p, 1.6, 0); box(p, 0, .15, 0, 4.8, .08, 2.2, 'glass'); });
@@ -222,7 +231,7 @@ export function createInterior(section, content) {
       if (index === 0) add('Résumé documents and filing cabinet', () => documentStand(p, 0, 0, false));
       if (index === 1) add('Double reference archive with book spines', () => { bookcase(p, 0, -2); bookcase(p, 0, 1); });
       if (index === 2) { add('Research reading desk', () => desk(p, 0, 1)); add('Education reference shelves', () => bookcase(p, 0, -2.2)); }
-      if (index === 3) { add('Document cabinet and printed résumé', () => documentStand(p)); add('Archive shelf', () => bookcase(p, 0, -2.5)); }
+      if (index === 3) { add('Document cabinet and printed résumé', () => documentStand(p)); add('Low archive shelf', () => bookcase(p, 0, -2.5,3.8,true)); }
     } else {
       if (index === 0) add('Reception counter and guest chair', () => reception(p));
       if (index === 1) { add('Connection desk and twin screens', () => desk(p, 0, 0, 2)); plant(p, 3, -1); }
@@ -284,29 +293,32 @@ export function createInterior(section, content) {
     zone.userData.roomIndex = index;
     group.add(zone); furnish(zone, index);
     furnishInteriorDetails(section.id,index,zone,{box,cylinder,ring,sphere,paper,wire,feature});
-    box(zone, -3.9, .6, 0, .13, 1.2, 4.6, 'glass');
-    box(zone, 3.9, .6, 0, .13, 1.2, 4.6, 'glass');
+    // The side wing enters from the opposite side of the hall. Face its display
+    // wall away from that entrance so the room has a real, clear landing.
+    if (architecture.rooms[index].opening.entrySide < 0) {
+      const turn = new T.Matrix4().makeRotationY(Math.PI);
+      for (const object of zone.children) object.applyMatrix4(turn);
+    }
     zone.updateMatrixWorld(true);
-    const occupied=new T.Box3().setFromObject(zone),floorSize=occupied.getSize(new T.Vector3()),floorCenter=occupied.getCenter(new T.Vector3());
-    box(zone, floorCenter.x, .025, floorCenter.z, floorSize.x+.12, .03, floorSize.z+.12, 'glass');
-    for (const z of [-2.4, 2.4]) box(zone, 0, .046, z, 7.15, .009, .018, 'equipment');
-    for (const x of [-3.55, 3.55]) box(zone, x, .046, 0, .018, .009, 4.8, 'equipment');
-    const room = batchRoom(zone, index);
-    // Fit the complete room after batching: piano benches, cable runs, plants,
-    // low dividers and floor inlays all contribute to its real occupied bounds.
-    // A single scale keeps every piece of furniture in proportion.
     const bounds = new T.Box3().setFromObject(zone);
     const size = bounds.getSize(new T.Vector3()), center = bounds.getCenter(new T.Vector3());
     const region = position.region;
-    const margin = Math.min(region.width, region.depth) * .035;
+    const margin = Math.min(region.width, region.depth) * .055;
     const scale = Math.min(position.scale, (region.width - margin * 2) / size.x, (region.depth - margin * 2) / size.z);
+    const extension = furnishRoomExtensions(section.id,index,zone,bounds,region,scale,architecture.rooms[index].opening,{box,cylinder,paper,feature});
+    const room = batchRoom(zone, index);
+    // Original furniture keeps one uniform scale. Secondary activity zones
+    // occupy the bay's spare axis instead of leaving a small isolated island.
     zone.scale.setScalar(scale);
-    zone.position.set(region.x - center.x * scale, .18 * unit - bounds.min.y * scale, region.z - center.z * scale);
+    const fittedBounds = new T.Box3().setFromObject(zone);
+    zone.position.set(region.x - center.x * scale, .052 - fittedBounds.min.y, region.z - center.z * scale);
     room.region = { ...region };
     room.scale = scale;
+    room.extensionCount = extension.count;
     roomModels.push(room);
     anchors.push(new T.Vector3(position.x, unit * 4.7, position.z));
   });
+  group.add(architecture.group);
   // The rail, elevator and stair use the same stepped floor plan as the shell.
   const outline = insetFootprint(layout.outline, .16), vertices = [];
   for (let i = 0; i < outline.length; i++) {
@@ -316,21 +328,55 @@ export function createInterior(section, content) {
   }
   const outlineGeometry = new T.BufferGeometry(); outlineGeometry.setAttribute('position', new T.Float32BufferAttribute(vertices, 3));
   const perimeter = new T.LineSegments(outlineGeometry, lineMaterial); perimeter.name = 'interior-perimeter-rail'; group.add(perimeter);
-  const contextSurfaces = [];
-  const core = layout.core;
-  const elevator = box(group, core.x - core.width * .2, unit * .65, core.z, core.width * .48, unit * 1.3, core.depth * .84, 'glass');
+  const contextSurfaces = [...architecture.surfaces];
+  const core = layout.core,{elevator:lift,stair:flight}=layout.service;
+  const elevator = box(group, lift.x, lift.baseY+lift.height/2, lift.z, lift.width, lift.height, lift.depth, 'glass');
   elevator.name = 'service-core-elevator';
   elevator.add(new T.LineSegments(new T.EdgesGeometry(elevator.geometry), lineMaterial));
-  const treads = Array.from({ length: 8 }, (_, i) => unitBox.toNonIndexed()
-    .scale(core.width * .3, unit * .1, core.depth * .095)
-    .translate(core.x + core.width * .28, (i + .5) * unit * .12, core.z + (i - 3.5) * core.depth * .1));
+  const start=flight.x-flight.run/2;
+  // Each riser reaches the floor; these are solid steps rather than floating slats.
+  const treads = Array.from({ length: flight.count }, (_, i) => unitBox.toNonIndexed()
+    .scale(flight.going,(i+1)*flight.rise,flight.width)
+    .translate(start+(i+.5)*flight.going,flight.baseY+(i+1)*flight.rise/2,flight.z));
   const stair = new T.Mesh(combineGeometry(treads, ['position', 'normal']), materials.structure);
   stair.name = 'service-core-stair'; group.add(stair);
+  const segment=(a,b)=>vertices.push(...a,...b);
+  // Core details join the existing perimeter line batch, adding no draw calls.
+  for(const side of [-1,1]) {
+    const z=flight.z+side*flight.width/2;
+    let previous=flight.baseY;
+    for(let i=0;i<flight.count;i++) {
+      const x=start+i*flight.going,top=flight.baseY+(i+1)*flight.rise;
+      segment([x,previous,z],[x,top,z]);segment([x,top,z],[x+flight.going,top,z]);previous=top;
+    }
+    segment([start+flight.run,previous,z],[start+flight.run,flight.baseY,z]);
+    segment([start,flight.baseY,z],[start+flight.run,flight.baseY,z]);
+    const railZ=flight.z+side*flight.width*.54,railHeight=unit*.8;
+    for(const i of [0,3,7]) {
+      const x=start+(i+.5)*flight.going,y=flight.baseY+(i+1)*flight.rise;
+      segment([x,y,railZ],[x,y+railHeight,railZ]);
+    }
+    segment([start+flight.going*.5,flight.baseY+flight.rise+railHeight,railZ],
+      [start+flight.run-flight.going*.5,flight.baseY+flight.count*flight.rise+railHeight,railZ]);
+  }
+  for(let i=0;i<flight.count;i++) {
+    const x=start+i*flight.going,y=flight.baseY+(i+1)*flight.rise+.004;
+    segment([x,y,flight.z-flight.width/2],[x,y,flight.z+flight.width/2]);
+  }
+  const front=lift.z+lift.depth/2+.004,doorWidth=lift.width*.76,doorTop=lift.baseY+lift.height*.87;
+  for(const side of [-1,1])segment([lift.x+side*doorWidth/2,lift.baseY,front],[lift.x+side*doorWidth/2,doorTop,front]);
+  segment([lift.x-doorWidth/2,doorTop,front],[lift.x+doorWidth/2,doorTop,front]);
+  segment([lift.x,lift.baseY,front],[lift.x,doorTop,front]);
+  const outlineCore=[[core.x-core.width*.48,core.z-core.depth*.48],[core.x+core.width*.48,core.z-core.depth*.48],
+    [core.x+core.width*.48,core.z+core.depth*.48],[core.x-core.width*.48,core.z+core.depth*.48]];
+  for(let i=0;i<4;i++)segment([outlineCore[i][0],.055,outlineCore[i][1]],[outlineCore[(i+1)%4][0],.055,outlineCore[(i+1)%4][1]]);
+  outlineGeometry.setAttribute('position',new T.Float32BufferAttribute(vertices,3));
   // Core and stair share these source materials; room surfaces are clones.
   for (const material of [materials.glass, materials.structure]) contextSurfaces.push({ material, color: material.color.clone() });
   group.visible = false; group.updateMatrixWorld(true);
   roomModels.forEach((room, index) => {
     room.bounds = new T.Box3().setFromObject(room.group);
+    room.furnishingBounds = room.bounds.clone();
     room.center = room.bounds.getCenter(new T.Vector3());
     room.radius = room.bounds.getBoundingSphere(new T.Sphere()).radius;
     anchors[index].set(room.center.x, room.bounds.max.y + unit * .65, room.center.z);
@@ -348,6 +394,8 @@ export function createInterior(section, content) {
     const contextFade = focusedRoom === null ? 0 : focusAmount;
     lineMaterial.color.set(palette.muted).lerp(white, contextFade * .65);
     lineMaterial.opacity = T.MathUtils.lerp(.8, .1, contextFade);
+    architecture.line.color.set(palette.muted).lerp(white, contextFade * .65);
+    architecture.line.opacity = T.MathUtils.lerp(.72, .12, contextFade);
     for (const surface of contextSurfaces) surface.material.color.copy(surface.color).lerp(white, contextFade * .94);
     roomModels.forEach((room, index) => {
       const fade = focusedRoom !== null && index !== focusedRoom && index !== hoveredRoom ? focusAmount : 0;
@@ -359,7 +407,7 @@ export function createInterior(section, content) {
     });
   }
   paintRooms();
-  return { group, pickables, anchors, reach, unit, rooms: roomModels,
+  return { group, pickables, anchors, reach, unit, rooms: roomModels, architecture,
     setActiveRoom(index) { if (activeRoom === index) return; activeRoom = index; paintRooms(); },
     setHoveredRoom(index) { if (hoveredRoom === index) return; hoveredRoom = index; paintRooms(); },
     setFocus(index, amount = 1) {
