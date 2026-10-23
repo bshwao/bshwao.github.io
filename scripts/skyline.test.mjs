@@ -6,10 +6,11 @@ import {createTowerModel} from '../assets/tower-model.js';
 import {floorProfiles,towerAntennas,towerHeight,towerRoofHeight} from '../assets/tower-geometry.js';
 import {outdoorCameraPose} from '../assets/camera-framing.js';
 import {createCityEnvironment,cityPalette,applyTowerGlazing} from '../assets/city-environment.js';
+import {createCityBackdrop} from '../assets/city-backdrop.js';
 const model=createTowerModel();model.root.updateMatrixWorld(true);
 const overlap=(a,b)=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1];
 
-test('sunset environment is static, world-oriented and fully clears for interiors',()=>{
+test('sunset environment is static, world-oriented and can render independently of interiors',()=>{
   const environment=createCityEnvironment(),camera=new T.PerspectiveCamera();camera.position.set(120,20,300);
   environment.update(camera,1);
   assert.ok(environment.root.visible);assert.deepEqual(environment.sky.position.toArray(),camera.position.toArray());
@@ -22,6 +23,36 @@ test('sunset environment is static, world-oriented and fully clears for interior
   const material=applyTowerGlazing(new T.MeshLambertMaterial(),42.525),shader={uniforms:{},vertexShader:'#include <begin_vertex>',fragmentShader:'#include <color_fragment>'};
   material.onBeforeCompile(shader);assert.equal(shader.uniforms.towerSectionLow.value,42.525);
   assert.ok(shader.fragmentShader.includes('floor(cell/vec2(4.0,3.0))'),'Warm windows form fixed physical groups');
+});
+
+test('city blur isolates the sharp subject, caches unchanged views, and releases its bounded targets',()=>{
+  const world=new T.Scene(),view=new T.PerspectiveCamera(34,16/9,.1,1000);
+  const city=new T.Group(),tower=new T.Group();world.add(city,tower);city.visible=false;
+  const draws=[],size=new T.Vector2(3840,2160);let target=null,pixelRatio=Math.sqrt(2_400_000/(3840*2160));
+  const renderer={autoClear:true,getSize:v=>v.copy(size),getDrawingBufferSize:v=>v.copy(size).multiplyScalar(pixelRatio).floor(),getRenderTarget:()=>target,
+    setRenderTarget:value=>{target=value;},clearDepth(){},
+    render(scene,camera){draws.push({scene,camera,target,city:city.visible,tower:tower.visible});}};
+  const blur=createCityBackdrop(renderer,[city],[tower]);
+  blur.render(world,view,1,()=>{},()=>{});
+  assert.equal(draws.length,5,'One scenery pass, two blur passes, composite, sharp foreground');
+  assert.equal(draws[0].city,true);assert.equal(draws[0].tower,false,'The tower never enters the blurred texture');
+  assert.equal(draws[4].city,false);assert.equal(draws[4].tower,true,'City cannot occlude an unfolded floor');
+  const buffer=renderer.getDrawingBufferSize(new T.Vector2());
+  assert.deepEqual(blur.metrics(),{width:buffer.x,height:buffer.y},'City matches the main drawing buffer instead of upscaling a thumbnail');
+  assert.ok(buffer.x*buffer.y<=2_400_000,'Large screens retain the shared raster cap');
+  assert.equal(city.visible,false);assert.equal(tower.visible,true);assert.equal(renderer.autoClear,true);assert.equal(target,null);
+  const targets=[draws[0].target,draws[1].target];let disposed=0;
+  targets.forEach(t=>t.addEventListener('dispose',()=>disposed++));
+  draws.length=0;blur.render(world,view,1,()=>{},()=>{});
+  assert.equal(draws.length,2,'Hover redraws reuse the scenery texture');
+  view.position.x=5;draws.length=0;blur.render(world,view,1,()=>{},()=>{});
+  assert.equal(draws.length,5,'Orbiting updates the city perspective');
+  size.set(390,844);pixelRatio=1;blur.render(world,view,1,()=>{},()=>{});
+  assert.deepEqual(blur.metrics(),{width:390,height:844});
+  pixelRatio=1.35;draws.length=0;blur.render(world,view,1,()=>{},()=>{});
+  assert.deepEqual(blur.metrics(),{width:526,height:1139},'Dense phone screens retain the main canvas pixel ratio');
+  assert.equal(draws.length,5,'A pixel-ratio change refreshes the backdrop even without a CSS resize');
+  disposed=0;blur.dispose();assert.equal(disposed,2,'Both GPU targets are disposed');
 });
 
 test('street additions stay batched, supported and clear of live approaches',()=>{

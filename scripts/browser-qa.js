@@ -7,7 +7,7 @@ const requestedDpr = Number(params.get('dpr'));
 if (requestedDpr > 0 && requestedDpr <= 4) Object.defineProperty(window, 'devicePixelRatio', { value: requestedDpr, configurable: true });
 const stage = document.querySelector('#stage'); stage.style.width = `${width}px`; stage.style.height = `${height}px`;
 const output = document.querySelector('#results'), status = document.querySelector('#status');
-const rows = []; let frames = 0, latest, spatial;
+const rows = []; let frames = 0, latest, spatial, maxFrameCalls = 0;
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function settled() {
@@ -20,19 +20,28 @@ async function settled() {
 function sample(view, limit) {
   const metrics = spatial.metrics();
   assert(metrics.calls <= limit, `${view}: ${metrics.calls} draws exceeds ${limit}`);
-  assert(metrics.textures <= (params.has('shadows')?1:0), `${view}: unexpected WebGL texture allocation`);
+  assert(metrics.textures <= 2 + (params.has('shadows')?1:0), `${view}: unexpected WebGL texture allocation`);
+  assert(metrics.backdrop.width * metrics.backdrop.height <= 2_400_000, 'City blur exceeds the main canvas raster budget');
+  if(view !== 'tower') {
+    assert(metrics.backdrop.width === Math.floor(metrics.width*metrics.pixelRatio) && metrics.backdrop.height === Math.floor(metrics.height*metrics.pixelRatio), 'City blur must match the main drawing-buffer resolution');
+  }
+  assert(metrics.background === (view === 'tower' ? 'sharp' : 'blurred'), `${view}: incorrect city focus`);
   assert(metrics.width * metrics.height * metrics.pixelRatio ** 2 <= 2_400_001, 'Raster budget exceeded');
   rows.push({ view, ...metrics });
 }
 try {
   const started = performance.now();
-  spatial = createSpatialScene({ container: stage, shadowComparison:params.has('shadows'), onFrame(state) { latest = state; frames++; } });
+  spatial = createSpatialScene({ container: stage, shadowComparison:params.has('shadows'), onFrame(state) {
+    latest = state; frames++;
+    if(spatial) maxFrameCalls=Math.max(maxFrameCalls,spatial.metrics().calls);
+  } });
   await settled(); const readyMs = Math.round(performance.now() - started);
   sample('tower', params.has('shadows')?85:65);
   spatial.goTo('explore', null, { instant: true }); await settled(); sample('explore', 75);
   for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
-    spatial.goTo('section', id, { instant: true }); await settled(); sample(id, 45);
-    spatial.focusRoom(1, { instant: true }); await settled(); sample(`${id}/room`, 45);
+    // Count both the sharp interior and the small scenery/blur passes.
+    spatial.goTo('section', id, { instant: true }); await settled(); sample(id, 75);
+    spatial.focusRoom(1, { instant: true }); await settled(); sample(`${id}/room`, 75);
   }
   const idle = frames; await delay(250); const idleFrames = frames - idle; assert(idleFrames === 0, 'Idle scene continues rendering');
   spatial.goTo('tower', null, { instant: true }); await settled();
@@ -50,10 +59,12 @@ try {
   await resizeCycle(); const resizedMemory = spatial.metrics().geometries;
   for (let i = 0; i < 3; i++) await resizeCycle();
   assert(spatial.metrics().geometries === resizedMemory, 'Repeated phone/desktop resizing grows GPU allocations');
-  output.textContent = JSON.stringify({ viewport: `${width}x${height}`, requestedDpr: requestedDpr || devicePixelRatio, userAgent: navigator.userAgent, readyMs, idleFramesOver250ms: idleFrames, stableGeometryCount: memory, stableGeometryAfterResize: resizedMemory, rows }, null, 2);
+  assert(maxFrameCalls <= 100, `Transition/background passes exceed 100 draws: ${maxFrameCalls}`);
+  output.textContent = JSON.stringify({ viewport: `${width}x${height}`, requestedDpr: requestedDpr || devicePixelRatio, userAgent: navigator.userAgent, readyMs, idleFramesOver250ms: idleFrames, maxFrameCalls, stableGeometryCount: memory, stableGeometryAfterResize: resizedMemory, rows }, null, 2);
   spatial.dispose();
   assert(stage.querySelector('canvas') === null, 'Disposal leaves a canvas behind');
   assert(spatial.metrics().geometries === 0, 'Disposal leaves uploaded GPU geometries behind');
+  assert(spatial.metrics().textures === 0, 'Disposal leaves city blur targets behind');
   status.textContent = 'PASS — render budgets, all floors and close-ups, idle rendering, stable memory, and GPU disposal';
 } catch (error) {
   spatial?.dispose(); status.textContent = `FAIL — ${error.message}`; output.textContent += `\n${error.stack}`;

@@ -1,0 +1,78 @@
+{
+  "contextLossFallback": null,
+  "qualityTrace": [
+    {
+      "detail": "full",
+      "height": 720,
+      "quality": "0",
+      "time": 253.6,
+      "width": 1280
+    }
+  ],
+  "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "rows": [
+    {
+      "callbackP95Ms": 1.1,
+      "detail": "full",
+      "fps": 162.8,
+      "frames": 652,
+      "medianMs": 6.1,
+      "name": "tower orbit",
+      "p95Ms": 6.2,
+      "quality": "0"
+    },
+    {
+      "callbackP95Ms": 1.8,
+      "detail": "full",
+      "fps": 159.7,
+      "frames": 209,
+      "medianMs": 6.1,
+      "name": "unfold",
+      "p95Ms": 6.4,
+      "quality": "0"
+    },
+    {
+      "callbackP95Ms": 1.5,
+      "detail": "full",
+      "fps": 164.5,
+      "frames": 658,
+      "medianMs": 6.1,
+      "name": "explore orbit",
+      "p95Ms": 6.3,
+      "quality": "0"
+    },
+    {
+      "callbackP95Ms": 1.9,
+      "detail": "full",
+      "fps": 150.3,
+      "frames": 286,
+      "medianMs": 6.1,
+      "name": "open projects",
+      "p95Ms": 12.1,
+      "quality": "0"
+    },
+    {
+      "callbackP95Ms": 1.1,
+      "detail": "full",
+      "fps": 165,
+      "frames": 661,
+      "medianMs": 6.1,
+      "name": "floor orbit",
+      "p95Ms": 6.3,
+      "quality": "0"
+    },
+    {
+      "callbackP95Ms": 1.1,
+      "detail": "full",
+      "fps": 163.7,
+      "frames": 127,
+      "medianMs": 6.1,
+      "name": "room flight",
+      "p95Ms": 6.4,
+      "quality": "0"
+    }
+  ],
+  "simulatedFrameDelayMs": 0,
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+  "viewport": "1280x720"
+}

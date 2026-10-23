@@ -37,8 +37,18 @@ const resizeObservers = new Set(), motionListeners = new Set();
 let motionReduced = reduced;
 let lastScene, lastCamera, renders = 0;
 class Renderer {
-  constructor() { if (unavailable) throw new Error('WebGL unavailable'); this.domElement = w.document.createElement('canvas'); }
-  setClearColor() {} setPixelRatio() {} setSize() {} dispose() {}
+  constructor() {
+    if (unavailable) throw new Error('WebGL unavailable');
+    this.domElement = w.document.createElement('canvas'); this.autoClear = true; this.target = null;
+    this.size = new THREE.Vector2(); this.info = { reset() {} };
+  }
+  setClearColor() {} dispose() {} clearDepth() {}
+  setPixelRatio(value) { this.pixelRatio = value; }
+  setSize(width, height) { this.size.set(width, height); }
+  getSize(target) { return target.copy(this.size); }
+  getDrawingBufferSize(target) { return target.copy(this.size).multiplyScalar(this.pixelRatio).floor(); }
+  getRenderTarget() { return this.target; }
+  setRenderTarget(target) { this.target = target; }
   render(scene, camera) { scene.updateMatrixWorld(); camera.updateMatrixWorld(); lastScene = scene; lastCamera = camera; renders++; }
 }
 w.HTMLElement.prototype.getBoundingClientRect = () => ({ x: 0, y: 0, left: 0, top: 0, width: viewportWidth, height: viewportHeight, right: viewportWidth, bottom: viewportHeight });
@@ -238,12 +248,12 @@ assert.equal(w.location.hash, '#explore', 'The browser click following a canvas 
 await tick(550);
 assert.equal(main.dataset.transition, reduced ? 'idle' : 'moving');
 assert.equal(lastScene.getObjectByName('district-buildings').visible,false,'Tall city buildings clear before unfolded sections can cross them');
-assert.equal(lastScene.getObjectByName('city-environment').visible,false,'Sunset environment clears with the city for section navigation');
+assert.equal(lastScene.getObjectByName('city-environment').visible,false,'Sunset renders behind the sharp model in a separate blurred pass');
+assert.equal(w.document.querySelector('canvas').dataset.background,'blurred','Opening the tower keeps a blurred city backdrop');
 const middle = lastCamera.position.clone();
 await tick(900);
 assert.equal(main.dataset.mode, 'explore');
-assert.ok(lastScene.getObjectByName('building-outlines').material.opacity < .3, 'Surrounding buildings recede while choosing a section');
-assert.ok(lastScene.getObjectByName('district-detail-ink').material.opacity < .25, 'Landscaping recedes while choosing a section');
+assert.equal(w.document.querySelector('canvas').dataset.background,'blurred','City and landscaping stay defocused while choosing a section');
 assert.ok(sections.every(section => lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Expansion reveals all cut-face plans');
 assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the expanded tower');
 assert.equal(main.dataset.transition, 'idle');
@@ -299,6 +309,7 @@ assertFloorFramed('about', '90% of section entry'); // Inspect the visible cut b
 await tick(335);
 assert.equal(main.dataset.mode, 'section'); assert.equal(main.dataset.transition, 'idle');
 assert.equal(canvas.dataset.section, 'about');
+assert.equal(canvas.dataset.background, 'blurred', 'The city backdrop continues behind inhabited floors');
 assert.equal(lastScene.getObjectByName('blueprint-district').visible, false, 'The district clears away for interior reading');
 assert.equal(lastScene.getObjectByName('district-buildings').visible, false, 'District buildings clear away before interior reading');
 assert.equal(lastScene.getObjectByName('district-character').visible, false, 'Landscaping and test vehicles clear away before interior reading');
@@ -471,6 +482,7 @@ assert.equal(lastScene.getObjectByName('blueprint-district').visible, true, 'Ret
 assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'Cancelled flights restore the surrounding buildings');
 assert.equal(lastScene.getObjectByName('district-character').visible, true, 'Cancelled flights restore landscaping and workshop details');
 assert.equal(lastScene.getObjectByName('district-contact-shadows').visible, true, 'Cancelled flights restore the ground washes');
+assert.equal(canvas.dataset.background, 'sharp', 'Returning to the tower restores sharp scenery');
 assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Interrupted entry and collapse cannot leave cap plans floating over the assembled tower');
 const before = Number(main.dataset.azimuth);
 canvas.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true })); await tick(16);

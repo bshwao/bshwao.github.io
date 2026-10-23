@@ -7,6 +7,7 @@ import { renderBudget } from './render-budget.js';
 import { palette } from './color-theme.js';
 import { footprint } from './tower-geometry.js';
 import { createCityEnvironment, cityPalette, citySun } from './city-environment.js';
+import { createCityBackdrop } from './city-backdrop.js';
 
 const ease = t => t * t * t * (t * (t * 6 - 15) + 10);
 const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - start), 0, 1));
@@ -19,6 +20,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
   renderer.localClippingEnabled = true;
   renderer.outputColorSpace = T.SRGBColorSpace;
+  renderer.info.autoReset = false;
   const canvas = renderer.domElement;
   canvas.className = 'spatial-canvas';
   canvas.tabIndex = 0;
@@ -31,6 +33,8 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   const fill = new T.DirectionalLight(palette.fill, .6); fill.position.set(-80, 30, -60); scene.add(fill);
   const model = createTowerModel(); scene.add(model.root);
   const environment=createCityEnvironment();scene.add(environment.root);
+  const backgrounds = [environment.root, model.ground, model.district.root, model.districtBuildings.root, model.districtDetails.root, model.districtShadows.root];
+  const backdrop = createCityBackdrop(renderer, backgrounds, model.modules.map(module => module.group));
   // Diagnostic comparison only: production uses baked face/contact shading.
   if(shadowComparison){
     renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
@@ -173,12 +177,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       module.base.children[0].material.opacity = (.28 + .52 * expansion) * context * (module === selected ? 1 - focusAmount * .72 : 1);
       module.interior.setFocus?.(module === selected ? contextRoom : null, focusAmount);
     });
-    model.ground.visible = districtVisibility > .005;
-    model.groundLine.opacity = .45 * (1 - expansion * .7) * districtVisibility;
-    model.district.setPresentation(expansion, 1 - districtVisibility);
-    model.districtBuildings.setPresentation(expansion, 1 - districtVisibility);
-    model.districtDetails.setPresentation(expansion, 1 - districtVisibility);
-    model.districtShadows.setPresentation(expansion, 1 - districtVisibility);
+    model.groundLine.opacity = .45;
+    model.district.setPresentation(0, 0);
+    model.districtBuildings.setPresentation(0, 0);
+    model.districtDetails.setPresentation(0, 0);
+    model.districtShadows.setPresentation(0, 0);
+    backgrounds.forEach(root => { root.visible = districtVisibility >= .999; });
     model.root.updateMatrixWorld(true);
   }
   function labels() {
@@ -238,13 +242,20 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     if (dirty || moving || changed) {
       const distance = camera.position.distanceTo(controls.target);
       for (const reference of depthReferences) reference.value = distance;
-      environment.update(camera,districtVisibility);
-      ambient.color.set(palette.sky).lerp(exteriorAmbient,districtVisibility);
-      ambient.intensity=lerp(2.25,1.65,districtVisibility);
-      light.color.set('#ffffff').lerp(exteriorSun,districtVisibility);
-      light.intensity=lerp(1.4,2.7,districtVisibility);
-      fill.color.set(palette.fill).lerp(exteriorFill,districtVisibility);
-      renderer.render(scene, camera);
+      const lighting = amount => {
+        ambient.color.set(palette.sky).lerp(exteriorAmbient,amount);
+        ambient.intensity=lerp(2.25,1.65,amount);
+        light.color.copy(white).lerp(exteriorSun,amount);
+        light.intensity=lerp(1.4,2.7,amount);
+        fill.color.set(palette.fill).lerp(exteriorFill,amount);
+      };
+      renderer.info.reset();
+      if (districtVisibility < .999) {
+        backdrop.render(scene, camera, 1 - districtVisibility,
+          () => { environment.update(camera,1); lighting(1); },
+          () => lighting(districtVisibility));
+      } else { environment.update(camera,1); lighting(1); renderer.render(scene,camera); }
+      canvas.dataset.background = districtVisibility < .999 ? 'blurred' : 'sharp';
       onFrame?.({ mode, selectedId: selected?.id, labels: labels(), expansion, reveal, panel, focusedRoom, activeRoom, hoveredRoom,
         viewport: viewportLayout(width, height), moving: Boolean(animation), transitionType: animation?.kind || null,
         azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle() });
@@ -467,7 +478,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   resize();
   goTo('tower', null, { instant: true });
   return {
-    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: 0, near:camera.near, far:camera.far, width, height }; },
+    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: 0, background: canvas.dataset.background, backdrop: backdrop.metrics(), near:camera.near, far:camera.far, width, height }; },
     refreshLabels() { invalidate(); },
     goTo,
     focusRoom,
@@ -489,7 +500,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
         if (item.geometry) geometries.add(item.geometry);
         if (item.material) (Array.isArray(item.material) ? item.material : [item.material]).forEach(material => materials.add(material));
       });
-      geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose());light.shadow.map?.dispose();renderer.dispose(); canvas.remove();
+      backdrop.dispose(); geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose());light.shadow.map?.dispose();renderer.dispose(); canvas.remove();
     },
   };
 }
