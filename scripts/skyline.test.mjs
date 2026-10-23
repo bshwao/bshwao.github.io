@@ -10,15 +10,21 @@ import {createCityBackdrop} from '../assets/city-backdrop.js';
 const model=createTowerModel();model.root.updateMatrixWorld(true);
 const overlap=(a,b)=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1];
 
-test('sunset environment is static, world-oriented and can render independently of interiors',()=>{
+test('night environment is smooth, static, world-oriented and independent of interiors',()=>{
   const environment=createCityEnvironment(),camera=new T.PerspectiveCamera();camera.position.set(120,20,300);
   environment.update(camera,1);
   assert.ok(environment.root.visible);assert.deepEqual(environment.sky.position.toArray(),camera.position.toArray());
   assert.equal(environment.sky.material.depthWrite,false);
-  assert.ok(!Object.keys(environment.sky.material.uniforms).some(k=>/time|texture|sampler/i.test(k)),'Clouds have no animation or texture allocations');
+  assert.ok(!Object.keys(environment.sky.material.uniforms).some(k=>/time|texture|sampler/i.test(k)),'Night sky has no animation or texture allocations');
+  assert.equal(environment.sky.material.precision,'highp','Sky interpolation and fragment math retain full precision');
+  assert.equal(environment.sky.material.dithering,true,'The dark gradient avoids visible color bands');
+  assert.doesNotMatch(environment.sky.material.fragmentShader,/float (noise|cloud|hash)\(/,'The broken cloud-noise path is removed');
+  const stars=environment.sky.material.uniforms.stars.value.map(v=>v.toArray());
+  assert.ok(stars.every(v=>Math.abs(Math.hypot(...v)-1)<1e-8&&v[1]>.09),'Stars use fixed directions above the horizon');
   assert.equal(environment.sky.material.uniforms.zenith.value.getHexString(),cityPalette.zenith.slice(1));
   const source=environment.sky.material.fragmentShader;environment.update(camera,.5);environment.update(camera,1);
-  assert.equal(environment.sky.material.fragmentShader,source,'Presentation does not rebuild cloud programs');
+  assert.equal(environment.sky.material.fragmentShader,source,'Presentation does not rebuild sky programs');
+  assert.deepEqual(environment.sky.material.uniforms.stars.value.map(v=>v.toArray()),stars,'Presentation leaves stars fixed in world directions');
   environment.update(camera,0);assert.equal(environment.root.visible,false);
   const material=applyTowerGlazing(new T.MeshLambertMaterial(),42.525),shader={uniforms:{},vertexShader:'#include <begin_vertex>',fragmentShader:'#include <color_fragment>'};
   material.onBeforeCompile(shader);assert.equal(shader.uniforms.towerSectionLow.value,42.525);
