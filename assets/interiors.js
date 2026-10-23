@@ -1,6 +1,7 @@
 import * as T from './vendor/three.module.min.js';
 import { floorLayout, insetFootprint } from './tower-geometry.js';
 import { palette, sectionColors, roomAccents } from './color-theme.js';
+import { furnishInteriorDetails } from './interior-details.js';
 
 /** Tangible architectural furniture at the tower's real floor scale. */
 export function createInterior(section, content) {
@@ -16,7 +17,8 @@ export function createInterior(section, content) {
   const pickables = [], anchors = [], roomModels = [];
   let activeRoom = 0, hoveredRoom = null, focusedRoom = null, focusAmount = 0;
   const unitBox = new T.BoxGeometry(1, 1, 1), unitCylinder = new T.CylinderGeometry(1, 1, 1, 20);
-  const shared = new Set([unitBox, unitCylinder]), edgeSources = new Map();
+  const unitRing=new T.TorusGeometry(1,.09,5,16),unitSphere=new T.SphereGeometry(1,8,6),unitLeaf=new T.SphereGeometry(.42,6,5);
+  const shared = new Set([unitBox, unitCylinder,unitRing,unitSphere,unitLeaf]), edgeSources = new Map();
 
   function object(parent, geometry, x, y, z, material = 'structure', turn = 0) {
     const mesh = new T.Mesh(geometry, materials[material]);
@@ -27,6 +29,8 @@ export function createInterior(section, content) {
   }
   const box = (p, x, y, z, w, h, d, mat = 'structure', turn = 0) => { const mesh = object(p, unitBox, x, y, z, mat, turn); mesh.scale.set(w, h, d); return mesh; };
   const cylinder = (p, x, y, z, r, h, mat = 'structure') => { const mesh = object(p, unitCylinder, x, y, z, mat); mesh.scale.set(r, h, r); return mesh; };
+  const ring=(p,x,y,z,r,mat='equipment',tilt=0)=>{const mesh=object(p,unitRing,x,y,z,mat);mesh.scale.setScalar(r);mesh.rotation.x=tilt;return mesh;};
+  const sphere=(p,x,y,z,r,mat='glass')=>{const mesh=object(p,unitSphere,x,y,z,mat);mesh.scale.setScalar(r);return mesh;};
   function feature(p, name, build) {
     p.userData.features ??= [];
     p.userData.features.push(name);
@@ -80,7 +84,7 @@ export function createInterior(section, content) {
   function plant(p, x, z) {
     cylinder(p, x, .45, z, .48, .8, 'equipment');
     for (let i = 0; i < 5; i++) {
-      const leaf = object(p, new T.SphereGeometry(.42, 6, 5), x + Math.sin(i * 2.4) * .35, 1.1 + i * .14, z + Math.cos(i * 2.4) * .25, 'glass');
+      const leaf = object(p, unitLeaf, x + Math.sin(i * 2.4) * .35, 1.1 + i * .14, z + Math.cos(i * 2.4) * .25, 'glass');
       leaf.scale.set(.55, 1.35, .65); leaf.rotation.z = Math.sin(i * 2.4) * .6;
     }
   }
@@ -279,9 +283,12 @@ export function createInterior(section, content) {
     const zone = new T.Group();
     zone.userData.roomIndex = index;
     group.add(zone); furnish(zone, index);
+    furnishInteriorDetails(section.id,index,zone,{box,cylinder,ring,sphere,paper,wire,feature});
     box(zone, -3.9, .6, 0, .13, 1.2, 4.6, 'glass');
     box(zone, 3.9, .6, 0, .13, 1.2, 4.6, 'glass');
-    box(zone, 0, .025, 0, 7.6, .03, 5.4, 'glass');
+    zone.updateMatrixWorld(true);
+    const occupied=new T.Box3().setFromObject(zone),floorSize=occupied.getSize(new T.Vector3()),floorCenter=occupied.getCenter(new T.Vector3());
+    box(zone, floorCenter.x, .025, floorCenter.z, floorSize.x+.12, .03, floorSize.z+.12, 'glass');
     for (const z of [-2.4, 2.4]) box(zone, 0, .046, z, 7.15, .009, .018, 'equipment');
     for (const x of [-3.55, 3.55]) box(zone, x, .046, 0, .018, .009, 4.8, 'equipment');
     const room = batchRoom(zone, index);

@@ -1,0 +1,235 @@
+[
+  {
+    "section": "about",
+    "triangles": 8912,
+    "draws": 24,
+    "rooms": [
+      {
+        "detailCount": 91,
+        "surfaces": 4,
+        "features": [
+          "Welcome display and drawing cabinet",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Architectural study model and portfolio display shelf"
+        ]
+      },
+      {
+        "detailCount": 158,
+        "surfaces": 4,
+        "features": [
+          "Study desk and screen",
+          "Reference books and shelves",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Articulated study lamp, notebook and desk stationery"
+        ]
+      },
+      {
+        "detailCount": 143,
+        "surfaces": 4,
+        "features": [
+          "Grand piano, separate keys and bench",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Music stand, acoustic panels and metronome"
+        ]
+      },
+      {
+        "detailCount": 108,
+        "surfaces": 4,
+        "features": [
+          "Conversation sofas and coffee table",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Language library, wall clock and coat stand"
+        ]
+      }
+    ]
+  },
+  {
+    "section": "projects",
+    "triangles": 7376,
+    "draws": 19,
+    "rooms": [
+      {
+        "detailCount": 115,
+        "surfaces": 4,
+        "features": [
+          "Dual monitor development desk",
+          "Workstation tower",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Maker pegboard, hand tools and wearable prototype station"
+        ]
+      },
+      {
+        "detailCount": 203,
+        "surfaces": 4,
+        "features": [
+          "Ventilated server racks and cable runs",
+          "Systems terminal",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Patch panel, switch ports and cable management"
+        ]
+      },
+      {
+        "detailCount": 146,
+        "surfaces": 4,
+        "features": [
+          "Experiment reference library",
+          "Driving simulation analysis desk",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Simulator steering wheel, pedals and telemetry tablet"
+        ]
+      }
+    ]
+  },
+  {
+    "section": "experience",
+    "triangles": 10924,
+    "draws": 24,
+    "rooms": [
+      {
+        "detailCount": 112,
+        "surfaces": 4,
+        "features": [
+          "Electronics bench, oscilloscope, probes and PCB",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Component drawers, multimeter and solder reel"
+        ]
+      },
+      {
+        "detailCount": 193,
+        "surfaces": 4,
+        "features": [
+          "Infrastructure racks with vents and cable runs",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Network cable tray, service labels and patch terminal"
+        ]
+      },
+      {
+        "detailCount": 173,
+        "surfaces": 4,
+        "features": [
+          "Sensor workbench, oscilloscope and PCB",
+          "Lab reference shelves",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Diagnostic trolley, coiled test leads and inspection clipboard"
+        ]
+      },
+      {
+        "detailCount": 98,
+        "surfaces": 4,
+        "features": [
+          "Formula chassis, wheels and roll hoop",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Brake hubs, suspension links, pit tools and inspection stand"
+        ]
+      }
+    ]
+  },
+  {
+    "section": "resume",
+    "triangles": 8128,
+    "draws": 24,
+    "rooms": [
+      {
+        "detailCount": 108,
+        "surfaces": 4,
+        "features": [
+          "Résumé documents and filing cabinet",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Academic display, mortarboard and brochure rack"
+        ]
+      },
+      {
+        "detailCount": 197,
+        "surfaces": 4,
+        "features": [
+          "Double reference archive with book spines",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Library catalogue drawers, shelf labels and book trolley"
+        ]
+      },
+      {
+        "detailCount": 162,
+        "surfaces": 4,
+        "features": [
+          "Research reading desk",
+          "Education reference shelves",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Technical drawing board, caliper and task lamp"
+        ]
+      },
+      {
+        "detailCount": 158,
+        "surfaces": 4,
+        "features": [
+          "Document cabinet and printed résumé",
+          "Archive shelf",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Document scanner, printer and output paper trays"
+        ]
+      }
+    ]
+  },
+  {
+    "section": "contact",
+    "triangles": 9016,
+    "draws": 24,
+    "rooms": [
+      {
+        "detailCount": 81,
+        "surfaces": 4,
+        "features": [
+          "Reception counter and guest chair",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Reception terminal, desk bell and correspondence cubbies"
+        ]
+      },
+      {
+        "detailCount": 99,
+        "surfaces": 4,
+        "features": [
+          "Connection desk and twin screens",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Device charging station, desktop lamp and connected devices"
+        ]
+      },
+      {
+        "detailCount": 94,
+        "surfaces": 4,
+        "features": [
+          "Conversation lounge with coffee table",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Tea service, side table and framed lounge artwork"
+        ]
+      },
+      {
+        "detailCount": 97,
+        "surfaces": 4,
+        "features": [
+          "Résumé consultation counter",
+          "Visitor seating",
+          "Paneled room backdrop, numbered plaque and framed display",
+          "Section-specific floor finish and inset entry threshold",
+          "Globe consultation table, map stand and visitor notes"
+        ]
+      }
+    ]
+  }
+]
