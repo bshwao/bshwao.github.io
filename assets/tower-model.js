@@ -10,6 +10,8 @@ import { createDistrictShadows } from './district-style.js';
 import { palette, sectionColors } from './color-theme.js';
 import { facadeColor } from './facade-materials.js';
 import { applyTowerGlazing, cityPalette } from './city-environment.js';
+import { createCityWaterfront } from './city-waterfront.js';
+import { createCityLandscape } from './city-landscape.js';
 
 // Triangulate deliberate corners, then subdivide the triangle boundaries at
 // every facade bay. Earcut on many nearly collinear bay samples can produce
@@ -188,7 +190,9 @@ export function createTowerModel() {
   const districtBuildings = createDistrictBuildings(); root.add(districtBuildings.root);
   const districtDetails = createDistrictDetails(districtBuildings.buildings); root.add(districtDetails.root);
   const districtShadows = createDistrictShadows(districtBuildings.buildings, districtDetails.features); root.add(districtShadows.root);
-  return { root, modules, ground, groundLine, district, districtBuildings, districtDetails, districtShadows,
+  const waterfront = createCityWaterfront(); root.add(waterfront.root);
+  const landscape=createCityLandscape();root.add(landscape.root);
+  return { root, modules, ground, groundLine, district, districtBuildings, districtDetails, districtShadows, waterfront, landscape,
     setCompact(compact) {
       for (const module of modules) module.shell.children[1].geometry = compact ? module.coarseLineGeometry : module.lineGeometry;
       district.root.getObjectByName('draft-grid-minor').visible = false;

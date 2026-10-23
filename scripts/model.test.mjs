@@ -62,13 +62,14 @@ test('the decorative district has finite ground geometry within a small renderin
     }
     assert.equal(node.userData.sectionId, undefined, 'Ground cannot become a selectable tower section');
   });
-  assert.ok(calls <= 10 && triangles < 500 && vertices < 10_000, `${calls} calls / ${triangles} triangles / ${vertices} vertices`);
+  assert.ok(calls <= 11 && triangles < 500 && vertices < 10_000, `${calls} calls / ${triangles} triangles / ${vertices} vertices`);
+  assert.ok(district.root.getObjectByName('urban-base'),'Paving fills the inner blocks beneath parcel pads and streets');
 });
 
 test('district buildings fit their parcels, keep the tower clear, and share a bounded geometry budget', () => {
   const district = model.districtBuildings;
   assert.equal(district.buildings.length, cityLots.length);
-  assert.ok(district.buildings.length >= 30 && district.buildings.length <= 40);
+  assert.ok(district.buildings.length >= 60 && district.buildings.length <= 65,'Core and riverfront neighborhoods stay within the extended city budget');
   assert.equal(new Set(district.buildings.map(building => building.lotId)).size, cityLots.length);
   assert.equal(new Set(district.buildings.map(building => building.type)).size, 4);
   for (const building of district.buildings) {

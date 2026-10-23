@@ -75,6 +75,7 @@ export function createCityBackdrop(renderer, backgrounds, foregrounds) {
       }
     },
     metrics() { return { width, height }; },
+    invalidate() { cache=''; },
     dispose() { source?.dispose(); scratch?.dispose(); quad.geometry.dispose(); blur.dispose(); composite.dispose(); },
   };
 }

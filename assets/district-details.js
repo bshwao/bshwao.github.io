@@ -4,14 +4,15 @@ import { appendDraftingText } from './district-ground.js';
 import { applyDistrictDepth, shadeDistrictGeometry } from './district-style.js';
 import { cityPalette } from './city-environment.js';
 import { districtPlan } from './city-layout.js';
+import { applyGroundTexture } from './ground-materials.js';
 
-/** Daytime architectural landscaping and engineering references; all static. */
+/** Architectural landscaping and engineering references; all static. */
 export function createDistrictDetails(buildings) {
   const root = new T.Group(); root.name = 'district-character';
   const features = [];
   const layers = {
     paper: { color: cityPalette.limestone, mesh: true, positions: [] },
-    blue: { color: cityPalette.metal, mesh: true, positions: [] },
+    blue: { color: cityPalette.metal, mesh: true, positions: [],glow:[] },
     foliage: { color: cityPalette.foliage, mesh: true, positions: [] },
     paving: { color: cityPalette.pavement, mesh: true, positions: [] },
     ink: { color: '#3c4855', opacity: .72, positions: [] },
@@ -50,6 +51,7 @@ export function createDistrictDetails(buildings) {
   }
   function quad(layer, a, b, c, d) {
     layers[layer].positions.push(...a, ...b, ...c, ...a, ...c, ...d);
+    if(layers[layer].glow)for(const p of [a,b,c,a,c,d])layers[layer].glow.push(active?.kind==='streetlight'&&p[1]>5.4?1:0);
     for (const point of [a, b, c, d]) trackBounds(point);
   }
   function solid(layer, shape, x, y, z, w, h, d, outline = true, turn = 0) {
@@ -62,6 +64,7 @@ export function createDistrictDetails(buildings) {
     const positions = flat.attributes.position;
     for (let i = 0; i < positions.count; i++) {
       const point = transform(positions, i); layers[layer].positions.push(...point); trackBounds(point);
+      layers[layer].glow?.push(active?.kind==='streetlight'&&point[1]>5.4?1:0);
     }
     if (outline) {
       const positions = edges.attributes.position;
@@ -246,7 +249,7 @@ export function createDistrictDetails(buildings) {
   });
 
   // Modest roof plant and panel banks distinguish occupied buildings from blocks.
-  for (const building of buildings.filter(building => building.type === 'office' || building.type === 'campus')) {
+  for (const building of buildings.filter(building => !building.extension && (building.type === 'office' || building.type === 'campus'))) {
     const part = [...building.parts].sort((a, b) => b.top - a.top)[0];
     feature('roof-equipment', () => {
       box('paper', part.x, part.top + .5, part.z, 2.2, .9, 2.2);
@@ -261,12 +264,15 @@ export function createDistrictDetails(buildings) {
   for (const [name, layer] of Object.entries(layers)) {
     const geometry = new T.BufferGeometry();
     geometry.setAttribute('position', new T.Float32BufferAttribute(layer.positions, 3));
+    if(layer.glow)geometry.setAttribute('cityGlow',new T.Float32BufferAttribute(layer.glow,1));
     if (layer.mesh) shadeDistrictGeometry(geometry, layer.color);
     const options = { color: '#ffffff', vertexColors: true, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 };
     const material = applyDistrictDepth(layer.mesh
       ? new T.MeshBasicMaterial(options)
       : new T.LineBasicMaterial({ color: layer.color, transparent: true, opacity: layer.opacity, depthWrite: false }));
     const object = layer.mesh ? new T.Mesh(geometry, material) : new T.LineSegments(geometry, material);
+    if(name==='blue')material.userData.cityGlowMode='vertex';
+    if(name==='paving')applyGroundTexture(material,'stone');
     object.name = `district-detail-${name}`; layer.material = material; root.add(object);
   }
   for (const { geometry, flat, edges } of sources.values()) {

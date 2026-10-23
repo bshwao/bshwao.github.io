@@ -1,0 +1,758 @@
+[
+  {
+    "viewport": "1280x720",
+    "requestedDpr": 1,
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "readyMs": 616,
+    "idleFramesOver250ms": 0,
+    "maxFrameCalls": 76,
+    "stableGeometryCount": 189,
+    "stableGeometryAfterResize": 194,
+    "rows": [
+      {
+        "view": "tower",
+        "calls": 59,
+        "triangles": 68689,
+        "lines": 57768,
+        "geometries": 59,
+        "textures": 0,
+        "programs": 18,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "sharp",
+        "backdrop": {
+          "width": 0,
+          "height": 0
+        },
+        "near": 7.9,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "explore",
+        "calls": 47,
+        "triangles": 18684,
+        "lines": 26837,
+        "geometries": 74,
+        "textures": 2,
+        "programs": 34,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 8.3,
+        "far": 1100,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "about",
+        "calls": 31,
+        "triangles": 10160,
+        "lines": 9706,
+        "geometries": 98,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 1.3,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "about/room",
+        "calls": 25,
+        "triangles": 8576,
+        "lines": 8728,
+        "geometries": 98,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 0.3,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "projects",
+        "calls": 27,
+        "triangles": 8854,
+        "lines": 9744,
+        "geometries": 117,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 1.3,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "projects/room",
+        "calls": 24,
+        "triangles": 8012,
+        "lines": 9744,
+        "geometries": 117,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 0.7,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "experience",
+        "calls": 32,
+        "triangles": 10254,
+        "lines": 9847,
+        "geometries": 141,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 1.4,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "experience/room",
+        "calls": 27,
+        "triangles": 9610,
+        "lines": 9395,
+        "geometries": 141,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 0.5,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "resume",
+        "calls": 32,
+        "triangles": 7114,
+        "lines": 7947,
+        "geometries": 165,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 1.4,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "resume/room",
+        "calls": 56,
+        "triangles": 56265,
+        "lines": 41143,
+        "geometries": 165,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 0.5,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "contact",
+        "calls": 61,
+        "triangles": 57459,
+        "lines": 41248,
+        "geometries": 189,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 1.6,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "view": "contact/room",
+        "calls": 27,
+        "triangles": 5944,
+        "lines": 5988,
+        "geometries": 189,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1280,
+          "height": 720
+        },
+        "near": 0.6,
+        "far": 1000,
+        "width": 1280,
+        "height": 720
+      }
+    ]
+  },
+  {
+    "viewport": "390x844",
+    "requestedDpr": 3,
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "readyMs": 596,
+    "idleFramesOver250ms": 0,
+    "maxFrameCalls": 74,
+    "stableGeometryCount": 187,
+    "stableGeometryAfterResize": 194,
+    "rows": [
+      {
+        "view": "tower",
+        "calls": 57,
+        "triangles": 68689,
+        "lines": 17065,
+        "geometries": 57,
+        "textures": 0,
+        "programs": 18,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "sharp",
+        "backdrop": {
+          "width": 0,
+          "height": 0
+        },
+        "near": 7.8,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "explore",
+        "calls": 74,
+        "triangles": 69151,
+        "lines": 20576,
+        "geometries": 72,
+        "textures": 2,
+        "programs": 34,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 10.1,
+        "far": 1200,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "about",
+        "calls": 59,
+        "triangles": 60675,
+        "lines": 14197,
+        "geometries": 96,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 2.9,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "about/room",
+        "calls": 25,
+        "triangles": 7696,
+        "lines": 6586,
+        "geometries": 96,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 0.7,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "projects",
+        "calls": 27,
+        "triangles": 8854,
+        "lines": 6144,
+        "geometries": 115,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 3.3,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "projects/room",
+        "calls": 18,
+        "triangles": 7306,
+        "lines": 5092,
+        "geometries": 115,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 1.3,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "experience",
+        "calls": 32,
+        "triangles": 10254,
+        "lines": 7063,
+        "geometries": 139,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 4,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "experience/room",
+        "calls": 25,
+        "triangles": 9598,
+        "lines": 6599,
+        "geometries": 139,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 1.1,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "resume",
+        "calls": 32,
+        "triangles": 7114,
+        "lines": 5643,
+        "geometries": 163,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 4,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "resume/room",
+        "calls": 23,
+        "triangles": 5558,
+        "lines": 4385,
+        "geometries": 163,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 1.1,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "contact",
+        "calls": 32,
+        "triangles": 6992,
+        "lines": 4742,
+        "geometries": 187,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 4.7,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "view": "contact/room",
+        "calls": 27,
+        "triangles": 5944,
+        "lines": 3924,
+        "geometries": 187,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 526,
+          "height": 1139
+        },
+        "near": 1.3,
+        "far": 1000,
+        "width": 390,
+        "height": 844
+      }
+    ]
+  },
+  {
+    "viewport": "844x390",
+    "requestedDpr": 3,
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "readyMs": 580,
+    "idleFramesOver250ms": 0,
+    "maxFrameCalls": 74,
+    "stableGeometryCount": 187,
+    "stableGeometryAfterResize": 194,
+    "rows": [
+      {
+        "view": "tower",
+        "calls": 57,
+        "triangles": 68689,
+        "lines": 17065,
+        "geometries": 57,
+        "textures": 0,
+        "programs": 18,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "sharp",
+        "backdrop": {
+          "width": 0,
+          "height": 0
+        },
+        "near": 11.4,
+        "far": 1200,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "explore",
+        "calls": 47,
+        "triangles": 18684,
+        "lines": 12965,
+        "geometries": 72,
+        "textures": 2,
+        "programs": 34,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 12.1,
+        "far": 1300,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "about",
+        "calls": 31,
+        "triangles": 10160,
+        "lines": 6586,
+        "geometries": 96,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 1.6,
+        "far": 1000,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "about/room",
+        "calls": 30,
+        "triangles": 9472,
+        "lines": 6586,
+        "geometries": 96,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 0.4,
+        "far": 1000,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "projects",
+        "calls": 27,
+        "triangles": 8854,
+        "lines": 6144,
+        "geometries": 115,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 1.7,
+        "far": 1000,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "projects/room",
+        "calls": 27,
+        "triangles": 8854,
+        "lines": 6144,
+        "geometries": 115,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 0.9,
+        "far": 1000,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "experience",
+        "calls": 32,
+        "triangles": 10254,
+        "lines": 7063,
+        "geometries": 139,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 1.6,
+        "far": 1000,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "experience/room",
+        "calls": 58,
+        "triangles": 60721,
+        "lines": 14670,
+        "geometries": 139,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 0.6,
+        "far": 1000,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "resume",
+        "calls": 32,
+        "triangles": 7114,
+        "lines": 5643,
+        "geometries": 163,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 1.6,
+        "far": 1000,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "resume/room",
+        "calls": 59,
+        "triangles": 57581,
+        "lines": 13254,
+        "geometries": 163,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 0.7,
+        "far": 1000,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "contact",
+        "calls": 32,
+        "triangles": 6992,
+        "lines": 4742,
+        "geometries": 187,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 1.9,
+        "far": 1000,
+        "width": 844,
+        "height": 390
+      },
+      {
+        "view": "contact/room",
+        "calls": 32,
+        "triangles": 6992,
+        "lines": 4742,
+        "geometries": 187,
+        "textures": 2,
+        "programs": 35,
+        "pixelRatio": 1.35,
+        "quality": 0,
+        "background": "blurred",
+        "backdrop": {
+          "width": 1139,
+          "height": 526
+        },
+        "near": 0.7,
+        "far": 1000,
+        "width": 844,
+        "height": 390
+      }
+    ]
+  }
+]

@@ -14,14 +14,28 @@ for(const side of [-1,1]) for(const along of [-1,1]) {
 const distant = [
   [-146,-154,-108,-116,42],[-94,-156,-54,-116,48],[-30,-158,0,-116,60],
   [8,-152,32,-112,36],[56,-156,94,-116,46],[108,-150,148,-110,52],
-  [-158,-86,-120,-52,38],[-142,110,-100,154,28],[100,110,142,154,32],
+  [-158,-86,-120,-52,38],[-142,110,-100,132,28],[100,110,142,132,32],
 ].map((row,index)=>({id:`D${index+1}`,bounds:row.slice(0,4),height:row[4],layer:'distant'}));
-export const districtPlan={extent:180,plazaHalf:24,roadCenters:[-42,42],roadWidth:10,sidewalkWidth:3,parcels:[...blocks,...inner,...distant]};
+const outer=[];
+const outerLot=(bounds,height,family,form='terraced',layer='distant')=>outer.push({id:`E${outer.length+1}`,bounds,height,family,form,layer,extension:true});
+for(const [i,x]of [-225,-150,-75,0,75,150,225].entries()) outerLot([x-24,-232,x+24,-190],24+(i%4)*7,['brick','limestone','glass'][i%3],i%3===2?'slender':'terraced');
+for(const side of [-1,1]) for(const [i,z]of [-122,-68,0,68].entries()) outerLot([side*215-22,z-16,side*215+22,z+16],18+(i%3)*9,i%2?'brick':'limestone');
+for(const [i,bounds]of [[-94,109,-58,127],[-30,109,-6,127],[6,109,30,127],[58,109,94,127]].entries()) outerLot(bounds,12+i*3,i%2?'limestone':'brick','slab','foreground');
+for(const [i,x]of [-215,-157,188,234].entries()) outerLot([x-18,220,x+18,258],12+(i%3)*4,i%2?'limestone':'brick');
+export const riverPlan={minX:-600,maxX:600,halfWidth:20,promenadeWidth:7,waterY:-.58,bridges:[-42,42]};
+export const riverCenter=x=>168+16*Math.sin((x+80)/90)-x*.08;
+export const riverEdges=x=>({north:riverCenter(x)-riverPlan.halfWidth,south:riverCenter(x)+riverPlan.halfWidth});
+export const parkPlan=[
+  {id:'west-garden',bounds:[-166,-24,-112,24],form:'garden'},
+  {id:'east-square',bounds:[112,-24,166,24],form:'fountain'},
+  {id:'south-park',bounds:[-30,234,30,292],form:'lawn'},
+];
+export const districtPlan={extent:360,plazaHalf:24,roadCenters:[-42,42],roadWidth:10,sidewalkWidth:3,parcels:[...blocks,...inner,...distant,...outer]};
 
 const lots=[];
 function add(parent,bounds,height,family,form='stepped',suffix='',inset=2) {
   lots.push({id:parent.id+suffix,parcelId:parent.id,bounds,height,family,form,layer:parent.layer,inset,
-    type:family==='workshop'?'workshop':family==='campus'?'campus':family==='brick'?'apartments':'office'});
+    extension:Boolean(parent.extension),type:family==='workshop'?'workshop':family==='campus'?'campus':family==='brick'?'apartments':'office'});
 }
 for(const block of blocks) {
   const [x0,z0,x1,z1]=block.bounds,mx=(x0+x1)/2,mz=(z0+z1)/2;
@@ -42,6 +56,7 @@ for(const block of blocks) {
 }
 for(const parcel of inner) add(parcel,parcel.bounds,Number(parcel.id.slice(1))%3===0?14:9,'limestone','shopfront','',1);
 for(const [index,parcel] of distant.entries()) add(parcel,parcel.bounds,parcel.height,index%3===0?'glass':index%3===1?'brick':'limestone',index%3===0?'slender':'terraced','',3);
+for(const parcel of outer) add(parcel,parcel.bounds,parcel.height,parcel.family,parcel.form,'',3);
 export const cityLots=lots;
 
 /** Deliberate solid envelopes, shared by blockout, architecture and cameras. */

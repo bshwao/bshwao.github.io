@@ -1,0 +1,80 @@
+{
+  "validActiveUseBenchmark": false,
+  "reason": "The inactive Codex preview throttles requestAnimationFrame to approximately one update per second even with browser visibility requested. These values must not be treated as scene FPS.",
+  "viewport": "1280x720",
+  "simulatedFrameDelayMs": 0,
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+  "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "contextLossFallback": null,
+  "qualityTrace": [
+    {
+      "quality": "0",
+      "detail": "full",
+      "width": 1280,
+      "height": 720,
+      "time": 513.2
+    }
+  ],
+  "rows": [
+    {
+      "name": "tower orbit",
+      "frames": 12,
+      "fps": 3.1,
+      "medianMs": 6.1,
+      "p95Ms": 1000.1,
+      "callbackP95Ms": 1.9,
+      "detail": "full",
+      "quality": "0"
+    },
+    {
+      "name": "unfold",
+      "frames": 1,
+      "fps": 1,
+      "medianMs": 1005.9,
+      "p95Ms": 1005.9,
+      "callbackP95Ms": 4,
+      "detail": "full",
+      "quality": "0"
+    },
+    {
+      "name": "explore orbit",
+      "frames": 3,
+      "fps": 1,
+      "medianMs": 1000,
+      "p95Ms": 1000,
+      "callbackP95Ms": 2,
+      "detail": "full",
+      "quality": "0"
+    },
+    {
+      "name": "open projects",
+      "frames": 1,
+      "fps": 1,
+      "medianMs": 1006.4,
+      "p95Ms": 1006.4,
+      "callbackP95Ms": 1.4,
+      "detail": "full",
+      "quality": "0"
+    },
+    {
+      "name": "floor orbit",
+      "frames": 3,
+      "fps": 1,
+      "medianMs": 1006,
+      "p95Ms": 1006,
+      "callbackP95Ms": 1.5,
+      "detail": "full",
+      "quality": "0"
+    },
+    {
+      "name": "room flight",
+      "frames": 0,
+      "fps": null,
+      "medianMs": 0,
+      "p95Ms": 0,
+      "callbackP95Ms": 1.5,
+      "detail": "full",
+      "quality": "0"
+    }
+  ]
+}

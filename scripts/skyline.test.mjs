@@ -1,17 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from '../assets/vendor/three.module.min.js';
-import {cityLots,cityEnvelopes,districtPlan} from '../assets/city-layout.js';
+import {cityLots,cityEnvelopes,districtPlan,riverPlan,riverEdges,riverCenter,parkPlan} from '../assets/city-layout.js';
 import {createTowerModel} from '../assets/tower-model.js';
 import {floorProfiles,towerAntennas,towerHeight,towerRoofHeight} from '../assets/tower-geometry.js';
 import {outdoorCameraPose} from '../assets/camera-framing.js';
 import {createCityEnvironment,cityPalette,applyTowerGlazing} from '../assets/city-environment.js';
 import {createCityBackdrop} from '../assets/city-backdrop.js';
+import {readCityTime} from '../assets/city-time.js';
 const model=createTowerModel();model.root.updateMatrixWorld(true);
 const overlap=(a,b)=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1];
 
 test('night environment is smooth, static, world-oriented and independent of interiors',()=>{
-  const environment=createCityEnvironment(),camera=new T.PerspectiveCamera();camera.position.set(120,20,300);
+  const environment=createCityEnvironment(readCityTime(new Date(2026,9,23,0))),camera=new T.PerspectiveCamera();camera.position.set(120,20,300);
   environment.update(camera,1);
   assert.ok(environment.root.visible);assert.deepEqual(environment.sky.position.toArray(),camera.position.toArray());
   assert.equal(environment.sky.material.depthWrite,false);
@@ -22,6 +23,12 @@ test('night environment is smooth, static, world-oriented and independent of int
   const stars=environment.sky.material.uniforms.stars.value.map(v=>v.toArray());
   assert.ok(stars.every(v=>Math.abs(Math.hypot(...v)-1)<1e-8&&v[1]>.09),'Stars use fixed directions above the horizon');
   assert.equal(environment.sky.material.uniforms.zenith.value.getHexString(),cityPalette.zenith.slice(1));
+  assert.equal(environment.sky.material.uniforms.sunVisibility.value,0);
+  assert.equal(environment.sky.material.uniforms.moonVisibility.value,1);
+  environment.setTime(readCityTime(new Date(2026,9,23,10)));environment.update(camera,1);
+  assert.equal(environment.sky.material.uniforms.starVisibility.value,0);
+  assert.equal(environment.sky.material.uniforms.sunVisibility.value,1);
+  assert.equal(environment.sky.material.uniforms.moonVisibility.value,0);
   const source=environment.sky.material.fragmentShader;environment.update(camera,.5);environment.update(camera,1);
   assert.equal(environment.sky.material.fragmentShader,source,'Presentation does not rebuild sky programs');
   assert.deepEqual(environment.sky.material.uniforms.stars.value.map(v=>v.toArray()),stars,'Presentation leaves stars fixed in world directions');
@@ -53,12 +60,46 @@ test('city blur isolates the sharp subject, caches unchanged views, and releases
   assert.equal(draws.length,2,'Hover redraws reuse the scenery texture');
   view.position.x=5;draws.length=0;blur.render(world,view,1,()=>{},()=>{});
   assert.equal(draws.length,5,'Orbiting updates the city perspective');
+  blur.invalidate();draws.length=0;blur.render(world,view,1,()=>{},()=>{});
+  assert.equal(draws.length,5,'A clock/lighting change refreshes the cached city without moving the camera');
   size.set(390,844);pixelRatio=1;blur.render(world,view,1,()=>{},()=>{});
   assert.deepEqual(blur.metrics(),{width:390,height:844});
   pixelRatio=1.35;draws.length=0;blur.render(world,view,1,()=>{},()=>{});
   assert.deepEqual(blur.metrics(),{width:526,height:1139},'Dense phone screens retain the main canvas pixel ratio');
   assert.equal(draws.length,5,'A pixel-ratio change refreshes the backdrop even without a CSS resize');
   disposed=0;blur.dispose();assert.equal(disposed,2,'Both GPU targets are disposed');
+});
+
+test('finished parks, planted edges and ground detail stay clear of buildings, avenues and water',()=>{
+  const landscape=model.landscape;
+  assert.equal(landscape.root.children.length,3,'Public spaces share three static batches');
+  assert.equal(landscape.features.filter(f=>f.kind==='city-park').length,3);
+  const occupied=model.districtBuildings.buildings.flatMap(b=>b.parts.map(p=>new T.Box3(new T.Vector3(p.x-p.width/2,p.bottom,p.z-p.depth/2),new T.Vector3(p.x+p.width/2,p.top,p.z+p.depth/2))));
+  for(const feature of landscape.features) {
+    assert.ok(occupied.every(bounds=>!bounds.intersectsBox(feature.bounds)),`${feature.id||feature.kind}: no occupied-volume collision`);
+    for(let x=feature.bounds.min.x;x<=feature.bounds.max.x;x+=2) {
+      const water=riverEdges(x);
+      assert.ok(feature.bounds.max.z<=water.north||feature.bounds.min.z>=water.south,`${feature.id||feature.kind}: dry landscape`);
+    }
+  }
+  for(const park of parkPlan)for(const center of districtPlan.roadCenters) {
+    assert.ok(!overlap(park.bounds,[center-5,-170,center+5,170]));
+    assert.ok(!overlap(park.bounds,[-170,center-5,170,center+5]));
+  }
+  let triangles=0;
+  for(const mesh of landscape.root.children) {
+    const p=mesh.geometry.attributes.position;triangles+=p.count/3;
+    assert.equal(p.count,mesh.geometry.attributes.color.count);
+    assert.equal(p.count,mesh.geometry.attributes.cityGlow.count);
+    assert.ok(Array.from(p.array).every(Number.isFinite));
+  }
+  assert.ok(triangles<6500,`${triangles} landscape triangles`);
+  for(const root of [landscape.root,model.waterfront.root,model.districtDetails.root])root.traverse(node=>{
+    if(node.material?.userData.cityGlowMode==='vertex')assert.equal(node.geometry.attributes.position.count,node.geometry.attributes.cityGlow.count,`${node.name}: complete lamp mask`);
+  });
+  const terrain=new T.Raycaster(new T.Vector3(800,10,0),new T.Vector3(0,-1,0));
+  const environment=createCityEnvironment();environment.root.updateMatrixWorld(true);
+  assert.ok(terrain.intersectObject(environment.root.getObjectByName('city-ground')).length,'Terrain extends beyond the built city to remove the tabletop edge');
 });
 
 test('street additions stay batched, supported and clear of live approaches',()=>{
@@ -74,7 +115,7 @@ test('street additions stay batched, supported and clear of live approaches',()=
 });
 
 test('the city has distinct height/depth layers and independent lots with open streets and approaches',()=>{
-  assert.ok(cityLots.length>=30&&cityLots.length<=40);
+  assert.ok(cityLots.length>=60&&cityLots.length<=65);
   assert.equal(cityLots.filter(lot=>lot.height>=55).length,3,'Three secondary towers support the main landmark');
   assert.ok(cityLots.filter(lot=>lot.height>=22&&lot.height<=50).length>=10);
   assert.ok(cityLots.filter(lot=>lot.height>=8&&lot.height<=22).length>=12);
@@ -89,6 +130,42 @@ test('the city has distinct height/depth layers and independent lots with open s
       assert.ok(!overlap(lot.bounds,[-170,center-5,170,center+5]));
     }
   }
+});
+
+test('river, bridges and riverwalk occupy real space without flooding the city or hiding the landmark',()=>{
+  const waterfront=model.waterfront;
+  assert.equal(waterfront.root.children.length,5,'River details share a fixed number of batches');
+  assert.equal(waterfront.features.filter(f=>f.kind==='bridge').length,2);
+  assert.equal(waterfront.features.filter(f=>f.kind==='riverside-tree').length,28);
+  assert.equal(waterfront.features.filter(f=>f.kind==='riverside-park').length,2);
+  for(const lot of cityLots) for(let x=lot.bounds[0];x<=lot.bounds[2];x+=2) {
+    const edges=riverEdges(x);
+    assert.ok(lot.bounds[3]<=edges.north||lot.bounds[1]>=edges.south,`${lot.id}: occupied parcels stay outside the water`);
+  }
+  const occupied=model.districtBuildings.buildings.flatMap(b=>b.parts.map(p=>new T.Box3(new T.Vector3(p.x-p.width/2,p.bottom,p.z-p.depth/2),new T.Vector3(p.x+p.width/2,p.top,p.z+p.depth/2))));
+  for(const f of waterfront.features.filter(f=>['riverside-tree','riverside-bench','riverwalk-lamp','riverside-park'].includes(f.kind))) {
+    assert.ok(occupied.every(bounds=>!bounds.intersectsBox(f.bounds)),`${f.kind}: waterfront fixtures stay outside occupied buildings`);
+    assert.ok(districtPlan.roadCenters.every(x=>f.bounds.max.x<x-5||f.bounds.min.x>x+5),`${f.kind}: avenue crossings stay clear`);
+  }
+  let triangles=0,vertices=0;
+  for(const object of waterfront.root.children) {
+    const p=object.geometry.attributes.position,c=object.geometry.attributes.color;
+    vertices+=p.count;if(object.isMesh)triangles+=p.count/3;
+    assert.equal(p.count,c.count);assert.equal(object.userData.sectionId,undefined);
+    assert.ok(object.material.userData.districtDepth,'River scenery follows the shared atmospheric depth');
+    for(let i=0;i<p.count;i++)assert.ok([p.getX(i),p.getY(i),p.getZ(i)].every(Number.isFinite));
+  }
+  assert.ok(triangles<5000&&vertices<16000,`${triangles} riverfront triangles / ${vertices} vertices`);
+  const water=waterfront.root.getObjectByName('waterfront-water'),quays=waterfront.root.getObjectByName('waterfront-quays');
+  const riverRay=new T.Raycaster(new T.Vector3(0,30,riverCenter(0)),new T.Vector3(0,-1,0));
+  assert.ok(riverRay.intersectObject(water).length,'The river has an upward-facing water surface');
+  for(const x of riverPlan.bridges) {
+    const ray=new T.Raycaster(new T.Vector3(x,30,riverCenter(x)),new T.Vector3(0,-1,0));
+    const hits=ray.intersectObjects([water,quays]);
+    assert.equal(hits[0].object,quays,'Bridge decks cross above the water and connect both banks');
+  }
+  const pose=outdoorCameraPose('tower',1440,900),target=new T.Vector3(-7,68,0);
+  assert.equal(new T.Raycaster(pose.position,target.clone().sub(pose.position).normalize(),0,pose.position.distanceTo(target)).intersectObjects(waterfront.root.children.filter(o=>o.isMesh)).length,0,'The waterfront keeps the main shaft visible');
 });
 
 test('generated architecture and rooftop details fit their shared skyline envelopes',()=>{

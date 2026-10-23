@@ -1,24 +1,34 @@
 import * as T from './vendor/three.module.min.js';
 import { footprint } from './tower-geometry.js';
 import { palette } from './color-theme.js';
-import { cityPalette, citySun } from './city-environment.js';
+import { cityPalette, citySun } from './city-palette.js';
 
 /** Camera-relative atmospheric depth, confined to the decorative city. */
 export function applyDistrictDepth(material, strength = .68) {
   const reference = { value: 400 };
   material.userData.districtDepth = reference;
+  const lighting={haze:{value:new T.Color(cityPalette.haze)},tint:{value:new T.Color('#ffffff')},night:{value:0}};
+  material.userData.cityLighting=lighting;
   material.onBeforeCompile = shader => {
     shader.uniforms.districtReference = reference;
-    shader.uniforms.districtHaze = { value: new T.Color(cityPalette.haze) };
+    shader.uniforms.districtHaze = lighting.haze;
+    shader.uniforms.cityTint=lighting.tint;shader.uniforms.cityNight=lighting.night;
+    const glow=material.userData.cityGlowMode;
+    if(glow==='vertex') {
+      shader.vertexShader=`attribute float cityGlow; varying float vCityGlow;\n${shader.vertexShader}`.replace('#include <begin_vertex>','#include <begin_vertex>\nvCityGlow=cityGlow;');
+      shader.fragmentShader=`varying float vCityGlow;\n${shader.fragmentShader}`;
+    }
     shader.vertexShader = `varying float vDistrictDepth;\n${shader.vertexShader}`.replace(
       '#include <project_vertex>', '#include <project_vertex>\nvDistrictDepth = -mvPosition.z;');
-    shader.fragmentShader = `uniform float districtReference;\nuniform vec3 districtHaze;\nvarying float vDistrictDepth;\n${shader.fragmentShader}`.replace(
+    shader.fragmentShader = `uniform float districtReference,cityNight;\nuniform vec3 districtHaze,cityTint;\nvarying float vDistrictDepth;\n${shader.fragmentShader}`.replace(
       '#include <tonemapping_fragment>',
-      `float districtFade = smoothstep(districtReference - 65.0, districtReference + 125.0, vDistrictDepth) * ${strength.toFixed(3)};
+      `float cityLit=${glow==='vertex'?'vCityGlow':glow==='windows'?'smoothstep(.02,.16,gl_FragColor.r-gl_FragColor.b)':'0.0'};
+       gl_FragColor.rgb=gl_FragColor.rgb*cityTint+vec3(.78,.43,.14)*cityLit*cityNight*.75;
+       float districtFade = smoothstep(districtReference - 65.0, districtReference + 125.0, vDistrictDepth) * ${strength.toFixed(3)};
        gl_FragColor.rgb = mix(gl_FragColor.rgb, districtHaze, districtFade);
        #include <tonemapping_fragment>`);
   };
-  material.customProgramCacheKey = () => `district-depth-v3-${strength}`;
+  material.customProgramCacheKey = () => `district-depth-v4-${strength}-${material.userData.cityGlowMode||'none'}`;
   return material;
 }
 
@@ -72,7 +82,8 @@ export function createDistrictShadows(buildings, features) {
   }
   for (const building of buildings) for (const part of building.parts.filter(part=>part.bottom<=0)) {
     const outline=rectangle(part.x,part.z,part.width,part.depth);
-    cast(outline,part.top,.1);wash(outline,2.2,.18);
+    if(!building.extension) cast(outline,part.top,.1);
+    wash(outline,2.2,.18);
   }
   for (const feature of features.filter(feature => feature.kind === 'tree')) {
     const center = feature.bounds.getCenter(new T.Vector3());

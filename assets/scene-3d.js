@@ -8,13 +8,15 @@ import { palette } from './color-theme.js';
 import { footprint } from './tower-geometry.js';
 import { createCityEnvironment, cityPalette, citySun } from './city-environment.js';
 import { createCityBackdrop } from './city-backdrop.js';
+import { readCityTime,createCityClock } from './city-time.js';
 
 const ease = t => t * t * t * (t * (t * 6 - 15) + 10);
 const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - start), 0, 1));
 const lerp = T.MathUtils.lerp;
 
 /** One persistent scene and camera: tower, exploded assembly, and inhabited cutaway. */
-export function createSpatialScene({ container, onSelectSection, onSelectRoom, onFrame, onContextLost, shadowComparison = false }) {
+export function createSpatialScene({ container, onSelectSection, onSelectRoom, onFrame, onContextLost, shadowComparison = false, clock=()=>new Date() }) {
+  let cityTime=readCityTime(clock());
   const renderer = new T.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'default' });
   renderer.setClearColor(palette.paper);
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
@@ -32,8 +34,8 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   const light = new T.DirectionalLight('#ffffff', 1.4); light.position.copy(citySun).multiplyScalar(220); scene.add(light);
   const fill = new T.DirectionalLight(palette.fill, .6); fill.position.set(-80, 30, -60); scene.add(fill);
   const model = createTowerModel(); scene.add(model.root);
-  const environment=createCityEnvironment();scene.add(environment.root);
-  const backgrounds = [environment.root, model.ground, model.district.root, model.districtBuildings.root, model.districtDetails.root, model.districtShadows.root];
+  const environment=createCityEnvironment(cityTime);scene.add(environment.root);
+  const backgrounds = [environment.root, model.ground, model.district.root, model.districtBuildings.root, model.districtDetails.root, model.districtShadows.root, model.waterfront.root,model.landscape.root];
   const backdrop = createCityBackdrop(renderer, backgrounds, model.modules.map(module => module.group));
   // Diagnostic comparison only: production uses baked face/contact shading.
   if(shadowComparison){
@@ -59,7 +61,11 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     return [module,{points,center:bounds.getCenter(new T.Vector3()),radius:bounds.getBoundingSphere(new T.Sphere()).radius,rooms}];
   }));
   const depthReferences = [];
-  model.root.traverse(node => { if (node.material?.userData.districtDepth) depthReferences.push(node.material.userData.districtDepth); });
+  const timeMaterials=new Set();
+  scene.traverse(node => {
+    if(node.material?.userData.districtDepth)depthReferences.push(node.material.userData.districtDepth);
+    if(node.material?.userData.cityLighting||node.material?.userData.cityNight)timeMaterials.add(node.material);
+  });
   const camera = new T.PerspectiveCamera(34, 1, .1, 1000);
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const controls = new OrbitControls(camera, canvas);
@@ -88,6 +94,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   const projectVector = new T.Vector3();
   const paper = new T.Color(palette.paper);
   const exteriorAmbient=new T.Color('#a5bce0'),exteriorSun=new T.Color(cityPalette.sunlight),exteriorFill=new T.Color('#7895bf');
+  const exteriorDirection=new T.Vector3();
   const white = new T.Color('#ffffff');
   const projection = world => {
     projectVector.copy(world).project(camera);
@@ -182,6 +189,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     model.districtBuildings.setPresentation(0, 0);
     model.districtDetails.setPresentation(0, 0);
     model.districtShadows.setPresentation(0, 0);
+    model.waterfront.setPresentation(0, 0);
     backgrounds.forEach(root => { root.visible = districtVisibility >= .999; });
     model.root.updateMatrixWorld(true);
   }
@@ -244,10 +252,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       for (const reference of depthReferences) reference.value = distance;
       const lighting = amount => {
         ambient.color.set(palette.sky).lerp(exteriorAmbient,amount);
-        ambient.intensity=lerp(2.25,1.65,amount);
+        ambient.intensity=lerp(2.25,cityTime.ambientIntensity,amount);
         light.color.copy(white).lerp(exteriorSun,amount);
-        light.intensity=lerp(1.4,2.7,amount);
+        light.intensity=lerp(1.4,cityTime.keyIntensity,amount);
+        light.position.copy(citySun).lerp(exteriorDirection,amount).multiplyScalar(220);
         fill.color.set(palette.fill).lerp(exteriorFill,amount);
+        fill.intensity=lerp(.6,.3+cityTime.daylight*.3,amount);
       };
       renderer.info.reset();
       if (districtVisibility < .999) {
@@ -258,7 +268,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       canvas.dataset.background = districtVisibility < .999 ? 'blurred' : 'sharp';
       onFrame?.({ mode, selectedId: selected?.id, labels: labels(), expansion, reveal, panel, focusedRoom, activeRoom, hoveredRoom,
         viewport: viewportLayout(width, height), moving: Boolean(animation), transitionType: animation?.kind || null,
-        azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle() });
+        azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), timeOfDay:cityTime.phase,localHour:cityTime.hour });
       dirty = false;
     }
     if (animation || changed) invalidate();
@@ -362,7 +372,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     const found = raycaster.intersectObjects(model.modules.flatMap(module => module.shell.children).filter(item => item.isMesh), false)[0];
     if (!found) return null;
     if (mode === 'tower' && districtVisibility > .5) {
-      const scenery = [...model.districtBuildings.root.children, ...model.districtDetails.root.children].filter(item => item.isMesh);
+      const scenery = [...model.districtBuildings.root.children, ...model.districtDetails.root.children, ...model.waterfront.root.children,...model.landscape.root.children].filter(item => item.isMesh);
       const obstacle = raycaster.intersectObjects(scenery, false)[0];
       if (obstacle && obstacle.distance < found.distance - .01) return null;
     }
@@ -465,7 +475,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     controls.update(); invalidate();
   };
   const observer = new ResizeObserver(resize); observer.observe(container);
-  const visibility = () => { if (!document.hidden) invalidate(); };
+  const visibility = () => { if (!document.hidden) { clockWatch.refresh();invalidate(); } };
   const motionChange = () => {
     controls.enableDamping = !reducedMotion.matches;
     if (reducedMotion.matches && animation) { animation.start = performance.now(); animation.duration = 1; }
@@ -475,10 +485,24 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   reducedMotion.addEventListener('change', motionChange);
   controls.addEventListener('change', invalidate);
   canvas.addEventListener('webglcontextlost', event => { event.preventDefault(); onContextLost?.(); });
+  const clockWatch=createCityClock(state=>{
+    cityTime=state;environment.setTime(state);
+    exteriorAmbient.set(state.ambient);exteriorSun.set(state.keyColor);exteriorFill.set(state.fill);
+    exteriorDirection.fromArray(state.daylight>.1?state.sunDirection:state.moonDirection);
+    for(const material of timeMaterials) {
+      const refs=material.userData.cityLighting;
+      if(refs){refs.tint.value.set(state.tint);refs.haze.value.set(state.haze);refs.night.value=state.night;}
+      if(material.userData.cityNight)material.userData.cityNight.value=state.night;
+    }
+    canvas.dataset.timeOfDay=state.phase;canvas.dataset.localHour=state.hour.toFixed(3);
+    canvas.dataset.daylight=state.daylight.toFixed(4);
+    backdrop.invalidate();invalidate();
+  },{now:clock,hidden:()=>document.hidden});
   resize();
   goTo('tower', null, { instant: true });
   return {
-    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: 0, background: canvas.dataset.background, backdrop: backdrop.metrics(), near:camera.near, far:camera.far, width, height }; },
+    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: 0, background: canvas.dataset.background, backdrop: backdrop.metrics(), timeOfDay:{hour:cityTime.hour,phase:cityTime.phase,daylight:cityTime.daylight,sun:cityTime.sunVisibility,moon:cityTime.moonVisibility,stars:cityTime.stars}, near:camera.near, far:camera.far, width, height }; },
+    refreshTime() { clockWatch.refresh(); },
     refreshLabels() { invalidate(); },
     goTo,
     focusRoom,
@@ -491,7 +515,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     reset() { if (selected) overview(); else if (!animation) goTo(mode, selected?.id, { reset: true }); },
     focus() { canvas.focus({ preventScroll: true }); },
     dispose() {
-      disposed = true; cancelAnimationFrame(frame); observer.disconnect();
+      disposed = true; clockWatch.dispose();cancelAnimationFrame(frame); observer.disconnect();
       document.removeEventListener('visibilitychange', visibility); controls.dispose();
       reducedMotion.removeEventListener('change', motionChange);
       const geometries = new Set(), materials = new Set();

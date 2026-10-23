@@ -4,7 +4,7 @@ import { cityLots, buildingVolumes } from './city-layout.js';
 import { applyDistrictDepth, shadeDistrictGeometry } from './district-style.js';
 import { cityPalette } from './city-environment.js';
 
-/** Thirty-eight solid buildings; architecture shares five rendering layers. */
+/** The extended city shares five rendering layers regardless of lot count. */
 export function createDistrictBuildings() {
   const root=new T.Group(); root.name='district-buildings';
   const surfaces=[],roofs=[],glazing=[],outlines=[],details=[],buildings=[];
@@ -131,6 +131,7 @@ export function createDistrictBuildings() {
     const material=applyDistrictDepth(layer.mesh?new T.MeshBasicMaterial({color:'#ffffff',vertexColors:true,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})
       :new T.LineBasicMaterial({color:layer.color,transparent:true,opacity:layer.opacity,depthWrite:false}),layer.mesh?.35:.54);
     const object=layer.mesh?new T.Mesh(geometry,material):new T.LineSegments(geometry,material);
+    if(layer.name==='building-glazing') material.userData.cityGlowMode='windows';
     object.name=layer.name;layer.material=material;root.add(object);
   }
   return {root,buildings,setPresentation(expansion,reveal) {

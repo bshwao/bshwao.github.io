@@ -1,0 +1,79 @@
+
+> eric-hsu-portfolio@0.1.0 check
+> node scripts/check.mjs && node scripts/theme.mjs --check && node scripts/reading.mjs --check && node --test scripts/model.test.mjs scripts/massing.test.mjs scripts/interiors.test.mjs scripts/layout.test.mjs scripts/routes.test.mjs scripts/site.test.mjs scripts/theme.test.mjs scripts/reading-geometry.test.mjs scripts/skyline.test.mjs scripts/city-time.test.mjs
+
+Syntax and local asset references passed (43 modules).
+Shared color tokens and icon match the authoritative palette.
+Static reading portfolio matches the shared content.
+✔ visitor-local morning and night select the sun, moon, stars and coordinated city lighting (6.4542ms)
+✔ dawn and dusk blend continuously and all celestial directions remain finite and normalized (26.7937ms)
+✔ one minute-aligned clock skips hidden work, catches up on return and releases its timer (1.0518ms)
+✔ complete furnished rooms fit their assigned usable bays and leave the service core clear (246.1498ms)
+✔ every floor has an elevator and a stair contained by the shared service region (154.182ms)
+✔ interior rails remain on the slab around the concave L recess (126.8392ms)
+✔ camera depth precision separates thin architectural layers through the zoom range (3.6693ms)
+✔ phone and large-screen raster budgets stay bounded without changing navigation regions (0.5272ms)
+✔ outdoor cameras fit the district or tower inside the space reserved for controls (33.0672ms)
+✔ section labels stay spaced and accessible when their projected anchors collide or leave the screen (1.4927ms)
+✔ camera regions reserve headers and reading panels across phone orientations (0.571ms)
+✔ room markers avoid collisions and keep the selected room available (0.9708ms)
+✔ markers outside the scene are hidden instead of piling up at its edges (1.6879ms)
+✔ a room target stays available when a long caption cannot fit beside the reading panel (0.5508ms)
+✔ room captions reserve their full width and height against other numbered targets (1.3177ms)
+✔ captions near the bottom edge are hidden without shrinking the 44px target (0.8353ms)
+✔ deliberate nested floor plates have a consistent winding and no crossing perimeter edges (6.0601ms)
+✔ the silhouette is elongated and asymmetric, with a concave attached wing and an offset crown (0.8681ms)
+✔ shared occupied regions, service core, and room anchors fit the entire floor boundary (7.3749ms)
+✔ actual furnished room bounds fit their regions and do not collide with neighboring rooms or service core (1.7396ms)
+✔ real shell faces have area and setbacks remain horizontal rather than sloping connecting bands (65.2208ms)
+✔ outdoor cameras contain every actual shell corner through orbit on desktop and both phone orientations (1511.4781ms)
+✔ compact drawing preserves solid geometry and landmarks while reducing line work (2.1349ms)
+✔ the district reserves a clear tower plaza and non-overlapping parcels outside the streets (0.8744ms)
+✔ the decorative district has finite ground geometry within a small rendering budget (2.6544ms)
+✔ district buildings fit their parcels, keep the tower clear, and share a bounded geometry budget (496.3784ms)
+✔ colored district roofs have no competing box lids or flat planes beneath pitched roofs (4.3667ms)
+✔ blueprint road marks have visible area, face upward, and stay inside the streets (2.0477ms)
+✔ district shading keeps opaque building depth and inexpensive contact washes (32.0272ms)
+✔ district landscaping and engineering references leave building volumes clear and stay inexpensive (94.1755ms)
+✔ cap plans stay within their cut footprints and keep distinct, inexpensive furnishings (160.3888ms)
+✔ all five sections have closed exterior volumes, including their cut surfaces (79.4628ms)
+✔ the full model can be hit from every azimuth rather than a single SVG-facing side (48.363ms)
+✔ each section has furnished, selectable rooms matching every content room (57.8839ms)
+✔ detailed interiors remain within a bounded geometry and rendering budget (0.6309ms)
+✔ all room anchors lie within their section footprint (66.4368ms)
+✔ room highlighting is independent and every camera target has real furniture bounds (0.9229ms)
+✔ room focus quiets the context and restores its materials without cumulative fading (4.3674ms)
+✔ reading SVG uses the actual occupied section cut and matching numbered regions (292.7644ms)
+✔ reading hotspots reach every original room and use the shared map anchors (252.6805ms)
+✔ cap plan segments cannot bridge the empty L recess and furnish every content room (115.6513ms)
+✔ every floor and individual room has a stable shareable round-trip (4.5796ms)
+✔ encoded room links resolve to the same destination (0.3448ms)
+✔ unknown or excess room path segments preserve a valid floor overview (1.2622ms)
+✔ only existing integer room indexes are serialized (0.488ms)
+✔ tower, explore, and unrecognized routes normalize safely (0.6201ms)
+✔ both entry pages share a real, correctly sized social card and canonical URLs (23.7509ms)
+✔ crawl configuration indexes the canonical pages and all room assets resolve locally (11.6781ms)
+✔ night environment is smooth, static, world-oriented and independent of interiors (9.0656ms)
+✔ city blur isolates the sharp subject, caches unchanged views, and releases its bounded targets (4.3495ms)
+✔ finished parks, planted edges and ground detail stay clear of buildings, avenues and water (7.3071ms)
+✔ street additions stay batched, supported and clear of live approaches (0.8112ms)
+✔ the city has distinct height/depth layers and independent lots with open streets and approaches (2.0383ms)
+✔ river, bridges and riverwalk occupy real space without flooding the city or hiding the landmark (18.9123ms)
+✔ generated architecture and rooftop details fit their shared skyline envelopes (46.2623ms)
+✔ bundled tower has a broad podium, long shafts, flat roof and two unequal mounted antennae (9.0832ms)
+✔ opening composition keeps the full main tower prominent at a lower camera on desktop and phones (53.9885ms)
+✔ reading and interactive ink retain text contrast on paper and section fills (3.1542ms)
+✔ both script-free entry documents include the generated palette and shared color system (12.0252ms)
+✔ facade and cut-plan colors survive compact detail without extra geometry or draws (611.0515ms)
+✔ facade materials do not repeat every wing or restart at a section boundary (296.6473ms)
+✔ district shaders fade toward the exterior sky haze while reading surfaces retain paper (0.3789ms)
+✔ every reading plan resolves its palette into valid SVG colors (129.2042ms)
+✔ essential text inks keep contrast under diagnostic grayscale and color-vision transforms (1.2984ms)
+ℹ tests 64
+ℹ suites 0
+ℹ pass 64
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3010.7718

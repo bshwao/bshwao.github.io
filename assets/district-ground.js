@@ -3,6 +3,7 @@ import * as T from './vendor/three.module.min.js';
 import { applyDistrictDepth } from './district-style.js';
 import { districtPlan } from './city-layout.js';
 import { cityPalette } from './city-environment.js';
+import { applyGroundTexture } from './ground-materials.js';
 export { districtPlan } from './city-layout.js';
 
 // One world-space master plan, shared with future district buildings.
@@ -59,11 +60,14 @@ export function createDistrictGround() {
       ? new T.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false })
       : new T.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false });
     applyDistrictDepth(material, surface ? .48 : .72);
+    if(surface&&name==='streets')applyGroundTexture(material,'asphalt');
+    else if(surface&&['sidewalks','central-plaza','parcels','urban-base'].includes(name))applyGroundTexture(material,'stone');
     const item = { name, positions: [], material, opacity, surface, order };
     layers.set(name, item); return item;
   }
   const minor = layer('draft-grid-minor', palette.grid, { opacity: .38, order: -12 });
   const major = layer('draft-grid-major', palette.line, { opacity: .5, order: -11 });
+  const urban = layer('urban-base', '#a3a497', {surface:true,order:-13});
   const streets = layer('streets', cityPalette.road, { surface: true, order: -10 });
   const walks = layer('sidewalks', cityPalette.pavement, { surface: true, order: -9 });
   const plaza = layer('central-plaza', '#b1a797', { surface: true, order: -8 });
@@ -106,6 +110,7 @@ export function createDistrictGround() {
   // retained as an empty optional layer rather than uploading invisible lines.
 
   const roadHalf = districtPlan.roadWidth / 2;
+  rect(urban,-108,-108,108,140,-.78);
   for (const center of districtPlan.roadCenters) {
     const lo = center - roadHalf, hi = center + roadHalf;
     // Split at intersections, avoiding stacked transparent surfaces.

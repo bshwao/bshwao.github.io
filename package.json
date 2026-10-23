@@ -6,7 +6,7 @@
   "description": "Eric Hsu's architectural portfolio, built for GitHub Pages.",
   "scripts": {
     "dev": "node scripts/serve.mjs",
-    "check": "node scripts/check.mjs && node scripts/theme.mjs --check && node scripts/reading.mjs --check && node --test scripts/model.test.mjs scripts/massing.test.mjs scripts/interiors.test.mjs scripts/layout.test.mjs scripts/routes.test.mjs scripts/site.test.mjs scripts/theme.test.mjs scripts/reading-geometry.test.mjs scripts/skyline.test.mjs",
+    "check": "node scripts/check.mjs && node scripts/theme.mjs --check && node scripts/reading.mjs --check && node --test scripts/model.test.mjs scripts/massing.test.mjs scripts/interiors.test.mjs scripts/layout.test.mjs scripts/routes.test.mjs scripts/site.test.mjs scripts/theme.test.mjs scripts/reading-geometry.test.mjs scripts/skyline.test.mjs scripts/city-time.test.mjs",
     "theme": "node scripts/theme.mjs",
     "reading": "node scripts/reading.mjs",
     "test": "node --experimental-vm-modules scripts/spatial.test.mjs && node --experimental-vm-modules scripts/spatial.test.mjs --mobile && node --experimental-vm-modules scripts/spatial.test.mjs --reduced && node --experimental-vm-modules scripts/spatial.test.mjs --deep-link && node --experimental-vm-modules scripts/spatial.test.mjs --no-webgl"

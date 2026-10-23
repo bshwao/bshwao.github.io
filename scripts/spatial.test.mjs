@@ -32,6 +32,11 @@ Object.defineProperty(w.navigator, 'clipboard', { value: {
   },
 } });
 let time = 1000, counter = 0;
+let localDate=new Date(2026,9,23,10,0,0);
+class LocalDate extends Date {
+  constructor(...args){super(...(args.length?args:[localDate.getTime()]));}
+  static now(){return localDate.getTime();}
+}
 const frames = new Map();
 const resizeObservers = new Set(), motionListeners = new Set();
 let motionReduced = reduced;
@@ -72,7 +77,7 @@ w.matchMedia = media;
 const context = vm.createContext({
   document: w.document, window: w, navigator: w.navigator, location: w.location, history: w.history,
   devicePixelRatio: 1, innerWidth: viewportWidth, innerHeight: viewportHeight,
-  console, setTimeout, clearTimeout, URL, performance: { now: () => time },
+  console, setTimeout, clearTimeout, URL, Date:LocalDate, performance: { now: () => time },
   requestAnimationFrame: raf, cancelAnimationFrame: id => frames.delete(id), matchMedia: media,
   ResizeObserver: class { constructor(callback) { this.callback = callback; resizeObservers.add(this); } observe() { this.callback(); } disconnect() { resizeObservers.delete(this); } },
   addEventListener: w.addEventListener.bind(w), removeEventListener: w.removeEventListener.bind(w),
@@ -201,6 +206,7 @@ assert.equal(main.dataset.mode, 'tower');
 assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'The opening view includes the surrounding district buildings');
 assert.equal(lastScene.getObjectByName('district-character').visible, true, 'The opening view includes the landscaped district');
 assert.equal(lastScene.getObjectByName('district-contact-shadows').visible, true, 'The opening city includes its contact shading');
+assert.equal(lastScene.getObjectByName('city-waterfront').visible,true,'The opening city includes the river and bridges');
 assert.equal(w.document.querySelector('canvas').dataset.detail, mobile ? 'compact' : 'full');
 const cityDepthReferences = [];
 lastScene.traverse(node => { if (node.material?.userData.districtDepth) cityDepthReferences.push(node.material.userData.districtDepth); });
@@ -250,6 +256,7 @@ assert.equal(main.dataset.transition, reduced ? 'idle' : 'moving');
 assert.equal(lastScene.getObjectByName('district-buildings').visible,false,'Tall city buildings clear before unfolded sections can cross them');
 assert.equal(lastScene.getObjectByName('city-environment').visible,false,'Sunset renders behind the sharp model in a separate blurred pass');
 assert.equal(w.document.querySelector('canvas').dataset.background,'blurred','Opening the tower keeps a blurred city backdrop');
+assert.equal(lastScene.getObjectByName('city-waterfront').visible,false,'River scenery joins the blurred pass instead of covering unfolded floors');
 const middle = lastCamera.position.clone();
 await tick(900);
 assert.equal(main.dataset.mode, 'explore');
@@ -416,6 +423,20 @@ click('#floor-overview'); await tick(800);
 await settleCamera();
 const idleRenders = renders; await tick(500);
 assert.equal(renders, idleRenders, 'An idle scene stops rendering');
+assert.equal(canvas.dataset.timeOfDay,'morning');
+const clockRoute=w.location.hash,clockCamera=lastCamera.position.clone();
+localDate=new Date(2026,9,23,22,0,0);
+w.document.dispatchEvent(new w.Event('visibilitychange'));await settleCamera();
+assert.equal(canvas.dataset.timeOfDay,'night','The local clock catches up without reloading or navigating');
+assert.equal(canvas.dataset.daylight,'0.0000');
+assert.equal(w.location.hash,clockRoute);assert.ok(lastCamera.position.distanceTo(clockCamera)<1e-8);
+const clockSky=lastScene.getObjectByName('local-time-sky').material.uniforms;
+assert.equal(clockSky.starVisibility.value,1);assert.equal(clockSky.sunVisibility.value,0);assert.equal(clockSky.moonVisibility.value,1);
+assert.match(w.document.querySelector('.material-key small').textContent,/NIGHT/);
+localDate=new Date(2026,9,23,10,0,0);
+w.document.dispatchEvent(new w.Event('visibilitychange'));await settleCamera();
+assert.equal(canvas.dataset.timeOfDay,'morning');
+assert.equal(clockSky.starVisibility.value,0);assert.equal(clockSky.sunVisibility.value,1);
 click('#station-navigation [data-station="1"]'); await tick(100);
 pageHidden = true; w.document.dispatchEvent(new w.Event('visibilitychange'));
 const hiddenRenders = renders; await tick(2000);
@@ -483,6 +504,7 @@ assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'Can
 assert.equal(lastScene.getObjectByName('district-character').visible, true, 'Cancelled flights restore landscaping and workshop details');
 assert.equal(lastScene.getObjectByName('district-contact-shadows').visible, true, 'Cancelled flights restore the ground washes');
 assert.equal(canvas.dataset.background, 'sharp', 'Returning to the tower restores sharp scenery');
+assert.equal(lastScene.getObjectByName('city-waterfront').visible,true,'Returning to the city restores the river and bridges');
 assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Interrupted entry and collapse cannot leave cap plans floating over the assembled tower');
 const before = Number(main.dataset.azimuth);
 canvas.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true })); await tick(16);
@@ -577,4 +599,3 @@ assert.equal(canvas.isConnected, false);
 assert.equal(motionListeners.size, 0, 'Media preference listeners are cleaned up');
 console.log(`DOM/camera integration passed (${mobile ? 'mobile' : reduced ? 'reduced motion' : deepLink ? 'fresh room link' : 'desktop'}): room URLs, titles, clipboard/manual sharing, section reading mode, retained 3D navigation, room flights, highlighting, left-drag/touch, resize, framing, gestures, history, cancellation, keyboard, idle rendering, motion preferences, and text fallback (${renders} frames).`);
 dom.window.close();
-

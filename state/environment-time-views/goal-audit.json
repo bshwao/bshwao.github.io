@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-23",
+  "scope": "Finish the environment and ground texture; make the city follow the visitor's actual local time, with daytime sun and nighttime moon/stars. Retain the river and expanded environment requested in this chat.",
+  "requirements": [
+    {
+      "requirement": "River and more environment around the main building",
+      "status": "pass",
+      "implementation": "61 buildings on 52 parcels, curved river, two avenue bridges with ramps, quays, riverwalk paths, trees, benches, lamps and two boats.",
+      "evidence": ["actual-time-river-overview.jpg", "night-river-overview.jpg", "../riverfront-views/webgl.json"]
+    },
+    {
+      "requirement": "Finish the environment and ground texture",
+      "status": "pass",
+      "implementation": "Paved inner-block base, continuous terrain, filtered world-space paving/asphalt/grass/water detail, three additional parks and 48 additional trees in three shared batches.",
+      "evidence": ["actual-time-river-overview.jpg", "source-check.txt", "webgl.json"]
+    },
+    {
+      "requirement": "Use the actual local time of day",
+      "status": "pass",
+      "implementation": "Production reads the visitor-local Date and uses one minute-aligned timer. Hidden tabs skip updates and catch up on return; disposal releases the timer. Sky, celestial discs, stars, exterior light, haze, window glow, lamps and river tint share the same state. The current route, camera and room remain unchanged during refresh.",
+      "evidence": ["actual-local-clock.json", "clock-switch.json", "source-check.txt", "integration-check.txt", "webgl.json"]
+    },
+    {
+      "requirement": "10am morning sun; nighttime moon and stars",
+      "status": "pass",
+      "implementation": "Verified 10am and 10pm plus continuously blended dawn/evening. High-precision smooth sky, fixed sparse star directions and analytic sun/moon discs.",
+      "evidence": ["morning-review.jpg", "night-opening.jpg", "night-phone-opening.jpg", "webgl.json"]
+    },
+    {
+      "requirement": "Preserve light city blur and readable interiors",
+      "status": "pass",
+      "implementation": "The full-resolution two-target city cache refreshes when time changes; sharp floors retain independent light. Existing phone layout, cutaway framing, navigation and fallback remain functional.",
+      "evidence": ["morning-interior.jpg", "night-interior.jpg", "night-phone-projects.jpg", "night-landscape-projects.jpg", "evening-room.jpg", "integration-check.txt"]
+    }
+  ],
+  "verification": {
+    "sourceTests": {"passed": 64, "failed": 0, "modulesChecked": 43},
+    "integrationModes": ["desktop", "portrait", "reduced motion", "fresh room link", "initial WebGL failure"],
+    "realWebGL": {
+      "viewsPerRun": 12,
+      "viewports": ["1280x720, morning", "390x844 requested DPR 3, night", "844x390 requested DPR 3, morning", "3840x2160 requested DPR 2, night"],
+      "peakDrawCalls": [80, 82, 78, 80],
+      "openingDesktopDrawCalls": 63,
+      "openingCompactDrawCalls": 61,
+      "openingTriangles": 72527,
+      "idleFramesOver250ms": 0,
+      "clockChangesReuseGeometryTexturesAndPrograms": true,
+      "navigationAndResizeMemoryStabilizes": true,
+      "disposalReleasesGeometryAndTextures": true
+    },
+    "productionWarningsAndErrors": [],
+    "activeUseFrameRate": "Not measured: the inactive Codex preview throttled requestAnimationFrame to approximately 1Hz, including after visibility was requested. The saved background timing report is explicitly invalid as an active-use FPS benchmark. Diagnostic MutationObserver errors were absent from the production page."
+  },
+  "limits": [
+    "Time uses an illustrative daily cycle: dawn 5:30-7am, dusk 5-7pm. No location lookup, seasonal sunrise calculation, weather or lunar-phase simulation.",
+    "Surface detail, water and foliage are static. Directional/contact shading is baked.",
+    "Browser viewports simulate screen sizes; these are not physical-phone measurements."
+  ],
+  "remainingRequiredWork": [],
+  "publishingPerformed": false
+}

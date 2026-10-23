@@ -3,7 +3,10 @@
 fetch('../index.html').then(response => response.text()).then(html => {
   const delayMs = Math.max(0, Math.min(50, Number(new URLSearchParams(location.search).get('delay')) || 0));
   const noWebGL = new URLSearchParams(location.search).get('webgl') === 'off';
-  const probe = `${noWebGL ? `const originalContext = HTMLCanvasElement.prototype.getContext;
+  const hour = new URLSearchParams(location.search).get('hour');
+  const fixedHour=hour!==null&&Number.isFinite(Number(hour))&&Number(hour)>=0&&Number(hour)<24?Number(hour):null;
+  const probe = `${fixedHour!==null?`const RealDate=Date;window.Date=class extends RealDate {constructor(...args){super(...args);if(!args.length)this.setHours(${fixedHour},0,0,0);}};`:''}
+  ${noWebGL ? `const originalContext = HTMLCanvasElement.prototype.getContext;
   HTMLCanvasElement.prototype.getContext = function(type, ...args) {
     return /^(webgl2?|experimental-webgl)$/.test(type) ? null : originalContext.call(this, type, ...args);
   };` : ''}
