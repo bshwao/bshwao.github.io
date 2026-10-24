@@ -85,14 +85,18 @@ export function applyTowerGlazing(material,sectionLow) {
       diffuseColor.rgb=mix(diffuseColor.rgb,diffuse*nightFacadeColor,towerNight);
       float across=abs(n.x)>.5?towerPoint.z:towerPoint.x;
       vec2 cell=vec2(across/1.4,towerPoint.y/1.7);
-      vec2 f=fract(cell);
-      float pane=step(.12,f.x)*step(f.x,.88)*step(.12,f.y)*step(f.y,.84)*(1.0-step(.4,abs(n.y)));
+      vec2 f=fract(cell),pixel=max(fwidth(cell),vec2(.0001));
+      vec2 aa=pixel*.65;
+      float paneX=smoothstep(.12-aa.x,.12+aa.x,f.x)*(1.0-smoothstep(.88-aa.x,.88+aa.x,f.x));
+      float paneY=smoothstep(.12-aa.y,.12+aa.y,f.y)*(1.0-smoothstep(.84-aa.y,.84+aa.y,f.y));
+      float resolved=1.0-smoothstep(.28,.9,max(pixel.x,pixel.y));
+      float pane=mix(.5472,paneX*paneY,resolved)*(1.0-step(.4,abs(n.y)));
       float group=fract(sin(dot(floor(cell/vec2(4.0,3.0)),vec2(13.7,67.1)))*43758.5453);
-      float lit=step(.84,group);
+      float lit=mix(.16,step(.84,group),resolved);
       diffuseColor.rgb*=mix(.52,1.12,pane);
       diffuseColor.rgb+=vec3(.12,.055,.012)*lit*pane;
     `).replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance+=vec3(.85,.45,.13)*lit*pane*towerNight*.75;');
   };
-  material.customProgramCacheKey=()=>`tower-glazing-v3`;
+  material.customProgramCacheKey=()=>`tower-glazing-v4-filtered`;
   return material;
 }

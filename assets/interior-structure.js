@@ -1,6 +1,7 @@
 import * as T from './vendor/three.module.min.js';
 import { insetFootprint } from './tower-geometry.js';
 import { palette, sectionColors } from './color-theme.js';
+import { buildBoxSurfaces, mergeSurfaceLines } from './surface-geometry.js';
 
 /** Shared plan coordinates for the physical floor, cap drawing and reading SVG. */
 export function planInteriorStructure(layout, unit) {
@@ -64,12 +65,12 @@ export function createInteriorStructure(section, content, layout, unit) {
   const group = new T.Group(); group.name = 'interior-floor-architecture';
   const colors = { structure: palette.structure, accent: sectionColors[section.id].accent, glass: palette.glass };
   const materials = Object.fromEntries(Object.entries(colors).map(([name, color]) =>
-    [name, new T.MeshLambertMaterial({ color })]));
-  const line = new T.LineBasicMaterial({ color: palette.muted, transparent: true, opacity: .68 });
+    [name, new T.MeshLambertMaterial({ color, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })]));
+  const line = new T.LineBasicMaterial({ color: palette.muted, transparent: true, opacity: .58, depthWrite: false });
   const parts = new Map(Object.keys(colors).map(name => [name, []]));
-  const lineParts = [], plainLines = [], rooms = [], features = [];
+  const lineParts = [], plainLines = [], rooms = [], features = [], solidBoxes = [];
   const plan = planInteriorStructure(layout, unit), { circulation } = plan;
-  const cube = new T.BoxGeometry(1, 1, 1), cubeEdges = new T.EdgesGeometry(cube);
+  const cube = new T.BoxGeometry(1, 1, 1);
   const round = new T.CylinderGeometry(1, 1, 1, 12), leaf = new T.SphereGeometry(1, 6, 4);
   const matrix = new T.Matrix4(), position = new T.Vector3(), scale = new T.Vector3(), rotation = new T.Quaternion();
   const yAxis = new T.Vector3(0, 1, 0);
@@ -79,8 +80,8 @@ export function createInteriorStructure(section, content, layout, unit) {
   function primitive(source, x, y, z, w, h, d, surface = 'structure', turn = 0, outline = true) {
     position.set(x, y, z); scale.set(w, h, d); rotation.setFromAxisAngle(yAxis, turn);
     matrix.compose(position, rotation, scale);
-    parts.get(surface).push((source.index ? source.toNonIndexed() : source.clone()).applyMatrix4(matrix));
-    if (outline && source === cube) lineParts.push(cubeEdges.clone().applyMatrix4(matrix));
+    if (source === cube) solidBoxes.push({ matrix: matrix.clone(), surface, outline });
+    else parts.get(surface).push((source.index ? source.toNonIndexed() : source.clone()).applyMatrix4(matrix));
     primitiveCount++;
   }
   const box = (x, y, z, w, h, d, surface = 'structure', turn = 0, outline = true) => {
@@ -98,13 +99,13 @@ export function createInteriorStructure(section, content, layout, unit) {
     const pitch = section.id === 'about' || section.id === 'resume' ? .8 * unit : 1.65 * unit;
     const wood = section.id === 'about' || section.id === 'resume';
     for (let offset = pitch; offset < w - .12; offset += pitch)
-      stroke([x - w / 2 + offset, floorY + .001, z - d / 2], [x - w / 2 + offset, floorY + .001, z + d / 2]);
+      stroke([x - w / 2 + offset, floorY + .006, z - d / 2], [x - w / 2 + offset, floorY + .006, z + d / 2]);
     if (!wood) for (let offset = pitch; offset < d - .12; offset += pitch)
-      stroke([x - w / 2, floorY + .001, z - d / 2 + offset], [x + w / 2, floorY + .001, z - d / 2 + offset]);
+      stroke([x - w / 2, floorY + .006, z - d / 2 + offset], [x + w / 2, floorY + .006, z - d / 2 + offset]);
     if (wood) for (let offset = pitch * 1.7, row = 0; offset < d; offset += pitch * 1.7, row++) {
       const start = x - w / 2 + (row % 2 ? pitch : 0);
       for (let dx = 0; dx < w - pitch; dx += pitch * 2)
-        stroke([start + dx, floorY + .002, z - d / 2 + offset], [Math.min(start + dx + pitch, x + w / 2), floorY + .002, z - d / 2 + offset]);
+        stroke([start + dx, floorY + .006, z - d / 2 + offset], [Math.min(start + dx + pitch, x + w / 2), floorY + .006, z - d / 2 + offset]);
     }
     // A small inset at the entrance gives every room a recognizable section finish.
     const stripeZ = z + (index === layout.regions.length - 1 ? -1 : 1) * (d / 2 - .24 * unit);
@@ -139,14 +140,14 @@ export function createInteriorStructure(section, content, layout, unit) {
     wall(room, region.x, rear, region.width + .12, wallThickness * 1.45, .09 * unit, 'window-transom', 'accent', floorY + (isWing ? .55 : 2.24) * unit);
 
     // Side partitions step down toward the cut face so furniture remains legible.
-    const rearDepth = region.depth * .5, lowDepth = region.depth - rearDepth;
+    const rearDepth = region.depth / 2 + .16, lowDepth = rearDepth;
     for (const x of [minX - .16, maxX + .16]) {
-      const tallCenter = rear + entrySide * (rearDepth / 2 + .05);
-      const lowCenter = region.z + entrySide * (lowDepth / 2 + .03);
-      wall(room, x, tallCenter, wallThickness, rearDepth + .1, 2.8 * unit, 'partition');
-      wall(room, x, lowCenter, wallThickness, lowDepth + .12, .75 * unit, 'cutaway-partition');
-      wall(room, x, tallCenter, wallThickness * 1.45, rearDepth + .1, .08 * unit, 'partition-cap', 'accent', floorY + 2.8 * unit);
-      wall(room, x, lowCenter, wallThickness * 1.45, lowDepth + .12, .08 * unit, 'cutaway-cap', 'accent', floorY + .75 * unit);
+      const tallCenter = rear + entrySide * rearDepth / 2;
+      const lowCenter = region.z + entrySide * lowDepth / 2;
+      wall(room, x, tallCenter, wallThickness, rearDepth, 2.8 * unit, 'partition');
+      wall(room, x, lowCenter, wallThickness, lowDepth, .75 * unit, 'cutaway-partition');
+      wall(room, x, tallCenter, wallThickness * 1.45, rearDepth, .08 * unit, 'partition-cap', 'accent', floorY + 2.8 * unit);
+      wall(room, x, lowCenter, wallThickness * 1.45, lowDepth, .08 * unit, 'cutaway-cap', 'accent', floorY + .75 * unit);
     }
     const doorLeft = opening.x - opening.width / 2, doorRight = opening.x + opening.width / 2;
     const leftWidth = doorLeft - minX, rightWidth = maxX - doorRight;
@@ -167,14 +168,14 @@ export function createInteriorStructure(section, content, layout, unit) {
   // A continuous finish over the actual L-shaped circulation space connects
   // all four room entrances to the aligned elevator and stair, rather than
   // leaving the core stranded in a featureless expanse of slab.
-  for (const hall of circulation.floor) box((hall.minX + hall.maxX) / 2, .017, (hall.minZ + hall.maxZ) / 2,
+  for (const hall of circulation.floor) box((hall.minX + hall.maxX) / 2, floorY - .018, (hall.minZ + hall.maxZ) / 2,
     hall.maxX - hall.minX, .036, hall.maxZ - hall.minZ, 'glass', 0, false);
   const { paths } = circulation;
   // Fine paired guide strips make the shared passage visible without adding
   // obstacles, false raised tracks or a line running through the service core.
   for (const route of paths) for (let i = 1; i < route.points.length; i++) {
     const a = route.points[i - 1], b = route.points[i];
-    stroke([a[0], .039, a[1]], [b[0], .039, b[1]]);
+    stroke([a[0], floorY + .006, a[1]], [b[0], floorY + .006, b[1]]);
   }
   features.push('Connected circulation around the shared service core');
 
@@ -186,17 +187,21 @@ export function createInteriorStructure(section, content, layout, unit) {
     const a = all[(i + all.length - 1) % all.length], b = all[(i + 1) % all.length];
     return Math.abs((point[0] - a[0]) * (b[1] - point[1]) - (point[1] - a[1]) * (b[0] - point[0])) > 1e-6;
   });
-  const columns = [];
+  const columns = [], proposedColumns = [];
+  const edgeHeights = corners.map((a, edge) => {
+    const b = corners[(edge + 1) % corners.length];
+    const tall = (a[1] + b[1]) / 2 < mainEdge || Math.abs((a[0] + b[0]) / 2 - layout.bounds.minX) < .5;
+    return tall ? height : 1.05 * unit;
+  });
   for (let edge = 0; edge < corners.length; edge++) {
     const a = corners[edge], b = corners[(edge + 1) % corners.length];
     const dx = b[0] - a[0], dz = b[1] - a[1], length = Math.hypot(dx, dz);
     const count = Math.max(1, Math.ceil(length / (5.5 * unit)));
-    const tall = (a[1] + b[1]) / 2 < mainEdge || Math.abs((a[0] + b[0]) / 2 - layout.bounds.minX) < .5;
-    const columnHeight = tall ? height : 1.05 * unit;
+    const columnHeight = edgeHeights[edge];
     for (let i = 0; i < count; i++) {
       const x = a[0] + dx * i / count, z = a[1] + dz * i / count;
-      box(x, floorY + columnHeight / 2, z, .22 * unit, columnHeight, .22 * unit, 'structure');
-      columns.push({ x, z, width: .22 * unit, height: columnHeight });
+      const supportHeight = i === 0 ? Math.max(columnHeight, edgeHeights[(edge + corners.length - 1) % corners.length]) : columnHeight;
+      proposedColumns.push({ x, z, width: .22 * unit, height: supportHeight });
     }
     const turn = -Math.atan2(dz, dx);
     box((a[0] + b[0]) / 2, floorY + columnHeight - .10 * unit, (a[1] + b[1]) / 2,
@@ -204,6 +209,15 @@ export function createInteriorStructure(section, content, layout, unit) {
     box((a[0] + b[0]) / 2, floorY + .16 * unit, (a[1] + b[1]) / 2,
       length, .32 * unit, .12 * unit, 'structure', turn);
   }
+  // A short chamfer used to get two intersecting posts. One centered corner
+  // support joins its two rails cleanly, on every stepped floor profile.
+  for (const post of proposedColumns) {
+    const near = columns.find(other => Math.abs(other.x - post.x) < (other.width + post.width) / 2
+      && Math.abs(other.z - post.z) < (other.width + post.width) / 2);
+    if (near) { near.x = (near.x + post.x) / 2; near.z = (near.z + post.z) / 2; near.height = Math.max(near.height, post.height); }
+    else columns.push({ ...post });
+  }
+  for (const post of columns) box(post.x, floorY + post.height / 2, post.z, post.width, post.height, post.width);
   features.push('Supported perimeter columns, low parapets and spandrels');
 
   // Waiting benches and planting occupy end pockets of the corridor, outside
@@ -253,6 +267,9 @@ export function createInteriorStructure(section, content, layout, unit) {
     for (const item of geometries) item.dispose();
     return geometry;
   }
+  const skin = buildBoxSurfaces(solidBoxes);
+  for (const [surface, geometry] of skin.surfaces) parts.get(surface).push(geometry);
+  lineParts.push(skin.outline);
   const surfaces = [];
   for (const [name, geometries] of parts) {
     if (!geometries.length) { materials[name].dispose(); continue; }
@@ -264,8 +281,10 @@ export function createInteriorStructure(section, content, layout, unit) {
     const geometry = new T.BufferGeometry(); geometry.setAttribute('position', new T.Float32BufferAttribute(plainLines, 3));
     lineParts.push(geometry);
   }
-  const outlines = new T.LineSegments(merge(lineParts, ['position']), line); outlines.name = 'floor-architecture-outline'; group.add(outlines);
-  for (const source of [cube, cubeEdges, round, leaf]) source.dispose();
+  const mergedLines = merge(lineParts, ['position']);
+  const outlines = new T.LineSegments(mergeSurfaceLines(mergedLines.attributes.position.array), line);
+  mergedLines.dispose(); outlines.name = 'floor-architecture-outline'; group.add(outlines);
+  for (const source of [cube, round, leaf]) source.dispose();
   group.userData.features = [...features];
   group.updateMatrixWorld(true);
   return { group, surfaces, line, features, rooms, circulation, columns, amenities,

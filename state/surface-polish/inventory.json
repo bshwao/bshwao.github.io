@@ -1,0 +1,47 @@
+[
+  {
+    "floor": "about",
+    "rooms": 4,
+    "cornerAndPerimeterPosts": 24,
+    "architecturalDraws": 4,
+    "architecturalTriangles": 6728,
+    "outlineSegments": 3650,
+    "interactiveObjects": 79
+  },
+  {
+    "floor": "projects",
+    "rooms": 3,
+    "cornerAndPerimeterPosts": 16,
+    "architecturalDraws": 4,
+    "architecturalTriangles": 5944,
+    "outlineSegments": 2465,
+    "interactiveObjects": 56
+  },
+  {
+    "floor": "experience",
+    "rooms": 4,
+    "cornerAndPerimeterPosts": 22,
+    "architecturalDraws": 4,
+    "architecturalTriangles": 7034,
+    "outlineSegments": 3360,
+    "interactiveObjects": 68
+  },
+  {
+    "floor": "resume",
+    "rooms": 4,
+    "cornerAndPerimeterPosts": 22,
+    "architecturalDraws": 4,
+    "architecturalTriangles": 7034,
+    "outlineSegments": 3519,
+    "interactiveObjects": 82
+  },
+  {
+    "floor": "contact",
+    "rooms": 4,
+    "cornerAndPerimeterPosts": 27,
+    "architecturalDraws": 4,
+    "architecturalTriangles": 8668,
+    "outlineSegments": 3467,
+    "interactiveObjects": 78
+  }
+]

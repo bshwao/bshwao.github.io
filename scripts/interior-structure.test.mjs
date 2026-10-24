@@ -7,6 +7,76 @@ import { floorContent } from '../assets/floor-content.js';
 import { createInterior } from '../assets/interiors.js';
 import { createInteriorStructure } from '../assets/interior-structure.js';
 import { createFloorPlan, planLayouts } from '../assets/floor-plans.js';
+import { buildBoxSurfaces } from '../assets/surface-geometry.js';
+
+// Independently intersect actual rendered triangles in their common 2D plane.
+// Shared edges are fine; a positive-area intersection is a competing surface.
+function overlapArea(subject, clip) {
+  const cross = (a, b, p) => (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]);
+  const signed = points => points.reduce((sum, point, i) => {
+    const next = points[(i + 1) % points.length]; return sum + point[0] * next[1] - next[0] * point[1];
+  }, 0) / 2;
+  const side = Math.sign(signed(clip));
+  let polygon = subject;
+  for (let edge = 0; edge < clip.length && polygon.length; edge++) {
+    const a = clip[edge], b = clip[(edge + 1) % clip.length], next = [];
+    for (let i = 0; i < polygon.length; i++) {
+      const p = polygon[i], q = polygon[(i + 1) % polygon.length];
+      const dp = side * cross(a, b, p), dq = side * cross(a, b, q);
+      if (dp >= -1e-8) next.push(p);
+      if ((dp < -1e-8 && dq > 1e-8) || (dp > 1e-8 && dq < -1e-8)) {
+        const t = dp / (dp - dq); next.push([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]);
+      }
+    }
+    polygon = next;
+  }
+  return polygon.length >= 3 ? Math.abs(signed(polygon)) : 0;
+}
+
+function assertCleanSurfaces(meshes, label, include = () => true) {
+  const planes = new Map();
+  for (const mesh of meshes) {
+    const { position, normal } = mesh.geometry.attributes;
+    for (let i = 0; i < position.count; i += 3) {
+      if (!include(mesh, i)) continue;
+      const points = [0, 1, 2].map(offset => new T.Vector3().fromBufferAttribute(position, i + offset));
+      const face = new T.Vector3().fromBufferAttribute(normal, i);
+      if ([1, 2].some(offset => face.dot(new T.Vector3().fromBufferAttribute(normal, i + offset)) < .999999)) continue;
+      if (face.toArray().find(value => Math.abs(value) > 1e-5) < 0) face.negate();
+      const signature = [...face.toArray(), face.dot(points[0])].map(value => Math.round(value * 1e4)).join(',');
+      const drop = face.toArray().map(Math.abs).indexOf(Math.max(...face.toArray().map(Math.abs)));
+      const flat = points.map(point => point.toArray().filter((_, axis) => axis !== drop));
+      if (!planes.has(signature)) planes.set(signature, []);
+      planes.get(signature).push(flat);
+    }
+  }
+  let pairs = 0;
+  for (const triangles of planes.values()) for (let a = 0; a < triangles.length; a++) for (let b = a + 1; b < triangles.length; b++) {
+    const first = triangles[a], second = triangles[b];
+    if ([0, 1].some(axis => Math.min(...first.map(point => point[axis])) >= Math.max(...second.map(point => point[axis])) - 1e-5
+      || Math.min(...second.map(point => point[axis])) >= Math.max(...first.map(point => point[axis])) - 1e-5)) continue;
+    pairs++;
+    assert.ok(overlapArea(first, second) < 1e-5, `${label}: rendered coplanar faces must not overlap (${JSON.stringify(first)} / ${JSON.stringify(second)})`);
+  }
+  assert.ok(pairs > 0, `${label}: substantive surface comparison`);
+}
+
+function assertCleanStrokes(position, label) {
+  const groups = new Map();
+  for (let i = 0; i < position.count; i += 2) {
+    const a = new T.Vector3().fromBufferAttribute(position, i), b = new T.Vector3().fromBufferAttribute(position, i + 1);
+    const direction = b.clone().sub(a).normalize();
+    if (direction.toArray().find(value => Math.abs(value) > 1e-5) < 0) direction.negate();
+    const moment = a.clone().cross(direction);
+    const signature = [...direction.toArray(), ...moment.toArray()].map(value => Math.round(value * 1e4)).join(',');
+    if (!groups.has(signature)) groups.set(signature, []);
+    groups.get(signature).push([Math.min(a.dot(direction), b.dot(direction)), Math.max(a.dot(direction), b.dot(direction))]);
+  }
+  for (const lines of groups.values()) for (let i = 0; i < lines.length; i++) for (const b of lines.slice(i + 1)) {
+    const a = lines[i];
+    assert.ok(Math.min(a[1], b[1]) - Math.max(a[0], b[0]) <= 2e-5, `${label}: no repeated or partially overlapping outline/floor strokes`);
+  }
+}
 
 const inside = (x, z, polygon) => {
   let result = false;
@@ -27,6 +97,55 @@ const fixtures = sections.map(section => {
   const meshes = [];
   structure.group.traverse(node => { if (node.isMesh) meshes.push(node); });
   return { section, content, layout, unit, structure, meshes };
+});
+
+test('solid wall joins have the analytic exposed area for duplicate, touching and intersecting panels', () => {
+  const box = (x, surface) => ({ matrix: new T.Matrix4().makeTranslation(x, 0, 0).scale(new T.Vector3(2, 2, 2)), surface });
+  for (const [offset, expected] of [[0, 24], [1, 32], [2, 40]]) {
+    const skin = buildBoxSurfaces([box(0, 'structure'), box(offset, 'accent')]);
+    let area = 0;
+    for (const geometry of skin.surfaces.values()) {
+      const positions = geometry.attributes.position;
+      for (let i = 0; i < positions.count; i += 3) {
+        const [a, b, c] = [0, 1, 2].map(offset => new T.Vector3().fromBufferAttribute(positions, i + offset));
+        area += b.sub(a).cross(c.sub(a)).length() / 2;
+      }
+    }
+    assert.ok(Math.abs(area - expected) < 1e-5, `${offset}: only the exposed skin remains, without holes or doubled panels`);
+  }
+});
+
+test('all five floors have non-overlapping wall skins, clean corner posts and separated floor finishes', () => {
+  for (const { section, structure, meshes } of fixtures) {
+    assertCleanSurfaces(meshes, section.id);
+    assertCleanStrokes(structure.group.getObjectByName('floor-architecture-outline').geometry.attributes.position, section.id);
+    for (const [index, a] of structure.columns.entries()) for (const b of structure.columns.slice(index + 1)) {
+      assert.ok(Math.abs(a.x - b.x) >= (a.width + b.width) / 2 || Math.abs(a.z - b.z) >= (a.width + b.width) / 2,
+        `${section.id}: a chamfer must not contain intersecting duplicate corner supports`);
+    }
+    for (const hall of structure.circulation.floor) {
+      // A center sample can land on the intentionally raised door threshold.
+      const exposed = [.2, .5, .8].some(fraction => {
+        const point = new T.Vector3(hall.minX + (hall.maxX - hall.minX) * fraction, 20, (hall.minZ + hall.maxZ) / 2);
+        return new T.Raycaster(point, new T.Vector3(0, -1, 0)).intersectObjects(meshes).some(hit => Math.abs(hit.point.y - .04) < 1e-5);
+      });
+      assert.ok(exposed, `${section.id}: the hall finish is above the slab rather than coplanar with it`);
+    }
+  }
+});
+
+test('every paneled room backdrop has one clean exposed surface across its trim and display', () => {
+  let rooms = 0;
+  for (const section of sections) {
+    const interior = createInterior(section, floorContent[section.id]);
+    for (const [index] of interior.rooms.entries()) {
+      const meshes = interior.pickables.filter(mesh => mesh.userData.roomIndex === index);
+      assertCleanSurfaces(meshes, `${section.id}/${index} backdrop`, (mesh, vertex) =>
+        !mesh.userData.objectRanges.some(range => vertex >= range.start && vertex < range.start + range.count));
+      rooms++;
+    }
+  }
+  assert.equal(rooms, 19);
 });
 
 test('all five architectural floors remain on the occupied L-shaped slab in four static batches', () => {

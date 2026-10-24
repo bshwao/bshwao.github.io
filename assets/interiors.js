@@ -5,6 +5,7 @@ import { furnishInteriorDetails } from './interior-details.js';
 import { furnishRoomExtensions } from './room-extensions.js';
 import { createInteriorStructure } from './interior-structure.js';
 import { createObjectInteractions } from './object-interactions.js';
+import { buildBoxSurfaces } from './surface-geometry.js';
 
 // Separate shell pieces and cushions avoid exposed coplanar faces after batching.
 export const sofaPanels = [
@@ -25,7 +26,7 @@ export function createInterior(section, content) {
   const theme = sectionColors[section.id];
   const colors = { structure: palette.timber, equipment: palette.blue, ink: palette.ink, glass: palette.glass };
   const materials = Object.fromEntries(Object.entries(colors).map(([name, color]) => [name, new T.MeshLambertMaterial({ color })]));
-  const lineMaterial = new T.LineBasicMaterial({ color: palette.muted, transparent: true, opacity: .8 });
+  const lineMaterial = new T.LineBasicMaterial({ color: palette.muted, transparent: true, opacity: .8, depthWrite: false });
   const pickables = [], anchors = [], roomModels = [], objects = [];
   let activeRoom = 0, hoveredRoom = null, focusedRoom = null, focusAmount = 0;
   const unitBox = new T.BoxGeometry(1, 1, 1), unitCylinder = new T.CylinderGeometry(1, 1, 1, 20);
@@ -302,9 +303,14 @@ export function createInterior(section, content) {
     zone.updateMatrixWorld(true);
     const inverse = zone.matrixWorld.clone().invert();
     const sources = []; zone.traverse(node => { if (node.isMesh) sources.push(node); });
+    // Fixed paneled walls and their trim form one exposed skin. Moving props
+    // retain their complete geometry so animation can never expose a hole.
+    const fixed = new Set(sources.filter(mesh => mesh.geometry === unitBox && !mesh.userData.interaction));
+    const backdrop = buildBoxSurfaces([...fixed].map(mesh => ({ matrix: inverse.clone().multiply(mesh.matrixWorld), surface: mesh.userData.surface })));
     const buckets = new Map(), edgeParts = [], edgeRanges = [];
     let edgeOffset = 0;
     for (const mesh of sources) {
+      if (fixed.has(mesh)) continue;
       const transform = inverse.clone().multiply(mesh.matrixWorld);
       const geometry = (mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry.clone()).applyMatrix4(transform);
       const surface = mesh.userData.surface;
@@ -320,6 +326,11 @@ export function createInterior(section, content) {
       edgeOffset += edges.attributes.position.count;
       if (!shared.has(mesh.geometry)) mesh.geometry.dispose();
     }
+    for (const [surface, geometry] of backdrop.surfaces) {
+      if (!buckets.has(surface)) buckets.set(surface, { geometries: [], ranges: [], offset: 0 });
+      const bucket = buckets.get(surface); bucket.geometries.push(geometry); bucket.offset += geometry.attributes.position.count;
+    }
+    edgeParts.push(backdrop.outline);
     zone.clear();
     const surfaces = [];
     function attachRanges(geometry, ranges) {
@@ -332,6 +343,7 @@ export function createInterior(section, content) {
       const material = materials[name].clone();
       const color = name === 'equipment' ? roomAccents[index % roomAccents.length] : colors[name];
       material.color.set(color);
+      material.polygonOffset = true; material.polygonOffsetFactor = 1; material.polygonOffsetUnits = 1;
       material.vertexColors = true;
       const geometry = combineGeometry(bucket.geometries, ['position', 'normal']);
       attachRanges(geometry, bucket.ranges);
