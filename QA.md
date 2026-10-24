@@ -1,5 +1,13 @@
 # Release verification
 
+## Room object animations (local) — October 24, 2026
+
+All five floors and all 19 rooms now have object hover and click responses: 363 named targets cover primary furniture and secondary props. Warm hover highlights ease in and out; clicks/taps produce finite color pulses, plant sway, chair swivels, sofa compression, paper lift, display turns and piano key presses. Clicking again inside a focused room preserves its camera and URL. Named buttons in each room's **Play with room objects** disclosure provide equivalent keyboard feedback. Reduced motion removes spatial movement while retaining color feedback.
+
+The four solid surfaces and single outline per room remain batched. Object identities map the actual raycast triangle to its vertex/outline ranges, with updated bounds and restored resting geometry. No extra rendering batches, textures or ongoing animation loops were added. Navigation clears pending responses; holding hover settles without continued rendering.
+
+All 78 source tests, 50 module checks and five integration modes pass. Tests exercise every object's hover/click response and picking ranges, isolated geometry, key presses, retrigger/reset behavior and changing motion preferences. Pointer picking, named HTML controls, preserved room routes, drag rejection and idle suspension are checked in every close-up. Real WebGL passes all 19 room animation checks (363 objects) at 1280×720/day, 390×844/requested DPR 3/night and 844×390/requested DPR 3/day. Peak transition/resize counts are 84/82/82 draws, below the existing 100-draw ceiling. Each run records zero idle frames over 250ms, stable geometry/texture/program counts during interaction, stable repeated navigation/resize and complete GPU geometry/texture disposal. The desktop axe audit passes 14 views, including the expanded object controls, with no automated WCAG A/AA violations. Manual review confirms the warm piano response, visible named buttons, Enter activation, the matching object hint and preserved room URL; production warning/error logs are empty. Evidence is in `state/object-animations/`. These are browser viewport checks; no physical-phone timing or publishing was performed.
+
 ## Current release overview — October 24, 2026
 
 The complete city, furnished floors, glass UI, clock and nighttime-reflection changes were published in `62a2e8c3dab240592b4cfad0f1ce01fa6ee64688`. Its [Portfolio checks](https://github.com/bshwao/bshwao.github.io/actions/runs/40051031460) and [Pages deployment](https://github.com/bshwao/bshwao.github.io/actions/runs/40051030839) succeeded.

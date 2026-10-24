@@ -42,6 +42,13 @@
 .spatial[data-mode="explore"] #unfold-structure, .spatial[data-mode="section"] #unfold-structure { display: block !important; pointer-events: none; }
 .spatial[data-mode="section"] #unfold-structure { opacity: 1; }
 #spatial-hint { margin-left: 9px; }
+.spatial[data-mode="section"] #spatial-hint { display: inline-block; max-width: min(65vw,540px); overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+.room-objects { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 12px; }
+.room-objects summary { min-height: 44px; display: list-item; cursor: pointer; font: 11px/1.6 var(--mono); color: var(--ink); padding-block: 12px; }
+.room-objects > p { color: var(--muted); font-size: 12px; }
+.room-objects > div { display: grid; gap: 5px; }
+.room-objects button { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 44px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--ink); text-align: left; font: 10px/1.5 var(--mono); }
+.room-objects button:hover, .room-objects button:focus-visible { background: color-mix(in srgb,var(--line) 24%,transparent); border-color: var(--ink); }
 #orbit-instructions { color: var(--muted); font: 7px/1.8 var(--mono); letter-spacing: .07em; }
 #orbit-instructions span { padding: 0 9px; }
 .spatial .page-identity, .spatial .drawing-edition { transition: opacity 300ms; }

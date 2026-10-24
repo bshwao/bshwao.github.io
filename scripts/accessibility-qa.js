@@ -37,6 +37,9 @@ try {
     frame.contentWindow.location.hash = route;
     await delay(20); await ready(); await audit(route);
   }
+  frame.contentDocument.querySelector('.room-objects').open = true;
+  await audit('contact object controls');
+  frame.contentDocument.querySelector('.room-objects').open = false;
   frame.contentDocument.querySelector('#reading-view').click(); await delay(50); await audit('contact reading dialog');
   for (const route of ['about', 'projects', 'experience', 'resume']) {
     frame.contentWindow.location.hash = route;

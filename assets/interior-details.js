@@ -1,52 +1,60 @@
-/** Static room-scale details. Everything joins the existing four surface batches. */
+/** Room-scale details, with object identities retained in the four surface batches. */
 export function furnishInteriorDetails(section,index,p,api) {
-  const {box,cylinder,ring,sphere,paper,wire,feature}=api;
+  const {box,cylinder,ring,sphere,paper,wire,feature,interact}=api;
   const add=(name,build)=>feature(p,name,build);
   const cutawayWing=index===(section==='projects'?2:3);
   const back=section==='experience'&&index===3?-3.8:-3.15;
   const bar=(x,y,z,w,h,d,mat='ink',turn=0)=>box(p,x,y,z,w,h,d,mat,turn);
   function lamp(x,z,deskY=1.66) {
-    cylinder(p,x,deskY,z,.23,.07,'equipment');
-    bar(x,deskY+.35,z,.055,.65,.055);
-    bar(x+.15,deskY+.67,z,.36,.055,.055,'ink',-.2);
-    bar(x+.3,deskY+.67,z,.48,.10,.3,'equipment');
-    bar(x+.3,deskY+.61,z,.39,.025,.24,'structure');
+    interact(p, 'Task lamp', 'display', () => {
+      cylinder(p,x,deskY,z,.23,.07,'equipment');
+      bar(x,deskY+.35,z,.055,.65,.055);
+      bar(x+.15,deskY+.67,z,.36,.055,.055,'ink',-.2);
+      bar(x+.3,deskY+.67,z,.48,.10,.3,'equipment');
+      bar(x+.3,deskY+.61,z,.39,.025,.24,'structure');
+    });
   }
   function cabinet(x,z,w=1.15,h=1.6,drawers=3) {
-    bar(x,h/2,z,w,h,.85,'equipment');
-    for(let i=0;i<drawers;i++) {
-      const y=(i+.5)*h/drawers;
-      bar(x,y,z+.44,w-.12,h/drawers-.08,.06,'structure');
-      bar(x,y,z+.48,w*.32,.045,.045);
-    }
-    bar(x,h+.06,z,w+.1,.1,.94,'structure');
+    interact(p, 'Storage cabinet', 'pulse', () => {
+      bar(x,h/2,z,w,h,.85,'equipment');
+      for(let i=0;i<drawers;i++) {
+        const y=(i+.5)*h/drawers;
+        bar(x,y,z+.44,w-.12,h/drawers-.08,.06,'structure');
+        bar(x,y,z+.48,w*.32,.045,.045);
+      }
+      bar(x,h+.06,z,w+.1,.1,.94,'structure');
+    });
   }
   // Secondary work and storage areas occupy the room perimeter, leaving the
   // central approach to the original exhibit clear. These use the same static
   // surface batches as the principal furniture, with no extra lights or draws.
   function shelving(x,z,w=1.4,h=2.8) {
-    bar(x,h/2,z-.31,w,h,.07,'equipment');
-    for(const side of [-1,1])bar(x+side*(w/2-.05),h/2,z,.1,h,.68,'equipment');
-    for(let level=0;level<3;level++) {
-      const y=.14+level*(h-.28)/3;
-      bar(x,y,z,w-.1,.1,.68,'structure');
-      if(level===1) {
-        books(x,y+.07,z,Math.max(3,Math.floor(w/.24)));
-      } else {
-        for(const side of [-1,1]) {
-          const cx=x+side*w*.23;
-          bar(cx,y+.27,z,w*.37,.42,.48,'glass');
-          bar(cx,y+.28,z+.25,w*.16,.07,.025,'ink');
+    interact(p, 'Display shelving', 'pulse', () => {
+      bar(x,h/2,z-.31,w,h,.07,'equipment');
+      for(const side of [-1,1])bar(x+side*(w/2-.05),h/2,z,.1,h,.68,'equipment');
+      for(let level=0;level<3;level++) {
+        const y=.14+level*(h-.28)/3;
+        bar(x,y,z,w-.1,.1,.68,'structure');
+        if(level===1) {
+          books(x,y+.07,z,Math.max(3,Math.floor(w/.24)));
+        } else {
+          for(const side of [-1,1]) {
+            const cx=x+side*w*.23;
+            bar(cx,y+.27,z,w*.37,.42,.48,'glass');
+            bar(cx,y+.28,z+.25,w*.16,.07,.025,'ink');
+          }
         }
       }
-    }
-    bar(x,h-.05,z,w,.1,.68,'structure');
+      bar(x,h-.05,z,w,.1,.68,'structure');
+    });
   }
   function bench(x,z,w=1.8,facing=1) {
-    bar(x,.78,z,w,.14,.75,'equipment');
-    bar(x,.89,z,w-.16,.08,.61,'glass');
-    bar(x,1.3,z+.34*facing,w,.72,.1,'structure');
-    for(const side of [-1,1])bar(x+side*(w/2-.18),.39,z,.1,.7,.59,'equipment');
+    interact(p, 'Visitor seat', 'sofa', () => {
+      bar(x,.78,z,w,.14,.75,'equipment');
+      bar(x,.89,z,w-.16,.08,.61,'glass');
+      bar(x,1.3,z+.34*facing,w,.72,.1,'structure');
+      for(const side of [-1,1])bar(x+side*(w/2-.18),.39,z,.1,.7,.59,'equipment');
+    });
   }
   function seat(x,z,facing=1) {bench(x,z,.9,facing);}
   function workbench(x,z,w=1.5,d=.9) {
@@ -56,23 +64,29 @@ export function furnishInteriorDetails(section,index,p,api) {
     bar(x,1.44,z-d/2+.04,w-.12,.1,.08,'equipment');
   }
   function locker(x,z,w=1.2,h=2.6) {
-    bar(x,h/2,z,w,h,.68,'equipment');
-    for(const side of [-1,1]) {
-      bar(x+side*w*.245,h/2,z+.36,w*.46,h-.13,.04,'structure');
-      bar(x+side*.1,h*.55,z+.394,.035,.24,.025,'ink');
-    }
-    bar(x,h+.05,z,w+.06,.08,.73,'structure');
+    interact(p, 'Supply locker', 'pulse', () => {
+      bar(x,h/2,z,w,h,.68,'equipment');
+      for(const side of [-1,1]) {
+        bar(x+side*w*.245,h/2,z+.36,w*.46,h-.13,.04,'structure');
+        bar(x+side*.1,h*.55,z+.394,.035,.24,.025,'ink');
+      }
+      bar(x,h+.05,z,w+.06,.08,.73,'structure');
+    });
   }
   function terminal(x,y,z,w=.85) {
-    bar(x,y+.52,z,w,.65,.085,'equipment');
-    bar(x,y+.52,z+.055,w-.12,.5,.02,'glass');
-    bar(x,y+.13,z,.07,.22,.07,'ink');
-    bar(x,y+.04,z,.4,.05,.28,'equipment');
-    bar(x,y+.035,z+.38,.55,.04,.24,'glass');
+    interact(p, 'Desktop terminal', 'display', () => {
+      bar(x,y+.52,z,w,.65,.085,'equipment');
+      bar(x,y+.52,z+.055,w-.12,.5,.02,'glass');
+      bar(x,y+.13,z,.07,.22,.07,'ink');
+      bar(x,y+.04,z,.4,.05,.28,'equipment');
+      bar(x,y+.035,z+.38,.55,.04,.24,'glass');
+    });
   }
   function clipboard(x,y,z) {
-    bar(x,y,z,.78,.08,1.0,'equipment');paper(p,x,y+.06,z,.65,.85);
-    bar(x,y+.09,z-.4,.25,.04,.1);
+    interact(p, 'Clipboard', 'paper', () => {
+      bar(x,y,z,.78,.08,1.0,'equipment');paper(p,x,y+.06,z,.65,.85);
+      bar(x,y+.09,z-.4,.25,.04,.1);
+    });
   }
   function boardLine(x,y,w,mat='ink') {bar(x,y,back+.17,w,.025,.018,mat);}
   function diagram() {
@@ -83,7 +97,9 @@ export function furnishInteriorDetails(section,index,p,api) {
     boardLine(0,3.55,1.7);bar(0,3.25,back+.16,.025,.6,.018);
   }
   function books(x,y,z,count=5) {
-    for(let i=0;i<count;i++)bar(x+(i-(count-1)/2)*.19,y+.32,z,.13,.58+(i%2)*.12,.38,i%2?'equipment':'structure');
+    interact(p, 'Book collection', 'pulse', () => {
+      for(let i=0;i<count;i++)bar(x+(i-(count-1)/2)*.19,y+.32,z,.13,.58+(i%2)*.12,.38,i%2?'equipment':'structure');
+    });
   }
   function digits(number,x,y,z) {
     const segments={0:'abcedf',1:'bc',2:'abged',3:'abgcd',4:'fgbc',5:'afgcd'};

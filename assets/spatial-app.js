@@ -37,7 +37,14 @@ const setData = (node, key, value) => { if (node.dataset[key] !== value) node.da
 const setStyle = (node, key, value) => { if (node.style.getPropertyValue(key) !== value) node.style.setProperty(key, value); };
 const link = item => `<a href="${escape(item.href)}"${item.download ? ` download="${escape(item.download)}"` : ''}${/^https?:/.test(item.href) ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escape(item.label)} <span aria-hidden="true">↗</span></a>`;
 
-function roomMarkup(room) {
+function roomMarkup(room, index) {
+  const objects = spatial?.objectsForRoom(currentId, index) || [];
+  const counts = new Map();
+  const objectControls = objects.map(object => {
+    const count = (counts.get(object.name) || 0) + 1; counts.set(object.name, count);
+    const label = `${object.name}${count > 1 ? ` ${count}` : ''}`;
+    return `<button type="button" data-room-object="${object.id}" aria-label="Animate ${escape(label)}">${escape(label)} <span aria-hidden="true">↻</span></button>`;
+  }).join('');
   return `<p class="spatial-eyebrow">${escape(room.number)} / ${escape(room.name)}</p>
     <h3 id="interior-room-title" tabindex="-1">${escape(room.title)}</h3>
     ${renderProjectStatus(room.status)}
@@ -50,7 +57,8 @@ function roomMarkup(room) {
     ${(room.entries || []).map(item => `<section class="interior-entry"><h4>${escape(item.title)}</h4>${item.subtitle ? `<p>${escape(item.subtitle)}</p>` : ''}${item.detail ? `<p>${escape(item.detail)}</p>` : ''}</section>`).join('')}
     ${room.tags ? `<ul class="interior-tags" aria-label="Skills and topics">${room.tags.map(text => `<li>${escape(text)}</li>`).join('')}</ul>` : ''}
     ${renderGallery(room.images)}
-    ${room.links ? `<div class="interior-links">${room.links.map(link).join('')}</div>` : ''}`;
+    ${room.links ? `<div class="interior-links">${room.links.map(link).join('')}</div>` : ''}
+    ${objects.length ? `<details class="room-objects"><summary>Play with room objects</summary><p>Hover or focus to highlight. Click, tap, or press Enter to animate.</p><div>${objectControls}</div></details>` : ''}`;
 }
 
 function selectRoom(index, { focus = false, moveCamera = true, writeRoute = true } = {}) {
@@ -63,7 +71,7 @@ function selectRoom(index, { focus = false, moveCamera = true, writeRoute = true
     return;
   }
   const restoreFocus = $('#interior-content').contains(document.activeElement);
-  $('#interior-content').innerHTML = roomMarkup(content.rooms[index]);
+  $('#interior-content').innerHTML = roomMarkup(content.rooms[index], index);
   $('#interior-content').scrollTop = 0;
   $('#interior-panel').scrollTop = 0;
   page.querySelectorAll('[data-station]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.station) === index)));
@@ -173,7 +181,8 @@ function onFrame(state) {
   for (const node of page.querySelectorAll('[data-station]')) setData(node, 'hovered', String(Number(node.dataset.station) === hoveredRoom));
   if (currentId && page.dataset.transition === 'idle') {
     const room = floorContent[currentId].rooms[hoveredRoom];
-    const hint = room ? `EXPLORE ROOM ${room.number} / ${room.name.toUpperCase()}` : 'SELECT A NUMBERED ROOM OR FURNITURE';
+    const hint = state.hoveredObject ? `${state.hoveredObject.toUpperCase()} / CLICK TO ANIMATE`
+      : room ? `EXPLORE ROOM ${room.number} / ${room.name.toUpperCase()}` : 'HOVER OBJECTS · CLICK OR TAP TO ANIMATE';
     if ($('#spatial-hint').textContent !== hint) $('#spatial-hint').textContent = hint;
   }
   const { width, height } = state.viewport;
@@ -307,11 +316,26 @@ async function start() {
   });
   page.addEventListener('click', event => {
     if (fallbackActive) return;
+    const object = event.target.closest('[data-room-object]');
+    if (object) { spatial.activateObject(Number(object.dataset.roomObject)); return; }
     const station = event.target.closest('[data-station]');
     if (station) { selectRoom(Number(station.dataset.station), { focus: station.classList.contains('station-marker') }); return; }
     const section = event.target.closest('button[data-section], a[data-section]');
     if (!section || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault(); navigate(section.dataset.section);
+  });
+  const objectButton = node => node?.closest?.('[data-room-object]');
+  const objectControls = $('#interior-content');
+  const refreshObjectHover = node => spatial.hoverObject(node ? Number(node.dataset.roomObject) : null);
+  objectControls.addEventListener('focusin', event => { if (!fallbackActive) refreshObjectHover(objectButton(event.target)); });
+  objectControls.addEventListener('focusout', event => { if (!fallbackActive) refreshObjectHover(objectButton(event.relatedTarget)); });
+  objectControls.addEventListener('pointerover', event => {
+    if (!fallbackActive && event.pointerType !== 'touch' && objectButton(event.target)) refreshObjectHover(objectButton(event.target));
+  });
+  objectControls.addEventListener('pointerout', event => {
+    if (!fallbackActive && event.pointerType !== 'touch' && objectButton(event.target) !== objectButton(event.relatedTarget)) {
+      refreshObjectHover(objectButton(event.relatedTarget) || objectButton(document.activeElement));
+    }
   });
   $('#station-navigation').addEventListener('keydown', event => {
     const button = event.target.closest('[data-station]');

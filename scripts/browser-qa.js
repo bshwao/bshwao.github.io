@@ -10,7 +10,7 @@ const testClock=()=>new Date(2026,9,23,testHour,0,0);
 if (requestedDpr > 0 && requestedDpr <= 4) Object.defineProperty(window, 'devicePixelRatio', { value: requestedDpr, configurable: true });
 const stage = document.querySelector('#stage'); stage.style.width = `${width}px`; stage.style.height = `${height}px`;
 const output = document.querySelector('#results'), status = document.querySelector('#status');
-const rows = []; let frames = 0, latest, spatial, maxFrameCalls = 0;
+const rows = [], objectChecks = []; let frames = 0, objectFrames = 0, latest, spatial, maxFrameCalls = 0;
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function settled(requireFrame=true) {
@@ -38,6 +38,7 @@ try {
   const started = performance.now();
   spatial = createSpatialScene({ container: stage, clock:testClock, shadowComparison:params.has('shadows'), onFrame(state) {
     latest = state; frames++;
+    if (state.moving && !state.transitionType) objectFrames++;
     if(spatial) maxFrameCalls=Math.max(maxFrameCalls,spatial.metrics().calls);
   } });
   await settled(); const readyMs = Math.round(performance.now() - started);
@@ -49,6 +50,20 @@ try {
     spatial.goTo('section', id, { instant: true }); await settled(); sample(id, 75);
     for (const [index, room] of floorContent[id].rooms.entries()) {
       spatial.focusRoom(index, { instant: true }); await settled(); sample(`${id}/${room.id}`, 75);
+      const objects = spatial.objectsForRoom(id, index), before = spatial.metrics();
+      assert(objects.length >= 5, `${id}/${room.id}: missing interactive objects`);
+      const beforeObjectFrames = objectFrames;
+      spatial.hoverObject(objects[0].id);
+      for (const object of objects) spatial.activateObject(object.id);
+      for (let attempt = 0; attempt < 200 && objectFrames === beforeObjectFrames; attempt++) await delay(35);
+      assert(objectFrames > beforeObjectFrames, `${id}/${room.id}: object responses never rendered`);
+      assert(spatial.metrics().calls <= 75, 'Object animations exceed the interior draw budget');
+      await settled(false);
+      const held = frames; await delay(120); assert(frames === held, 'Holding an object hover keeps rendering');
+      spatial.hoverObject(null); await settled();
+      const after = spatial.metrics();
+      assert(after.geometries === before.geometries && after.textures === before.textures && after.programs === before.programs, 'Object responses allocate new GPU resources');
+      objectChecks.push({room:`${id}/${room.id}`, objects:objects.length, calls:after.calls});
     }
   }
   const idle = frames; await delay(250); const idleFrames = frames - idle; assert(idleFrames === 0, 'Idle scene continues rendering');
@@ -77,7 +92,7 @@ try {
   for (let i = 0; i < 3; i++) await resizeCycle();
   assert(spatial.metrics().geometries === resizedMemory, 'Repeated phone/desktop resizing grows GPU allocations');
   assert(maxFrameCalls <= 100, `Transition/background passes exceed 100 draws: ${maxFrameCalls}`);
-  output.textContent = JSON.stringify({ viewport: `${width}x${height}`, requestedDpr: requestedDpr || devicePixelRatio, userAgent: navigator.userAgent, readyMs, idleFramesOver250ms: idleFrames, maxFrameCalls, stableGeometryCount: memory, stableGeometryAfterResize: resizedMemory, clockChanges, rows }, null, 2);
+  output.textContent = JSON.stringify({ viewport: `${width}x${height}`, requestedDpr: requestedDpr || devicePixelRatio, userAgent: navigator.userAgent, readyMs, idleFramesOver250ms: idleFrames, maxFrameCalls, stableGeometryCount: memory, stableGeometryAfterResize: resizedMemory, clockChanges, objectChecks, rows }, null, 2);
   spatial.dispose();
   assert(stage.querySelector('canvas') === null, 'Disposal leaves a canvas behind');
   assert(spatial.metrics().geometries === 0, 'Disposal leaves uploaded GPU geometries behind');

@@ -11,6 +11,69 @@ const rectangleContains = (region, bounds) => bounds.min.x >= region.x - region.
   && bounds.min.z >= region.z - region.depth / 2 - tolerance
   && bounds.max.z <= region.z + region.depth / 2 + tolerance;
 
+test('all nineteen rooms retain independently animated objects and exact batched picking identities', () => {
+  let rooms = 0, objects = 0;
+  for (const section of sections) {
+    const interior = createInterior(section, floorContent[section.id]);
+    const controls = interior.interactions;
+    for (const [index, room] of interior.rooms.entries()) {
+      rooms++;
+      const targets = controls.objects.filter(object => object.roomIndex === index);
+      assert.ok(targets.length >= 5, `${section.id}/${index}: multiple individual objects, including secondary furnishings`);
+      assert.equal(room.group.children.length, 4, 'Object identities do not unbatch the room');
+      for (const mesh of room.group.children) {
+        assert.equal(mesh.geometry.index, null, 'Raycast triangle indices address the original batched vertices');
+        assert.ok(mesh.material.vertexColors, 'Batched surfaces support isolated object highlights');
+        for (const range of mesh.userData.objectRanges) {
+          for (const vertex of [range.start, range.start + range.count - 3]) {
+            assert.equal(controls.resolve({ object: mesh, faceIndex: vertex / 3 }), range.target, 'The first and last triangle resolve to the correct object');
+          }
+        }
+      }
+      for (const target of targets) {
+        objects++;
+        assert.ok(target.parts.some(part => part.geometry.attributes.normal), 'Every object has solid geometry');
+        assert.ok(target.parts.some(part => !part.geometry.attributes.normal), 'Its outline participates in the same animation');
+        const part = target.parts[0], color = part.geometry.attributes.color;
+        controls.hover(target); controls.update(0); controls.update(160);
+        assert.ok(color.getZ(part.start) < 1, `${target.name}: hover visibly changes its own color range`);
+        controls.hover(null); controls.activate(target, 200); controls.update(650);
+        assert.ok(color.getZ(part.start) < .8, `${target.name}: click produces a stronger finite response`);
+        controls.update(2000);
+        assert.equal(controls.update(2016).moving, false, 'The response stops requesting frames');
+        for (const range of target.parts) {
+          const position = range.geometry.attributes.position;
+          for (let i = 0; i < range.count * 3; i++) assert.ok(Math.abs(position.array[range.start * 3 + i] - range.rest[i]) < tolerance, 'The resting shape is restored without drift');
+          assert.equal(range.geometry.attributes.color.getZ(range.start), 1);
+        }
+      }
+    }
+  }
+  assert.equal(rooms, 19);
+  assert.ok(objects > 200, 'Primary and secondary objects participate across every floor');
+});
+
+test('object responses stay isolated, retrigger safely, and remove spatial motion when reduced motion changes', () => {
+  const interior = createInterior(sections[0], floorContent.about), controls = interior.interactions;
+  const plant = controls.objects.find(object => object.kind === 'plant');
+  const piano = controls.objects.find(object => object.kind === 'piano');
+  const parts = [plant, piano].flatMap(object => object.parts);
+  controls.hover(plant); controls.activate(plant, 0); controls.update(240);
+  assert.ok(plant.parts.some(part => part.rest.some((value, i) => Math.abs(value - part.geometry.attributes.position.array[part.start * 3 + i]) > .001)), 'The plant sways');
+  assert.ok(piano.parts.every(part => part.geometry.attributes.color.getZ(part.start) === 1), 'A neighboring object stays unchanged');
+  controls.activate(piano, 240); controls.update(550);
+  assert.ok(piano.parts.filter(part => part.key !== undefined).some(part => part.geometry.attributes.position.getY(part.start) < part.rest[1] - .01), 'The piano presses its actual separate keys');
+  controls.activate(plant, 550); controls.update(650);
+  controls.setReducedMotion(true); controls.update(700);
+  for (const part of parts) {
+    for (let i = 0; i < part.rest.length; i++) assert.ok(Math.abs(part.geometry.attributes.position.array[part.start * 3 + i] - part.rest[i]) < tolerance, 'Reduced motion immediately restores spatial geometry');
+  }
+  assert.ok(plant.parts[0].geometry.attributes.color.getZ(plant.parts[0].start) < 1, 'Reduced motion keeps visible interaction feedback');
+  controls.reset();
+  assert.equal(controls.update(720).changed, false, 'Leaving a floor cancels all pending object animation');
+  assert.ok(parts.every(part => part.geometry.attributes.color.getZ(part.start) === 1));
+});
+
 test('sofa frame panels and cushions have no intersecting or exposed coplanar faces',()=>{
   const bounds=sofaPanels.map(panel=>new T.Box3().setFromCenterAndSize(new T.Vector3(...panel.position),new T.Vector3(...panel.size)));
   for(const [i,a]of bounds.entries())for(const b of bounds.slice(i+1)) {

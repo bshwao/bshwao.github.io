@@ -142,6 +142,57 @@ const resizeTo = async (width, height) => {
   for (const observer of [...resizeObservers]) observer.callback();
   await tick(16);
 };
+async function verifyRoomObjects(sectionIndex, roomIndex) {
+  await settleCamera();
+  const interior = lastScene.children.find(node => node.isGroup).children[sectionIndex].children[2];
+  const meshes = interior.children.slice(0, floorContent[sections[sectionIndex].id].rooms.length).flatMap(room => room.children.filter(node => node.isMesh));
+  const own = meshes.filter(mesh => mesh.userData.roomIndex === roomIndex);
+  let sample;
+  for (const mesh of own) {
+    for (const range of mesh.userData.objectRanges) {
+      for (let vertex = range.start; vertex < range.start + range.count; vertex += 3) {
+        const point = new THREE.Vector3();
+        for (let offset = 0; offset < 3; offset++) point.add(new THREE.Vector3().fromBufferAttribute(mesh.geometry.attributes.position, vertex + offset));
+        point.multiplyScalar(1 / 3).applyMatrix4(mesh.matrixWorld);
+        const hit = new THREE.Raycaster(lastCamera.position, point.clone().sub(lastCamera.position).normalize()).intersectObjects(meshes, false)[0];
+        const target = hit?.object.userData.objectRanges?.find(part => hit.faceIndex * 3 >= part.start && hit.faceIndex * 3 < part.start + part.count)?.target;
+        const projected = point.project(lastCamera);
+        if (target?.roomIndex === roomIndex && Math.abs(projected.x) < .98 && Math.abs(projected.y) < .98) {
+          sample = { target, x: (projected.x + 1) * viewportWidth / 2, y: (1 - projected.y) * viewportHeight / 2 }; break;
+        }
+      }
+      if (sample) break;
+    }
+    if (sample) break;
+  }
+  assert.ok(sample, `${sections[sectionIndex].id}/${roomIndex}: every close-up has a visible, individually pickable object`);
+  const { target, x, y } = sample;
+  const hover = new w.MouseEvent('pointermove', { bubbles: true, buttons: 0, clientX: x, clientY: y });
+  Object.defineProperty(hover, 'pointerType', { value: 'mouse' });
+  canvas.dispatchEvent(hover); await tick(32);
+  assert.equal(canvas.dataset.hoveredObject, String(target.id), 'Pointer hover resolves the actual furniture object');
+  assert.ok(target.hover > 0, 'Hover starts the object highlight');
+  assert.ok(w.document.querySelector('#spatial-hint').textContent.includes(target.name.toUpperCase()));
+  const route = w.location.hash;
+  sendMouse('pointerdown', x, y); sendMouse('pointerup', x, y); await tick(200);
+  assert.notEqual(target.clickedAt, null, 'A click on the focused room animates its object');
+  assert.equal(w.location.hash, route, 'Object clicks preserve the current room URL');
+  assert.equal(main.dataset.cameraMotion, 'idle', 'Repeated object clicks do not restart the camera flight');
+  const clickedAt = target.clickedAt;
+  sendMouse('pointerdown', x, y); sendMouse('pointermove', x + 20, y); sendMouse('pointermove', x, y); sendMouse('pointerup', x, y);
+  assert.equal(target.clickedAt, clickedAt, 'Dragging away and back never activates an object');
+  await settleCamera();
+  const button = w.document.querySelector(`[data-room-object="${target.id}"]`);
+  assert.ok(button && button.getAttribute('aria-label').startsWith('Animate '), 'Objects also expose named HTML buttons');
+  button.closest('details').open = true; button.focus(); await tick(32);
+  assert.ok(target.hover > 0, 'Keyboard focus provides the same object highlight');
+  button.click(); await tick(200); assert.notEqual(target.clickedAt, null, 'The accessible button starts the same animation');
+  w.document.querySelector('#reading-view').focus();
+  canvas.dispatchEvent(new w.MouseEvent('pointerleave'));
+  await settleCamera();
+  const beforeIdle = renders; await tick(200);
+  assert.equal(renders, beforeIdle, 'Object feedback stops rendering once it settles');
+}
 function assertRoomFramed(sectionIndex, roomIndex, stage = 'settled') {
   const root = lastScene.children.find(node => node.isGroup);
   const zone = root.children[sectionIndex].children[2].children[roomIndex];
@@ -459,7 +510,7 @@ click('#unfold-structure'); await settleCamera();
 assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Unfolding restores the previous expanded orbit and zoom');
 
 // Move between all interior models and check the document/source links.
-for (const id of ['projects', 'experience', 'resume', 'contact']) {
+for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
   w.history.pushState(null, '', `#${id}`); w.dispatchEvent(new w.HashChangeEvent('hashchange'));
   await sampleSectionEntry(id);
   assert.equal(canvas.dataset.section, id); assert.equal(main.dataset.transition, 'idle');
@@ -473,6 +524,7 @@ for (const id of ['projects', 'experience', 'resume', 'contact']) {
     assert.equal(w.location.hash, `#${id}/${floorContent[id].rooms[i].id}`);
     if (id === 'projects') assert.equal(w.document.querySelector('#complete-portfolio').getAttribute('href'), `./reading.html#project-${floorContent.projects.rooms[i].projectId}`, 'Each project opens its own complete case study');
     assertRoomFramed(['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id), i);
+    await verifyRoomObjects(sections.findIndex(section => section.id === id), i);
   }
   click('#floor-overview'); await tick(800);
 }

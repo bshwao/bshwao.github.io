@@ -68,6 +68,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   });
   const camera = new T.PerspectiveCamera(34, 1, .1, 1000);
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  model.modules.forEach(module => module.interior.interactions.setReducedMotion(reducedMotion.matches));
   const controls = new OrbitControls(camera, canvas);
   controls.mouseButtons = { LEFT: T.MOUSE.ROTATE, MIDDLE: T.MOUSE.DOLLY, RIGHT: null };
   controls.touches = { ONE: T.TOUCH.ROTATE, TWO: T.TOUCH.DOLLY_ROTATE };
@@ -86,7 +87,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   let districtVisibility = 1;
   const screenCenter = new T.Vector2(.5, .5);
   let animation = null, frame = 0, dirty = true, disposed = false;
-  let pointerStart = null, hover = null;
+  let pointerStart = null, hover = null, hoveredObject = null;
   const savedViews = new Map();
   const activePointers = new Set();
   let modelDirty = true, lastProjection = '';
@@ -243,11 +244,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       moving = true;
     }
     if (moving || modelDirty) { updateModel(); modelDirty = false; }
+    const objectMotion = selected?.interior.interactions.update(time);
     containInteriorFlight();
     if(!selected&&!animation) controls.maxPolarAngle=Math.acos(T.MathUtils.clamp((1.5-controls.target.y)/camera.position.distanceTo(controls.target),-1,1));
     const changed = controls.update();
     updateProjection();
-    if (dirty || moving || changed) {
+    if (dirty || moving || changed || objectMotion?.changed) {
       const distance = camera.position.distanceTo(controls.target);
       for (const reference of depthReferences) reference.value = distance;
       const lighting = amount => {
@@ -268,12 +270,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
           () => lighting(1 - reveal * (1 - districtVisibility)));
       } else { environment.update(camera,1); lighting(1); renderer.render(scene,camera); }
       canvas.dataset.background = districtVisibility < .999 ? 'blurred' : 'sharp';
-      onFrame?.({ mode, selectedId: selected?.id, labels: labels(), expansion, reveal, panel, focusedRoom, activeRoom, hoveredRoom,
-        viewport: viewportLayout(width, height), moving: Boolean(animation), transitionType: animation?.kind || null,
+      onFrame?.({ mode, selectedId: selected?.id, labels: labels(), expansion, reveal, panel, focusedRoom, activeRoom, hoveredRoom, hoveredObject: hoveredObject?.name || null,
+        viewport: viewportLayout(width, height), moving: Boolean(animation) || Boolean(objectMotion?.moving), transitionType: animation?.kind || null,
         azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), timeOfDay:cityTime.phase,localHour:cityTime.hour });
       dirty = false;
     }
-    if (animation || changed) invalidate();
+    if (animation || changed || objectMotion?.moving) invalidate();
   }
   function applyBudget() {
     const budget = renderBudget(width, height, devicePixelRatio);
@@ -309,10 +311,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     };
     controls.enabled = false;
     hover = null; hoveredRoom = null; selected?.interior.setHoveredRoom(null);
+    previewObject(null);
     canvas.style.cursor = 'grab';
     invalidate();
   }
   function goTo(nextMode, id, { instant = false, onComplete, reset = false } = {}) {
+    model.modules.forEach(module => module.interior.interactions.reset());
     const previousMode = mode;
     const direction = camera.position.clone().sub(controls.target);
     const exploreDirection=new T.Vector3(direction.x,Math.hypot(direction.x,direction.z)/Math.tan(1.13),direction.z);
@@ -344,7 +348,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     move(to, instant ? 1 : nextMode === 'section' ? 1850 : previousMode === 'section' ? 1550 : 1300, onComplete);
     canvas.dataset.mode = nextMode;
     canvas.dataset.section = selected?.id || '';
-    canvas.setAttribute('aria-label', selected ? `3D cutaway of ${selected.name}: ${selected.theme}. Left mouse drag or arrow keys to orbit. Select a numbered room to read its contents.` : 'Interactive 3D city skyline. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold the main tower.');
+    canvas.setAttribute('aria-label', selected ? `3D cutaway of ${selected.name}: ${selected.theme}. Left mouse drag or arrow keys to orbit. Hover furniture to preview it; click or tap to animate it and explore its room. Keyboard object controls are in the room content panel.` : 'Interactive 3D city skyline. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold the main tower.');
   }
   function focusRoom(index, { instant = false } = {}) {
     if (!selected || animation?.kind === 'scene' || !Number.isInteger(index) || !selected.interior.rooms[index]) return;
@@ -363,13 +367,28 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       modules: model.modules.map(module => module.group.position.clone()), cuts: [...cuts] };
     move(to, 760, null, 'room');
   }
+  function previewObject(object) {
+    if (hoveredObject === object) return;
+    hoveredObject = object;
+    selected?.interior.interactions.hover(object);
+    canvas.dataset.hoveredObject = object ? String(object.id) : '';
+    invalidate();
+  }
+  function activateObject(id) {
+    if (!selected || animation?.kind === 'scene') return;
+    const object = selected.interior.interactions.objects.find(object => object.id === id);
+    if (!object) return;
+    selected.interior.interactions.activate(object, performance.now());
+    invalidate();
+  }
   function hit(event) {
     const bounds = canvas.getBoundingClientRect();
     pointer.set((event.clientX - bounds.left) / bounds.width * 2 - 1, -(event.clientY - bounds.top) / bounds.height * 2 + 1);
     camera.updateMatrixWorld();
     raycaster.setFromCamera(pointer, camera);
     if (mode === 'section' && selected) {
-      return raycaster.intersectObjects(selected.interior.pickables, false)[0]?.object.userData.roomIndex ?? null;
+      const found = raycaster.intersectObjects(selected.interior.pickables, false)[0];
+      return found ? { roomIndex: found.object.userData.roomIndex, object: selected.interior.interactions.resolve(found) } : null;
     }
     const found = raycaster.intersectObjects(model.modules.flatMap(module => module.shell.children).filter(item => item.isMesh), false)[0];
     if (!found) return null;
@@ -381,6 +400,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     return found.object.userData.sectionId ?? null;
   }
   canvas.addEventListener('pointerdown', event => {
+    previewObject(null);
     if (hoveredRoom !== null || hover !== null) {
       hover = null; hoveredRoom = null; selected?.interior.setHoveredRoom(null); modelDirty = true; invalidate();
     }
@@ -396,7 +416,10 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     if (!start || start.cancelled || start.id !== event.pointerId || start.button !== 0 || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 5 || animation) return;
     const found = hit(event);
     if (found === null) return;
-    if (mode === 'section') onSelectRoom?.(found);
+    if (mode === 'section') {
+      if (found.object) activateObject(found.object.id);
+      if (focusedRoom !== found.roomIndex) onSelectRoom?.(found.roomIndex);
+    }
     else onSelectSection?.(mode === 'tower' ? null : found);
   });
   canvas.addEventListener('pointercancel', event => { activePointers.delete(event.pointerId); pointerStart = null; canvas.style.cursor = 'grab'; });
@@ -406,12 +429,14 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     if (event.buttons || animation || event.pointerType === 'touch') return;
     const found = hit(event);
     const next = mode !== 'section' ? found : null;
-    const nextRoom = mode === 'section' ? found : null;
+    const nextRoom = mode === 'section' ? found?.roomIndex ?? null : null;
+    const nextObject = mode === 'section' ? found?.object ?? null : null;
     canvas.style.cursor = found !== null ? 'pointer' : 'grab';
     if (hoveredRoom !== nextRoom) { hoveredRoom = nextRoom; selected?.interior.setHoveredRoom(nextRoom); invalidate(); }
+    if (hoveredObject !== nextObject) { previewObject(nextObject); invalidate(); }
     if (hover !== next) { hover = next; modelDirty = true; invalidate(); }
   });
-  canvas.addEventListener('pointerleave', () => { hover = null; hoveredRoom = null; selected?.interior.setHoveredRoom(null); modelDirty = true; invalidate(); });
+  canvas.addEventListener('pointerleave', () => { hover = null; hoveredRoom = null; previewObject(null); selected?.interior.setHoveredRoom(null); modelDirty = true; invalidate(); });
   canvas.addEventListener('keydown', event => {
     if (animation) return;
     if (event.key === 'Enter' || event.key === ' ') {
@@ -479,6 +504,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   const observer = new ResizeObserver(resize); observer.observe(container);
   const visibility = () => { if (!document.hidden) { clockWatch.refresh();invalidate(); } };
   const motionChange = () => {
+    model.modules.forEach(module => module.interior.interactions.setReducedMotion(reducedMotion.matches));
     controls.enableDamping = !reducedMotion.matches;
     if (reducedMotion.matches && animation) { animation.start = performance.now(); animation.duration = 1; }
     invalidate();
@@ -509,7 +535,17 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     goTo,
     focusRoom,
     overview,
+    objectsForRoom(sectionId, roomIndex) {
+      return (model.modules.find(module => module.id === sectionId)?.interior.interactions.objects || [])
+        .filter(object => object.roomIndex === roomIndex).map(({ id, name }) => ({ id, name }));
+    },
+    hoverObject(id) {
+      const object = !animation && selected?.interior.interactions.objects.find(object => object.id === id) || null;
+      previewObject(object); invalidate();
+    },
+    activateObject,
     hoverRoom(index) {
+      previewObject(null);
       const next = !animation && Number.isInteger(index) && selected?.interior.rooms[index] ? index : null;
       if (hoveredRoom === next) return;
       hoveredRoom = next; selected?.interior.setHoveredRoom(next); invalidate();
