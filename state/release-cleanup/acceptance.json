@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-24T14:03:39.472Z",
+  "contentRelease": "e446760fceac0c31b37ee81bdb069f32cc02b3e3",
+  "status": "PARTIAL — browser smoke acceptance remains blocked",
+  "completed": [
+    "Light content and link review; personal facts and résumé preserved",
+    "Current documentation with historical checkpoints labeled",
+    "Node 24 source checks: 76 tests and 49 modules",
+    "All five integration modes",
+    "Cleanup commit published through existing main workflow",
+    "Successful CI and Pages deployment for the exact content commit",
+    "All 66 live files match the committed snapshot",
+    "Deployment evidence recorded"
+  ],
+  "pending": [
+    {
+      "task": "Fresh local and published connected-Chromium smoke checks",
+      "reason": "The browser connector reports no available browser after the app restart.",
+      "recovery": "The local preview was restarted and the user was asked to open this chat’s Browser panel."
+    }
+  ],
+  "deferred": [
+    "Real-device and cross-engine testing, at the user’s request"
+  ],
+  "scope": "No visual smoke success is inferred from HTTP/hash checks or older screenshots."
+}

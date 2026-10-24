@@ -20,7 +20,8 @@ The city, complete interiors and nighttime reflections were published in `62a2e8
 - [x] Implementation checks: 76 source tests, 49 module checks and five DOM/camera integration modes at the city/reflection checkpoint. Re-run the commands for the release being published.
 - [x] Connected Chromium graphics evidence: all 26 views on desktop and simulated phone layouts; bounded drawing/raster work, stable allocation and disposal. See `state/city-outskirts/` and `state/reflection-time/`.
 - [x] Existing city/reflection release: CI and Pages passed for `62a2e8c`.
-- [ ] Final cleanup release: light content/link review, current documentation, local/live browser smoke checks, expanded live-file comparisons and recorded release evidence. Completion belongs in the current QA overview, not an older checkpoint.
+- [x] Light content/link review, current documentation, source/integration checks and expanded live-file verification: cleanup commit `e446760` is deployed, CI/Pages passed, and all 66 file comparisons pass. The content release is recorded in `state/deployment.json`.
+- [ ] Fresh local/live Chromium smoke checks: **blocked by the disconnected browser connector after the app restart**. The Browser panel reconnection has been requested; full cleanup acceptance remains open until these visual checks run. Earlier screenshots are historical evidence, not a fresh smoke pass.
 - [ ] Real-device/cross-engine testing: **deferred at the user's request**. Physical iPhone/Safari and the user's regular Edge session are outside the recorded Chromium scope. This is not a gate for the requested cleanup release.
 
 ## Historical design checkpoints
