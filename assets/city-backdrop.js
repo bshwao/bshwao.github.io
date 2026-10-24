@@ -21,7 +21,7 @@ export function createCityBackdrop(renderer, backgrounds, foregrounds) {
   });
   const composite = new T.MeshBasicMaterial({ depthTest: false, depthWrite: false, toneMapped: false });
   const quad = new T.Mesh(new T.PlaneGeometry(2, 2), composite); scene.add(quad);
-  let source, scratch, width = 0, height = 0, cache = '';
+  let source, scratch, width = 0, height = 0, cache = '', lowGraphics = false;
   const size = new T.Vector2();
   const resolution = new T.Vector2();
   function resize() {
@@ -29,7 +29,8 @@ export function createCityBackdrop(renderer, backgrounds, foregrounds) {
     // Match the canvas's bounded drawing buffer, including its device-pixel ratio.
     // A lightly blurred city should not be enlarged from a coarse thumbnail.
     renderer.getDrawingBufferSize(resolution);
-    const nextWidth = Math.max(1, resolution.x), nextHeight = Math.max(1, resolution.y);
+    const scale = lowGraphics ? .5 : 1;
+    const nextWidth = Math.max(1, Math.floor(resolution.x * scale)), nextHeight = Math.max(1, Math.floor(resolution.y * scale));
     if (width === nextWidth && height === nextHeight) return;
     width = nextWidth; height = nextHeight; cache = '';
     if (!source) {
@@ -53,14 +54,16 @@ export function createCityBackdrop(renderer, backgrounds, foregrounds) {
           backgrounds.forEach(root => { root.visible = true; });
           foregrounds.forEach(root => { root.visible = false; });
           renderer.setRenderTarget(source); renderer.render(world, view);
-          quad.material = blur;
-          blur.uniforms.source.value = source.texture;
-          // Densely sampled gentle defocus, with spacing in CSS pixels.
-          blur.uniforms.step.value.set(amount / size.x, 0);
-          renderer.setRenderTarget(scratch); renderer.render(scene, camera);
-          blur.uniforms.source.value = scratch.texture;
-          blur.uniforms.step.value.set(0, amount / size.y);
-          renderer.setRenderTarget(source); renderer.render(scene, camera);
+          if (!lowGraphics) {
+            quad.material = blur;
+            blur.uniforms.source.value = source.texture;
+            // Densely sampled gentle defocus, with spacing in CSS pixels.
+            blur.uniforms.step.value.set(amount / size.x, 0);
+            renderer.setRenderTarget(scratch); renderer.render(scene, camera);
+            blur.uniforms.source.value = scratch.texture;
+            blur.uniforms.step.value.set(0, amount / size.y);
+            renderer.setRenderTarget(source); renderer.render(scene, camera);
+          }
           cache = key;
         }
         quad.material = composite;
@@ -74,7 +77,8 @@ export function createCityBackdrop(renderer, backgrounds, foregrounds) {
         renderer.setRenderTarget(previousTarget); renderer.autoClear = autoClear;
       }
     },
-    metrics() { return { width, height }; },
+    setLowGraphics(value) { if (lowGraphics !== value) { lowGraphics = value; cache = ''; } },
+    metrics() { return { width, height, blurPasses: lowGraphics ? 0 : 2 }; },
     invalidate() { cache=''; },
     dispose() { source?.dispose(); scratch?.dispose(); quad.geometry.dispose(); blur.dispose(); composite.dispose(); },
   };

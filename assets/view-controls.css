@@ -1,0 +1,48 @@
+/* Persistent camera controls and a small, keyboard-accessible preferences panel. */
+.spatial-tools { align-items: flex-start; gap: 8px; z-index: 8; }
+.zoom-controls { display: flex; gap: 4px; }
+.spatial-tools .zoom-controls button { padding: 0; width: 44px; font: 20px/1 var(--mono); }
+.spatial-tools button:disabled { opacity: .5; cursor: default; }
+.view-settings { position: relative; font: 10px/1.6 var(--mono); color: var(--ink); }
+.view-settings > summary { display: flex; align-items: center; justify-content: center; min-width: 72px; min-height: 44px; padding: 8px 12px; box-sizing: border-box; cursor: pointer; list-style: none; }
+.view-settings > summary::-webkit-details-marker { display: none; }
+.view-settings > summary::after { content: '+'; margin-left: 8px; }
+.view-settings[open] > summary::after { content: '−'; }
+.view-settings > summary, .view-settings-panel, .controls-hint {
+  background: rgba(var(--raised-rgb), .96); border: 1px solid var(--glass-edge, var(--line)); border-radius: 12px;
+  box-shadow: var(--glass-shadow); color: var(--ink);
+}
+.view-settings-panel { position: absolute; top: 52px; right: 0; width: 290px; max-width: calc(100vw - 32px); max-height: calc(100dvh - 90px); overflow-y: auto; overscroll-behavior: contain; padding: 18px; box-sizing: border-box; }
+.view-settings-panel .spatial-eyebrow { margin: 0 0 14px; }
+.view-settings-panel label { display: block; margin-bottom: 6px; font-weight: 700; }
+.view-settings-panel select { width: 100%; min-height: 44px; padding: 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--raised); color: var(--ink); font: inherit; }
+.view-settings-panel p:not(.spatial-eyebrow) { margin: 7px 0 19px; font: 12px/1.6 var(--sans, Arial, sans-serif); color: var(--muted); }
+.view-settings-panel #show-controls-hint { width: 100%; border: 1px solid var(--line); margin-bottom: 10px; text-align: left; }
+.view-settings-panel small { display: block; font-size: 9px; color: var(--muted); }
+.view-settings summary:focus-visible, .view-settings select:focus-visible, .controls-hint button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.controls-hint { position: absolute; z-index: 4; bottom: 126px; left: calc(50% - min(195px,17vw) * var(--interior-progress)); transform: translateX(-50%); display: flex; align-items: flex-start; width: 370px; max-width: calc(100% - 32px); padding: 13px 10px 13px 17px; box-sizing: border-box; }
+.controls-hint[hidden] { display: none; }
+.controls-hint strong { font: 600 14px/1.5 var(--serif); }
+.controls-hint p { margin: 5px 0; font: 12px/1.7 Arial, sans-serif; }
+.controls-hint small { font: 9px/1.6 var(--mono); color: var(--muted); }
+.controls-hint button { flex: 0 0 44px; min-height: 44px; border: 0; background: transparent; color: var(--ink); font-size: 22px; cursor: pointer; }
+html[data-motion="reduced"] :is(.spatial, .floor-view) *, html[data-motion="reduced"] :is(.spatial, .floor-view) *::before, html[data-motion="reduced"] :is(.spatial, .floor-view) *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+html[data-graphics="low"] :is(.spatial, dialog.floor-view) { --glass-top: 1; --glass-bottom: 1; --glass-blur: 0px; }
+html[data-graphics="low"] :is(.spatial, .floor-view), html[data-graphics="low"] :is(.spatial, .floor-view) * { --glass-top: 1; --glass-bottom: 1; --glass-blur: 0px; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; box-shadow: none !important; }
+html[data-graphics="low"] .view-settings-panel, html[data-graphics="low"] .controls-hint { background: var(--raised); }
+@media (max-width: 760px) {
+  .spatial .drawing-reference { display: none; }
+  .spatial-tools { right: 16px; left: 16px; justify-content: flex-end; gap: 6px; }
+  .spatial-tools > button, .view-settings { font-size: 8px; }
+  .view-settings > summary { padding-inline: 8px; min-width: 64px; }
+  .controls-hint { left: 50%; bottom: 150px; width: 330px; }
+  .spatial[data-mode="section"] .controls-hint { bottom: calc(44% + 22px); }
+}
+@media (max-height: 520px) {
+  .controls-hint { bottom: 110px; width: 330px; }
+}
+@media (min-width: 520px) and (max-width: 760px) and (max-height: 520px) {
+  .spatial-tools { gap: 4px; }
+  .zoom-controls { gap: 2px; }
+  .controls-hint { left: 28%; max-width: calc(56% - 32px); bottom: 110px; }
+}

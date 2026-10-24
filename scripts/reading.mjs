@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { profile, projects, experience, education, skills, personalNotes } from '../assets/content.js';
 import { floorContent } from '../assets/floor-content.js';
-import { renderStory, renderGallery, renderProjectStatus } from '../assets/project-story.js';
+import { renderStory, renderGallery, renderProjectStatus, renderProjectSummary } from '../assets/project-story.js';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const page = resolve(root, 'reading.html');
@@ -82,7 +82,7 @@ ${projects.map(project => `        <article class="portfolio-entry" id="project-
           <div class="entry-heading"><h3>${escape(project.title)}</h3>${project.year ? `<p class="entry-date">${escape(project.year)}</p>` : ''}</div>
           ${renderProjectStatus(project.status)}
           <p class="entry-context">${escape(project.category)}</p>
-          <p>${escape(project.description)}</p>
+          ${renderProjectSummary(project.summary)}
           ${renderStory(project.story)}
           ${list(project.bullets)}
           <p class="technology"><span>Technologies</span> ${escape(project.stack.join(' · '))}</p>

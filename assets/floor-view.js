@@ -1,7 +1,7 @@
 import { rooms } from './content.js';
 import { floorContent } from './floor-content.js';
 import { createFloorPlan, planLayouts } from './floor-plans.js';
-import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus } from './project-story.js';
+import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus, renderProjectSummary } from './project-story.js';
 
 const escape = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
 
@@ -16,7 +16,7 @@ function renderRoom(sectionId, room, layout) {
     <header class="floor-room-header"><p class="floor-room-name">${escape(room.number)} / ${escape(room.name)}</p><h3 id="${headingId}" tabindex="-1">${escape(room.title)}</h3></header>
     <div class="floor-room-scroll">
       ${renderProjectStatus(room.status)}
-      ${room.description ? `<p class="floor-room-description">${escape(room.description)}</p>` : ''}
+      ${room.summary ? renderProjectSummary(room.summary) : room.description ? `<p class="floor-room-description">${escape(room.description)}</p>` : ''}
       ${renderCaseStudyLink(room.projectId)}
       ${room.facts ? `<div class="floor-facts">${room.facts.map(fact => `<div><strong>${escape(fact.value)}</strong><span>${escape(fact.label)}</span></div>`).join('')}</div>` : ''}
       ${(room.paragraphs || []).map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}

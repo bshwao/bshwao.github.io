@@ -40,10 +40,11 @@ class LocalDate extends Date {
 const frames = new Map();
 const resizeObservers = new Set(), motionListeners = new Set();
 let motionReduced = reduced;
-let lastScene, lastCamera, renders = 0;
+let lastScene, lastCamera, lastRenderer, renders = 0;
 class Renderer {
   constructor() {
     if (unavailable) throw new Error('WebGL unavailable');
+    lastRenderer = this;
     this.domElement = w.document.createElement('canvas'); this.autoClear = true; this.target = null;
     this.size = new THREE.Vector2(); this.info = { reset() {} };
   }
@@ -266,6 +267,43 @@ assert.ok(cityDepthReferences.length > 0 && cityDepthReferences.every(reference 
 assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Assembled tower hides the cap plans');
 assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the tower');
 assert.equal(w.document.title, initialTitle, 'The opening tower restores the page title');
+// The visible controls use the real camera and renderer, rather than a second UI-only state.
+const hint = w.document.querySelector('#controls-hint');
+assert.equal(hint.hidden, false, 'A first visit shows help until the visitor selects something');
+const initialCamera = lastCamera.position.clone();
+click('#zoom-in'); await settleCamera();
+assert.ok(lastCamera.position.distanceTo(initialCamera) > 1, 'Visible zoom-in moves the camera');
+assert.equal(hint.hidden, true, 'Using the view dismisses onboarding');
+click('#zoom-out'); await settleCamera();
+assert.ok(lastCamera.position.distanceTo(initialCamera) < .001, 'Zoom-out reverses the camera step');
+const settings = w.document.querySelector('#view-settings');
+click('#show-controls-hint'); assert.equal(hint.hidden, false);
+w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+assert.equal(hint.hidden, true); assert.equal(main.dataset.mode, 'tower');
+settings.open = true;
+w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+assert.equal(settings.open, false, 'Escape closes settings before navigating away');
+const selectPreference = async (id, value) => {
+  const select = w.document.querySelector(id); select.value = value;
+  select.dispatchEvent(new w.Event('change', { bubbles: true })); await settleCamera();
+};
+await selectPreference('#motion-preference', 'full'); assert.equal(main.dataset.motion, 'full');
+motionReduced = true; for (const callback of [...motionListeners]) callback(); await settleCamera();
+assert.equal(main.dataset.motion, 'full', 'The explicit full-motion setting overrides a device change');
+await selectPreference('#motion-preference', 'reduced'); assert.equal(main.dataset.motion, 'reduced');
+motionReduced = reduced;
+await selectPreference('#motion-preference', 'system'); assert.equal(main.dataset.motion, reduced ? 'reduced' : 'full');
+const standardRatio = lastRenderer.pixelRatio;
+await selectPreference('#graphics-preference', 'low');
+assert.ok(lastRenderer.pixelRatio < standardRatio, 'Low graphics lowers actual renderer resolution');
+assert.equal(w.document.querySelector('canvas').dataset.detail, 'compact');
+assert.equal(w.document.querySelector('canvas').dataset.graphics, 'low');
+assert.equal(lastScene.getObjectByName('building-facades').visible, false, 'Fine facade geometry is omitted');
+const savedPreferences = JSON.parse(w.localStorage.getItem('eh-view-preferences-v1'));
+assert.deepEqual(savedPreferences, { motion: 'system', graphics: 'low', controlsSeen: true });
+await selectPreference('#graphics-preference', 'standard');
+assert.equal(lastRenderer.pixelRatio, standardRatio, 'Standard graphics restores the original resolution');
+assert.equal(w.document.querySelector('canvas').dataset.quality, '0');
 // At street level a solid foreground building must block the tower behind it.
 const outdoorCanvas = w.document.querySelector('canvas');
 const cameraKey = key => outdoorCanvas.dispatchEvent(new w.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
@@ -522,7 +560,10 @@ for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
     click(`#station-navigation [data-station="${i}"]`);
     await sampleRoomFlight(['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id), i);
     assert.equal(w.location.hash, `#${id}/${floorContent[id].rooms[i].id}`);
-    if (id === 'projects') assert.equal(w.document.querySelector('#complete-portfolio').getAttribute('href'), `./reading.html#project-${floorContent.projects.rooms[i].projectId}`, 'Each project opens its own complete case study');
+    if (id === 'projects') {
+      assert.equal(w.document.querySelector('#complete-portfolio').getAttribute('href'), `./reading.html#project-${floorContent.projects.rooms[i].projectId}`, 'Each project opens its own complete case study');
+      assert.deepEqual([...w.document.querySelectorAll('#interior-content .project-summary dt')].map(node => node.textContent), ['What I built', 'My contribution', 'Result']);
+    }
     assertRoomFramed(['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id), i);
     await verifyRoomObjects(sections.findIndex(section => section.id === id), i);
   }

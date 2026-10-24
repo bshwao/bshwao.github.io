@@ -4,6 +4,7 @@ import { applyDistrictDepth } from './district-style.js';
 import { districtPlan } from './city-layout.js';
 import { cityPalette } from './city-environment.js';
 import { applyGroundTexture } from './ground-materials.js';
+import { planRoadMarkings, roadPaint } from './road-markings.js';
 export { districtPlan } from './city-layout.js';
 
 // One world-space master plan, shared with future district buildings.
@@ -75,7 +76,14 @@ export function createDistrictGround() {
   const boundaries = layer('curbs-and-parcels', '#6b6e71', { opacity: .72, order: -7 });
   const details = layer('paving-and-road-marks', palette.line, { opacity: .48, order: -6 });
   const notes = layer('survey-annotations', palette.draft, { opacity: .72, order: -5 });
-  const markings = layer('road-markings', '#e7d9b5', { surface: true, opacity: .84, order: -5 });
+  const markings = layer('road-markings', '#ffffff', { surface: true, order: -5 });
+  markings.colors = [];
+  markings.material.polygonOffset = true; markings.material.polygonOffsetFactor = -1; markings.material.polygonOffsetUnits = -1;
+  const paintColors = new Map();
+  function paintColor(count, color = roadPaint.crossing) {
+    if (!paintColors.has(color)) paintColors.set(color, new T.Color(color).toArray());
+    for (let i = 0; i < count; i++) markings.colors.push(...paintColors.get(color));
+  }
 
   function segment(target, x1, z1, x2, z2, y = -.22) {
     target.positions.push(x1, y, z1, x2, y, z2);
@@ -86,22 +94,24 @@ export function createDistrictGround() {
   }
   function rect(target, x0, z0, x1, z1, y) {
     target.positions.push(x0, y, z0, x0, y, z1, x1, y, z1, x0, y, z0, x1, y, z1, x1, y, z0);
+    if (target === markings) paintColor(6);
   }
   function text(value, x, z, size = 2.1) {
     appendDraftingText(notes.positions, value, size, (dx, dy) => [x + dx, -.22, z - dy]);
   }
   function roadRect(center, a0, a1, b0, b1, axis) {
-    if (axis === 'z') rect(markings, center + a0, b0, center + a1, b1, -.2);
-    else rect(markings, b0, center + a0, b1, center + a1, -.2);
+    if (axis === 'z') rect(markings, center + a0, b0, center + a1, b1, -.625);
+    else rect(markings, b0, center + a0, b1, center + a1, -.625);
   }
   function arrow(center, lane, along, direction, axis) {
     roadRect(center, lane - .12, lane + .12, along - 1.6, along + 1.6, axis);
-    const point = (across, forward) => axis === 'z' ? [center + across, -.2, forward] : [forward, -.2, center + across];
+    const point = (across, forward) => axis === 'z' ? [center + across, -.625, forward] : [forward, -.625, center + across];
     const triangle = [point(lane - .85, along + direction * .9), point(lane + .85, along + direction * .9), point(lane, along + direction * 2.3)];
     // Keep both road orientations and travel directions facing the sky.
     const normal = new T.Vector3().subVectors(new T.Vector3(...triangle[1]), new T.Vector3(...triangle[0])).cross(new T.Vector3().subVectors(new T.Vector3(...triangle[2]), new T.Vector3(...triangle[0])));
     if (normal.y < 0) triangle.reverse();
     markings.positions.push(...triangle.flat());
+    paintColor(3);
   }
 
   // Fade the outer drafting field into the white background using vertex colours.
@@ -128,11 +138,6 @@ export function createDistrictGround() {
           segment(details, edge, tick, walkEdge, tick); segment(details, tick, edge, tick, walkEdge);
         }
       }
-      for (let dash = start + 2; dash < end - 2; dash += 6) {
-        // Leave the plaza crosswalks and stop lines free of center dashes.
-        if (dash < 9 && dash + 2 > -9) continue;
-        for (const axis of ['x', 'z']) roadRect(center, -.12, .12, dash, dash + 2.6, axis);
-      }
     }
     for (const axis of ['x', 'z']) {
       for (const direction of [-1, 1]) {
@@ -141,6 +146,11 @@ export function createDistrictGround() {
         arrow(center, lane * 2.5, -direction * 19, direction, axis);
       }
     }
+  }
+  const roadMarkings = planRoadMarkings('downtown');
+  for (const patch of roadMarkings) {
+    const [a, b, c, d] = patch.points;
+    markings.positions.push(...a, ...b, ...c, ...a, ...c, ...d); paintColor(6, patch.color);
   }
 
   const p = districtPlan.plazaHalf;
@@ -169,8 +179,8 @@ export function createDistrictGround() {
 
   // Crosswalks lead to all four sides of the plaza, before the junctions.
   for (const side of [-1, 1]) for (let stripe = -3; stripe <= 3; stripe += 1.5) {
-    rect(markings, stripe - .35, Math.min(side * 38, side * 46), stripe + .35, Math.max(side * 38, side * 46), -.2);
-    rect(markings, Math.min(side * 38, side * 46), stripe - .35, Math.max(side * 38, side * 46), stripe + .35, -.2);
+    rect(markings, stripe - .35, Math.min(side * 38, side * 46), stripe + .35, Math.max(side * 38, side * 46), -.625);
+    rect(markings, Math.min(side * 38, side * 46), stripe - .35, Math.max(side * 38, side * 46), stripe + .35, -.625);
   }
 
   // Survey datum crosses and a dimension chain for the central 72-unit block.
@@ -195,6 +205,7 @@ export function createDistrictGround() {
   for (const item of layers.values()) {
     const geometry = new T.BufferGeometry();
     geometry.setAttribute('position', new T.Float32BufferAttribute(item.positions, 3));
+    if (item.colors) { geometry.setAttribute('color', new T.Float32BufferAttribute(item.colors, 3)); item.material.vertexColors = true; }
     if (item === minor || item === major) {
       const base = item.material.color.clone(), white = new T.Color(palette.paper);
       const colors = [];
@@ -214,6 +225,7 @@ export function createDistrictGround() {
 
   return {
     root,
+    roadMarkings,
     setPresentation(expansion, reveal) {
       const amount = (1 - T.MathUtils.clamp(reveal, 0, 1)) * (1 - T.MathUtils.clamp(expansion, 0, 1) * .6);
       root.visible = amount > .005;

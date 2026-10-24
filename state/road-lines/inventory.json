@@ -1,0 +1,17 @@
+[
+  {
+    "group": "downtown",
+    "roads": 4,
+    "paintPatches": 64
+  },
+  {
+    "group": "outskirts",
+    "roads": 36,
+    "paintPatches": 760
+  },
+  {
+    "group": "bridge",
+    "roads": 2,
+    "paintPatches": 16
+  }
+]

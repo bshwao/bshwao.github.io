@@ -8,8 +8,51 @@ import {outdoorCameraPose} from '../assets/camera-framing.js';
 import {createCityEnvironment,cityPalette,applyTowerGlazing} from '../assets/city-environment.js';
 import {createCityBackdrop} from '../assets/city-backdrop.js';
 import {readCityTime} from '../assets/city-time.js';
+import {roadNetwork} from '../assets/road-markings.js';
 const model=createTowerModel();model.root.updateMatrixWorld(true);
 const overlap=(a,b)=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1];
+
+test('every road has supported center and edge paint outside intersections',()=>{
+  const groups=[['downtown',model.district,model.district.root.getObjectByName('streets')],
+    ['outskirts',model.outskirts,model.outskirts.root.getObjectByName('outskirts-paving')],
+    ['bridge',model.waterfront,model.waterfront.root.getObjectByName('waterfront-quays')]];
+  let covered=0;
+  for(const [group,owner,asphalt] of groups) {
+    for(const road of roadNetwork.filter(road=>road.group===group)) {
+      const patches=owner.roadMarkings.filter(patch=>patch.roadId===road.id);
+      assert.ok(patches.some(patch=>patch.type==='center')&&patches.some(patch=>patch.type==='edge'),`${road.id}: both paint types cover the road`);
+      covered++;
+      for(const patch of patches) {
+        const normal=new T.Vector3().subVectors(new T.Vector3(...patch.points[1]),new T.Vector3(...patch.points[0]))
+          .cross(new T.Vector3().subVectors(new T.Vector3(...patch.points[2]),new T.Vector3(...patch.points[0])));
+        assert.ok(normal.y>0,`${road.id}: paint faces upward, including sloped ramps`);
+        for(const [x,y,z] of patch.points) {
+          const along=road.axis==='x'?x:z,across=(road.axis==='x'?z:x)-road.center;
+          assert.ok(Number.isFinite(y)&&along>=road.start-1e-5&&along<=road.end+1e-5&&Math.abs(across)<road.width/2-.25,`${road.id}: paint stays within the real asphalt`);
+        }
+        const bounds=[Math.min(...patch.points.map(p=>p[0])),Math.min(...patch.points.map(p=>p[2])),Math.max(...patch.points.map(p=>p[0])),Math.max(...patch.points.map(p=>p[2]))];
+        for(const other of roadNetwork.filter(other=>other.axis!==road.axis)) {
+          const cross=other.axis==='x'?[other.start,other.center-other.width/2,other.end,other.center+other.width/2]:[other.center-other.width/2,other.start,other.center+other.width/2,other.end];
+          assert.ok(!overlap(bounds,cross),`${road.id}/${other.id}: intersection remains unpainted`);
+        }
+        const center=patch.points.reduce((sum,p)=>sum.add(new T.Vector3(...p)),new T.Vector3()).multiplyScalar(.25);
+        const hits=new T.Raycaster(new T.Vector3(center.x,20,center.z),new T.Vector3(0,-1,0)).intersectObject(asphalt);
+        assert.ok(hits.some(hit=>Math.abs(center.y-hit.point.y-.025)<1e-4),`${road.id}: paint follows the actual road/deck/ramp elevation`);
+      }
+    }
+  }
+  assert.equal(covered,42,'Downtown, all 36 outer streets and both bridges receive markings');
+});
+
+test('the previously blank downtown extensions carry visible paint and retain crossing gaps',()=>{
+  const paint=model.district.root.getObjectByName('road-markings');
+  for(const [x,z] of [[145,42+.22],[-145,-42-.22],[42+4.4,-140],[-42-4.4,-140]]) {
+    assert.ok(new T.Raycaster(new T.Vector3(x,10,z),new T.Vector3(0,-1,0)).intersectObject(paint).length,'The full road beyond the old 108-unit paint boundary is marked');
+  }
+  for(const [x,z] of [[42,42],[-42,-42],[2.5,42]])
+    assert.equal(new T.Raycaster(new T.Vector3(x,10,z),new T.Vector3(0,-1,0)).intersectObject(paint).length,0,'Junctions and gaps between plaza crossing stripes remain clear');
+  assert.equal(paint.geometry.attributes.position.count,paint.geometry.attributes.color.count,'Yellow dividers and white edges share the existing mesh');
+});
 
 test('night environment is smooth, static, world-oriented and independent of interiors',()=>{
   const environment=createCityEnvironment(readCityTime(new Date(2026,9,23,0))),camera=new T.PerspectiveCamera();camera.position.set(120,20,300);
@@ -51,7 +94,7 @@ test('city blur isolates the sharp subject, caches unchanged views, and releases
   assert.equal(draws[0].city,true);assert.equal(draws[0].tower,false,'The tower never enters the blurred texture');
   assert.equal(draws[4].city,false);assert.equal(draws[4].tower,true,'City cannot occlude an unfolded floor');
   const buffer=renderer.getDrawingBufferSize(new T.Vector2());
-  assert.deepEqual(blur.metrics(),{width:buffer.x,height:buffer.y},'City matches the main drawing buffer instead of upscaling a thumbnail');
+  assert.deepEqual(blur.metrics(),{width:buffer.x,height:buffer.y,blurPasses:2},'City matches the main drawing buffer instead of upscaling a thumbnail');
   assert.ok(buffer.x*buffer.y<=2_400_000,'Large screens retain the shared raster cap');
   assert.equal(city.visible,false);assert.equal(tower.visible,true);assert.equal(renderer.autoClear,true);assert.equal(target,null);
   const targets=[draws[0].target,draws[1].target];let disposed=0;
@@ -63,10 +106,18 @@ test('city blur isolates the sharp subject, caches unchanged views, and releases
   blur.invalidate();draws.length=0;blur.render(world,view,1,()=>{},()=>{});
   assert.equal(draws.length,5,'A clock/lighting change refreshes the cached city without moving the camera');
   size.set(390,844);pixelRatio=1;blur.render(world,view,1,()=>{},()=>{});
-  assert.deepEqual(blur.metrics(),{width:390,height:844});
+  assert.deepEqual(blur.metrics(),{width:390,height:844,blurPasses:2});
   pixelRatio=1.35;draws.length=0;blur.render(world,view,1,()=>{},()=>{});
-  assert.deepEqual(blur.metrics(),{width:526,height:1139},'Dense phone screens retain the main canvas pixel ratio');
+  assert.deepEqual(blur.metrics(),{width:526,height:1139,blurPasses:2},'Dense phone screens retain the main canvas pixel ratio');
   assert.equal(draws.length,5,'A pixel-ratio change refreshes the backdrop even without a CSS resize');
+  blur.setLowGraphics(true);draws.length=0;blur.render(world,view,1,()=>{},()=>{});
+  assert.equal(draws.length,3,'Low graphics skips both blur shader passes');
+  assert.deepEqual(blur.metrics(),{width:263,height:569,blurPasses:0},'Low graphics quarters the scenery buffer area');
+  assert.equal(draws[0].target,targets[0],'The same GPU target is reused across graphics changes');
+  assert.equal(draws[2].city,false);assert.equal(draws[2].tower,true,'The sharp subject remains isolated in low graphics');
+  blur.setLowGraphics(false);draws.length=0;blur.render(world,view,1,()=>{},()=>{});
+  assert.equal(draws.length,5,'Returning to standard restores both blur passes');
+  assert.deepEqual(blur.metrics(),{width:526,height:1139,blurPasses:2});
   disposed=0;blur.dispose();assert.equal(disposed,2,'Both GPU targets are disposed');
 });
 

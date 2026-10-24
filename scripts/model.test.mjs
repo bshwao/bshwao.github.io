@@ -137,7 +137,7 @@ test('blueprint road marks have visible area, face upward, and stay inside the s
     assert.ok(normal.y > 0, 'Road markings are visible from above without double-sided rendering');
     for (const point of points) {
       assert.ok(districtPlan.roadCenters.some(center => Math.abs(point.x - center) < districtPlan.roadWidth / 2 || Math.abs(point.z - center) < districtPlan.roadWidth / 2), 'Marks cannot spill onto the sidewalks or plaza');
-      assert.ok(point.y < 0 && Math.max(Math.abs(point.x), Math.abs(point.z)) <= 108);
+      assert.ok(point.y < 0 && Math.max(Math.abs(point.x), Math.abs(point.z)) <= 170, 'Paint covers the full downtown road extents');
     }
   }
   const ray = new T.Raycaster(new T.Vector3(0, 10, 42), new T.Vector3(0, -1, 0));

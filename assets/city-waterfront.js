@@ -3,6 +3,7 @@ import { riverPlan, riverCenter, riverEdges, districtPlan } from './city-layout.
 import { cityPalette } from './city-environment.js';
 import { applyDistrictDepth } from './district-style.js';
 import { applyGroundTexture } from './ground-materials.js';
+import { planRoadMarkings } from './road-markings.js';
 
 /** A static river, quays, bridges and riverwalk, sharing five geometry batches. */
 export function createCityWaterfront() {
@@ -81,11 +82,12 @@ export function createCityWaterfront() {
       for(let z=start+1;z<end;z+=5) box('fixtures',x+side*6.6,.72,z,.16,1.05,.16,'#70899b');
       box('quays',x+side*5,-.55,riverCenter(x),1.1,.9,3.4,'#526673');
     }
-    for(let z=start+2;z<end-2;z+=6) rect('quays',x-.10,z,x+.10,z+2.6,.325,'#d0c29c');
     // The southern landing meets a new avenue, rather than ending in the river.
     rect('quays',x-5,end,x+5,214,-.50,cityPalette.road);
     for(const side of [-1,1]) rect('quays',x+side*6.5-1.5,end,x+side*6.5+1.5,214,-.39,'#87939c');
   },{x});
+  const roadMarkings = planRoadMarkings('bridge');
+  for (const patch of roadMarkings) quad('fixtures', ...patch.points, patch.color);
 
   for(const side of [-1,1]) for(const [i,x]of [-270,-230,-190,-150,-110,-70,-20,20,70,110,150,190,230,270].entries()) {
     const z=riverCenter(x)+side*(half+walk*.68);
@@ -141,5 +143,5 @@ export function createCityWaterfront() {
     const object=name==='reflections'?new T.LineSegments(geometry,material):new T.Mesh(geometry,material);
     object.name=`waterfront-${name}`; root.add(object);
   }
-  return {root,features,setPresentation(expansion,reveal){root.visible=reveal<.999&&expansion<.999;}};
+  return {root,features,roadMarkings,setPresentation(expansion,reveal){root.visible=reveal<.999&&expansion<.999;}};
 }

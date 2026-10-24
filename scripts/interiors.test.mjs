@@ -74,6 +74,49 @@ test('object responses stay isolated, retrigger safely, and remove spatial motio
   assert.ok(parts.every(part => part.geometry.attributes.color.getZ(part.start) === 1));
 });
 
+test('inspection car tires and brake hubs remain concentric through animation and retriggering', () => {
+  const section = sections.find(section => section.id === 'experience');
+  const interior = createInterior(section, floorContent.experience), controls = interior.interactions;
+  const car = controls.objects.find(object => object.name === 'Formula inspection model');
+  const roomParts = controls.objects.filter(object => object.roomIndex === car.roomIndex)
+    .flatMap(object => object.parts).filter(part => part.normals);
+  const bounds = (part, rest = false) => new T.Box3().setFromArray(rest ? part.rest
+    : part.geometry.attributes.position.array.subarray(part.start * 3, (part.start + part.count) * 3));
+  const center = (part, rest = false) => bounds(part, rest).getCenter(new T.Vector3());
+  const pairs = [];
+  for (const x of [-1.3, 1.3]) for (const z of [-1.75, 1.75]) {
+    // This side-wing room faces the opposite direction after furnishing.
+    const axle = new T.Vector3(-x, .6, -z);
+    const atAxle = roomParts.filter(part => center(part, true).distanceTo(axle) < tolerance);
+    const tire = atAxle.find(part => Math.abs(bounds(part, true).getSize(new T.Vector3()).x - .5) < tolerance);
+    const hub = atAxle.find(part => Math.abs(bounds(part, true).getSize(new T.Vector3()).x - .54) < tolerance);
+    assert.ok(tire && hub, 'Each of the four wheels has its visible tire and brake hub');
+    assert.ok(tire.target === car, 'The tire belongs to the car animation');
+    assert.ok(hub.target === car, 'The hub shares the car animation and pivot');
+    pairs.push({ tire, hub });
+  }
+  const stationary = roomParts.filter(part => part.target !== car);
+  controls.hover(car); controls.activate(car, 0);
+  let moved = false;
+  for (const time of [80, 150, 300, 450, 600, 780, 920, 1000, 1150, 1450]) {
+    if (time === 600) controls.activate(car, time);
+    controls.update(time);
+    for (const { tire, hub } of pairs) {
+      assert.ok(center(tire).distanceTo(center(hub)) < tolerance, 'Tire and hub centers stay aligned throughout the turn');
+      moved ||= center(tire).distanceTo(center(tire, true)) > .01;
+    }
+    for (const part of stationary) assert.deepEqual(
+      part.geometry.attributes.position.array.subarray(part.start * 3, (part.start + part.count) * 3),
+      part.rest, 'Nearby pit equipment and spare wheels stay fixed');
+  }
+  assert.ok(moved, 'The regression exercises spatial motion');
+  controls.setReducedMotion(true); controls.update(1480);
+  for (const part of car.parts) assert.deepEqual(
+    part.geometry.attributes.position.array.subarray(part.start * 3, (part.start + part.count) * 3), part.rest);
+  controls.reset();
+  assert.equal(controls.update(1600).moving, false);
+});
+
 test('sofa frame panels and cushions have no intersecting or exposed coplanar faces',()=>{
   const bounds=sofaPanels.map(panel=>new T.Box3().setFromCenterAndSize(new T.Vector3(...panel.position),new T.Vector3(...panel.size)));
   for(const [i,a]of bounds.entries())for(const b of bounds.slice(i+1)) {

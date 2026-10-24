@@ -3,6 +3,7 @@ import { outskirtsRoads, neighborhoodParcels, cityLots, buildingVolumes, riverEd
 import { applyDistrictDepth } from './district-style.js';
 import { applyGroundTexture } from './ground-materials.js';
 import { cityPalette } from './city-palette.js';
+import { planRoadMarkings } from './road-markings.js';
 
 const overlap=(a,b)=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1];
 const expand=(b,d)=>[b[0]-d,b[1]-d,b[2]+d,b[3]+d];
@@ -56,18 +57,16 @@ export function createCityOutskirts() {
   },{id:road.id,plan:road});
   for(const road of outskirtsRoads) {
     const crossings=outskirtsRoads.filter(other=>other.axis!==road.axis&&overlap(expand(road.bounds,.1),other.bounds));
-    const project=(across,along)=>road.axis==='x'?[along,road.center+across]:[road.center+across,along];
-    for(let at=road.start+10;at<road.end-8;at+=12) {
-      const[x,z]=project(0,at);
-      if(crossings.some(r=>overlap([x-5,z-5,x+5,z+5],r.bounds)))continue;
-      const[a,b]=project(-.1,at),[c,d]=project(.1,at+3.5);
-      rect('marks',[a,b,c,d],-.485,'#c9c1a6');
-    }
     // A pair of pedestrian crossings belongs to each neighborhood junction.
     if(road.axis==='x')for(const cross of crossings)for(const sign of [-1,1])for(let stripe=-3;stripe<=3;stripe+=1.5){
       const x=cross.center+sign*(cross.width/2+2.5);
       rect('marks',[x-.35,road.center+stripe-.45,x+.35,road.center+stripe+.45],-.485,'#ded6bd');
     }
+  }
+  const roadMarkings = planRoadMarkings('outskirts');
+  for (const patch of roadMarkings) {
+    const [a, b, c, d] = patch.points;
+    for (const point of [a, b, c, a, c, d]) vertex('marks', point, patch.color);
   }
   for(const road of outskirtsRoads.filter(r=>r.id.startsWith('north-spine-')))feature('river-approach',()=>{
     const x=road.center,z=road.end;
@@ -157,10 +156,11 @@ export function createCityOutskirts() {
     const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(out.positions,3));geometry.setAttribute('color',new T.Float32BufferAttribute(out.colors,3));
     geometry.setAttribute('cityGlow',new T.Float32BufferAttribute(out.glow,1));geometry.setAttribute('surfaceKind',new T.Float32BufferAttribute(out.surface,1));geometry.computeBoundingSphere();
     const material=applyDistrictDepth(new T.MeshBasicMaterial({vertexColors:true}),name==='green'?.88:.65);
+    if(name==='marks'){material.polygonOffset=true;material.polygonOffsetFactor=-1;material.polygonOffsetUnits=-1;}
     if(name==='fixtures')material.userData.cityGlowMode='vertex';
     else if(name==='paving')applyGroundTexture(material,'mixed');
     else if(name==='green')applyGroundTexture(material,'terrain');
     const mesh=new T.Mesh(geometry,material);mesh.name=`outskirts-${name}`;root.add(mesh);
   }
-  return {root,features,roads:outskirtsRoads};
+  return {root,features,roads:outskirtsRoads,roadMarkings};
 }

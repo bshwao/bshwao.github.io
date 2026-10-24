@@ -2,10 +2,11 @@ import { sections } from './tower-geometry.js';
 import { floorContent } from './floor-content.js';
 import { roomMarkerLayout, towerLabelLayout, outdoorViewLayout } from './spatial-layout.js';
 import { parseRoute, routeHash } from './routes.js';
-import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus } from './project-story.js';
+import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus, renderProjectSummary } from './project-story.js';
 import { createSectionReadingView } from './floor-view.js';
 import { palette } from './color-theme.js';
 import { createLocalClock } from './local-clock.js';
+import { readViewPreferences, saveViewPreferences } from './view-preferences.js';
 
 const page = document.querySelector('#main');
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -13,6 +14,9 @@ let spatial, currentId = null, currentRoomIndex = null, revision = 0;
 const defaultTitle = document.title;
 let routeKey = '', fallbackActive = false;
 let readingView, localClock;
+let preferenceStorage;
+try { preferenceStorage = window.localStorage; } catch { /* Private browsing may deny storage. */ }
+let viewPreferences = readViewPreferences(preferenceStorage);
 const $ = selector => page.querySelector(selector);
 const labelSizes = new WeakMap();
 const labelObserver = new ResizeObserver(entries => {
@@ -48,8 +52,8 @@ function roomMarkup(room, index) {
   return `<p class="spatial-eyebrow">${escape(room.number)} / ${escape(room.name)}</p>
     <h3 id="interior-room-title" tabindex="-1">${escape(room.title)}</h3>
     ${renderProjectStatus(room.status)}
-    ${room.description ? `<p class="interior-intro">${escape(room.description)}</p>` : ''}
-    ${renderCaseStudyLink(room.projectId)}
+    ${room.projectId ? `<div class="project-actions">${renderCaseStudyLink(room.projectId)}${(room.links || []).map(link).join('')}</div>` : ''}
+    ${room.summary ? renderProjectSummary(room.summary) : room.description ? `<p class="interior-intro">${escape(room.description)}</p>` : ''}
     ${room.facts ? `<dl class="interior-facts">${room.facts.map(item => `<div><dt>${escape(item.value)}</dt><dd>${escape(item.label)}</dd></div>`).join('')}</dl>` : ''}
     ${(room.paragraphs || []).map(text => `<p>${escape(text)}</p>`).join('')}
     ${renderStory(room.story)}
@@ -57,7 +61,7 @@ function roomMarkup(room, index) {
     ${(room.entries || []).map(item => `<section class="interior-entry"><h4>${escape(item.title)}</h4>${item.subtitle ? `<p>${escape(item.subtitle)}</p>` : ''}${item.detail ? `<p>${escape(item.detail)}</p>` : ''}</section>`).join('')}
     ${room.tags ? `<ul class="interior-tags" aria-label="Skills and topics">${room.tags.map(text => `<li>${escape(text)}</li>`).join('')}</ul>` : ''}
     ${renderGallery(room.images)}
-    ${room.links ? `<div class="interior-links">${room.links.map(link).join('')}</div>` : ''}
+    ${room.links && !room.projectId ? `<div class="interior-links">${room.links.map(link).join('')}</div>` : ''}
     ${objects.length ? `<details class="room-objects"><summary>Play with room objects</summary><p>Hover or focus to highlight. Click, tap, or press Enter to animate.</p><div>${objectControls}</div></details>` : ''}`;
 }
 
@@ -168,6 +172,9 @@ function syncRoute({ instant = false, force = false } = {}) {
 }
 
 function onFrame(state) {
+  setData(page, 'motion', state.reducedMotion ? 'reduced' : 'full');
+  setData(document.documentElement, 'motion', state.reducedMotion ? 'reduced' : 'full');
+  for (const id of ['zoom-in', 'zoom-out']) $(`#${id}`).disabled = Boolean(state.transitionType);
   const timeLabel=page.querySelector('.material-key small');
   const timeText=`CITY / ${state.timeOfDay.toUpperCase()}`;
   if(timeLabel&&timeLabel.textContent!==timeText)timeLabel.textContent=timeText;
@@ -260,7 +267,20 @@ async function start() {
     <div class="spatial-stage" id="spatial-stage"></div>
     <div class="drawing-reference" aria-hidden="true"><span>EH—001</span><span>STRUCTURES & SYSTEMS</span></div>
     <div class="material-key">${['teal', 'blue', 'coral', 'mustard', 'rose'].map(key => `<span aria-hidden="true" style="--swatch:${palette[key]}"></span>`).join('')}<small aria-hidden="true">CITY / LOCAL TIME</small><time id="local-clock" aria-live="off"></time></div>
-    <div class="spatial-tools"><button type="button" id="reset-spatial" aria-label="Reset the 3D camera" disabled>↺ <span>Reset view</span></button><button type="button" id="reading-view" aria-haspopup="dialog" aria-controls="room-dialog" hidden>Reading view</button></div>
+    <div class="spatial-tools" role="group" aria-label="View controls">
+      <div class="zoom-controls" role="group" aria-label="Zoom"><button type="button" id="zoom-out" aria-label="Zoom out" disabled>−</button><button type="button" id="zoom-in" aria-label="Zoom in" disabled>+</button></div>
+      <button type="button" id="reset-spatial" aria-label="Reset the 3D camera" disabled>↺ <span>Reset view</span></button>
+      <button type="button" id="reading-view" aria-haspopup="dialog" aria-controls="room-dialog" hidden>Reading view</button>
+      <details class="view-settings" id="view-settings"><summary>Settings</summary><div class="view-settings-panel">
+        <p class="spatial-eyebrow">YOUR VIEW</p>
+        <label for="motion-preference">Motion</label><select id="motion-preference"><option value="system">Use device setting</option><option value="reduced">Reduced motion</option><option value="full">Full motion</option></select>
+        <p>Reduced motion skips camera flights and object movement, keeping color feedback.</p>
+        <label for="graphics-preference">Graphics</label><select id="graphics-preference"><option value="standard">Standard graphics</option><option value="low">Low graphics</option></select>
+        <p>Low graphics uses a lower resolution, simpler scenery and solid panels to ease GPU work.</p>
+        <button type="button" id="show-controls-hint">Show controls hint</button><small>Preferences are saved on this device.</small>
+      </div></details>
+    </div>
+    <aside class="controls-hint" id="controls-hint" aria-label="3D controls"${viewPreferences.controlsSeen ? ' hidden' : ''}><div><strong>Take a look around</strong><p id="controls-hint-text"></p><small>Arrow keys orbit · + / − zoom · Enter selects</small></div><button type="button" id="dismiss-controls-hint" aria-label="Dismiss controls hint">×</button></aside>
     <nav class="tower-labels" id="tower-labels" aria-label="Portfolio sections" aria-hidden="true" inert>${sections.map(section => `<button type="button" class="tower-label" data-section="${section.id}"><span class="spatial-eyebrow">${section.number} / PORTFOLIO</span><span class="tower-label-name">${escape(section.name)}</span><span class="tower-label-subtitle">${section.subtitle}</span></button>`).join('')}</nav>
     <div class="station-markers" id="station-markers" role="group" aria-label="Rooms in this interior" aria-hidden="true" inert></div>
     <button type="button" class="structure-action" id="back-to-structure" hidden>↖ <span>Back to tower</span></button>
@@ -288,12 +308,45 @@ async function start() {
   if (fallbackActive) return;
   spatial = createSpatialScene({
     container: $('#spatial-stage'),
+    preferences: viewPreferences,
     onSelectSection: id => navigate(id || 'explore'),
     onSelectRoom: index => selectRoom(index, { focus: true }),
     onFrame,
     onContextLost: () => void useFallback(true),
   });
   $('#reset-spatial').disabled = false;
+  $('#zoom-in').disabled = false; $('#zoom-out').disabled = false;
+  page.dataset.graphics = viewPreferences.graphics;
+  document.documentElement.dataset.graphics = viewPreferences.graphics;
+  $('#motion-preference').value = viewPreferences.motion;
+  $('#graphics-preference').value = viewPreferences.graphics;
+  const dismissHint = () => {
+    if ($('#controls-hint').hidden) return;
+    $('#controls-hint').hidden = true;
+    viewPreferences = saveViewPreferences(preferenceStorage, { ...viewPreferences, controlsSeen: true });
+  };
+  $('#dismiss-controls-hint').addEventListener('click', () => { dismissHint(); spatial.focus(); });
+  $('#show-controls-hint').addEventListener('click', () => {
+    $('#view-settings').open = false; $('#controls-hint').hidden = false;
+    viewPreferences = saveViewPreferences(preferenceStorage, { ...viewPreferences, controlsSeen: false });
+    $('#dismiss-controls-hint').focus({ preventScroll: true });
+  });
+  const changePreferences = () => {
+    viewPreferences = saveViewPreferences(preferenceStorage, { ...viewPreferences, motion: $('#motion-preference').value, graphics: $('#graphics-preference').value });
+    page.dataset.graphics = viewPreferences.graphics;
+    document.documentElement.dataset.graphics = viewPreferences.graphics;
+    spatial.setPreferences(viewPreferences);
+  };
+  $('#motion-preference').addEventListener('change', changePreferences);
+  $('#graphics-preference').addEventListener('change', changePreferences);
+  for (const [id, direction] of [['zoom-in', 1], ['zoom-out', -1]]) {
+    $(`#${id}`).addEventListener('click', () => { spatial.zoom(direction); dismissHint(); });
+  }
+  const canvas = $('#spatial-stage canvas');
+  canvas.addEventListener('pointerup', event => { if (event.button === 0 || event.pointerType === 'touch') dismissHint(); });
+  canvas.addEventListener('wheel', dismissHint, { passive: true });
+  canvas.addEventListener('keydown', event => { if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '=', '-', 'Enter', ' '].includes(event.key)) dismissHint(); });
+  document.addEventListener('pointerdown', event => { if (!fallbackActive && !event.target.closest('#view-settings')) $('#view-settings').open = false; });
   $('#unfold-structure').disabled = false;
   $('#unfold-structure').addEventListener('click', () => navigate('explore'));
   $('#collapse-structure').addEventListener('click', () => navigate('tower'));
@@ -316,6 +369,7 @@ async function start() {
   });
   page.addEventListener('click', event => {
     if (fallbackActive) return;
+    if (event.target.closest('[data-room-object], [data-station], [data-section], #unfold-structure')) dismissHint();
     const object = event.target.closest('[data-room-object]');
     if (object) { spatial.activateObject(Number(object.dataset.roomObject)); return; }
     const station = event.target.closest('[data-station]');
@@ -379,12 +433,16 @@ async function start() {
   }
   document.addEventListener('keydown', event => {
     if (fallbackActive || readingView.active || event.key !== 'Escape') return;
+    if ($('#view-settings').open) { event.preventDefault(); $('#view-settings').open = false; $('#view-settings summary').focus(); return; }
+    if (!$('#controls-hint').hidden) { event.preventDefault(); dismissHint(); spatial.focus(); return; }
     if (currentId && currentRoomIndex !== null) { event.preventDefault(); navigate(currentId); return; }
     if (currentId || page.dataset.mode === 'explore') { event.preventDefault(); navigate(currentId ? 'explore' : 'tower'); }
   });
   const route = () => syncRoute();
   addEventListener('popstate', route); addEventListener('hashchange', route);
-  if (matchMedia('(pointer: coarse)').matches) $('#orbit-instructions').textContent = 'DRAG TO ORBIT · PINCH TO ZOOM';
+  const touch = matchMedia('(pointer: coarse)').matches;
+  $('#controls-hint-text').textContent = touch ? 'Drag to orbit · Pinch to zoom · Tap the tower or objects to explore.' : 'Left drag to orbit · Scroll to zoom · Click the tower or objects to explore.';
+  if (touch) $('#orbit-instructions').textContent = 'DRAG TO ORBIT · PINCH TO ZOOM';
   syncRoute({ instant: true });
 }
 

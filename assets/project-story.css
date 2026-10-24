@@ -1,4 +1,10 @@
 .project-story { margin-block: 24px; }
+.project-summary { display: grid; gap: 15px; margin: 4px 0 20px; padding-block: 14px; border-block: 1px solid var(--line); }
+.project-summary dt { margin-bottom: 5px; font: 600 11px/1.5 var(--mono); color: var(--ink); }
+.project-summary dd { margin: 0; font-size: 14px; line-height: 1.75; color: var(--muted); }
+.project-summary > div { break-inside: avoid; }
+.project-actions { display: flex; flex-wrap: wrap; gap: 0 15px; margin-bottom: 12px; }
+.project-actions a { display: inline-flex; align-items: center; min-height: 44px; margin: 0; color: var(--ink); font: 10px/1.6 var(--mono); text-underline-offset: 4px; }
 .project-status { display: inline-flex; align-items: center; margin: 0 0 14px; padding: 3px 9px; border: 1px solid var(--line); border-radius: 2px; color: var(--muted); background: var(--accent-tint); font: 10px/1.6 "Courier New", monospace; letter-spacing: .04em; }
 .project-status[data-status="ongoing"] { color: var(--ink); border-color: var(--muted); background: var(--accent-tint); }
 .project-reading-link { display: inline-flex; align-items: center; min-height: 44px; margin: 0 0 12px; border-bottom: 1px solid var(--line); color: var(--ink); font: 10px/1.6 "Courier New", monospace; text-decoration: none; }

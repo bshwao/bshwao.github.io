@@ -9,6 +9,13 @@ export function renderCaseStudyLink(projectId) {
   return projectId ? `<a class="project-reading-link" href="./reading.html#project-${encodeURIComponent(projectId)}">Read full case study ↗</a>` : '';
 }
 
+export function renderProjectSummary(summary) {
+  if (!summary) return '';
+  return `<dl class="project-summary" aria-label="Project at a glance">${[
+    ['What I built', summary.built], ['My contribution', summary.contribution], ['Result', summary.result],
+  ].map(([title, text]) => `<div><dt>${title}</dt><dd>${escape(text)}</dd></div>`).join('')}</dl>`;
+}
+
 export function renderStory(story = []) {
   if (!story.length) return '';
   return `<div class="project-story">${story.map(item => `<section class="project-story-note"><h4>${escape(item.title)}</h4><p>${escape(item.text)}</p></section>`).join('')}</div>`;

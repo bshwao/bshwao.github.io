@@ -218,11 +218,7 @@ export function furnishInteriorDetails(section,index,p,api) {
       ring(p,2.85,1.77,-.25,.24,'ink',Math.PI/2);
       wire(p,[[2.85,1.74,-.1],[3.3,1.5,.2],[3.25,.35,.5]],'ink',.025);
     });
-    if(index===3)add('Brake hubs, suspension links, pit tools and inspection stand',()=>{
-      for(const x of [-1.3,1.3])for(const z of [-1.75,1.75]) {
-        const hub=cylinder(p,x,.6,z,.26,.54,'structure');hub.rotation.z=Math.PI/2;
-        wire(p,[[x*.35,.8,z-.25],[x,.5,z]],'equipment',.035);
-      }
+    if(index===3)add('Pit tools and inspection stand',()=>{
       cabinet(-3.05,0,.85,1.25,3);clipboard(-3.05,1.38,0);
       bar(3,.75,-.6,1,1.5,1,'equipment');bar(3,1.6,-.6,1.15,.14,1.1,'structure');
       ring(p,3,1.78,-.6,.24,'ink');

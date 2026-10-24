@@ -9,13 +9,15 @@ import { footprint } from './tower-geometry.js';
 import { createCityEnvironment, cityPalette, citySun } from './city-environment.js';
 import { createCityBackdrop } from './city-backdrop.js';
 import { readCityTime,createCityClock } from './city-time.js';
+import { normalizeViewPreferences, shouldReduceMotion } from './view-preferences.js';
 
 const ease = t => t * t * t * (t * (t * 6 - 15) + 10);
 const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - start), 0, 1));
 const lerp = T.MathUtils.lerp;
 
 /** One persistent scene and camera: tower, exploded assembly, and inhabited cutaway. */
-export function createSpatialScene({ container, onSelectSection, onSelectRoom, onFrame, onContextLost, shadowComparison = false, clock=()=>new Date() }) {
+export function createSpatialScene({ container, onSelectSection, onSelectRoom, onFrame, onContextLost, preferences = {}, shadowComparison = false, clock=()=>new Date() }) {
+  let viewPreferences = normalizeViewPreferences(preferences);
   let cityTime=readCityTime(clock());
   const renderer = new T.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'default' });
   renderer.setClearColor(palette.paper);
@@ -68,12 +70,13 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   });
   const camera = new T.PerspectiveCamera(34, 1, .1, 1000);
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  model.modules.forEach(module => module.interior.interactions.setReducedMotion(reducedMotion.matches));
+  let reduceMotion = shouldReduceMotion(viewPreferences.motion, reducedMotion.matches);
+  model.modules.forEach(module => module.interior.interactions.setReducedMotion(reduceMotion));
   const controls = new OrbitControls(camera, canvas);
   controls.mouseButtons = { LEFT: T.MOUSE.ROTATE, MIDDLE: T.MOUSE.DOLLY, RIGHT: null };
   controls.touches = { ONE: T.TOUCH.ROTATE, TWO: T.TOUCH.DOLLY_ROTATE };
   controls.enablePan = false;
-  controls.enableDamping = !reducedMotion.matches;
+  controls.enableDamping = !reduceMotion;
   controls.dampingFactor = .1;
   controls.rotateSpeed = .65;
   controls.zoomSpeed = .65;
@@ -269,20 +272,22 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
           // light fades in only as the detailed interior is actually revealed.
           () => lighting(1 - reveal * (1 - districtVisibility)));
       } else { environment.update(camera,1); lighting(1); renderer.render(scene,camera); }
-      canvas.dataset.background = districtVisibility < .999 ? 'blurred' : 'sharp';
+      canvas.dataset.background = districtVisibility < .999 ? viewPreferences.graphics === 'low' ? 'simplified' : 'blurred' : 'sharp';
       onFrame?.({ mode, selectedId: selected?.id, labels: labels(), expansion, reveal, panel, focusedRoom, activeRoom, hoveredRoom, hoveredObject: hoveredObject?.name || null,
         viewport: viewportLayout(width, height), moving: Boolean(animation) || Boolean(objectMotion?.moving), transitionType: animation?.kind || null,
-        azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), timeOfDay:cityTime.phase,localHour:cityTime.hour });
+        azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), reducedMotion:reduceMotion, timeOfDay:cityTime.phase,localHour:cityTime.hour });
       dirty = false;
     }
     if (animation || changed || objectMotion?.moving) invalidate();
   }
   function applyBudget() {
-    const budget = renderBudget(width, height, devicePixelRatio);
+    const budget = renderBudget(width, height, devicePixelRatio, viewPreferences.graphics);
     renderer.setPixelRatio(budget.pixelRatio);
     model.setCompact(budget.compact);
     canvas.dataset.detail = budget.compact ? 'compact' : 'full';
-    canvas.dataset.quality = '0';
+    canvas.dataset.quality = viewPreferences.graphics === 'low' ? '1' : '0';
+    canvas.dataset.graphics = viewPreferences.graphics;
+    backdrop.setLowGraphics(viewPreferences.graphics === 'low');
   }
   function invalidate() {
     dirty = true;
@@ -300,11 +305,11 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   }
   function move(to, duration, done, kind = 'scene') {
     // Drain orbital inertia before taking the new animation's starting pose.
-    controls.enableDamping = false; controls.update(); controls.enableDamping = !reducedMotion.matches;
+    controls.enableDamping = false; controls.update(); controls.enableDamping = !reduceMotion;
     controls.minDistance = .01;
     controls.maxDistance = Infinity;
     animation = {
-      start: performance.now(), duration: reducedMotion.matches ? 1 : Math.max(1, duration), kind, progress: 0,
+      start: performance.now(), duration: reduceMotion ? 1 : Math.max(1, duration), kind, progress: 0,
       from: { position: camera.position.clone(), target: controls.target.clone(), screenCenter: screenCenter.clone(), districtVisibility, expansion, reveal, panel, focusAmount, modules: model.modules.map(module => module.group.position.clone()), cuts: [...cuts] },
       to: { focusAmount: 0, districtVisibility, ...to, position: to.position.clone(), target: to.target.clone(), screenCenter: (to.screenCenter || screenCenter).clone() }, done,
       lift: new T.Vector3(0, kind === 'scene' && selected ? Math.min(18, camera.position.distanceTo(to.position) * .09) : kind === 'room' ? Math.min(selected.interior.unit * 2, camera.position.distanceTo(to.position) * .12) : 0, 0),
@@ -437,6 +442,15 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     if (hover !== next) { hover = next; modelDirty = true; invalidate(); }
   });
   canvas.addEventListener('pointerleave', () => { hover = null; hoveredRoom = null; previewObject(null); selected?.interior.setHoveredRoom(null); modelDirty = true; invalidate(); });
+  function zoom(direction) {
+    if (animation || !controls.enabled) return;
+    // Drain inertia so the buttons and keyboard use the same stable camera step.
+    controls.enableDamping = false; controls.update();
+    const offset = camera.position.clone().sub(controls.target);
+    const distance = T.MathUtils.clamp(offset.length() * (direction > 0 ? .9 : 1 / .9), controls.minDistance, controls.maxDistance);
+    camera.position.copy(controls.target).add(offset.setLength(distance));
+    controls.update(); controls.enableDamping = !reduceMotion; invalidate();
+  }
   canvas.addEventListener('keydown', event => {
     if (animation) return;
     if (event.key === 'Enter' || event.key === ' ') {
@@ -444,14 +458,13 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       if (mode === 'tower') onSelectSection?.(null);
       return;
     }
+    if (['+', '=', '-'].includes(event.key)) { event.preventDefault(); zoom(event.key === '-' ? -1 : 1); return; }
     const offset = camera.position.clone().sub(controls.target);
     const spherical = new T.Spherical().setFromVector3(offset);
     if (event.key === 'ArrowLeft') spherical.theta -= .13;
     else if (event.key === 'ArrowRight') spherical.theta += .13;
     else if (event.key === 'ArrowUp') spherical.phi = Math.max(.04, spherical.phi - .1);
     else if (event.key === 'ArrowDown') spherical.phi = Math.min(Math.PI - .12, spherical.phi + .1);
-    else if (event.key === '+' || event.key === '=') spherical.radius = Math.max(controls.minDistance, spherical.radius * .9);
-    else if (event.key === '-') spherical.radius = Math.min(controls.maxDistance, spherical.radius / .9);
     else return;
     event.preventDefault();
     camera.position.copy(controls.target).add(new T.Vector3().setFromSpherical(spherical));
@@ -504,9 +517,10 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   const observer = new ResizeObserver(resize); observer.observe(container);
   const visibility = () => { if (!document.hidden) { clockWatch.refresh();invalidate(); } };
   const motionChange = () => {
-    model.modules.forEach(module => module.interior.interactions.setReducedMotion(reducedMotion.matches));
-    controls.enableDamping = !reducedMotion.matches;
-    if (reducedMotion.matches && animation) { animation.start = performance.now(); animation.duration = 1; }
+    reduceMotion = shouldReduceMotion(viewPreferences.motion, reducedMotion.matches);
+    model.modules.forEach(module => module.interior.interactions.setReducedMotion(reduceMotion));
+    controls.enableDamping = false; controls.update(); controls.enableDamping = !reduceMotion;
+    if (reduceMotion && animation) { animation.start = performance.now(); animation.duration = 1; }
     invalidate();
   };
   document.addEventListener('visibilitychange', visibility);
@@ -529,7 +543,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   resize();
   goTo('tower', null, { instant: true });
   return {
-    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: 0, background: canvas.dataset.background, backdrop: backdrop.metrics(), timeOfDay:{hour:cityTime.hour,phase:cityTime.phase,daylight:cityTime.daylight,sun:cityTime.sunVisibility,moon:cityTime.moonVisibility,stars:cityTime.stars}, near:camera.near, far:camera.far, width, height }; },
+    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: viewPreferences.graphics === 'low' ? 1 : 0, reducedMotion:reduceMotion, graphics:viewPreferences.graphics, background: canvas.dataset.background, backdrop: backdrop.metrics(), timeOfDay:{hour:cityTime.hour,phase:cityTime.phase,daylight:cityTime.daylight,sun:cityTime.sunVisibility,moon:cityTime.moonVisibility,stars:cityTime.stars}, near:camera.near, far:camera.far, width, height }; },
+    setPreferences(value) {
+      viewPreferences = normalizeViewPreferences({ ...viewPreferences, ...value });
+      motionChange(); applyBudget(); renderer.setSize(width, height); backdrop.invalidate(); invalidate();
+    },
+    zoom,
     refreshTime() { clockWatch.refresh(); },
     refreshLabels() { invalidate(); },
     goTo,

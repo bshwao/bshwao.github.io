@@ -33,6 +33,15 @@ async function audit(view) {
 }
 try {
   frame.src = '../index.html'; await ready(); await audit('tower');
+  frame.contentDocument.querySelector('#view-settings').open = true;
+  await audit('view settings');
+  const graphics = frame.contentDocument.querySelector('#graphics-preference');
+  graphics.value = 'low'; graphics.dispatchEvent(new Event('change',{bubbles:true})); await ready();
+  await audit('low graphics settings');
+  graphics.value = 'standard'; graphics.dispatchEvent(new Event('change',{bubbles:true})); await ready();
+  frame.contentDocument.querySelector('#view-settings').open = false;
+  frame.contentDocument.querySelector('#show-controls-hint').click(); await audit('controls hint');
+  frame.contentDocument.querySelector('#dismiss-controls-hint').click();
   for (const route of ['explore', 'about', 'projects/b', 'experience', 'resume/d', 'contact']) {
     frame.contentWindow.location.hash = route;
     await delay(20); await ready(); await audit(route);

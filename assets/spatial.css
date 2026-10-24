@@ -186,4 +186,4 @@
   .interior-panel { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
   .interior-content { flex: 0 0 auto; overflow-y: visible; }
 }
-@media (prefers-reduced-motion: reduce) { .spatial *, .spatial *::before, .spatial *::after { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .spatial:not([data-motion="full"]) *, .spatial:not([data-motion="full"]) *::before, .spatial:not([data-motion="full"]) *::after { transition: none !important; } }

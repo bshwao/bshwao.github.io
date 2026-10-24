@@ -1,0 +1,15 @@
+{
+  "returningVisit": {
+    "graphics": "standard",
+    "hintHidden": true,
+    "motion": "system",
+    "projectSummary": [
+      "What I built",
+      "My contribution",
+      "Result"
+    ],
+    "renderedGraphics": "standard",
+    "renderedMotion": "full"
+  },
+  "logs": []
+}

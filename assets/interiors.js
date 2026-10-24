@@ -224,7 +224,10 @@ export function createInterior(section, content) {
       box(p, 0, 1.25, 2.6, 3.5, .12, .7, 'equipment');
       for (const x of [-1.3, 1.3]) for (const z of [-1.75, 1.75]) {
         const wheel = object(p, new T.CylinderGeometry(.6, .6, .5, 18), x, .6, z, 'ink'); wheel.rotation.z = Math.PI / 2;
+        // Attached wheel hardware shares the chassis animation and pivot.
+        const hub = cylinder(p, x, .6, z, .26, .54); hub.rotation.z = Math.PI / 2;
         box(p, x / 2, .55, z, 1.3, .09, .09);
+        wire(p, [[x * .35, .8, z - .25], [x, .5, z]], 'equipment', .035);
       }
       for (const z of [-1.2, -.8, -.4]) box(p, 0, 1.08, z, .8, .04, .035, 'ink');
       wire(p, [[-.42, 1.18, .7], [-.65, 1.8, .65], [.65, 1.8, .65], [.42, 1.18, .7]], 'ink', .055);
@@ -270,7 +273,7 @@ export function createInterior(section, content) {
       if (index === 0) add('Electronics bench, oscilloscope, probes and PCB', () => electronics(p));
       if (index === 1) add('Infrastructure racks with vents and cable runs', () => { server(p, -1.6, 0); server(p, 1.6, 0); box(p, 0, .15, 0, 4.8, .08, 2.2, 'glass'); });
       if (index === 2) { add('Sensor workbench, oscilloscope and PCB', () => electronics(p)); add('Lab reference shelves', () => bookcase(p, 0, -2.5)); }
-      if (index === 3) add('Formula chassis, wheels and roll hoop', () => car(p));
+      if (index === 3) add('Formula chassis, wheels, brake hubs, suspension links and roll hoop', () => car(p));
     } else if (section.id === 'resume') {
       if (index === 0) add('Résumé documents and filing cabinet', () => documentStand(p, 0, 0, false));
       if (index === 1) add('Double reference archive with book spines', () => { bookcase(p, 0, -2); bookcase(p, 0, 1); });

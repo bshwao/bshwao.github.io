@@ -66,6 +66,11 @@ export const projects = [
     year: "September 2026",
     description:
       "A real-time productivity application designed to calculate dynamic focus scores, detect developer fatigue, and prompt timely breaks.",
+    summary: {
+      built: "A live focus dashboard that combines Apple Watch heart-rate data and keyboard activity to prompt timely breaks.",
+      contribution: "Backend services and frontend–backend integration in a team of three at Hack The Hill III.",
+      result: "Delivered an end-to-end hackathon prototype with live signals, focus scores, and audio alerts.",
+    },
     story: [
       {
         title: "My contribution",
@@ -123,6 +128,11 @@ export const projects = [
     year: "",
     description:
       "A small Bash-like command interpreter written in C to practice command parsing, POSIX processes, and file descriptors.",
+    summary: {
+      built: "A compact UNIX command interpreter in C with built-ins, pipelines, redirection, and background execution.",
+      contribution: "A self-directed implementation to practice command parsing, POSIX processes, pipes, and file descriptors.",
+      result: "Completed a working shell with nine built-in commands and external command execution.",
+    },
     story: [
       {
         title: "Why I built it",
@@ -153,6 +163,11 @@ export const projects = [
     year: "",
     description:
       "A CARLA-based platform for creating hazardous driving scenarios, evaluating autonomous agents, and reviewing telemetry, sensor recordings, and failure evidence.",
+    summary: {
+      built: "A CARLA-based workflow for repeatable driving scenarios, autonomous agent evaluation, and evidence review.",
+      contribution: "Building the scenario-to-review workflow and translating simulator motion into explicit driving measurements.",
+      result: "Ongoing: the current local workflow connects scenario setup, agent runs, recordings, and behavior review for comparison.",
+    },
     story: [
       {
         title: "Who I am building it for",
