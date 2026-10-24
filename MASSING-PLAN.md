@@ -1,6 +1,6 @@
 # Tower shape redesign plan
 
-Status: all four phases complete locally (2026-10-22). The asymmetric shell, shared floor layouts, furnished interiors, cameras, cut/reading drawings, natural materials, and sharing card are implemented. Verification is indexed in `state/massing-qa.json`; changes remain unpublished.
+Status: all four phases complete locally (2026-10-22). The asymmetric shell, shared floor layouts, furnished interiors, cameras, cut/reading drawings, natural materials, and sharing card are implemented. Verification is indexed in `state/massing-qa.json`; these changes are included in published commit `62a2e8c`. Current release status is in `QA.md`; the phase measurements below remain historical.
 
 ## Direction
 

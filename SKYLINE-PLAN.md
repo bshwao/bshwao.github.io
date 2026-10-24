@@ -1,6 +1,6 @@
 # Dense skyline redesign plan
 
-Status: phases **1–7 complete locally**, 2026-10-22. The architecture, sunset materials/environment, street detail, responsive integration, performance/accessibility checks, and sharing artwork are implemented and verified. [state/skyline-final-qa.json](./state/skyline-final-qa.json) indexes the current requirement-by-requirement evidence. Earlier reports remain historical baselines. The redesign is unpublished; actual Edge and physical-iPhone measurements are outside the recorded Chromium scope.
+Status: phases **1–7 complete locally**, 2026-10-22. The architecture, sunset materials/environment, street detail, responsive integration, performance/accessibility checks, and sharing artwork are implemented and verified. [state/skyline-final-qa.json](./state/skyline-final-qa.json) indexes the current requirement-by-requirement evidence. Earlier reports remain historical baselines. The implementation is included in published commit `62a2e8c`; actual Edge and physical-iPhone testing is deferred. The original phase evidence below is historical; `QA.md` records current release status.
 
 Height follow-up: the main tower is **148.5 units tall, a 35% increase from 110**, with its footprint and furniture scale retained. Shared section, roof, antenna, cut-plan, material-zone, and camera elevations follow the taller geometry. The initial phase 3 and height reports record the earlier architecture checkpoints; the final report covers the completed sunset city.
 

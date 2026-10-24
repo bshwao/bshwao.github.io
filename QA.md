@@ -1,10 +1,18 @@
 # Release verification
 
-The sections before “Multicolor redesign” record the earlier blue-site release and performance follow-up. Current redesign evidence is recorded separately in the final section and `state/multicolor-*.json`.
+## Current release overview — October 24, 2026
 
-The latest user-requested graphics correction is recorded under “Original quality and color-flicker repair” below. It supersedes the automatic quality-tier policy in the earlier performance evidence.
+The complete city, furnished floors, glass UI, clock and nighttime-reflection changes were published in `62a2e8c3dab240592b4cfad0f1ce01fa6ee64688`. Its [Portfolio checks](https://github.com/bshwao/bshwao.github.io/actions/runs/40051031460) and [Pages deployment](https://github.com/bshwao/bshwao.github.io/actions/runs/40051030839) succeeded. The final content/documentation cleanup and expanded live-file verification are being prepared against that baseline; the exact verified release is recorded in `state/deployment.json` after publication.
 
-## Implementation gates
+Current implementation evidence is under “Complete occupied floors”, “Complete city and outskirts” and the subsequent nighttime-reflection correction, with raw results in `state/full-interiors/`, `state/city-outskirts/` and `state/reflection-time/`. The current source suite has 76 tests and 49 module checks, plus five integration modes. The scene contains 197 surrounding buildings on 188 parcels, five portfolio floors and 19 furnished rooms. Desktop/simulated-phone graphics checks retain the original quality and raster limits; adaptive resolution reduction is superseded.
+
+**Deferred at the user's request:** real-device testing, including physical iPhone/Safari and the user's regular Edge session. Connected Chromium and simulated phone layouts are the recorded browser scope. No physical-device or cross-engine certification is claimed.
+
+## Historical verification checkpoints
+
+All sections below preserve evidence from their named implementation checkpoint. Older building counts, quality policies, publication statements and measurements are historical, not current release status. The original blue-site deployment record below predates the current city and reflection release.
+
+## Historical blue-site implementation gates
 
 - `npm run check`: 31 passing geometry, layout, route, asset, metadata, and sharing checks; syntax and generated reading content also pass.
 - `npm test`: desktop, portrait, reduced motion, room deep link, and initial WebGL failure pass. Coverage includes all floors and rooms, resize/cancellation, sharing fallback, keyboard behavior, idle rendering, hidden-tab suspension, reading mode, and context-loss cleanup.

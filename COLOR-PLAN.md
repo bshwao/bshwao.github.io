@@ -1,6 +1,6 @@
 # Multicolor architectural portfolio plan
 
-Status: all five phases are complete locally and release-ready. The palette, model, city, UI, reading, fallback, icon, and sharing artwork are implemented and verified. Source checks, all five DOM/camera integration modes, 39 browser accessibility views, real WebGL resource checks, frame timing, and adaptive-quality verification pass. The redesign and earlier performance changes are unpublished.
+Status: all five phases are complete locally and release-ready. The palette, model, city, UI, reading, fallback, icon, and sharing artwork are implemented and verified. Source checks, all five DOM/camera integration modes, 39 browser accessibility views, real WebGL resource checks, frame timing, and adaptive-quality verification pass. These changes are included in published city/reflection commit `62a2e8c`; current release status is in `QA.md`. Earlier phase measurements below are historical checkpoints.
 
 ## Visual direction
 

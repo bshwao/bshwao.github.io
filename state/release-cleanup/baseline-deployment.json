@@ -1,0 +1,337 @@
+{
+  "checkedAt": "2026-10-24T13:44:01.730Z",
+  "commit": "62a2e8c3dab240592b4cfad0f1ce01fa6ee64688",
+  "origin": "https://bshwao.github.io/",
+  "status": "PASS",
+  "checks": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "2a86fe1d022ab4a3070b1c76b01bd62cbcd05554cbe468559e9e5477e5071319",
+      "bytes": 4200
+    },
+    {
+      "path": "reading.html",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "12e0635b8a68415cbf900cea990daa80fe12b5f04c876b20e0aeeaa71e1943f9",
+      "bytes": 20362
+    },
+    {
+      "path": "assets/scene-3d.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "47a3710aaf2f455717efe7e86be22a2c585ac0edf415d178d8cb5ba14009ecb0",
+      "bytes": 34456
+    },
+    {
+      "path": "assets/tower-model.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "d583dc739d72f34fd42284b2020af209155dc024d6bd5f013d455b51b6069705",
+      "bytes": 13481
+    },
+    {
+      "path": "assets/render-budget.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "34a553c19cbac7fcba7a1f56dffdfcfcb2d5dadea7732e8962b539621b556b6a",
+      "bytes": 522
+    },
+    {
+      "path": "assets/color-theme.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "1e71620c80b37bc3d8ed69f87adec7671c7d89242265eec89b77246f3174d1ed",
+      "bytes": 1963
+    },
+    {
+      "path": "assets/theme.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "27fc84825d69cade5b77528964f8f3fbdbc21b6330d8bbec16135155a9910779",
+      "bytes": 1468
+    },
+    {
+      "path": "assets/color-system.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "466089c93deca0bed08abdd814d4bdeafab16cda69ee63f72056d3f5828f5128",
+      "bytes": 4228
+    },
+    {
+      "path": "assets/interiors.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "60a050cac6d12744fdd23de992b60e6483f5c57c17e4bb3ad9d644cbd62f71f0",
+      "bytes": 25709
+    },
+    {
+      "path": "assets/cap-plans.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "1d6cbd4c8ae9e0c1087f2ee4e55061b0a9ba14123aaa0f671c8453028f6f40af",
+      "bytes": 11719
+    },
+    {
+      "path": "assets/spatial-app.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "ee17d2dd887f64f35d968b1707fb6eaaff596fd4cf3c6beee082daa76fb86edb",
+      "bytes": 24381
+    },
+    {
+      "path": "assets/spatial.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "b2ee5c47436483607c47faa9daf91417117f496f02abcfa9767ba5ee59c52aaa",
+      "bytes": 17564
+    },
+    {
+      "path": "assets/floor-view.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "41112ed0eea8e1443731bdbfb9ff5315d594ca18f62eef1ef0ee7d86990a2567",
+      "bytes": 7837
+    },
+    {
+      "path": "assets/floor-view.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "28e39fcc929345aa81ab4f89a046a1d18811753c375b4e6519333ae365bb8d99",
+      "bytes": 9846
+    },
+    {
+      "path": "assets/reading.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "c571d0b1741fbb29cb96cb21ccf28e357f7c411494b5ac98b0582e2ad5f1b7ca",
+      "bytes": 4702
+    },
+    {
+      "path": "assets/styles.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "384ab4a74c10075e1cb8a94b9aafc5dbd06d134d10f1c814fa0149078b78b89c",
+      "bytes": 8981
+    },
+    {
+      "path": "assets/project-story.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "2bbf3b0522140e94a6e16b9547d2413e4f7b3e9ebf2ad5822394d46ebe0c7c31",
+      "bytes": 3246
+    },
+    {
+      "path": "assets/floor-plans.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "6692a40627822896ea1136ebd42ad063082b923961860263ac84273a764cc6ab",
+      "bytes": 12699
+    },
+    {
+      "path": "assets/district-ground.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "38866c152240169cb4f05af0c91e029dedadf39d566be7edc1e717d02ae6a7e8",
+      "bytes": 11835
+    },
+    {
+      "path": "assets/district-buildings.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "6b33692d4be9950152c2d174bf0d47f7de07e1580217b57036d4adaf28ca463b",
+      "bytes": 8911
+    },
+    {
+      "path": "assets/district-details.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "1e4b5b15e50808556ba2cf5b41bcfc39ace50455f5054b715ee0274d55595fc2",
+      "bytes": 15216
+    },
+    {
+      "path": "assets/district-style.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "0723d8868e5658ec4abe75e17321776d829db2492c1000770fd125433ac1aa16",
+      "bytes": 6611
+    },
+    {
+      "path": "assets/favicon.svg",
+      "status": 200,
+      "contentType": "image/svg+xml",
+      "sha256": "c4311a50e7c318b975ca8aac8b2da1dc630c96bb3ed38ab052abfdcf56eb7d59",
+      "bytes": 437
+    },
+    {
+      "path": "assets/social-preview.png",
+      "status": 200,
+      "contentType": "image/png",
+      "sha256": "ec440c43623d228a510562ab7e34d0c8fb48577d61fcdac6e8950a21f2b7b098",
+      "bytes": 135670
+    },
+    {
+      "path": "assets/eric-hsu-resume.pdf",
+      "status": 200,
+      "contentType": "application/pdf",
+      "sha256": "6a6680f52c21b05492c1f312fc36607d3abb10b580f5ec834c9e9790c3adb274",
+      "bytes": 127160
+    },
+    {
+      "path": "sitemap.xml",
+      "status": 200,
+      "contentType": "application/xml",
+      "sha256": "8aea45d0a47dabd2bdb675fe38d15f303ffa21b89cda2695bb81ae7136e5c938",
+      "bytes": 222
+    },
+    {
+      "path": "robots.txt",
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "sha256": "c0c389fa5d2f57939e6f0c268dce307d4ecd6cac1208b1aeb5a1367acc5f72ac",
+      "bytes": 90
+    },
+    {
+      "path": "QA.md",
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "sha256": "40d3a7de8e7cebad48c49cdfc6cca3a62d84cd057e53bfa8437958cb7260ec64",
+      "bytes": 56860
+    },
+    {
+      "path": "ROADMAP.md",
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "sha256": "00cb3204093741cda0fd83de6ca52f18f096a001e957240cd84c3a56301c8b45",
+      "bytes": 8758
+    },
+    {
+      "path": "MAINTENANCE.md",
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "sha256": "83adeaafd465081d1ccc99330a9dfff222fb8aedb0a0d98c94fa1eae25c40c3a",
+      "bytes": 19172
+    },
+    {
+      "path": "assets/city-layout.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "ce3625e0d44d6a9203140f8330b238cc4b1f89523272685658d3da58ea263cd6",
+      "bytes": 9744
+    },
+    {
+      "path": "assets/city-environment.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "416172f803e61111e11284063ea8a4a11361870ec32ad602f604eea3a48269f2",
+      "bytes": 6183
+    },
+    {
+      "path": "assets/city-backdrop.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "bfdda9092aaaab199eded88f5132984a76ddc083754f2c1c1005fb598b52a6bb",
+      "bytes": 4559
+    },
+    {
+      "path": "assets/city-waterfront.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "80cd74975570ac297fd839bde23746f9eb681f2b0422ffac2c57b220934e3f23",
+      "bytes": 8277
+    },
+    {
+      "path": "assets/tower-geometry.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "513c340b54b301b55e46ef3d42165c52d4a0f6fd0c4c9d09cf57eeb51328e69a",
+      "bytes": 6115
+    },
+    {
+      "path": "assets/camera-framing.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "17cb7280d8b33816aeaaabae04b0afb0e226f5bed74a40569814d9ab86c316f0",
+      "bytes": 3882
+    },
+    {
+      "path": "assets/facade-materials.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "0fe1763fcf888a8260ae07a483f3731edf7b75e7367209d58a1c7616f9f10872",
+      "bytes": 1247
+    },
+    {
+      "path": "assets/city-time.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "d863ce74e49908655aeccf68202f5caa800feb1e0af13ce849787b4e7ed9763e",
+      "bytes": 2868
+    },
+    {
+      "path": "assets/city-palette.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "3408f8bdb4ee0dbb5d71b4b52e96408b0bd9f6160ac99024b9903a1d705fb9f6",
+      "bytes": 497
+    },
+    {
+      "path": "assets/city-landscape.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "a4f6ea0d78381efcaad8799df78d0d958c6bf2cf9f366d4b6242c226c6a0fcea",
+      "bytes": 4417
+    },
+    {
+      "path": "assets/city-outskirts.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "f4f543f2e05d2b498f82e8991af96012dfba82897c59343b1e68faa76def8ea4",
+      "bytes": 10654
+    },
+    {
+      "path": "assets/ground-materials.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "3b548066a0d5d7c974081665545844f2bf196837f873e23240a4acfe1b1de84b",
+      "bytes": 2517
+    },
+    {
+      "path": "assets/interior-details.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "35bc87f80f7236a897973c2bd57f6b404db38cd05821b314e5496e6774388b3b",
+      "bytes": 20996
+    },
+    {
+      "path": "assets/glass.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "63f8e9b3093bee2d6397de65783785610425b339a8123488b2dd8d52ec72860a",
+      "bytes": 6303
+    },
+    {
+      "path": "assets/interior-structure.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "e99eab27145fe1543b1e3e06fc72262b441d261c2a41dfa28076b87a0b062ab4",
+      "bytes": 18517
+    },
+    {
+      "path": "assets/room-extensions.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "bd3aa2f76e1f48f3b8bf11883336c8d992a13eb3fe103e8623d0028cc8120311",
+      "bytes": 5570
+    },
+    {
+      "path": "assets/local-clock.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "fac35949a08b7ace546f1c756a00e529988e62c8ba4853b0110ffb5527c11f76",
+      "bytes": 2291
+    }
+  ]
+}

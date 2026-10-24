@@ -85,7 +85,7 @@ export const projects = [
       "Docker connects the services, with TimescaleDB storing the incoming time-series data.",
       "The frontend presents the live signals and focus state, with ElevenLabs audio alerts supporting the notification flow.",
     ],
-    stack: ["Python", "FastAPI", "WebSockets", "TypeScript", "Next", "Docker", "TimescaleDB"],
+    stack: ["Python", "FastAPI", "WebSockets", "TypeScript", "Next.js", "Docker", "TimescaleDB"],
     url: "https://github.com/ric-e/flowst8",
     links: [{ label: "View the Devpost submission", href: "https://devpost.com/software/larp-the-north" }],
     images: [

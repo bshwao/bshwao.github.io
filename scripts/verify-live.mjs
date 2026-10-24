@@ -12,16 +12,22 @@ files.push('assets/interior-details.js');
 files.push('assets/glass.css');
 files.push('assets/interior-structure.js','assets/room-extensions.js');
 files.push('assets/local-clock.js');
+// Content and routing are independent runtime modules, not just generated HTML.
+files.push('assets/app.js','assets/content.js','assets/floor-content.js','assets/project-story.js','assets/routes.js','assets/spatial-layout.js');
+files.push('README.md','CITY-OUTSKIRTS-PLAN.md','SKYLINE-PLAN.md','COLOR-PLAN.md','MASSING-PLAN.md');
+// Verify the committed gallery files as well as the pages linking to them.
+files.push(...execFileSync('git',['ls-tree','-r','--name-only',commit,'assets/projects'],{cwd:root,encoding:'utf8'}).trim().split('\n').filter(Boolean));
 const hash = (data, binary) => createHash('sha256').update(binary ? data : data.toString('utf8').replaceAll('\r\n', '\n')).digest('hex');
 const results = await Promise.allSettled(files.map(async path => {
   const response = await fetch(`${origin}${path === 'index.html' ? '' : path}?release=${commit}`, { signal: AbortSignal.timeout(30_000), cache: 'no-store' });
   if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
   if (!response.url.startsWith(origin)) throw new Error(`${path}: unexpected redirect to ${response.url}`);
-  const binary = /\.(png|pdf)$/.test(path), local = execFileSync('git', ['show', `${commit}:${path}`], { cwd: root, maxBuffer: 10_000_000 }), live = Buffer.from(await response.arrayBuffer());
+  const binary = /\.(png|jpe?g|pdf)$/.test(path), local = execFileSync('git', ['show', `${commit}:${path}`], { cwd: root, maxBuffer: 10_000_000 }), live = Buffer.from(await response.arrayBuffer());
   const expected = hash(local, binary), actual = hash(live, binary);
   if (expected !== actual) throw new Error(`${path}: published content differs from the local release`);
   const contentType = response.headers.get('content-type');
   if (path.endsWith('.png') && !contentType?.startsWith('image/png')) throw new Error(`${path}: incorrect image content type`);
+  if (/\.jpe?g$/.test(path) && !contentType?.startsWith('image/jpeg')) throw new Error(`${path}: incorrect JPEG content type`);
   if (path.endsWith('.pdf') && !contentType?.startsWith('application/pdf')) throw new Error(`${path}: incorrect PDF content type`);
   return { path, status: response.status, contentType, sha256: actual, bytes: live.length };
 }));

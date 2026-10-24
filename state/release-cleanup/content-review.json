@@ -1,0 +1,145 @@
+{
+  "reviewedAt": "2026-10-24T13:54:29.967Z",
+  "baseline": "62a2e8c3dab240592b4cfad0f1ce01fa6ee64688",
+  "policy": "Light cleanup only; personal claims, project status and contribution descriptions preserved.",
+  "changes": [
+    "Next framework label clarified to Next.js",
+    "No-JavaScript shell description aligned with the project narrative",
+    "Sharing-image alternate text aligned with the repeatable daylight artwork"
+  ],
+  "resume": {
+    "path": "assets/eric-hsu-resume.pdf",
+    "sha256": "6a6680f52c21b05492c1f312fc36607d3abb10b580f5ec834c9e9790c3adb274",
+    "bytes": 127160,
+    "unchanged": true,
+    "header": "%PDF-1.4"
+  },
+  "repositories": [
+    {
+      "url": "https://github.com/ric-e/flowst8",
+      "public": true,
+      "archived": false
+    },
+    {
+      "url": "https://github.com/bshwao/Test-Shell",
+      "public": true,
+      "archived": false
+    },
+    {
+      "url": "https://github.com/bshwao/Poltergeist",
+      "public": true,
+      "archived": false
+    }
+  ],
+  "repositoryVerification": "GitHub connector repository metadata",
+  "destinations": [
+    {
+      "url": "https://github.com/bshwao",
+      "status": 200,
+      "finalUrl": "https://github.com/bshwao",
+      "result": "reachable",
+      "title": "bshwao (Bshw) · GitHub"
+    },
+    {
+      "url": "https://www.linkedin.com/in/erichsu07/",
+      "status": 999,
+      "finalUrl": "https://www.linkedin.com/in/erichsu07",
+      "result": "restricted; destination preserved"
+    },
+    {
+      "url": "https://devpost.com/software/larp-the-north",
+      "status": 200,
+      "finalUrl": "https://devpost.com/software/larp-the-north",
+      "result": "reachable",
+      "title": "flowst8 | Devpost"
+    }
+  ],
+  "galleries": [
+    {
+      "project": "flowst8",
+      "path": "./assets/projects/flowst8/focus-dashboard.png",
+      "width": 806,
+      "height": 328,
+      "alt": "flowst8 dashboard showing focus score, heart-rate signals, keyboard activity, and a heart-rate trace",
+      "caption": "The prototype dashboard brings the incoming signals and estimated focus state into one view.",
+      "sha256": "59fb97b8b6a7bd8c8a90a441aa19715115e1a9a2f3811a90156d5db3e949bc9d",
+      "dimensionsVerified": true
+    },
+    {
+      "project": "flowst8",
+      "path": "./assets/projects/flowst8/event-stream.png",
+      "width": 806,
+      "height": 328,
+      "alt": "flowst8 event stream showing repeated heart-rate connection messages",
+      "caption": "Connection events made the frontend and backend integration visible while debugging.",
+      "sha256": "5ab35a968732d01edcfcd6a62c6e5e08b7d1c8e094e9f3343c12c7c7b0db60e4",
+      "dimensionsVerified": true
+    },
+    {
+      "project": "flowst8",
+      "path": "./assets/projects/flowst8/watch-capture.png",
+      "width": 374,
+      "height": 573,
+      "alt": "Apple Watch showing an active heart-rate capture session",
+      "caption": "Apple Watch heart-rate capture during the prototype demonstration.",
+      "sha256": "804ecade87508d4f33387a984774f9665bcb8830efedb3ac1cd382c4d9a90dd5",
+      "dimensionsVerified": true
+    },
+    {
+      "project": "flowst8",
+      "path": "./assets/projects/flowst8/heart-rate-connection.png",
+      "width": 542,
+      "height": 573,
+      "alt": "Heart-rate broadcasting interface showing an active connection and session statistics",
+      "caption": "The companion broadcasting interface used to check the heart-rate connection.",
+      "sha256": "cd002e4273ad23009ad66b0b06f91668ede9ae8c1d19504362446f90629253bc",
+      "dimensionsVerified": true
+    },
+    {
+      "project": "poltergeist",
+      "path": "./assets/projects/poltergeist/scenario-workspace.png",
+      "width": 1280,
+      "height": 3583,
+      "alt": "Poltergeist scenario workspace with map selection, seeded parameters, recipe validation, and execution settings",
+      "caption": "Scenario setup: map selection, seeded parameters, validation, and execution settings. Open the full image to explore the workspace.",
+      "sha256": "cd8a1f14fe2dde8b35e5ab4ad64f3a43913a49404872d0521853e3791083f033",
+      "dimensionsVerified": true
+    },
+    {
+      "project": "poltergeist",
+      "path": "./assets/projects/poltergeist/experiment-comparison.png",
+      "width": 1280,
+      "height": 4647,
+      "alt": "Poltergeist experiment comparison dashboard with matched-agent results and evidence exports",
+      "caption": "Agent comparison using synthetic integration-test data, illustrating the workflow rather than a real-world driving result.",
+      "sha256": "1a26c405d960b94a0a94f797906b5f07507ab46ceeb710276d790e5a962ff842",
+      "dimensionsVerified": true
+    },
+    {
+      "project": "poltergeist",
+      "path": "./assets/projects/poltergeist/decision-review.jpg",
+      "width": 1265,
+      "height": 712,
+      "alt": "Poltergeist decision review linking an agent input to applied controls and the following measured response",
+      "caption": "Frame-linked decision review from a deterministic synthetic fixture: inputs, applied controls, and measured response.",
+      "sha256": "1fc4332b6bc3d5a74c2b73d4436024f1e1c3d68e3632b8a80fbbcea05e8665b8",
+      "dimensionsVerified": true
+    },
+    {
+      "project": "poltergeist",
+      "path": "./assets/projects/poltergeist/carla-camera-frame.png",
+      "width": 320,
+      "height": 180,
+      "alt": "RGB camera sensor frame captured from a vehicle in CARLA",
+      "caption": "An RGB sensor frame from a documented live CARLA 0.9.16 integration run.",
+      "sha256": "e70a71159ca74e1bcc3ae79636f3e5cdedf5535a51dd72a1018e8ff53f052b92",
+      "dimensionsVerified": true
+    }
+  ],
+  "contact": {
+    "email": "erichsu8681@gmail.com",
+    "mailto": "mailto:erichsu8681@gmail.com",
+    "messagesSent": false
+  },
+  "realDeviceTesting": "Deferred at user request"
+}
