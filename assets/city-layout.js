@@ -22,7 +22,7 @@ for(const [i,x]of [-225,-150,-75,0,75,150,225].entries()) outerLot([x-24,-232,x+
 for(const side of [-1,1]) for(const [i,z]of [-122,-68,0,68].entries()) outerLot([side*215-22,z-16,side*215+22,z+16],18+(i%3)*9,i%2?'brick':'limestone');
 for(const [i,bounds]of [[-94,109,-58,127],[-30,109,-6,127],[6,109,30,127],[58,109,94,127]].entries()) outerLot(bounds,12+i*3,i%2?'limestone':'brick','slab','foreground');
 for(const [i,x]of [-215,-157,188,234].entries()) outerLot([x-18,220,x+18,258],12+(i%3)*4,i%2?'limestone':'brick');
-export const riverPlan={minX:-600,maxX:600,halfWidth:20,promenadeWidth:7,waterY:-.58,bridges:[-42,42]};
+export const riverPlan={minX:-6000,maxX:6000,halfWidth:20,promenadeWidth:7,waterY:-.58,bridges:[-42,42]};
 export const riverCenter=x=>168+16*Math.sin((x+80)/90)-x*.08;
 export const riverEdges=x=>({north:riverCenter(x)-riverPlan.halfWidth,south:riverCenter(x)+riverPlan.halfWidth});
 export const parkPlan=[
@@ -30,12 +30,55 @@ export const parkPlan=[
   {id:'east-square',bounds:[112,-24,166,24],form:'fountain'},
   {id:'south-park',bounds:[-30,234,30,292],form:'lawn'},
 ];
-export const districtPlan={extent:360,plazaHalf:24,roadCenters:[-42,42],roadWidth:10,sidewalkWidth:3,parcels:[...blocks,...inner,...distant,...outer]};
+// Peripheral streets join the existing avenues, bridge landings and riverwalk.
+// Rectangles are shared with placement checks and the rendered street network.
+export const outskirtsRoads=[];
+function street(id,axis,center,start,end,width=8) {
+  outskirtsRoads.push({id,axis,center,start,end,width,walk:2.5,
+    bounds:axis==='x'?[start,center-width/2,end,center+width/2]:[center-width/2,start,center+width/2,end]});
+}
+for(const z of [-482,-382,-282,-176]) street(`north-${z}`,'x',z,-482,482,z===-176?10:8);
+for(const z of [-42,42])for(const side of [-1,1])street(`avenue-${side}-${z}`,'x',z,side<0?-482:170,side<0?-170:482,10);
+for(const side of [-1,1])street(`cross-${side}`,'x',-94,side<0?-482:181,side<0?-181:482);
+for(const x of [-482,-382,-282,-181,181,282,382,482])
+  street(`north-spine-${x}`,'z',x,-482,riverEdges(x).north-riverPlan.promenadeWidth-4);
+for(const x of [-42,42])street(`downtown-north-${x}`,'z',x,-482,-170,10);
+street('south-bank','x',214,-260,290,10);
+for(const side of [-1,1])street(`south-garden-${side}`,'x',270,side<0?-482:37,side<0?-37:482);
+for(const z of [322,422,502])street(`south-${z}`,'x',z,-482,482);
+for(const x of [-482,-382,-282,-181,-42,42,181,282,382,482])
+  street(`south-spine-${x}`,'z',x,Math.abs(x)===42?214:270,502,Math.abs(x)===42?10:8);
+
+export const neighborhoodParcels=[];
+export const outskirtsPublicSpaces=[{id:'neighborhood-court',bounds:[-27,342,27,400]},{id:'service-yard',bounds:[-274,228,-244,252]}];
+const overlaps=(a,b)=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1];
+function homes(bounds,district,index) {
+  const [x0,z0,x1,z1]=bounds,mid=(x0+x1)/2;
+  for(const [i,b]of [[x0,z0,mid-3,z1],[mid+3,z0,x1,z1]].entries()) {
+    if([...blocks,...inner,...distant,...outer,...parkPlan,...outskirtsPublicSpaces].some(p=>overlaps(b,p.bounds)))continue;
+    if(outskirtsRoads.some(r=>overlaps(b,[r.bounds[0]-r.walk,r.bounds[1]-r.walk,r.bounds[2]+r.walk,r.bounds[3]+r.walk])))continue;
+    let dry=true;
+    for(let x=b[0];x<=b[2];x+=2){const water=riverEdges(x);if(b[3]>water.north-10&&b[1]<water.south+10)dry=false;}
+    if(!dry)continue;
+    const civic=district==='east'&&index===2&&i===0,workshop=district==='west'&&index===0;
+    neighborhoodParcels.push({id:`O${neighborhoodParcels.length+1}`,bounds:b,district,extension:true,layer:'outskirts',
+      height:civic?14:workshop?7:6+(index+i)%3*2,family:civic?'campus':workshop?'workshop':(index+i)%2?'brick':'limestone',
+      form:civic?'court':workshop?'sawtooth':(index+i)%4===0?'terraced':'gable'});
+  }
+}
+const columns=[-482,-382,-282,-181,-42,42,181,282,382,482];
+for(const [row,[z0,z1]]of [[-466,-398],[-366,-298],[-264,-246]].entries())for(let i=0;i<columns.length-1;i++)
+  homes([columns[i]+12,z0,columns[i+1]-12,z1],'north',i+row);
+for(const side of [-1,1])for(const [row,[z0,z1]]of [[-158,-110],[-80,-58],[-26,26],[58,88]].entries())for(const a of [282,382])
+  homes([side<0?-a-88:a+12,z0,side<0?-a-12:a+88,z1],side<0?'west':'east',row);
+for(const [row,[z0,z1]]of [[286,306],[338,406],[438,486]].entries())for(let i=0;i<columns.length-1;i++)
+  homes([columns[i]+12,z0,columns[i+1]-12,z1],'south',i+row);
+export const districtPlan={extent:600,plazaHalf:24,roadCenters:[-42,42],roadWidth:10,sidewalkWidth:3,parcels:[...blocks,...inner,...distant,...outer,...neighborhoodParcels]};
 
 const lots=[];
 function add(parent,bounds,height,family,form='stepped',suffix='',inset=2) {
   lots.push({id:parent.id+suffix,parcelId:parent.id,bounds,height,family,form,layer:parent.layer,inset,
-    extension:Boolean(parent.extension),type:family==='workshop'?'workshop':family==='campus'?'campus':family==='brick'?'apartments':'office'});
+    extension:Boolean(parent.extension),district:parent.district,type:family==='workshop'?'workshop':family==='campus'?'campus':family==='brick'?'apartments':'office'});
 }
 for(const block of blocks) {
   const [x0,z0,x1,z1]=block.bounds,mx=(x0+x1)/2,mz=(z0+z1)/2;
@@ -57,12 +100,14 @@ for(const block of blocks) {
 for(const parcel of inner) add(parcel,parcel.bounds,Number(parcel.id.slice(1))%3===0?14:9,'limestone','shopfront','',1);
 for(const [index,parcel] of distant.entries()) add(parcel,parcel.bounds,parcel.height,index%3===0?'glass':index%3===1?'brick':'limestone',index%3===0?'slender':'terraced','',3);
 for(const parcel of outer) add(parcel,parcel.bounds,parcel.height,parcel.family,parcel.form,'',3);
+for(const parcel of neighborhoodParcels) add(parcel,parcel.bounds,parcel.height,parcel.family,parcel.form,'',4);
 export const cityLots=lots;
 
 /** Deliberate solid envelopes, shared by blockout, architecture and cameras. */
 export function buildingVolumes(lot) {
   const [x0,z0,x1,z1]=lot.bounds,cx=(x0+x1)/2,cz=(z0+z1)/2;
-  const w=x1-x0-lot.inset*2,d=z1-z0-lot.inset*2,h=lot.height,base=-.4;
+  const suburban=lot.layer==='outskirts'&&lot.family!=='workshop'&&lot.family!=='campus';
+  const w=Math.min(x1-x0-lot.inset*2,suburban?26:Infinity),d=Math.min(z1-z0-lot.inset*2,suburban?24:Infinity),h=lot.height,base=-.4;
   const parts=[];
   const box=(x,z,width,depth,bottom,top,roof='flat')=>parts.push({x,z,width,depth,bottom,top,roof});
   if(lot.form==='court') {

@@ -50,7 +50,7 @@ export function createCityEnvironment(initialTime=readCityTime()) {
   });
   const sky=new T.Mesh(new T.BoxGeometry(2,2,2),material);sky.name='local-time-sky';sky.frustumCulled=false;sky.renderOrder=-100;root.add(sky);
   const groundMaterial=applyGroundTexture(applyDistrictDepth(new T.MeshBasicMaterial({color:'#7b8b70',transparent:true}),.98),'terrain');
-  const ground=new T.Mesh(new T.PlaneGeometry(4000,4000),groundMaterial);ground.rotation.x=-Math.PI/2;ground.position.y=-.82;ground.renderOrder=-20;ground.name='city-ground';root.add(ground);
+  const ground=new T.Mesh(new T.PlaneGeometry(12000,12000),groundMaterial);ground.rotation.x=-Math.PI/2;ground.position.y=-.82;ground.renderOrder=-20;ground.name='city-ground';root.add(ground);
   let timeState=initialTime;
   const setTime=state=>{
     timeState=state;
@@ -77,9 +77,12 @@ export function applyTowerGlazing(material,sectionLow) {
   material.onBeforeCompile=shader=>{
     shader.uniforms.towerSectionLow={value:sectionLow};
     shader.uniforms.towerNight=night;
+    shader.vertexShader=`attribute vec3 towerNightColor;varying vec3 nightFacadeColor;\n${shader.vertexShader}`.replace('#include <color_vertex>','#include <color_vertex>\nnightFacadeColor=towerNightColor;');
+    shader.fragmentShader=`varying vec3 nightFacadeColor;\n${shader.fragmentShader}`;
     shader.vertexShader=`uniform float towerSectionLow;varying vec3 towerPoint;varying vec3 towerNormal;\n${shader.vertexShader}`.replace('#include <begin_vertex>',`#include <begin_vertex>\ntowerPoint=position+vec3(0.0,towerSectionLow,0.0);towerNormal=normal;`);
     shader.fragmentShader=`uniform float towerNight;varying vec3 towerPoint;varying vec3 towerNormal;\n${shader.fragmentShader}`.replace('#include <color_fragment>',`#include <color_fragment>
       vec3 n=normalize(towerNormal);
+      diffuseColor.rgb=mix(diffuseColor.rgb,diffuse*nightFacadeColor,towerNight);
       float across=abs(n.x)>.5?towerPoint.z:towerPoint.x;
       vec2 cell=vec2(across/1.4,towerPoint.y/1.7);
       vec2 f=fract(cell);
@@ -90,6 +93,6 @@ export function applyTowerGlazing(material,sectionLow) {
       diffuseColor.rgb+=vec3(.12,.055,.012)*lit*pane;
     `).replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance+=vec3(.85,.45,.13)*lit*pane*towerNight*.75;');
   };
-  material.customProgramCacheKey=()=>`tower-glazing-v2`;
+  material.customProgramCacheKey=()=>`tower-glazing-v3`;
   return material;
 }

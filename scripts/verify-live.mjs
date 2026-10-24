@@ -7,7 +7,7 @@ const root = resolve(import.meta.dirname, '..'), origin = 'https://bshwao.github
 const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
 const files = ['index.html', 'reading.html', 'assets/scene-3d.js', 'assets/tower-model.js', 'assets/render-budget.js', 'assets/color-theme.js', 'assets/theme.css', 'assets/color-system.css', 'assets/interiors.js', 'assets/cap-plans.js', 'assets/spatial-app.js', 'assets/spatial.css', 'assets/floor-view.js', 'assets/floor-view.css', 'assets/reading.css', 'assets/styles.css', 'assets/project-story.css', 'assets/floor-plans.js', 'assets/district-ground.js', 'assets/district-buildings.js', 'assets/district-details.js', 'assets/district-style.js', 'assets/favicon.svg', 'assets/social-preview.png', 'assets/eric-hsu-resume.pdf', 'sitemap.xml', 'robots.txt', 'QA.md', 'ROADMAP.md', 'MAINTENANCE.md'];
 files.push('assets/city-layout.js','assets/city-environment.js','assets/city-backdrop.js','assets/city-waterfront.js','assets/tower-geometry.js','assets/camera-framing.js','assets/facade-materials.js');
-files.push('assets/city-time.js','assets/city-palette.js','assets/city-landscape.js','assets/ground-materials.js');
+files.push('assets/city-time.js','assets/city-palette.js','assets/city-landscape.js','assets/city-outskirts.js','assets/ground-materials.js');
 files.push('assets/interior-details.js');
 files.push('assets/glass.css');
 files.push('assets/interior-structure.js','assets/room-extensions.js');

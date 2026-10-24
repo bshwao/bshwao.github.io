@@ -1,0 +1,155 @@
+{
+  "objective": "Finish the rest of the city and outskirts etc.",
+  "date": "2026-10-24T00:47:44.873Z",
+  "previousGoalTurn": "First goal implementation turn: progress through completed code, source/runtime checks and rendered evidence.",
+  "requirements": [
+    {
+      "requirement": "Complete connected streets, sidewalks, intersections, bridge landings and river approaches without occupying lots, parks or water",
+      "status": "proven",
+      "evidence": [
+        "assets/city-layout.js",
+        "assets/city-outskirts.js",
+        "scripts/skyline.test.mjs",
+        "source-check.log",
+        "whole-perimeter.jpg",
+        "west-neighborhoods.jpg"
+      ]
+    },
+    {
+      "requirement": "Northern/southern residential neighborhoods, western workshops and eastern civic blocks; lower varied architecture and real street access",
+      "status": "proven",
+      "evidence": [
+        "geometry-inventory.json",
+        "scripts/skyline.test.mjs",
+        "south-neighborhoods.jpg",
+        "west-neighborhoods.jpg",
+        "north-neighborhoods.jpg"
+      ]
+    },
+    {
+      "requirement": "Finish gardens, neighborhood public space, lighting, transit/service areas, wooded edges, terrain and river continuation",
+      "status": "proven",
+      "evidence": [
+        "geometry-inventory.json",
+        "assets/city-outskirts.js",
+        "assets/city-environment.js",
+        "assets/city-waterfront.js",
+        "whole-perimeter.jpg",
+        "night-neighborhoods.jpg"
+      ]
+    },
+    {
+      "requirement": "Retain the dominant tower, local-time sky, slight full-resolution background blur, all five floors and nineteen rooms",
+      "status": "proven",
+      "evidence": [
+        "source-check.log",
+        "integration.log",
+        "webgl-desktop.json",
+        "webgl-portrait.json",
+        "webgl-landscape.json",
+        "phone-opening.jpg",
+        "phone-interior.jpg",
+        "landscape-interior.jpg"
+      ]
+    },
+    {
+      "requirement": "Verify drawing/raster limits, idle suspension, stable allocation, disposal, responsive navigation and fallback",
+      "status": "proven",
+      "evidence": [
+        "source-check.log",
+        "integration.log",
+        "webgl-desktop.json",
+        "webgl-portrait.json",
+        "webgl-landscape.json",
+        "frame-timing-desktop.json",
+        "production-warnings.json"
+      ]
+    },
+    {
+      "requirement": "Refresh sharing artwork and maintain plans, documentation, screenshots, measured costs and final audit",
+      "status": "proven",
+      "evidence": [
+        "README.md",
+        "MAINTENANCE.md",
+        "QA.md",
+        "CITY-OUTSKIRTS-PLAN.md",
+        "assets/social-preview.png",
+        "social-source.jpg",
+        "completion-audit.json"
+      ]
+    }
+  ],
+  "gpu": [
+    {
+      "size": "desktop",
+      "viewport": "1280x720",
+      "samples": 26,
+      "draws": 67,
+      "triangles": 113171,
+      "peak": 95,
+      "stableGeometry": 217,
+      "afterResize": 222
+    },
+    {
+      "size": "portrait",
+      "viewport": "390x844",
+      "samples": 26,
+      "draws": 65,
+      "triangles": 113171,
+      "peak": 82,
+      "stableGeometry": 215,
+      "afterResize": 222
+    },
+    {
+      "size": "landscape",
+      "viewport": "844x390",
+      "samples": 26,
+      "draws": 65,
+      "triangles": 113171,
+      "peak": 82,
+      "stableGeometry": 215,
+      "afterResize": 222
+    }
+  ],
+  "sourceTests": 75,
+  "moduleChecks": 49,
+  "integrationModes": 5,
+  "renderPassesAdded": 4,
+  "newTextureAllocations": 0,
+  "screenshots": [
+    "whole-perimeter.jpg",
+    "south-neighborhoods.jpg",
+    "west-neighborhoods.jpg",
+    "north-neighborhoods.jpg",
+    "night-neighborhoods.jpg",
+    "phone-opening.jpg",
+    "phone-interior.jpg",
+    "landscape-interior.jpg",
+    "final-city.jpg",
+    "social-source.jpg"
+  ],
+  "timingScope": {
+    "viewport": "1280x720",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "minObservedFps": 125.7,
+    "maxP95Ms": 12.2,
+    "contextLossFallback": true
+  },
+  "limitations": [
+    "Chromium browser viewport simulations; no physical-phone performance claim.",
+    "Local implementation and updated artwork; no publication requested or performed."
+  ],
+  "sourceHashes": {
+    "assets/city-layout.js": "ce3625e0d44d6a9203140f8330b238cc4b1f89523272685658d3da58ea263cd6",
+    "assets/city-outskirts.js": "f4f543f2e05d2b498f82e8991af96012dfba82897c59343b1e68faa76def8ea4",
+    "assets/city-waterfront.js": "80cd74975570ac297fd839bde23746f9eb681f2b0422ffac2c57b220934e3f23",
+    "assets/city-environment.js": "8bf0e0e09dd81f59e289844f1b2cd67e90bce5a30571523d60331269cf1d59ba",
+    "assets/tower-model.js": "d6a66b67928dea1866dac164b59986188cd2adc594b8799334df2fcd93b8f440",
+    "assets/scene-3d.js": "476eff192e5dc3ac407b5460b575fd8ba12aa5b96855b83d3b61d9abcbfa7d58",
+    "scripts/skyline.test.mjs": "90e508fe5cba04bd35ba16391a34b41cec99aa3cf824b5653d0d0393d04de0e1",
+    "scripts/browser-qa.js": "685f701b088a4c94d1a3d69c39ef5be498ae0e303e3d2c8e798b3a215c8c12e7",
+    "scripts/social-card.js": "33d7126ba7d5beac00800d1c2914555aefe4de4d8c18f6094638c232bd0fbea4"
+  },
+  "requiredWorkRemaining": [],
+  "conclusion": "The complete local city and outskirts objective is achieved, with all requirements proven by current source, runtime and visual evidence."
+}

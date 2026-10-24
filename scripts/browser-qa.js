@@ -24,6 +24,7 @@ async function settled(requireFrame=true) {
 function sample(view, limit) {
   const metrics = spatial.metrics();
   assert(metrics.calls <= limit, `${view}: ${metrics.calls} draws exceeds ${limit}`);
+  if(view==='tower')assert(metrics.triangles<=150000,`${metrics.triangles} assembled triangles exceeds the complete-city budget`);
   assert(metrics.textures <= 2 + (params.has('shadows')?1:0), `${view}: unexpected WebGL texture allocation`);
   assert(metrics.backdrop.width * metrics.backdrop.height <= 2_400_000, 'City blur exceeds the main canvas raster budget');
   if(view !== 'tower') {
@@ -40,7 +41,7 @@ try {
     if(spatial) maxFrameCalls=Math.max(maxFrameCalls,spatial.metrics().calls);
   } });
   await settled(); const readyMs = Math.round(performance.now() - started);
-  sample('tower', params.has('shadows')?85:65);
+  sample('tower', params.has('shadows')?85:69);
   // Include all five sharp floors plus the uncached city and its four new ground/park batches.
   spatial.goTo('explore', null, { instant: true }); await settled(); sample('explore', 85);
   for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {

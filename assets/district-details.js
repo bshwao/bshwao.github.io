@@ -162,7 +162,7 @@ export function createDistrictDetails(buildings) {
   }
 
   // The existing U-shaped buildings frame usable, planted courtyard spaces.
-  for (const building of buildings.filter(building => building.form === 'court')) {
+  for (const building of buildings.filter(building => building.form === 'court' && !building.extension)) {
     const cx = (building.bounds.min.x + building.bounds.max.x) / 2;
     const cz = (building.bounds.min.z + building.bounds.max.z) / 2;
     const toward = cz < 0 ? 1 : -1;

@@ -12,6 +12,7 @@ import { facadeColor } from './facade-materials.js';
 import { applyTowerGlazing, cityPalette } from './city-environment.js';
 import { createCityWaterfront } from './city-waterfront.js';
 import { createCityLandscape } from './city-landscape.js';
+import { createCityOutskirts } from './city-outskirts.js';
 
 // Triangulate deliberate corners, then subdivide the triangle boundaries at
 // every facade bay. Earcut on many nearly collinear bay samples can produce
@@ -83,17 +84,19 @@ export function createTowerModel() {
     geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
     // Material zones follow the whole elevation instead of restarting on each
     // wing or floor section. The solid topology and single surface draw remain.
-    const facadeColors = [], facade = new T.Color();
+    const facadeColors = [], nightFacadeColors = [], facade = new T.Color();
     for (const {y,sample} of levels) for (const [x,z] of footprint(sample,count)) {
       facadeColors.push(...facadeColor(Math.atan2(z,x),y,facade,{x,z}).toArray());
+      nightFacadeColors.push(...facadeColor(Math.atan2(z,x),y,facade,{x,z},0).toArray());
     }
     geometry.setAttribute('color', new T.Float32BufferAttribute(facadeColors, 3));
+    geometry.setAttribute('towerNightColor', new T.Float32BufferAttribute(nightFacadeColors, 3));
     geometry.setIndex(indices);
     // Walls, chamfers and horizontal ledges have different face normals.
     // Sharing their normals creates diagonal shading across an otherwise flat
     // terrace, especially obvious in the neutral massing study.
     const walls = geometry.toNonIndexed(); geometry.dispose();
-    const facePositions=[...walls.attributes.position.array], faceColors=[...walls.attributes.color.array];
+    const facePositions=[...walls.attributes.position.array], faceColors=[...walls.attributes.color.array], faceNightColors=[...walls.attributes.towerNightColor.array];
     const roofColor=new T.Color(cityPalette.roof).toArray();
     // Triangulate the polygon difference. Connecting matching L-shaped corners
     // can cross into the next volume when the recessed corner changes position.
@@ -101,13 +104,14 @@ export function createTowerModel() {
       const terrace=planarGeometry(y-.002,[y],y-section.low);
       const p=terrace.attributes.position;
       facePositions.push(...p.array);
-      for(let i=0;i<p.count;i++) faceColors.push(...roofColor);
+      for(let i=0;i<p.count;i++) { faceColors.push(...roofColor); faceNightColors.push(...roofColor); }
       terrace.dispose();
     }
     walls.dispose();
     const faceted=new T.BufferGeometry();
     faceted.setAttribute('position',new T.Float32BufferAttribute(facePositions,3));
     faceted.setAttribute('color',new T.Float32BufferAttribute(faceColors,3));
+    faceted.setAttribute('towerNightColor',new T.Float32BufferAttribute(faceNightColors,3));
     faceted.computeVertexNormals();
     const mesh = new T.Mesh(faceted, surface);
     mesh.userData.sectionId = section.id;
@@ -192,7 +196,8 @@ export function createTowerModel() {
   const districtShadows = createDistrictShadows(districtBuildings.buildings, districtDetails.features); root.add(districtShadows.root);
   const waterfront = createCityWaterfront(); root.add(waterfront.root);
   const landscape=createCityLandscape();root.add(landscape.root);
-  return { root, modules, ground, groundLine, district, districtBuildings, districtDetails, districtShadows, waterfront, landscape,
+  const outskirts=createCityOutskirts();root.add(outskirts.root);
+  return { root, modules, ground, groundLine, district, districtBuildings, districtDetails, districtShadows, waterfront, landscape, outskirts,
     setCompact(compact) {
       for (const module of modules) module.shell.children[1].geometry = compact ? module.coarseLineGeometry : module.lineGeometry;
       district.root.getObjectByName('draft-grid-minor').visible = false;

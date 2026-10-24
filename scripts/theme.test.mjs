@@ -10,6 +10,7 @@ import { JSDOM } from 'jsdom';
 import { simulateVision, visionMatrices } from './vision-simulation.js';
 import { facadeColor } from '../assets/facade-materials.js';
 import { cityPalette } from '../assets/city-environment.js';
+import { towerHeight } from '../assets/tower-geometry.js';
 
 const luminance = hex => {
   const linear = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4);
@@ -82,6 +83,24 @@ test('facade materials do not repeat every wing or restart at a section boundary
     const top=boundary(upper,0), bottom=boundary(lower,lower.high-lower.low);
     assert.equal(top.size,96,'The shared facade seam retains every bay');
     assert.deepEqual(top,bottom,'Shared cut height and physical bay preserve the same facade materials');
+  }
+});
+
+test('solar facade reflections fade continuously at night without rebuilding the tower',()=>{
+  const height=towerHeight*.42,angle=Math.PI/2,position={x:8,z:10};
+  const day=facadeColor(angle,height,new T.Color(),position,1),night=facadeColor(angle,height,new T.Color(),position,0);
+  const dusk=facadeColor(angle,height,new T.Color(),position,.5);
+  assert.ok(night.r<day.r*.5,'Night removes the strong gold solar reflection');
+  assert.ok(day.r-day.b>night.r-night.b,'Night glazing retains a cooler material color');
+  const midpoint=day.clone().lerp(night,.5);
+  assert.ok(Math.hypot(dusk.r-midpoint.r,dusk.g-midpoint.g,dusk.b-midpoint.b)<1e-10,'Twilight interpolates smoothly');
+  const model=createTowerModel();
+  for(const module of model.modules){
+    const geometry=module.mesh.geometry,attribute=geometry.attributes.towerNightColor;
+    assert.equal(attribute.count,geometry.attributes.position.count,'Walls and terraces carry complete night colors');
+    assert.ok(Array.from(attribute.array).every(v=>Number.isFinite(v)&&v>=0&&v<=1));
+    const original=attribute;model.setCompact(true);model.setCompact(false);
+    assert.equal(geometry.attributes.towerNightColor,original,'Quality changes reuse the same attribute');
   }
 });
 

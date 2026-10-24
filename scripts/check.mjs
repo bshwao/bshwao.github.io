@@ -9,6 +9,7 @@ files.push(resolve(root, 'scripts/serve.mjs'), resolve(root, 'scripts/reading.mj
 files.push(resolve(root,'scripts/skyline-qa.js'));
 files.push(resolve(root,'scripts/shadow-study.js'));
 files.push(resolve(root,'scripts/time-qa.js'));
+files.push(resolve(root,'scripts/outskirts-qa.js'));
 for (const file of files) {
   const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
   if (result.status !== 0) { process.stderr.write(result.stderr); process.exit(1); }

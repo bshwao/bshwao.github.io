@@ -35,7 +35,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   const fill = new T.DirectionalLight(palette.fill, .6); fill.position.set(-80, 30, -60); scene.add(fill);
   const model = createTowerModel(); scene.add(model.root);
   const environment=createCityEnvironment(cityTime);scene.add(environment.root);
-  const backgrounds = [environment.root, model.ground, model.district.root, model.districtBuildings.root, model.districtDetails.root, model.districtShadows.root, model.waterfront.root,model.landscape.root];
+  const backgrounds = [environment.root, model.ground, model.district.root, model.districtBuildings.root, model.districtDetails.root, model.districtShadows.root, model.waterfront.root,model.landscape.root,model.outskirts.root];
   const backdrop = createCityBackdrop(renderer, backgrounds, model.modules.map(module => module.group));
   // Diagnostic comparison only: production uses baked face/contact shading.
   if(shadowComparison){
@@ -263,7 +263,9 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       if (districtVisibility < .999) {
         backdrop.render(scene, camera, 1 - districtVisibility,
           () => { environment.update(camera,1); lighting(1); },
-          () => lighting(districtVisibility));
+          // Closed sections retain outdoor light while unfolded. Bright reading
+          // light fades in only as the detailed interior is actually revealed.
+          () => lighting(1 - reveal * (1 - districtVisibility)));
       } else { environment.update(camera,1); lighting(1); renderer.render(scene,camera); }
       canvas.dataset.background = districtVisibility < .999 ? 'blurred' : 'sharp';
       onFrame?.({ mode, selectedId: selected?.id, labels: labels(), expansion, reveal, panel, focusedRoom, activeRoom, hoveredRoom,
@@ -372,7 +374,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     const found = raycaster.intersectObjects(model.modules.flatMap(module => module.shell.children).filter(item => item.isMesh), false)[0];
     if (!found) return null;
     if (mode === 'tower' && districtVisibility > .5) {
-      const scenery = [...model.districtBuildings.root.children, ...model.districtDetails.root.children, ...model.waterfront.root.children,...model.landscape.root.children].filter(item => item.isMesh);
+      const scenery = [...model.districtBuildings.root.children, ...model.districtDetails.root.children, ...model.waterfront.root.children,...model.landscape.root.children,...model.outskirts.root.children].filter(item => item.isMesh);
       const obstacle = raycaster.intersectObjects(scenery, false)[0];
       if (obstacle && obstacle.distance < found.distance - .01) return null;
     }

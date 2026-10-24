@@ -69,7 +69,8 @@ test('the decorative district has finite ground geometry within a small renderin
 test('district buildings fit their parcels, keep the tower clear, and share a bounded geometry budget', () => {
   const district = model.districtBuildings;
   assert.equal(district.buildings.length, cityLots.length);
-  assert.ok(district.buildings.length >= 60 && district.buildings.length <= 65,'Core and riverfront neighborhoods stay within the extended city budget');
+  assert.ok(district.buildings.filter(b=>b.layer!=='outskirts').length >= 60,'The established downtown and riverfront remain occupied');
+  assert.ok(district.buildings.length<=210,'City and outer neighborhoods stay within the authored density budget');
   assert.equal(new Set(district.buildings.map(building => building.lotId)).size, cityLots.length);
   assert.equal(new Set(district.buildings.map(building => building.type)).size, 4);
   for (const building of district.buildings) {

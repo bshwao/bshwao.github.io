@@ -155,6 +155,7 @@ export function createDistrictGround() {
   text('PLAZA', 0, 33.5, 1.45);
 
   for (const parcel of districtPlan.parcels) {
+    if(parcel.layer==='outskirts')continue; // Finished lawns/paths replace drafting pads here.
     const [x0, z0, x1, z1] = parcel.bounds;
     rect(parcels, x0, z0, x1, z1, -.42);
     outline(boundaries, x0, z0, x1, z1);

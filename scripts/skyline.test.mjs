@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from '../assets/vendor/three.module.min.js';
-import {cityLots,cityEnvelopes,districtPlan,riverPlan,riverEdges,riverCenter,parkPlan} from '../assets/city-layout.js';
+import {cityLots,cityEnvelopes,districtPlan,riverPlan,riverEdges,riverCenter,parkPlan,outskirtsRoads,neighborhoodParcels} from '../assets/city-layout.js';
 import {createTowerModel} from '../assets/tower-model.js';
 import {floorProfiles,towerAntennas,towerHeight,towerRoofHeight} from '../assets/tower-geometry.js';
 import {outdoorCameraPose} from '../assets/camera-framing.js';
@@ -115,7 +115,9 @@ test('street additions stay batched, supported and clear of live approaches',()=
 });
 
 test('the city has distinct height/depth layers and independent lots with open streets and approaches',()=>{
-  assert.ok(cityLots.length>=60&&cityLots.length<=65);
+  const downtown=cityLots.filter(lot=>lot.layer!=='outskirts');
+  assert.ok(downtown.length>=60&&downtown.length<=65,'The established downtown is preserved');
+  assert.ok(neighborhoodParcels.length>=100,'Outer neighborhoods fill the city perimeter');
   assert.equal(cityLots.filter(lot=>lot.height>=55).length,3,'Three secondary towers support the main landmark');
   assert.ok(cityLots.filter(lot=>lot.height>=22&&lot.height<=50).length>=10);
   assert.ok(cityLots.filter(lot=>lot.height>=8&&lot.height<=22).length>=12);
@@ -130,6 +132,51 @@ test('the city has distinct height/depth layers and independent lots with open s
       assert.ok(!overlap(lot.bounds,[-170,center-5,170,center+5]));
     }
   }
+});
+
+test('outer streets connect to downtown and both bridges without crossing occupied land or water',()=>{
+  const roadBounds=outskirtsRoads.map(r=>r.bounds);
+  const core=districtPlan.roadCenters.flatMap(c=>[[c-5,-170,c+5,170],[-170,c-5,170,c+5]]);
+  const bridges=riverPlan.bridges.map(x=>{const a=riverEdges(x-7),b=riverEdges(x+7);return[x-5,Math.min(a.north,b.north)-18,x+5,214];});
+  const nodes=[...roadBounds,...core,...bridges],seen=new Set([outskirtsRoads.length]);
+  const joins=(a,b)=>a[0]<=b[2]+.001&&a[2]>=b[0]-.001&&a[1]<=b[3]+.001&&a[3]>=b[1]-.001;
+  for(let changed=true;changed;){changed=false;for(let i=0;i<nodes.length;i++)if(!seen.has(i)&&[...seen].some(j=>joins(nodes[i],nodes[j]))){seen.add(i);changed=true;}}
+  assert.equal(seen.size,nodes.length,'Every peripheral street has a continuous route to the tower and bridges');
+  for(const road of outskirtsRoads){
+    for(const lot of cityLots)assert.ok(!overlap(road.bounds,lot.bounds),`${road.id}/${lot.id}: road leaves the occupied parcel clear`);
+    for(const park of parkPlan)assert.ok(!overlap(road.bounds,park.bounds),`${road.id}: established park stays intact`);
+    for(let x=road.bounds[0];x<=road.bounds[2];x+=2){const water=riverEdges(x);assert.ok(road.bounds[3]<=water.north||road.bounds[1]>=water.south,`${road.id}: dry road outside designated bridges`);}
+    const midpoint=new T.Vector3((road.bounds[0]+road.bounds[2])/2,10,(road.bounds[1]+road.bounds[3])/2);
+    assert.ok(new T.Raycaster(midpoint,new T.Vector3(0,-1,0)).intersectObject(model.outskirts.root.getObjectByName('outskirts-paving')).length,`${road.id}: road is rendered with an upward-facing surface`);
+  }
+});
+
+test('outer neighborhoods have street access, public space and a bounded transition to woodland',()=>{
+  const outskirts=model.outskirts,features=outskirts.features;
+  for(const district of ['north','south','east','west'])assert.ok(neighborhoodParcels.filter(lot=>lot.district===district).length>=12,`${district}: occupied neighborhood`);
+  assert.ok(neighborhoodParcels.every(lot=>lot.height<=14),'Heights taper beyond downtown');
+  assert.ok(neighborhoodParcels.some(lot=>lot.form==='gable')&&neighborhoodParcels.some(lot=>lot.form==='sawtooth')&&neighborhoodParcels.some(lot=>lot.form==='court'),'Housing, workshops and civic buildings have different roof/massing types');
+  for(const garden of features.filter(f=>f.kind==='home-garden')){
+    const road=outskirtsRoads.find(r=>r.id===garden.streetId),end=road.center+Math.sign(garden.path.end-road.center)*(road.width/2+road.walk);
+    assert.ok(Math.abs(garden.path.end-end)<1e-6,`${garden.id}: front path reaches a real sidewalk`);
+  }
+  assert.equal(features.filter(f=>f.kind==='neighborhood-court').length,1);
+  assert.equal(features.filter(f=>f.kind==='service-yard').length,1);
+  assert.ok(features.filter(f=>f.kind==='transit-stop').length>=2);
+  assert.ok(features.filter(f=>f.kind==='neighborhood-lamp').length>=8);
+  assert.ok(features.filter(f=>f.kind==='avenue-tree').length>=12,'Outer avenues retain their planted sidewalk edge');
+  assert.ok(features.filter(f=>f.kind==='woodland').length>=60);
+  const occupied=model.districtBuildings.buildings.flatMap(b=>b.parts.map(p=>new T.Box3(new T.Vector3(p.x-p.width/2,p.bottom,p.z-p.depth/2),new T.Vector3(p.x+p.width/2,p.top,p.z+p.depth/2))));
+  for(const feature of features.filter(f=>!['street','home-garden'].includes(f.kind))){
+    assert.ok(occupied.every(b=>!b.intersectsBox(feature.bounds)),`${feature.kind}: no occupied-volume collision`);
+    for(let x=feature.bounds.min.x;x<=feature.bounds.max.x;x+=4){const water=riverEdges(x);assert.ok(feature.bounds.max.z<=water.north||feature.bounds.min.z>=water.south,`${feature.kind}: dry land`);}
+    for(const r of outskirtsRoads)assert.ok(!overlap([feature.bounds.min.x,feature.bounds.min.z,feature.bounds.max.x,feature.bounds.max.z],r.bounds),`${feature.kind}/${r.id}: roadway stays clear`);
+  }
+  assert.equal(outskirts.root.children.length,4,'All outskirts detail shares four static batches');
+  let triangles=0;
+  outskirts.root.traverse(node=>{if(!node.isMesh)return;const p=node.geometry.attributes.position;triangles+=p.count/3;assert.ok(Array.from(p.array).every(Number.isFinite));assert.equal(p.count,node.geometry.attributes.color.count);assert.equal(p.count,node.geometry.attributes.cityGlow.count);assert.ok(node.material.userData.districtDepth);});
+  assert.ok(triangles<20000,`${triangles}: outer roads, gardens and woodland remain bounded`);
+  assert.ok(riverPlan.minX<=-2000&&riverPlan.maxX>=2000,'The river continues through the full outer landscape');
 });
 
 test('river, bridges and riverwalk occupy real space without flooding the city or hiding the landmark',()=>{

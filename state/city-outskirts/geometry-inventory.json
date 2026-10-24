@@ -1,0 +1,67 @@
+{
+  "lots": 197,
+  "parcels": 188,
+  "newLots": 136,
+  "outerRoads": 36,
+  "districts": {
+    "north": 54,
+    "south": 50,
+    "west": 16,
+    "east": 16
+  },
+  "features": {
+    "street": 36,
+    "river-approach": 8,
+    "home-garden": 136,
+    "avenue-tree": 18,
+    "neighborhood-lamp": 16,
+    "transit-stop": 4,
+    "neighborhood-court": 1,
+    "service-yard": 1,
+    "woodland": 79,
+    "outer-ridge": 14
+  },
+  "river": {
+    "minX": -6000,
+    "maxX": 6000,
+    "halfWidth": 20,
+    "promenadeWidth": 7,
+    "waterY": -0.58,
+    "bridges": [
+      -42,
+      42
+    ]
+  },
+  "geometry": {
+    "districtBuildings": {
+      "batches": 5,
+      "triangles": 56192,
+      "vertices": 311896
+    },
+    "districtDetails": {
+      "batches": 6,
+      "triangles": 8456,
+      "vertices": 40370
+    },
+    "districtShadows": {
+      "batches": 1,
+      "triangles": 3297,
+      "vertices": 9891
+    },
+    "waterfront": {
+      "batches": 5,
+      "triangles": 4888,
+      "vertices": 15224
+    },
+    "landscape": {
+      "batches": 3,
+      "triangles": 1796,
+      "vertices": 5388
+    },
+    "outskirts": {
+      "batches": 4,
+      "triangles": 19842,
+      "vertices": 59526
+    }
+  }
+}

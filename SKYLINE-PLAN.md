@@ -6,6 +6,8 @@ Height follow-up: the main tower is **148.5 units tall, a 35% increase from 110*
 
 ## Visual direction
 
+The subsequent [city and outskirts completion](./CITY-OUTSKIRTS-PLAN.md) extends the riverfront checkpoint with lower outer neighborhoods, connected peripheral streets, public spaces and woodland. Its current evidence is recorded separately under `state/city-outskirts/`; the original seven-phase reports below remain historical baselines.
+
 Turn the spacious architectural model into a convincing downtown skyline at golden hour. The reference's defining qualities are a dominant dark stepped tower, connected rectangular shafts, thin antennae, substantial neighboring towers, older masonry buildings, layered street fronts, warm reflected sunlight, blue sky, and softly lit clouds.
 
 The finished scene should feel like a view into a larger city. Buildings overlap at different depths and continue beyond the opening frame. Move the opening camera lower and closer so the tower feels tall, with enough sky above its antennae. Keep full 3D orbit and the existing portfolio interactions.

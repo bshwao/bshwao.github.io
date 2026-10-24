@@ -57,11 +57,8 @@ export function createCityLandscape() {
       for(const dz of [-4,-2,0,2,4])box('fixtures',x,2.65,z+15+dz,11,.18,.25,'#a4906f');
     }
   },{id:park.id});
-  // The city fades into a planted edge instead of an unfinished gray tabletop.
-  for(const side of [-1,1])for(const [i,z]of [-255,-204,-154,-104,-54,0,54,84,254].entries())feature('edge-planting',()=>{
-    tree(side*(285+(i%2)*14),z,3.0);
-    tree(side*(309+(i%2)*10),z+10,2.5);
-  });
+  // The former edge planting now lies inside occupied neighborhoods. The
+  // outer woodland is placed beyond those blocks by city-outskirts.js.
   cube.dispose();crown.dispose();cylinder.dispose();
   for(const [name,layer]of Object.entries(layers)){
     const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(layer.positions,3));geometry.setAttribute('color',new T.Float32BufferAttribute(layer.colors,3));

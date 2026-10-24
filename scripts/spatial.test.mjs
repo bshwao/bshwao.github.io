@@ -207,6 +207,7 @@ assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'The
 assert.equal(lastScene.getObjectByName('district-character').visible, true, 'The opening view includes the landscaped district');
 assert.equal(lastScene.getObjectByName('district-contact-shadows').visible, true, 'The opening city includes its contact shading');
 assert.equal(lastScene.getObjectByName('city-waterfront').visible,true,'The opening city includes the river and bridges');
+assert.equal(lastScene.getObjectByName('city-outskirts').visible,true,'The opening city includes the outer neighborhoods');
 assert.equal(w.document.querySelector('canvas').dataset.detail, mobile ? 'compact' : 'full');
 const cityDepthReferences = [];
 lastScene.traverse(node => { if (node.material?.userData.districtDepth) cityDepthReferences.push(node.material.userData.districtDepth); });
@@ -257,6 +258,7 @@ assert.equal(lastScene.getObjectByName('district-buildings').visible,false,'Tall
 assert.equal(lastScene.getObjectByName('city-environment').visible,false,'Sunset renders behind the sharp model in a separate blurred pass');
 assert.equal(w.document.querySelector('canvas').dataset.background,'blurred','Opening the tower keeps a blurred city backdrop');
 assert.equal(lastScene.getObjectByName('city-waterfront').visible,false,'River scenery joins the blurred pass instead of covering unfolded floors');
+assert.equal(lastScene.getObjectByName('city-outskirts').visible,false,'Outer neighborhoods join the blurred background instead of covering the tower');
 const middle = lastCamera.position.clone();
 await tick(900);
 assert.equal(main.dataset.mode, 'explore');
@@ -507,6 +509,7 @@ assert.equal(lastScene.getObjectByName('district-character').visible, true, 'Can
 assert.equal(lastScene.getObjectByName('district-contact-shadows').visible, true, 'Cancelled flights restore the ground washes');
 assert.equal(canvas.dataset.background, 'sharp', 'Returning to the tower restores sharp scenery');
 assert.equal(lastScene.getObjectByName('city-waterfront').visible,true,'Returning to the city restores the river and bridges');
+assert.equal(lastScene.getObjectByName('city-outskirts').visible,true,'Returning to the city restores the outer neighborhoods');
 assert.ok(sections.every(section => !lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Interrupted entry and collapse cannot leave cap plans floating over the assembled tower');
 const before = Number(main.dataset.azimuth);
 canvas.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true })); await tick(16);
@@ -590,6 +593,17 @@ if (!reduced) {
   assert.equal(canvas.dataset.quality, quality, 'Resizing preserves original graphics quality');
   w.history.pushState(null, '', '#resume/d'); w.dispatchEvent(new w.PopStateEvent('popstate')); await settleCamera();
 }
+// Unfolding must not replace moonlight with the bright interior reading lights.
+localDate=new Date(2026,9,23,22,0,0);
+w.document.dispatchEvent(new w.Event('visibilitychange'));await settleCamera();
+w.history.pushState(null,'','#explore');w.dispatchEvent(new w.PopStateEvent('popstate'));await settleCamera();
+const nightAmbient=lastScene.children.find(node=>node.isHemisphereLight);
+assert.equal(nightAmbient.intensity,.85,'Night unfolding keeps outdoor ambient light');
+assert.ok(lastScene.children.filter(node=>node.isDirectionalLight).every(node=>node.intensity<=.65),'Night unfolding cannot restore daytime key lights');
+w.history.pushState(null,'','#resume/d');w.dispatchEvent(new w.PopStateEvent('popstate'));await settleCamera();
+assert.equal(nightAmbient.intensity,2.25,'Opening a furnished room retains its readable interior lighting');
+localDate=new Date(2026,9,23,10,0,0);
+w.document.dispatchEvent(new w.Event('visibilitychange'));await settleCamera();
 click('#reading-view');
 const loss = new w.Event('webglcontextlost', { cancelable: true }); canvas.dispatchEvent(loss);
 assert.ok(loss.defaultPrevented);

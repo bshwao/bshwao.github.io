@@ -80,7 +80,7 @@ export function createDistrictShadows(buildings, features) {
     const half=points=>{const h=[];for(const p of points){while(h.length>1&&cross(h.at(-2),h.at(-1),p)<=0)h.pop();h.push(p);}return h.slice(0,-1);};
     wash([...half(points),...half([...points].reverse())],1.1,opacity);
   }
-  for (const building of buildings) for (const part of building.parts.filter(part=>part.bottom<=0)) {
+  for (const building of buildings.filter(building=>building.layer!=='outskirts')) for (const part of building.parts.filter(part=>part.bottom<=0)) {
     const outline=rectangle(part.x,part.z,part.width,part.depth);
     if(!building.extension) cast(outline,part.top,.1);
     wash(outline,2.2,.18);

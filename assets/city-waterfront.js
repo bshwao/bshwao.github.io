@@ -33,10 +33,11 @@ export function createCityWaterfront() {
   }
   const box = (layer,x,y,z,w,h,d,tint) => solid(layer,cube,x,y,z,w,h,d,tint);
   const waterY=riverPlan.waterY,walkY=-.32,half=riverPlan.halfWidth,walk=riverPlan.promenadeWidth;
+  const nextRiverX=x=>Math.min(x+(Math.abs(x+.01)>=2000?500:Math.abs(x+.01)>600?200:20),riverPlan.maxX);
 
   feature('river',()=>{
-    for(let x=riverPlan.minX;x<riverPlan.maxX;x+=20) {
-      const next=Math.min(x+20,riverPlan.maxX),a=riverCenter(x),b=riverCenter(next);
+    for(let x=riverPlan.minX;x<riverPlan.maxX;x=nextRiverX(x)) {
+      const next=nextRiverX(x),a=riverCenter(x),b=riverCenter(next);
       for(const [lo,hi,tint]of [[-half,-half*.65,'#19394b'],[-half*.65,0,'#1b4861'],[0,half*.65,'#214f68'],[half*.65,half,'#19394b']]) {
         quad('water',[x,waterY,a+lo],[x,waterY,a+hi],[next,waterY,b+hi],[next,waterY,b+lo],tint);
       }
@@ -49,8 +50,8 @@ export function createCityWaterfront() {
     }
   });
   for(const side of [-1,1]) feature('riverbank',()=>{
-    for(let x=riverPlan.minX;x<riverPlan.maxX;x+=20) {
-      const next=Math.min(x+20,riverPlan.maxX),a=riverCenter(x)+side*half,b=riverCenter(next)+side*half;
+    for(let x=riverPlan.minX;x<riverPlan.maxX;x=nextRiverX(x)) {
+      const next=nextRiverX(x),a=riverCenter(x)+side*half,b=riverCenter(next)+side*half;
       const outerA=a+side*walk,outerB=b+side*walk;
       quad('quays',[x,walkY,Math.min(a,outerA)],[x,walkY,Math.max(a,outerA)],[next,walkY,Math.max(b,outerB)],[next,walkY,Math.min(b,outerB)],'#7f8d98');
       const wall=[[x,waterY-.2,a],[x,walkY,a],[next,walkY,b],[next,waterY-.2,b]];
@@ -82,21 +83,9 @@ export function createCityWaterfront() {
     }
     for(let z=start+2;z<end-2;z+=6) rect('quays',x-.10,z,x+.10,z+2.6,.325,'#d0c29c');
     // The southern landing meets a new avenue, rather than ending in the river.
-    rect('quays',x-5,end,x+5,320,-.50,cityPalette.road);
-    for(const side of [-1,1]) rect('quays',x+side*6.5-1.5,end,x+side*6.5+1.5,320,-.39,'#87939c');
+    rect('quays',x-5,end,x+5,214,-.50,cityPalette.road);
+    for(const side of [-1,1]) rect('quays',x+side*6.5-1.5,end,x+side*6.5+1.5,214,-.39,'#87939c');
   },{x});
-
-  // Peripheral streets connect the new neighborhoods to the existing core.
-  rect('quays',-270,-181,270,-171,-.50,cityPalette.road);
-  rect('quays',-270,-184,270,-181,-.39,'#87939c');
-  rect('quays',-270,-171,270,-168,-.39,'#87939c');
-  for(const x of [-181,181]) {
-    const end=riverEdges(x).north-walk-2;
-    rect('quays',x-4,-260,x+4,end,-.50,cityPalette.road);
-    for(const side of [-1,1]) rect('quays',x+side*5.5-1.5,-260,x+side*5.5+1.5,end,-.39,'#87939c');
-  }
-  for(const x of districtPlan.roadCenters) rect('quays',x-5,-270,x+5,-170,-.50,cityPalette.road);
-  rect('quays',-260,209,290,219,-.50,cityPalette.road);
 
   for(const side of [-1,1]) for(const [i,x]of [-270,-230,-190,-150,-110,-70,-20,20,70,110,150,190,230,270].entries()) {
     const z=riverCenter(x)+side*(half+walk*.68);
@@ -144,7 +133,7 @@ export function createCityWaterfront() {
     geometry.setAttribute('surfaceKind',new T.Float32BufferAttribute(layer.surface,1));
     const material=applyDistrictDepth(name==='reflections'
       ?new T.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.55})
-      :new T.MeshBasicMaterial({vertexColors:true}),name==='water'?.12:.30);
+      :new T.MeshBasicMaterial({vertexColors:true}),name==='water'?.72:.30);
     if(name==='fixtures')material.userData.cityGlowMode='vertex';
     else if(name==='quays')applyGroundTexture(material,'mixed');
     else if(name==='water')applyGroundTexture(material,'water');
