@@ -1,5 +1,11 @@
 # Release verification
 
+## Facade section seams (local) — October 25, 2026
+
+The structural base slabs previously shared the exterior wall planes at all four assembled section joins, producing striped/triangular depth conflicts. Their perimeters now use a concave-safe .08-unit recess behind the glazing. Slabs remain solid beneath the unfolded sections and interiors. A regression verifies actual slab-vertex clearance and raycasts around every join; the old geometry had zero slab/wall separation.
+
+All 105 source tests, 60 syntax/reference checks and five integration modes pass. Desktop/morning and low portrait/requested DPR 3/night WebGL sweeps pass all 26 views, with peak draws of 84/91, zero idle frames, stable resources and full disposal. Manual night review covers matching close-up before/after views, the side elevation, unfolded sections and the Projects floor. Production warning/error logs are empty. Evidence is in `state/facade-seams/`; phone coverage uses a simulated viewport.
+
 ## Zoom limits (local) — October 25, 2026
 
 City, expanded tower, floor and room cameras now have viewport-aware near/far stops. The city can still show the whole island; other views retain tighter ranges around their fitted framing. Buttons disable at their corresponding boundary and re-enable when moving away. Wheel, keyboard, middle-button dolly and pinch share the rendered limits. Terrain clearance preserves the orbit radius, and a numerical guard prevents OrbitControls from continuously redrawing an exact stop.

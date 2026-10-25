@@ -1,0 +1,15 @@
+✔ deliberate nested floor plates have a consistent winding and no crossing perimeter edges (3.0659ms)
+✔ the silhouette is elongated and asymmetric, with a concave attached wing and an offset crown (0.4203ms)
+✔ shared occupied regions, service core, and room anchors fit the entire floor boundary (3.445ms)
+✔ structural floor slabs remain recessed behind the assembled facade at every section join (10.1408ms)
+✔ actual furnished room bounds fit their regions and do not collide with neighboring rooms or service core (0.7884ms)
+✔ real shell faces have area and setbacks remain horizontal rather than sloping connecting bands (29.9063ms)
+✔ outdoor cameras contain every actual shell corner through orbit on desktop and both phone orientations (910.0597ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2131.586

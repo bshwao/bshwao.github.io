@@ -109,6 +109,34 @@ test('shared occupied regions, service core, and room anchors fit the entire flo
 const model = createTowerModel();
 model.root.updateMatrixWorld(true);
 
+test('structural floor slabs remain recessed behind the assembled facade at every section join',()=>{
+  for(const [index,module]of model.modules.entries()){
+    const polygon=footprint(module.low+.005,12),positions=module.base.geometry.attributes.position;
+    for(let i=0;i<positions.count;i++){
+      const point=new T.Vector3().fromBufferAttribute(positions,i);
+      assert.ok(inside([point.x,point.z],polygon),`${module.id}: slab remains inside its supporting shell`);
+      const clearance=Math.min(...polygon.map((a,i)=>{
+        const b=polygon[(i+1)%polygon.length],dx=b[0]-a[0],dz=b[1]-a[1];
+        const t=T.MathUtils.clamp(((point.x-a[0])*dx+(point.z-a[1])*dz)/(dx*dx+dz*dz),0,1);
+        return Math.hypot(point.x-a[0]-t*dx,point.z-a[1]-t*dz);
+      }));
+      assert.ok(clearance>.079,`${module.id}: no slab face is coplanar with the glazing`);
+    }
+    if(index===model.modules.length-1)continue;
+    const depth=module.base.geometry.parameters.options.depth;
+    for(let edge=0;edge<polygon.length;edge++){
+      const a=polygon[edge],b=polygon[(edge+1)%polygon.length],dx=b[0]-a[0],dz=b[1]-a[1],length=Math.hypot(dx,dz);
+      if(length<3)continue;
+      const outward=new T.Vector3(dz/length,0,-dx/length);
+      const point=new T.Vector3((a[0]+b[0])/2,module.low+module.base.position.y-depth*.5,(a[1]+b[1])/2);
+      const ray=new T.Raycaster(point.addScaledVector(outward,2),outward.negate());
+      const wall=ray.intersectObject(model.modules[index+1].mesh,false)[0],slab=ray.intersectObject(module.base,false)[0];
+      assert.ok(wall&&slab,`${module.id}: the join has both a facade and solid slab`);
+      assert.ok(slab.distance-wall.distance>.079,`${module.id}: glazing occludes the slab edge around the section join`);
+    }
+  }
+});
+
 test('actual furnished room bounds fit their regions and do not collide with neighboring rooms or service core', () => {
   for (const module of model.modules) {
     const { regions, core } = floorLayout(module.low + .02, module.interior.rooms.length);

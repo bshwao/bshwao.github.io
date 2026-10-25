@@ -1,5 +1,5 @@
 import * as T from './vendor/three.module.min.js';
-import { sections, setbacks, footprint, radius, towerAntennas, towerRoofHeight } from './tower-geometry.js';
+import { sections, setbacks, footprint, insetFootprint, radius, towerAntennas, towerRoofHeight } from './tower-geometry.js';
 import { createInterior } from './interiors.js';
 import { floorContent } from './floor-content.js';
 import { createDistrictGround } from './district-ground.js';
@@ -169,7 +169,9 @@ export function createTowerModel() {
       }
     }
     const baseMaterial = new T.MeshLambertMaterial({ color: palette.structure, side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1 });
-    const floorShape = new T.Shape(footprint(section.low + .005).map(([x, z]) => new T.Vector2(x, z)));
+    // These plates extend into the section below when the tower is assembled.
+    // Recess their edges behind the glazing rather than sharing its wall plane.
+    const floorShape = new T.Shape(insetFootprint(footprint(section.low + .005,12),.08).map(([x, z]) => new T.Vector2(x, z)));
     const floorGeometry = new T.ExtrudeGeometry(floorShape, { depth: radius(0, section.low) * .065, bevelEnabled: false });
     floorGeometry.rotateX(Math.PI / 2);
     const base = new T.Mesh(floorGeometry, baseMaterial);
