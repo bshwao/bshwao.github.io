@@ -31,11 +31,26 @@
   <link rel="stylesheet" href="./assets/color-system.css">
   <link rel="stylesheet" href="./assets/glass.css">
   <link rel="stylesheet" href="./assets/view-controls.css">
+  <link rel="stylesheet" href="./assets/portfolio-intro.css">
   <script type="module" src="./assets/app.js"></script>
 </head>
 
 <body>
   <a class="skip-portfolio" href="./reading.html">Read the complete portfolio</a>
+  <dialog id="portfolio-intro" class="portfolio-intro" aria-labelledby="intro-title" aria-describedby="intro-description">
+    <header class="intro-meta"><span>EH—001 / STRUCTURES &amp; SYSTEMS</span><span>MONTRÉAL, QC / PORTFOLIO 2026</span></header>
+    <div class="intro-layout">
+      <div class="intro-copy">
+        <p class="intro-eyebrow">Electrical engineering · McGill University</p>
+        <h2 id="intro-title">Eric Hsu<span class="intro-dot">.</span></h2>
+        <p id="intro-description">Building where hardware<br>and software meet.</p>
+        <div class="intro-actions"><button id="intro-enter" type="button">Enter the city <span aria-hidden="true">↗</span></button><a href="./reading.html">Read the portfolio</a></div>
+        <p id="intro-status" class="intro-status" role="status">Preparing the city…</p>
+      </div>
+      <figure class="intro-illustration" aria-hidden="true"><img src="./assets/intro-tower.svg" alt="" width="460" height="540"><figcaption>01—05 / AN INTERACTIVE PORTFOLIO</figcaption></figure>
+    </div>
+    <footer class="intro-footer"><span>HARDWARE / SOFTWARE / SYSTEMS</span><span>A FEW THINGS I’VE BUILT, IN ONE PLACE.</span></footer>
+  </dialog>
   <main class="tower-page" id="main">
     <h1 class="sr-only">Eric Hsu — Electrical Engineering, Projects, and Experience</h1>
   </main>

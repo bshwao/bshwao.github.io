@@ -1,0 +1,20 @@
+✔ the intro is limited to fresh home entry and safely tolerates denied session storage (1.3617ms)
+✔ the static title page stays closed without JavaScript and preserves a direct reading link (92.9569ms)
+✔ entry is user paced and reveals a ready city once before recording the session (27.3288ms)
+✔ an early entry request waits for the rendered city instead of revealing a blank view (14.822ms)
+✔ reduced motion reveals the city immediately and follows the current preference (14.3448ms)
+✔ entry and replay remain usable when session storage access throws (17.3079ms)
+✔ a completed session and direct room links bypass the intro while explicit replay still works (21.0926ms)
+✔ Escape requests entry and waits for readiness instead of exposing an unfinished city (10.5418ms)
+✔ replaying from an interior can wait for the city camera to return (12.9812ms)
+✔ route or fallback dismissal cancels a pending reveal without restoring focus or marking a visit (11.4566ms)
+✔ external close and disposal release the city and leave no reveal callbacks (11.2336ms)
+✔ finishing entry does not steal focus moved outside the intro (11.6975ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1220.6926

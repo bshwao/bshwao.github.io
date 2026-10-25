@@ -1,5 +1,11 @@
 # Release verification
 
+## Portfolio introduction (local) — October 25, 2026
+
+A full-screen paper title page introduces Eric with an original SVG tower study and a user-paced **Enter the city** action. A finite 850ms sheet reveal opens onto an already rendered city; reduced motion enters immediately. Completed entry is remembered for the tab session, direct expanded/floor/room links bypass it, and Settings can replay the introduction. The native dialog keeps background controls inert, restores city keyboard focus, retains a direct reading link and releases immediately on rendering failure or route cancellation.
+
+All 117 source tests, 63 syntax/reference checks and five integration modes pass. Twelve focused intro tests cover readiness, session policy, replay, motion, denied storage, Escape, cancellation, focus and disposal. Browser layout checks pass at 320×568, 390×844, 650×390 and 1280×720 with no scrolling, visible copy/actions, 44px targets, finite reveals and restored zoom. Existing camera/Settings controls fit all eight checked views. Accessibility audits pass 18 views each at desktop and portrait with no automated WCAG A/AA violations. Manual review confirms the title page, city reveal, repeat visit, room-link bypass, replay from an interior and immediate reduced-motion entry. Production warning/error logs are empty. Screenshots and raw results are in `state/portfolio-intro/`; phone coverage uses simulated viewports.
+
 ## Facade section seams (local) — October 25, 2026
 
 The structural base slabs previously shared the exterior wall planes at all four assembled section joins, producing striped/triangular depth conflicts. Their perimeters now use a concave-safe .08-unit recess behind the glazing. Slabs remain solid beneath the unfolded sections and interiors. A regression verifies actual slab-vertex clearance and raycasts around every join; the old geometry had zero slab/wall separation.

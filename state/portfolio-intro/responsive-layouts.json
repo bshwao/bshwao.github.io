@@ -1,0 +1,213 @@
+{
+  "rows": [
+    {
+      "viewport": "320x568",
+      "dialog": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 568,
+        "right": 320,
+        "bottom": 568
+      },
+      "horizontalOverflow": false,
+      "bounds": [
+        {
+          "name": "name",
+          "x": 30,
+          "y": 157.953125,
+          "width": 260,
+          "height": 64.671875,
+          "right": 290,
+          "bottom": 222.625
+        },
+        {
+          "name": "description",
+          "x": 30,
+          "y": 237.625,
+          "width": 260,
+          "height": 56.6875,
+          "right": 290,
+          "bottom": 294.3125
+        },
+        {
+          "name": "entry",
+          "x": 30,
+          "y": 317.3125,
+          "width": 165,
+          "height": 44,
+          "right": 195,
+          "bottom": 361.3125
+        },
+        {
+          "name": "reading",
+          "x": 30,
+          "y": 369.3125,
+          "width": 89.078125,
+          "height": 44,
+          "right": 119.078125,
+          "bottom": 413.3125
+        }
+      ],
+      "revealMs": 856,
+      "cityInteractionRestored": true
+    },
+    {
+      "viewport": "390x844",
+      "dialog": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "right": 390,
+        "bottom": 844
+      },
+      "horizontalOverflow": false,
+      "bounds": [
+        {
+          "name": "name",
+          "x": 25,
+          "y": 189.84375,
+          "width": 340,
+          "height": 72.609375,
+          "right": 365,
+          "bottom": 262.453125
+        },
+        {
+          "name": "description",
+          "x": 25,
+          "y": 280.453125,
+          "width": 287.5,
+          "height": 62.09375,
+          "right": 312.5,
+          "bottom": 342.546875
+        },
+        {
+          "name": "entry",
+          "x": 25,
+          "y": 367.546875,
+          "width": 173,
+          "height": 48,
+          "right": 198,
+          "bottom": 415.546875
+        },
+        {
+          "name": "reading",
+          "x": 218,
+          "y": 369.546875,
+          "width": 89.078125,
+          "height": 44,
+          "right": 307.078125,
+          "bottom": 413.546875
+        }
+      ],
+      "revealMs": 901,
+      "cityInteractionRestored": true
+    },
+    {
+      "viewport": "650x390",
+      "dialog": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 390,
+        "right": 650,
+        "bottom": 390
+      },
+      "horizontalOverflow": false,
+      "bounds": [
+        {
+          "name": "name",
+          "x": 25,
+          "y": 97.859375,
+          "width": 348,
+          "height": 63.6875,
+          "right": 373,
+          "bottom": 161.546875
+        },
+        {
+          "name": "description",
+          "x": 25,
+          "y": 173.546875,
+          "width": 225,
+          "height": 48.59375,
+          "right": 250,
+          "bottom": 222.140625
+        },
+        {
+          "name": "entry",
+          "x": 25,
+          "y": 240.140625,
+          "width": 156,
+          "height": 44,
+          "right": 181,
+          "bottom": 284.140625
+        },
+        {
+          "name": "reading",
+          "x": 197,
+          "y": 240.140625,
+          "width": 79.171875,
+          "height": 44,
+          "right": 276.171875,
+          "bottom": 284.140625
+        }
+      ],
+      "revealMs": 898,
+      "cityInteractionRestored": true
+    },
+    {
+      "viewport": "1280x720",
+      "dialog": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720,
+        "right": 1280,
+        "bottom": 720
+      },
+      "horizontalOverflow": false,
+      "bounds": [
+        {
+          "name": "name",
+          "x": 65,
+          "y": 197.15625,
+          "width": 587.734375,
+          "height": 110.375,
+          "right": 652.734375,
+          "bottom": 307.53125
+        },
+        {
+          "name": "description",
+          "x": 65,
+          "y": 331.53125,
+          "width": 328,
+          "height": 74.5,
+          "right": 393,
+          "bottom": 406.03125
+        },
+        {
+          "name": "entry",
+          "x": 65,
+          "y": 441.03125,
+          "width": 190,
+          "height": 52,
+          "right": 255,
+          "bottom": 493.03125
+        },
+        {
+          "name": "reading",
+          "x": 279,
+          "y": 445.03125,
+          "width": 98.96875,
+          "height": 44,
+          "right": 377.96875,
+          "bottom": 489.03125
+        }
+      ],
+      "revealMs": 860,
+      "cityInteractionRestored": true
+    }
+  ],
+  "preview": "650x390"
+}

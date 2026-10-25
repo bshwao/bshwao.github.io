@@ -1,0 +1,350 @@
+[
+  {
+    "viewport": "320x568",
+    "route": "#tower",
+    "controls": [
+      {
+        "name": "Zoom out",
+        "x": 90.40625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Zoom in",
+        "x": 138.40625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reset the 3D camera",
+        "x": 188.40625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Settings",
+        "x": 238.40625,
+        "y": 6,
+        "width": 65.59375,
+        "height": 44
+      }
+    ],
+    "panel": {
+      "x": 16,
+      "y": 58,
+      "width": 288,
+      "height": 432.328125
+    }
+  },
+  {
+    "viewport": "320x568",
+    "route": "#projects/b",
+    "controls": [
+      {
+        "name": "Zoom out",
+        "x": 16,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Zoom in",
+        "x": 64,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reset the 3D camera",
+        "x": 114,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reading view",
+        "x": 164,
+        "y": 6,
+        "width": 68.40625,
+        "height": 45.1875
+      },
+      {
+        "name": "Settings",
+        "x": 238.40625,
+        "y": 6,
+        "width": 65.59375,
+        "height": 44
+      }
+    ],
+    "panel": {
+      "x": 16,
+      "y": 58,
+      "width": 288,
+      "height": 432.328125
+    }
+  },
+  {
+    "viewport": "390x650",
+    "route": "#tower",
+    "controls": [
+      {
+        "name": "Zoom out",
+        "x": 160.40625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Zoom in",
+        "x": 208.40625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reset the 3D camera",
+        "x": 258.40625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Settings",
+        "x": 308.40625,
+        "y": 6,
+        "width": 65.59375,
+        "height": 44
+      }
+    ],
+    "panel": {
+      "x": 84,
+      "y": 58,
+      "width": 290,
+      "height": 432.328125
+    }
+  },
+  {
+    "viewport": "390x650",
+    "route": "#projects/b",
+    "controls": [
+      {
+        "name": "Zoom out",
+        "x": 83.625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Zoom in",
+        "x": 131.625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reset the 3D camera",
+        "x": 181.625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reading view",
+        "x": 231.625,
+        "y": 6,
+        "width": 70.78125,
+        "height": 44
+      },
+      {
+        "name": "Settings",
+        "x": 308.40625,
+        "y": 6,
+        "width": 65.59375,
+        "height": 44
+      }
+    ],
+    "panel": {
+      "x": 84,
+      "y": 58,
+      "width": 290,
+      "height": 432.328125
+    }
+  },
+  {
+    "viewport": "650x390",
+    "route": "#tower",
+    "controls": [
+      {
+        "name": "Zoom out",
+        "x": 426.40625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Zoom in",
+        "x": 472.40625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reset the 3D camera",
+        "x": 520.40625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Settings",
+        "x": 568.40625,
+        "y": 6,
+        "width": 65.59375,
+        "height": 44
+      }
+    ],
+    "panel": {
+      "x": 344,
+      "y": 58,
+      "width": 290,
+      "height": 300
+    }
+  },
+  {
+    "viewport": "650x390",
+    "route": "#projects/b",
+    "controls": [
+      {
+        "name": "Zoom out",
+        "x": 351.625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Zoom in",
+        "x": 397.625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reset the 3D camera",
+        "x": 445.625,
+        "y": 6,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reading view",
+        "x": 493.625,
+        "y": 6,
+        "width": 70.78125,
+        "height": 44
+      },
+      {
+        "name": "Settings",
+        "x": 568.40625,
+        "y": 6,
+        "width": 65.59375,
+        "height": 44
+      }
+    ],
+    "panel": {
+      "x": 344,
+      "y": 58,
+      "width": 290,
+      "height": 300
+    }
+  },
+  {
+    "viewport": "1280x720",
+    "route": "#tower",
+    "controls": [
+      {
+        "name": "Zoom out",
+        "x": 969.046875,
+        "y": 22,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Zoom in",
+        "x": 1017.046875,
+        "y": 22,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reset the 3D camera",
+        "x": 1069.046875,
+        "y": 22,
+        "width": 87.46875,
+        "height": 44
+      },
+      {
+        "name": "Settings",
+        "x": 1164.515625,
+        "y": 22,
+        "width": 83.484375,
+        "height": 44
+      }
+    ],
+    "panel": {
+      "x": 958,
+      "y": 74,
+      "width": 290,
+      "height": 438.734375
+    }
+  },
+  {
+    "viewport": "1280x720",
+    "route": "#projects/b",
+    "controls": [
+      {
+        "name": "Zoom out",
+        "x": 875.65625,
+        "y": 22,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Zoom in",
+        "x": 923.65625,
+        "y": 22,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "Reset the 3D camera",
+        "x": 975.65625,
+        "y": 22,
+        "width": 87.46875,
+        "height": 44
+      },
+      {
+        "name": "Reading view",
+        "x": 1071.125,
+        "y": 22,
+        "width": 85.390625,
+        "height": 44
+      },
+      {
+        "name": "Settings",
+        "x": 1164.515625,
+        "y": 22,
+        "width": 83.484375,
+        "height": 44
+      }
+    ],
+    "panel": {
+      "x": 958,
+      "y": 74,
+      "width": 290,
+      "height": 438.734375
+    }
+  }
+]

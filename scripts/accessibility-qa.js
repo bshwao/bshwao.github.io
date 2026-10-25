@@ -1,15 +1,18 @@
+import { introSessionKey } from '../assets/portfolio-intro.js';
+
 const width = Number(new URLSearchParams(location.search).get('width')) || 1280;
 const height = Number(new URLSearchParams(location.search).get('height')) || 720;
 const frame = document.querySelector('#portfolio'); frame.width = width; frame.height = height;
 const rows = [], results = document.querySelector('#results'), status = document.querySelector('#status');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-async function ready() {
+async function ready({allowIntro=false}={}) {
   for (let i = 0; i < 300; i++) {
     const main = frame.contentDocument?.querySelector('#main');
     const route = frame.contentWindow.location.hash.slice(1).split('/')[0];
     const expected = !route || route === 'tower' ? 'tower' : route === 'explore' ? 'explore' : 'section';
     const animations = frame.contentDocument?.getAnimations().some(animation => animation.playState === 'running');
-    if (main?.dataset.mode === expected && main.dataset.transition === 'idle' && main.dataset.cameraMotion === 'idle' && !animations) return;
+    const intro=frame.contentDocument?.querySelector('#portfolio-intro');
+    if (main?.dataset.mode === expected && main.dataset.transition === 'idle' && main.dataset.cameraMotion === 'idle' && !animations && (allowIntro||(!intro?.open&&!main.inert))) return;
     await delay(50);
   }
   throw new Error('Portfolio did not settle');
@@ -32,7 +35,12 @@ async function audit(view) {
   results.textContent = JSON.stringify({ viewport: `${width}x${height}`, axeVersion: axe.version, rows }, null, 2);
 }
 try {
-  frame.src = '../index.html'; await ready(); await audit('tower');
+  try { sessionStorage.removeItem(introSessionKey); } catch { /* A fresh intro also works when storage is denied. */ }
+  frame.src = '../index.html'; await ready({allowIntro:true});
+  const intro=frame.contentDocument.querySelector('#portfolio-intro');
+  if(!intro?.open)throw new Error('Fresh entry did not show its introduction');
+  await audit('portfolio intro');
+  intro.querySelector('#intro-enter').click();await ready();await audit('tower');
   frame.contentDocument.querySelector('#view-settings').open = true;
   await audit('view settings');
   const graphics = frame.contentDocument.querySelector('#graphics-preference');

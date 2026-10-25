@@ -1,5 +1,7 @@
 # Eric Hsu — Structures & systems
 
+A paper-style introduction welcomes visitors with a tower illustration before **Enter the city** reveals the cityscape. It appears on the first home visit in a tab, can be replayed from Settings, and skips directly to shared floor/room links. Reduced motion reveals the city immediately, and the complete reading portfolio is available from the introduction.
+
 The complete city now occupies a finite island with an irregular beach shoreline and an ocean horizon. Its river runs from an inland lake to a soft estuary. Zooming out can reveal the whole island on desktop or portrait screens; the camera's far plane includes the complete coast, and the ocean continues without a clipped mesh edge. Ocean detail is static, follows the local daylight, and shares the sky's existing draw.
 
 Six distinct mountain landmasses now surround that island at uneven distances, with different ridge profiles, bays, cliffs and snow lines. Continuous foothills, forest clearings, meadow and rocky ground connect the city's outskirts to its coast. The landscape contains 1,400 individually varied trees; forest boundaries follow nonperiodic terrain fields rather than copied patches. Low graphics retains all landforms with fewer trees, and outdoor orbit clears the actual terrain surface.

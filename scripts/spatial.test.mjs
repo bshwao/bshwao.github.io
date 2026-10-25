@@ -240,10 +240,23 @@ if (unavailable) {
   assert.equal(w.document.activeElement.id, 'unavailable-title');
   assert.equal(w.document.querySelector('canvas'), null);
   assert.equal(frames.size, 0);
+  assert.equal(w.document.querySelector('#portfolio-intro').open,false,'WebGL failure releases the intro immediately');
+  assert.equal(main.inert,false,'The reading fallback remains interactive');
   console.log('Initial WebGL failure passes: complete reading portfolio remains accessible without a canvas or render loop.');
   dom.window.close(); process.exit(0);
 }
 assert.ok(main.classList.contains('spatial'), '3D initialization succeeds');
+const introDialog=w.document.querySelector('#portfolio-intro');
+if(!deepLink){
+  assert.equal(introDialog.open,true,'A first home visit introduces the portfolio before the city');
+  assert.equal(main.inert,true,'Covered city controls cannot receive focus or pointer input');
+  click('#intro-enter');
+  assert.equal(introDialog.dataset.state,reduced?'closed':'leaving','Entering waits for a rendered city and follows the motion preference');
+  if(!reduced)await new Promise(resolve=>setTimeout(resolve,900));
+  assert.equal(introDialog.open,false);
+  assert.equal(main.inert,false);
+  assert.equal(w.sessionStorage.getItem('eh-intro-seen-v1'),'1');
+}else assert.equal(introDialog.open,false,'Room deep links bypass the title page');
 if (deepLink) {
   await settleCamera();
   assert.equal(main.dataset.mode, 'section', 'A fresh room URL opens its interior directly');

@@ -6,14 +6,15 @@ import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus, r
 import { createSectionReadingView } from './floor-view.js';
 import { palette } from './color-theme.js';
 import { createLocalClock } from './local-clock.js';
-import { readViewPreferences, saveViewPreferences } from './view-preferences.js';
+import { readViewPreferences, saveViewPreferences, shouldReduceMotion } from './view-preferences.js';
+import { createPortfolioIntro } from './portfolio-intro.js';
 
 const page = document.querySelector('#main');
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 let spatial, currentId = null, currentRoomIndex = null, revision = 0;
 const defaultTitle = document.title;
 let routeKey = '', fallbackActive = false;
-let readingView, localClock;
+let readingView, localClock, intro;
 let preferenceStorage;
 try { preferenceStorage = window.localStorage; } catch { /* Private browsing may deny storage. */ }
 let viewPreferences = readViewPreferences(preferenceStorage);
@@ -106,6 +107,7 @@ function navigate(hash, { force = false } = {}) {
 }
 
 function syncRoute({ instant = false, force = false } = {}) {
+  if (parseRoute(location.hash).mode !== 'tower') intro?.dismiss();
   if (!spatial || fallbackActive) return;
   const route = parseRoute(location.hash);
   const { mode, sectionId: id, roomIndex } = route;
@@ -172,6 +174,7 @@ function syncRoute({ instant = false, force = false } = {}) {
 }
 
 function onFrame(state) {
+  if (!state.transitionType && page.dataset.transition === 'idle') intro?.ready();
   setData(page, 'motion', state.reducedMotion ? 'reduced' : 'full');
   setData(document.documentElement, 'motion', state.reducedMotion ? 'reduced' : 'full');
   $('#zoom-in').disabled=Boolean(state.transitionType)||!state.zoom.canZoomIn;
@@ -249,6 +252,7 @@ function onFrame(state) {
 
 function useFallback() {
   if (fallbackActive) return;
+  intro?.dispose();
   fallbackActive = true; revision++;
   labelObserver.disconnect();
   readingView?.close({ focus: false });
@@ -265,6 +269,15 @@ function useFallback() {
 
 async function start() {
   document.body.classList.add('js-enabled');
+  let introStorage;
+  try { introStorage = window.sessionStorage; } catch { /* Storage may be denied. */ }
+  const introMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  intro = createPortfolioIntro({
+    dialog: document.querySelector('#portfolio-intro'), page, storage: introStorage,
+    reducedMotion: () => shouldReduceMotion(viewPreferences.motion, introMotion.matches),
+    onEntered: () => spatial?.focus(),
+  });
+  addEventListener('pagehide', event => { if (!event.persisted) intro.dispose(); });
   page.className = 'tower-page spatial';
   page.innerHTML = `
     <h1 class="sr-only">Eric Hsu — Electrical Engineering, Projects, and Experience</h1>
@@ -281,7 +294,7 @@ async function start() {
         <p>Reduced motion skips camera flights and object movement, keeping color feedback.</p>
         <label for="graphics-preference">Graphics</label><select id="graphics-preference"><option value="standard">Standard graphics</option><option value="low">Low graphics</option></select>
         <p>Low graphics uses a lower resolution, simpler scenery and solid panels to ease GPU work.</p>
-        <button type="button" id="show-controls-hint">Show controls hint</button><small>Preferences are saved on this device.</small>
+        <button type="button" id="show-controls-hint">Show controls hint</button><button type="button" id="replay-intro">Replay introduction</button><small>Preferences are saved on this device.</small>
       </div></details>
     </div>
     <aside class="controls-hint" id="controls-hint" aria-label="3D controls"${viewPreferences.controlsSeen ? ' hidden' : ''}><div><strong>Take a look around</strong><p id="controls-hint-text"></p><small>Arrow keys orbit · + / − zoom · Enter selects</small></div><button type="button" id="dismiss-controls-hint" aria-label="Dismiss controls hint">×</button></aside>
@@ -334,6 +347,13 @@ async function start() {
     $('#view-settings').open = false; $('#controls-hint').hidden = false;
     viewPreferences = saveViewPreferences(preferenceStorage, { ...viewPreferences, controlsSeen: false });
     $('#dismiss-controls-hint').focus({ preventScroll: true });
+  });
+  $('#replay-intro').addEventListener('click', () => {
+    $('#view-settings').open = false;
+    readingView.close({ focus: false });
+    const waitForReady = page.dataset.mode !== 'tower' || page.dataset.cameraMotion !== 'idle';
+    if (page.dataset.mode !== 'tower') navigate('tower', { force: true });
+    intro.show({ waitForReady });
   });
   const changePreferences = () => {
     viewPreferences = saveViewPreferences(preferenceStorage, { ...viewPreferences, motion: $('#motion-preference').value, graphics: $('#graphics-preference').value });
@@ -436,7 +456,7 @@ async function start() {
     });
   }
   document.addEventListener('keydown', event => {
-    if (fallbackActive || readingView.active || event.key !== 'Escape') return;
+    if (fallbackActive || intro.active || readingView.active || event.key !== 'Escape') return;
     if ($('#view-settings').open) { event.preventDefault(); $('#view-settings').open = false; $('#view-settings summary').focus(); return; }
     if (!$('#controls-hint').hidden) { event.preventDefault(); dismissHint(); spatial.focus(); return; }
     if (currentId && currentRoomIndex !== null) { event.preventDefault(); navigate(currentId); return; }

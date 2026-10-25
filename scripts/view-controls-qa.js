@@ -3,7 +3,9 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const ready = async () => {
   for (let i = 0; i < 300; i++) {
     const main = frame.contentDocument?.querySelector('#main');
-    if (main?.dataset.transition === 'idle' && main.dataset.cameraMotion === 'idle') return;
+    const intro=frame.contentDocument?.querySelector('#portfolio-intro'),enter=intro?.querySelector('#intro-enter');
+    if(intro?.open&&!enter.disabled)enter.click();
+    if (main?.dataset.transition === 'idle' && main.dataset.cameraMotion === 'idle' && !intro?.open && !main.inert) return;
     await delay(40);
   }
   throw new Error('Portfolio did not settle');
