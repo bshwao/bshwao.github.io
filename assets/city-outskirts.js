@@ -4,6 +4,7 @@ import { applyDistrictDepth } from './district-style.js';
 import { applyGroundTexture } from './ground-materials.js';
 import { cityPalette } from './city-palette.js';
 import { planRoadMarkings } from './road-markings.js';
+import { appendIslandSettlement } from './settlement-details.js';
 
 const overlap=(a,b)=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1];
 const expand=(b,d)=>[b[0]-d,b[1]-d,b[2]+d,b[3]+d];
@@ -23,7 +24,6 @@ export function createCityOutskirts() {
   const root=new T.Group();root.name='city-outskirts';
   const layers=Object.fromEntries(['paving','green','fixtures','marks'].map(name=>[name,{positions:[],colors:[],glow:[],surface:[]}]));
   const features=[],cube=new T.BoxGeometry(1,1,1).toNonIndexed(),crown=new T.SphereGeometry(1,6,3).toNonIndexed();
-  const hill=new T.SphereGeometry(1,12,5,0,Math.PI*2,0,Math.PI/2).toNonIndexed();
   const evergreen=new T.ConeGeometry(1,1,5).toNonIndexed();
   const occupied=cityLots.flatMap(lot=>buildingVolumes(lot).map(p=>[p.x-p.width/2,p.z-p.depth/2,p.x+p.width/2,p.z+p.depth/2]));
   const roads=outskirtsRoads.map(r=>r.bounds),walks=outskirtsRoads.map(r=>expand(r.bounds,r.walk));
@@ -125,33 +125,9 @@ export function createCityOutskirts() {
     for(const x of [-251,-247])box('fixtures',x,.7,232,2.5,2.2,3.5,'#a58b6b');
   });
 
-  // Irregular groves close the outer edge, then low ridges meet the haze.
-  // Simple evergreen silhouettes make denser woods cheaper than park trees.
-  function grove(x,z){
-    const rx=35+Math.sin(x*.025+z*.05)*8,rz=27+Math.cos(x*.04-z*.02)*6,b=[x-rx,z-rz,x+rx,z+rz];
-    if(!dry(b)||occupied.some(a=>overlap(b,a))||walks.some(a=>overlap(b,a)))return;
-    feature('woodland',()=>{
-      const points=Array.from({length:12},(_,i)=>{const a=i*Math.PI/6,r=.92+.08*Math.sin(i*.6+x*.07);return[x+Math.cos(a)*rx*r,-.79,z+Math.sin(a)*rz*r];});
-      for(let i=0;i<points.length;i++)for(const p of [[x,-.79,z],points[(i+1)%points.length],points[i]])vertex('green',p,'#58734f');
-      const noise=i=>{const n=Math.sin(i*12.9898+x*.1+z*.3)*4375;return n-Math.floor(n);};
-      for(let i=0;i<7;i++){
-        const angle=noise(i)*Math.PI*2,r=Math.sqrt(noise(i+20))*.72,h=6.4+noise(i+40)*3;
-        solid('green',evergreen,x+Math.cos(angle)*r*rx,-.79+h/2,z+Math.sin(angle)*r*rz,4.8+(i%2),h,4.8+(i%2),i%2?'#46684e':'#5c7953');
-      }
-    });
-  }
-  for(const side of [-1,1])for(let i=0;i<26;i++) {
-    const x=side*(560+(i%3)*30),z=-520+i*44;
-    grove(x,z);
-  }
-  for(const side of [-1,1])for(let i=0;i<16;i++){
-    const x=-540+i*72,z=side<0?-535-(i%3)*20:542+(i%3)*20;
-    grove(x,z);
-  }
-  for(const side of [-1,1])for(let i=0;i<7;i++)feature('outer-ridge',()=>{
-    solid('green',hill,-900+i*300,-.83,side*(850+(i%2)*90),240,18+(i%3)*9,170,'#697f68');
-  });
-  cube.dispose();crown.dispose();hill.dispose();evergreen.dispose();
+  // Continuous terrain and individually varied forests share city-ground.
+  roadMarkings.push(...appendIslandSettlement({vertex,feature,rect,box,solid,subtract}));
+  cube.dispose();crown.dispose();evergreen.dispose();
   for(const [name,out]of Object.entries(layers)){
     const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(out.positions,3));geometry.setAttribute('color',new T.Float32BufferAttribute(out.colors,3));
     geometry.setAttribute('cityGlow',new T.Float32BufferAttribute(out.glow,1));geometry.setAttribute('surfaceKind',new T.Float32BufferAttribute(out.surface,1));geometry.computeBoundingSphere();

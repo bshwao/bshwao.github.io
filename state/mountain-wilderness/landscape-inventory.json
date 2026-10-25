@@ -1,0 +1,77 @@
+{
+  "trees": {
+    "mainIsland": 440,
+    "mountains": 960,
+    "total": 1400
+  },
+  "triangles": {
+    "mainIsland": 8813,
+    "mountains": 19586,
+    "standard": 28399,
+    "low": 16994
+  },
+  "mountainRegions": [
+    {
+      "kind": "mountain-region",
+      "id": "northwest",
+      "name": "Broken granite highlands",
+      "treeCount": 135
+    },
+    {
+      "kind": "mountain-region",
+      "id": "north",
+      "name": "Northern serrated ridge",
+      "treeCount": 80
+    },
+    {
+      "kind": "mountain-region",
+      "id": "east",
+      "name": "Eastern coastal spires",
+      "treeCount": 120
+    },
+    {
+      "kind": "mountain-region",
+      "id": "southeast",
+      "name": "Old forested slopes",
+      "treeCount": 245
+    },
+    {
+      "kind": "mountain-region",
+      "id": "south",
+      "name": "Southern folded escarpment",
+      "treeCount": 225
+    },
+    {
+      "kind": "mountain-region",
+      "id": "west",
+      "name": "Western sea cliffs",
+      "treeCount": 155
+    }
+  ],
+  "islandRegions": [
+    {
+      "kind": "island-wilderness-region",
+      "region": "north",
+      "trees": 253,
+      "meanHeight": 18.14354407305189
+    },
+    {
+      "kind": "island-wilderness-region",
+      "region": "west",
+      "trees": 113,
+      "meanHeight": 17.714164019230573
+    },
+    {
+      "kind": "island-wilderness-region",
+      "region": "south",
+      "trees": 42,
+      "meanHeight": 18.511471895811457
+    },
+    {
+      "kind": "island-wilderness-region",
+      "region": "east",
+      "trees": 32,
+      "meanHeight": 18.436977161800314
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+✔ every road has supported center and edge paint outside intersections (1240.8965ms)
+✔ the previously blank downtown extensions carry visible paint and retain crossing gaps (2.2408ms)
+✔ night environment is smooth, static, world-oriented and independent of interiors (328.6169ms)
+✔ city blur isolates the sharp subject, caches unchanged views, and releases its bounded targets (7.3487ms)
+✔ the complete city and woodland sit on finite dry land with a continuous sea-level shore (13654.773ms)
+✔ camera depth contains the whole coast and maximum zoom fits desktop and portrait views (6.7489ms)
+✔ the river has an inland lake and fades into the ocean at matching sea level (1.3195ms)
+✔ the ocean follows the camera and local light without allocating distant water meshes (103.1051ms)
+✔ finished parks, planted edges and ground detail stay clear of buildings, avenues and water (104.4409ms)
+✔ street additions stay batched, supported and clear of live approaches (1.4935ms)
+✔ the city has distinct height/depth layers and independent lots with open streets and approaches (7.9767ms)
+✔ outer streets connect to downtown and both bridges without crossing occupied land or water (128.8019ms)
+✔ outer neighborhoods have street access, public space and a bounded transition to woodland (414.44ms)
+✔ river, bridges and riverwalk occupy real space without flooding the city or hiding the landmark (44.7432ms)
+✔ generated architecture and rooftop details fit their shared skyline envelopes (225.2177ms)
+✔ bundled tower has a broad podium, long shafts, flat roof and two unequal mounted antennae (12.3933ms)
+✔ opening composition keeps the full main tower prominent at a lower camera on desktop and phones (87.6674ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19071.003

@@ -1,3 +1,5 @@
+import { riverOceanMouth } from './city-geography.js';
+
 // North is -Z. One plan supplies lots, generated volumes, collision bounds and
 // camera composition. Heights are illustrative model units, not surveyed metres.
 const blocks = [
@@ -22,8 +24,9 @@ for(const [i,x]of [-225,-150,-75,0,75,150,225].entries()) outerLot([x-24,-232,x+
 for(const side of [-1,1]) for(const [i,z]of [-122,-68,0,68].entries()) outerLot([side*215-22,z-16,side*215+22,z+16],18+(i%3)*9,i%2?'brick':'limestone');
 for(const [i,bounds]of [[-94,109,-58,127],[-30,109,-6,127],[6,109,30,127],[58,109,94,127]].entries()) outerLot(bounds,12+i*3,i%2?'limestone':'brick','slab','foreground');
 for(const [i,x]of [-215,-157,188,234].entries()) outerLot([x-18,220,x+18,258],12+(i%3)*4,i%2?'limestone':'brick');
-export const riverPlan={minX:-6000,maxX:6000,halfWidth:20,promenadeWidth:7,waterY:-.58,bridges:[-42,42]};
 export const riverCenter=x=>168+16*Math.sin((x+80)/90)-x*.08;
+const mouthX = riverOceanMouth(riverCenter);
+export const riverPlan={minX:-850,maxX:mouthX+70,mouthX,halfWidth:20,promenadeWidth:7,waterY:-.58,bridges:[-42,42]};
 export const riverEdges=x=>({north:riverCenter(x)-riverPlan.halfWidth,south:riverCenter(x)+riverPlan.halfWidth});
 export const parkPlan=[
   {id:'west-garden',bounds:[-166,-24,-112,24],form:'garden'},

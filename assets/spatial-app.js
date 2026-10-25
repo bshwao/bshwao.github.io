@@ -174,7 +174,11 @@ function syncRoute({ instant = false, force = false } = {}) {
 function onFrame(state) {
   setData(page, 'motion', state.reducedMotion ? 'reduced' : 'full');
   setData(document.documentElement, 'motion', state.reducedMotion ? 'reduced' : 'full');
-  for (const id of ['zoom-in', 'zoom-out']) $(`#${id}`).disabled = Boolean(state.transitionType);
+  $('#zoom-in').disabled=Boolean(state.transitionType)||!state.zoom.canZoomIn;
+  $('#zoom-out').disabled=Boolean(state.transitionType)||!state.zoom.canZoomOut;
+  setData(page,'zoomDistance',state.zoom.distance.toFixed(3));
+  setData(page,'zoomMin',state.zoom.min.toFixed(3));
+  setData(page,'zoomMax',state.zoom.max.toFixed(3));
   const timeLabel=page.querySelector('.material-key small');
   const timeText=`CITY / ${state.timeOfDay.toUpperCase()}`;
   if(timeLabel&&timeLabel.textContent!==timeText)timeLabel.textContent=timeText;

@@ -1,4 +1,5 @@
 import { districtPlan, outskirtsRoads, riverPlan, riverEdges } from './city-layout.js';
+import { settlementRoads } from './island-settlement.js';
 
 export const roadPaint = Object.freeze({ center: '#e4c16d', edge: '#eee9da', crossing: '#e7d9b5' });
 const clearance = 4;
@@ -19,6 +20,7 @@ export const roadNetwork = [
     start: -170, end: axis === 'z' ? Math.min(170, bridges.find(bridge => bridge.center === center).start) : 170, y: -.65,
   }))),
   ...outskirtsRoads.map(road => ({ ...road, group: 'outskirts', y: -.50 })),
+  ...settlementRoads.map(road=>({...road,group:'settlement'})),
   ...bridges,
 ];
 

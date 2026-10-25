@@ -2,7 +2,7 @@ import * as T from './vendor/three.module.min.js';
 import { OrbitControls } from './vendor/OrbitControls.js';
 import { createTowerModel } from './tower-model.js';
 import { viewportLayout } from './spatial-layout.js';
-import { outdoorCameraPose, cameraDepthRange } from './camera-framing.js';
+import { outdoorCameraPose, cameraDepthRange, cameraZoomLimits } from './camera-framing.js';
 import { renderBudget } from './render-budget.js';
 import { palette } from './color-theme.js';
 import { footprint } from './tower-geometry.js';
@@ -10,6 +10,7 @@ import { createCityEnvironment, cityPalette, citySun } from './city-environment.
 import { createCityBackdrop } from './city-backdrop.js';
 import { readCityTime,createCityClock } from './city-time.js';
 import { normalizeViewPreferences, shouldReduceMotion } from './view-preferences.js';
+import { outdoorTerrainFloor } from './city-island.js';
 
 const ease = t => t * t * t * (t * (t * 6 - 15) + 10);
 const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - start), 0, 1));
@@ -90,6 +91,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   let districtVisibility = 1;
   const screenCenter = new T.Vector2(.5, .5);
   let animation = null, frame = 0, dirty = true, disposed = false;
+  let zoomRange={min:1,max:2};
   let pointerStart = null, hover = null, hoveredObject = null;
   const savedViews = new Map();
   const activePointers = new Set();
@@ -249,8 +251,8 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     if (moving || modelDirty) { updateModel(); modelDirty = false; }
     const objectMotion = selected?.interior.interactions.update(time);
     containInteriorFlight();
-    if(!selected&&!animation) controls.maxPolarAngle=Math.acos(T.MathUtils.clamp((1.5-controls.target.y)/camera.position.distanceTo(controls.target),-1,1));
-    const changed = controls.update();
+    let changed = controls.update();
+    if(!animation)changed=constrainCamera()||changed;
     updateProjection();
     if (dirty || moving || changed || objectMotion?.changed) {
       const distance = camera.position.distanceTo(controls.target);
@@ -275,7 +277,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       canvas.dataset.background = districtVisibility < .999 ? viewPreferences.graphics === 'low' ? 'simplified' : 'blurred' : 'sharp';
       onFrame?.({ mode, selectedId: selected?.id, labels: labels(), expansion, reveal, panel, focusedRoom, activeRoom, hoveredRoom, hoveredObject: hoveredObject?.name || null,
         viewport: viewportLayout(width, height), moving: Boolean(animation) || Boolean(objectMotion?.moving), transitionType: animation?.kind || null,
-        azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), reducedMotion:reduceMotion, timeOfDay:cityTime.phase,localHour:cityTime.hour });
+        azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), zoom:zoomState(), reducedMotion:reduceMotion, timeOfDay:cityTime.phase,localHour:cityTime.hour });
       dirty = false;
     }
     if (animation || changed || objectMotion?.moving) invalidate();
@@ -288,6 +290,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     canvas.dataset.quality = viewPreferences.graphics === 'low' ? '1' : '0';
     canvas.dataset.graphics = viewPreferences.graphics;
     backdrop.setLowGraphics(viewPreferences.graphics === 'low');
+    environment.setLowGraphics(viewPreferences.graphics === 'low');
   }
   function invalidate() {
     dirty = true;
@@ -297,11 +300,39 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   }
   function setControlLimits() {
     const radius = focusedRoom === null ? selected?.maxRadius : selected?.interior.rooms[focusedRoom]?.radius;
-    controls.minDistance = selected ? radius * 1.4 : 85;
-    const pose = selected ? null : framing(mode);
-    const outdoor = pose ? pose.position.distanceTo(pose.target) : 0;
-    controls.maxDistance = selected ? selected.maxRadius * 16 : Math.max(650, outdoor * 2.2);
+    const pose = selected ? interiorFraming(selected,focusedRoom) : framing(mode);
+    zoomRange=cameraZoomLimits({mode,width,height,fitDistance:pose.position.distanceTo(pose.target),radius:radius||0,focusedRoom:focusedRoom!==null});
+    // OrbitControls compares clamped radii exactly. Leave a numerical guard
+    // around its bounds; constrainCamera owns the precise rendered hard stops.
+    controls.minDistance = zoomRange.min*(1-1e-9);
+    controls.maxDistance = zoomRange.max*(1+1e-9);
     controls.maxPolarAngle=selected?Math.PI-.12:Math.acos(T.MathUtils.clamp((1.5-controls.target.y)/camera.position.distanceTo(controls.target),-1,1));
+  }
+  function zoomState() {
+    const distance=camera.position.distanceTo(controls.target),epsilon=Math.max(.001,distance*.00001);
+    return {distance,min:zoomRange.min,max:zoomRange.max,canZoomIn:!animation&&distance>zoomRange.min+epsilon,canZoomOut:!animation&&distance<zoomRange.max-epsilon};
+  }
+  function constrainCamera() {
+    const offset=camera.position.clone().sub(controls.target),before=camera.position.clone();
+    const distance=T.MathUtils.clamp(offset.length(),zoomRange.min,zoomRange.max);
+    offset.setLength(distance);camera.position.copy(controls.target).add(offset);
+    if(!selected){
+      // Raise the viewing angle on the same radius, so terrain clearance
+      // cannot push the camera beyond a hard zoom-out boundary.
+      for(let attempt=0;attempt<8;attempt++){
+        const floor=outdoorTerrainFloor(camera.position.x,camera.position.z);
+        if(camera.position.y>=floor-.001)break;
+        const vertical=T.MathUtils.clamp(floor-controls.target.y,-distance,distance);
+        const horizontal=Math.hypot(offset.x,offset.z),reach=Math.sqrt(Math.max(0,distance*distance-vertical*vertical));
+        if(horizontal>1e-8){offset.x*=reach/horizontal;offset.z*=reach/horizontal;}
+        offset.y=vertical;camera.position.copy(controls.target).add(offset);
+      }
+      const floor=outdoorTerrainFloor(camera.position.x,camera.position.z);
+      controls.maxPolarAngle=Math.acos(T.MathUtils.clamp((floor-controls.target.y)/distance,-1,1));
+    }
+    const changed=before.distanceToSquared(camera.position)>1e-10;
+    if(changed)camera.lookAt(controls.target);
+    return changed;
   }
   function move(to, duration, done, kind = 'scene') {
     // Drain orbital inertia before taking the new animation's starting pose.
@@ -398,7 +429,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     const found = raycaster.intersectObjects(model.modules.flatMap(module => module.shell.children).filter(item => item.isMesh), false)[0];
     if (!found) return null;
     if (mode === 'tower' && districtVisibility > .5) {
-      const scenery = [...model.districtBuildings.root.children, ...model.districtDetails.root.children, ...model.waterfront.root.children,...model.landscape.root.children,...model.outskirts.root.children].filter(item => item.isMesh);
+      const scenery = [environment.root.getObjectByName('city-ground'),...model.districtBuildings.root.children, ...model.districtDetails.root.children, ...model.waterfront.root.children,...model.landscape.root.children,...model.outskirts.root.children].filter(item => item.isMesh);
       const obstacle = raycaster.intersectObjects(scenery, false)[0];
       if (obstacle && obstacle.distance < found.distance - .01) return null;
     }
@@ -444,10 +475,13 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   canvas.addEventListener('pointerleave', () => { hover = null; hoveredRoom = null; previewObject(null); selected?.interior.setHoveredRoom(null); modelDirty = true; invalidate(); });
   function zoom(direction) {
     if (animation || !controls.enabled) return;
+    const currentDistance=camera.position.distanceTo(controls.target);
+    if(direction>0?currentDistance<=zoomRange.min+.00001:currentDistance>=zoomRange.max-.00001)return;
     // Drain inertia so the buttons and keyboard use the same stable camera step.
     controls.enableDamping = false; controls.update();
     const offset = camera.position.clone().sub(controls.target);
-    const distance = T.MathUtils.clamp(offset.length() * (direction > 0 ? .9 : 1 / .9), controls.minDistance, controls.maxDistance);
+    const distance = T.MathUtils.clamp(offset.length() * (direction > 0 ? .9 : 1 / .9), zoomRange.min, zoomRange.max);
+    if(Math.abs(distance-offset.length())<.00001){controls.enableDamping=!reduceMotion;return;}
     camera.position.copy(controls.target).add(offset.setLength(distance));
     controls.update(); controls.enableDamping = !reduceMotion; invalidate();
   }
@@ -543,7 +577,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   resize();
   goTo('tower', null, { instant: true });
   return {
-    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: viewPreferences.graphics === 'low' ? 1 : 0, reducedMotion:reduceMotion, graphics:viewPreferences.graphics, background: canvas.dataset.background, backdrop: backdrop.metrics(), timeOfDay:{hour:cityTime.hour,phase:cityTime.phase,daylight:cityTime.daylight,sun:cityTime.sunVisibility,moon:cityTime.moonVisibility,stars:cityTime.stars}, near:camera.near, far:camera.far, width, height }; },
+    metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: viewPreferences.graphics === 'low' ? 1 : 0, zoom:zoomState(), reducedMotion:reduceMotion, graphics:viewPreferences.graphics, background: canvas.dataset.background, backdrop: backdrop.metrics(), timeOfDay:{hour:cityTime.hour,phase:cityTime.phase,daylight:cityTime.daylight,sun:cityTime.sunVisibility,moon:cityTime.moonVisibility,stars:cityTime.stars}, near:camera.near, far:camera.far, width, height }; },
     setPreferences(value) {
       viewPreferences = normalizeViewPreferences({ ...viewPreferences, ...value });
       motionChange(); applyBudget(); renderer.setSize(width, height); backdrop.invalidate(); invalidate();
@@ -576,6 +610,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       document.removeEventListener('visibilitychange', visibility); controls.dispose();
       reducedMotion.removeEventListener('change', motionChange);
       const geometries = new Set(), materials = new Set();
+      for(const geometry of environment.terrainGeometries)geometries.add(geometry);
       for (const module of model.modules) { geometries.add(module.lineGeometry); geometries.add(module.coarseLineGeometry); }
       scene.traverse(item => {
         if (item.geometry) geometries.add(item.geometry);

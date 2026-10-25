@@ -1,0 +1,28 @@
+{
+  "homes": 320,
+  "roads": 37,
+  "communitySites": [
+    "school",
+    "clinic",
+    "market",
+    "water-tower",
+    "depot",
+    "fire-station",
+    "solar-garden",
+    "community-hall",
+    "harbor-office"
+  ],
+  "terrainTriangles": {
+    "standard": 28425,
+    "low": 17004
+  },
+  "outskirtsTriangles": 25366,
+  "remainingIslandTrees": 440,
+  "roadPaintQuads": 1900,
+  "houseExtents": {
+    "minX": -812.4959830691478,
+    "maxX": 977.150872766365,
+    "minZ": -853.9388996225534,
+    "maxZ": 864.2045978870519
+  }
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "inDisabled": true,
+    "outDisabled": false,
+    "stop": "in",
+    "view": "#experience/d",
+    "zoomDistance": "16.691",
+    "zoomMax": "46.222",
+    "zoomMin": "16.691"
+  },
+  {
+    "inDisabled": false,
+    "outDisabled": true,
+    "stop": "out",
+    "view": "#experience/d",
+    "zoomDistance": "46.222",
+    "zoomMax": "46.222",
+    "zoomMin": "16.691"
+  }
+]

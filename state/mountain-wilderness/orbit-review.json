@@ -1,0 +1,34 @@
+[
+  {
+    "angle": "0",
+    "status": "READY · North · 0° · morning · standard · 67 draws · 132,456 triangles"
+  },
+  {
+    "angle": "45",
+    "status": "READY · Northeast · 45° · morning · standard · 67 draws · 132,456 triangles"
+  },
+  {
+    "angle": "90",
+    "status": "READY · East · 90° · morning · standard · 67 draws · 132,456 triangles"
+  },
+  {
+    "angle": "135",
+    "status": "READY · Southeast · 135° · morning · standard · 67 draws · 132,456 triangles"
+  },
+  {
+    "angle": "180",
+    "status": "READY · South · 180° · morning · standard · 67 draws · 132,456 triangles"
+  },
+  {
+    "angle": "225",
+    "status": "READY · Southwest · 225° · morning · standard · 67 draws · 132,456 triangles"
+  },
+  {
+    "angle": "270",
+    "status": "READY · West · 270° · morning · standard · 67 draws · 132,456 triangles"
+  },
+  {
+    "angle": "315",
+    "status": "READY · Northwest · 315° · morning · standard · 67 draws · 132,456 triangles"
+  }
+]

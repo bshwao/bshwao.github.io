@@ -1,0 +1,42 @@
+[
+  {
+    "view": 0,
+    "azimuth": "0.398",
+    "polar": "1.700"
+  },
+  {
+    "view": 1,
+    "azimuth": "1.178",
+    "polar": "1.700"
+  },
+  {
+    "view": 2,
+    "azimuth": "1.958",
+    "polar": "1.700"
+  },
+  {
+    "view": 3,
+    "azimuth": "2.738",
+    "polar": "1.700"
+  },
+  {
+    "view": 4,
+    "azimuth": "-2.766",
+    "polar": "1.700"
+  },
+  {
+    "view": 5,
+    "azimuth": "-1.986",
+    "polar": "1.700"
+  },
+  {
+    "view": 6,
+    "azimuth": "-1.206",
+    "polar": "1.700"
+  },
+  {
+    "view": 7,
+    "azimuth": "-0.426",
+    "polar": "1.700"
+  }
+]

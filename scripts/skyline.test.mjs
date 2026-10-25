@@ -4,18 +4,22 @@ import * as T from '../assets/vendor/three.module.min.js';
 import {cityLots,cityEnvelopes,districtPlan,riverPlan,riverEdges,riverCenter,parkPlan,outskirtsRoads,neighborhoodParcels} from '../assets/city-layout.js';
 import {createTowerModel} from '../assets/tower-model.js';
 import {floorProfiles,towerAntennas,towerHeight,towerRoofHeight} from '../assets/tower-geometry.js';
-import {outdoorCameraPose} from '../assets/camera-framing.js';
+import {outdoorCameraPose,cameraDepthRange,islandZoomLimit} from '../assets/camera-framing.js';
 import {createCityEnvironment,cityPalette,applyTowerGlazing} from '../assets/city-environment.js';
 import {createCityBackdrop} from '../assets/city-backdrop.js';
 import {readCityTime} from '../assets/city-time.js';
 import {roadNetwork} from '../assets/road-markings.js';
+import {islandCoast,islandContains,islandPoint,oceanY,citySceneryRadius} from '../assets/city-geography.js';
+import {createIslandWilderness} from '../assets/island-wilderness.js';
+import {settlementRoads} from '../assets/island-settlement.js';
 const model=createTowerModel();model.root.updateMatrixWorld(true);
 const overlap=(a,b)=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1];
 
 test('every road has supported center and edge paint outside intersections',()=>{
   const groups=[['downtown',model.district,model.district.root.getObjectByName('streets')],
     ['outskirts',model.outskirts,model.outskirts.root.getObjectByName('outskirts-paving')],
-    ['bridge',model.waterfront,model.waterfront.root.getObjectByName('waterfront-quays')]];
+    ['bridge',model.waterfront,model.waterfront.root.getObjectByName('waterfront-quays')],
+    ['settlement',model.outskirts,model.outskirts.root.getObjectByName('outskirts-paving')]];
   let covered=0;
   for(const [group,owner,asphalt] of groups) {
     for(const road of roadNetwork.filter(road=>road.group===group)) {
@@ -36,12 +40,12 @@ test('every road has supported center and edge paint outside intersections',()=>
           assert.ok(!overlap(bounds,cross),`${road.id}/${other.id}: intersection remains unpainted`);
         }
         const center=patch.points.reduce((sum,p)=>sum.add(new T.Vector3(...p)),new T.Vector3()).multiplyScalar(.25);
-        const hits=new T.Raycaster(new T.Vector3(center.x,20,center.z),new T.Vector3(0,-1,0)).intersectObject(asphalt);
+        const hits=new T.Raycaster(new T.Vector3(center.x,200,center.z),new T.Vector3(0,-1,0)).intersectObject(asphalt);
         assert.ok(hits.some(hit=>Math.abs(center.y-hit.point.y-.025)<1e-4),`${road.id}: paint follows the actual road/deck/ramp elevation`);
       }
     }
   }
-  assert.equal(covered,42,'Downtown, all 36 outer streets and both bridges receive markings');
+  assert.equal(covered,42+settlementRoads.length,'Core avenues, outer streets, island expansion and both bridges receive markings');
 });
 
 test('the previously blank downtown extensions carry visible paint and retain crossing gaps',()=>{
@@ -121,6 +125,79 @@ test('city blur isolates the sharp subject, caches unchanged views, and releases
   disposed=0;blur.dispose();assert.equal(disposed,2,'Both GPU targets are disposed');
 });
 
+test('the complete city and woodland sit on finite dry land with a continuous sea-level shore',()=>{
+  const environment=createCityEnvironment(),ground=environment.root.getObjectByName('city-ground');
+  const {position,normal,color}=ground.geometry.attributes;
+  assert.equal(position.count,color.count);
+  const terrain=ground.geometry.userData.landscapeRanges.islandTerrain;
+  const terrainGeometry=new T.BufferGeometry().setAttribute('position',new T.Float32BufferAttribute(position.array.slice(terrain.start*3,(terrain.start+terrain.count)*3),3));
+  const terrainSurface=new T.Mesh(terrainGeometry,ground.material);
+  assert.ok(position.count/3<34000,'Land, mountains and forests share one bounded scenery batch');
+  for(let i=terrain.start;i<terrain.start+terrain.count;i++) {
+    assert.ok(normal.getY(i)>0,'Every land and beach triangle faces upward');
+    assert.ok(Math.hypot(position.getX(i),position.getZ(i))<citySceneryRadius,'The scenery radius encloses every shore vertex');
+    assert.ok(position.getY(i)>=oceanY-1e-6,'The shoreline does not expose a floating underwater skirt');
+  }
+  const bounds=[...cityLots.map(lot=>lot.bounds),...outskirtsRoads.map(road=>road.bounds),...model.outskirts.features.map(feature=>[feature.bounds.min.x,feature.bounds.min.z,feature.bounds.max.x,feature.bounds.max.z])];
+  for(const [x0,z0,x1,z1]of bounds)for(const x of [x0,x1])for(const z of [z0,z1]) {
+    assert.ok(islandContains(x,z,.95),'All buildings, roads, gardens, woods and hills remain inland of the beach');
+    assert.ok(new T.Raycaster(new T.Vector3(x,150,z),new T.Vector3(0,-1,0)).intersectObject(terrainSurface).length,'Actual terrain triangles support every scenery footprint corner');
+  }
+  for(let i=0;i<16;i++) {
+    const [x,z]=islandPoint(i*Math.PI/8,1.12);
+    const hits=new T.Raycaster(new T.Vector3(x,150,z),new T.Vector3(0,-1,0)).intersectObject(ground);
+    assert.equal(hits.length,0,'Open water separates the central island from the outer mountains');
+  }
+  assert.ok(islandCoast.some(([x,z])=>Math.abs(x)>1100&&Math.abs(z)<400),'The city has room beyond its existing neighborhoods');
+});
+
+test('camera depth contains the whole coast and maximum zoom fits desktop and portrait views',()=>{
+  for(const distance of [150,650,2800,12000])for(let side=0;side<8;side++) {
+    const {near,far}=cameraDepthRange(distance),camera=new T.PerspectiveCamera(34,16/9,near,far);
+    camera.position.setFromSphericalCoords(distance,1.15,side*Math.PI/4);camera.lookAt(0,0,0);camera.updateMatrixWorld(true);
+    for(const [x,z]of islandCoast) {
+      const depth=-new T.Vector3(x,oceanY,z).applyMatrix4(camera.matrixWorldInverse).z;
+      assert.ok(depth<far-50,'The far plane stays beyond every coastline point at every orbit angle');
+    }
+  }
+  for(const [width,height]of [[1280,720],[390,844],[650,390]])for(const polar of [.15,1.15,1.55]) {
+    const distance=islandZoomLimit(width,height),{near,far}=cameraDepthRange(distance),camera=new T.PerspectiveCamera(34,width/height,near,far);
+    camera.position.setFromSphericalCoords(distance,polar,.4);camera.lookAt(0,0,0);camera.updateMatrixWorld(true);
+    for(const [x,z]of islandCoast) {
+      const p=new T.Vector3(x,oceanY,z).project(camera);
+      assert.ok(Math.abs(p.x)<.95&&Math.abs(p.y)<.95&&p.z<1,'Zoom-out leaves water visible around the complete island');
+    }
+  }
+});
+
+test('the river has an inland lake and fades into the ocean at matching sea level',()=>{
+  const waterfront=model.waterfront,water=waterfront.root.getObjectByName('waterfront-water');
+  const {position,color}=water.geometry.attributes;
+  assert.equal(waterfront.features.filter(feature=>feature.kind==='headwater-lake').length,1);
+  const lake=waterfront.features.find(feature=>feature.kind==='headwater-lake');
+  assert.ok(islandContains(lake.bounds.min.x,lake.bounds.min.z,.95));
+  assert.equal(color.itemSize,4,'The estuary has a per-vertex fade instead of a hard rectangular water edge');
+  let mouthVertices=0;
+  for(let i=0;i<position.count;i++)if(Math.abs(position.getX(i)-riverPlan.maxX)<.001) {
+    mouthVertices++;assert.ok(Math.abs(position.getY(i)-oceanY)<1e-6);assert.equal(color.getW(i),0);
+    assert.ok(!islandContains(position.getX(i),position.getZ(i)),'The final water edge lies beyond the coast');
+  }
+  assert.ok(mouthVertices>0);
+  for(const bank of waterfront.features.filter(feature=>feature.kind==='riverbank'))assert.ok(bank.bounds.min.x>=-560&&bank.bounds.max.x<=560,'Promenades end inland instead of continuing out to sea');
+});
+
+test('the ocean follows the camera and local light without allocating distant water meshes',()=>{
+  const environment=createCityEnvironment(readCityTime(new Date(2026,9,24,10))),camera=new T.PerspectiveCamera();
+  camera.position.set(100,90,-200);environment.update(camera,1);
+  const uniforms=environment.sky.material.uniforms,day=uniforms.seaColor.value.clone(),eye=uniforms.oceanEye.value;
+  assert.equal(uniforms.oceanLevel.value,oceanY);assert.ok(eye.equals(camera.position));
+  const geometry=environment.sky.geometry;
+  environment.setTime(readCityTime(new Date(2026,9,24,22)));environment.update(camera,1);
+  assert.ok(uniforms.seaColor.value.r<day.r&&uniforms.seaColor.value.b<day.b,'The surrounding sea follows day/night lighting');
+  assert.equal(environment.sky.geometry,geometry);assert.equal(uniforms.oceanEye.value,eye);
+  assert.equal(environment.root.children.length,2,'Ocean and sky share the existing background draw; land remains one batch');
+});
+
 test('finished parks, planted edges and ground detail stay clear of buildings, avenues and water',()=>{
   const landscape=model.landscape;
   assert.equal(landscape.root.children.length,3,'Public spaces share three static batches');
@@ -150,7 +227,7 @@ test('finished parks, planted edges and ground detail stay clear of buildings, a
   });
   const terrain=new T.Raycaster(new T.Vector3(800,10,0),new T.Vector3(0,-1,0));
   const environment=createCityEnvironment();environment.root.updateMatrixWorld(true);
-  assert.ok(terrain.intersectObject(environment.root.getObjectByName('city-ground')).length,'Terrain extends beyond the built city to remove the tabletop edge');
+  assert.ok(terrain.intersectObject(environment.root.getObjectByName('city-ground')).length,'Island terrain supports the land beyond the built city');
 });
 
 test('street additions stay batched, supported and clear of live approaches',()=>{
@@ -216,9 +293,9 @@ test('outer neighborhoods have street access, public space and a bounded transit
   assert.ok(features.filter(f=>f.kind==='transit-stop').length>=2);
   assert.ok(features.filter(f=>f.kind==='neighborhood-lamp').length>=8);
   assert.ok(features.filter(f=>f.kind==='avenue-tree').length>=12,'Outer avenues retain their planted sidewalk edge');
-  assert.ok(features.filter(f=>f.kind==='woodland').length>=60);
+  assert.ok(createIslandWilderness().trees.length>=350,'A continuous varied forest replaces stamped woodland clusters');
   const occupied=model.districtBuildings.buildings.flatMap(b=>b.parts.map(p=>new T.Box3(new T.Vector3(p.x-p.width/2,p.bottom,p.z-p.depth/2),new T.Vector3(p.x+p.width/2,p.top,p.z+p.depth/2))));
-  for(const feature of features.filter(f=>!['street','home-garden'].includes(f.kind))){
+  for(const feature of features.filter(f=>!['street','home-garden'].includes(f.kind)&&!f.kind.startsWith('settlement-')&&!f.kind.startsWith('island-'))){
     assert.ok(occupied.every(b=>!b.intersectsBox(feature.bounds)),`${feature.kind}: no occupied-volume collision`);
     for(let x=feature.bounds.min.x;x<=feature.bounds.max.x;x+=4){const water=riverEdges(x);assert.ok(feature.bounds.max.z<=water.north||feature.bounds.min.z>=water.south,`${feature.kind}: dry land`);}
     for(const r of outskirtsRoads)assert.ok(!overlap([feature.bounds.min.x,feature.bounds.min.z,feature.bounds.max.x,feature.bounds.max.z],r.bounds),`${feature.kind}/${r.id}: roadway stays clear`);
@@ -226,8 +303,9 @@ test('outer neighborhoods have street access, public space and a bounded transit
   assert.equal(outskirts.root.children.length,4,'All outskirts detail shares four static batches');
   let triangles=0;
   outskirts.root.traverse(node=>{if(!node.isMesh)return;const p=node.geometry.attributes.position;triangles+=p.count/3;assert.ok(Array.from(p.array).every(Number.isFinite));assert.equal(p.count,node.geometry.attributes.color.count);assert.equal(p.count,node.geometry.attributes.cityGlow.count);assert.ok(node.material.userData.districtDepth);});
-  assert.ok(triangles<20000,`${triangles}: outer roads, gardens and woodland remain bounded`);
-  assert.ok(riverPlan.minX<=-2000&&riverPlan.maxX>=2000,'The river continues through the full outer landscape');
+  assert.ok(triangles<30000,`${triangles}: core outskirts and island settlements remain bounded`);
+  assert.ok(islandContains(riverPlan.minX,riverCenter(riverPlan.minX)),'The river begins at an inland headwater');
+  assert.ok(!islandContains(riverPlan.maxX,riverCenter(riverPlan.maxX)),'The river reaches the surrounding ocean');
 });
 
 test('river, bridges and riverwalk occupy real space without flooding the city or hiding the landmark',()=>{

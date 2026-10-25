@@ -11,7 +11,7 @@ const testClock=()=>new Date(2026,9,23,testHour,0,0);
 if (requestedDpr > 0 && requestedDpr <= 4) Object.defineProperty(window, 'devicePixelRatio', { value: requestedDpr, configurable: true });
 const stage = document.querySelector('#stage'); stage.style.width = `${width}px`; stage.style.height = `${height}px`;
 const output = document.querySelector('#results'), status = document.querySelector('#status');
-const rows = [], objectChecks = []; let frames = 0, objectFrames = 0, latest, spatial, maxFrameCalls = 0;
+const rows = [], objectChecks = [], zoomChecks = []; let frames = 0, objectFrames = 0, latest, spatial, maxFrameCalls = 0;
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function settled(requireFrame=true) {
@@ -36,6 +36,20 @@ function sample(view, limit) {
   assert(metrics.width * metrics.height * metrics.pixelRatio ** 2 <= 2_400_001, 'Raster budget exceeded');
   rows.push({ view, ...metrics });
 }
+async function verifyZoomStops(view) {
+  for(const direction of [1,-1]) {
+    for(let i=0;i<90;i++)spatial.zoom(direction);
+    await settled();
+    const zoom=spatial.metrics().zoom,stop=direction>0?zoom.min:zoom.max;
+    assert(Math.abs(zoom.distance-stop)<.01,`${view}: zoom misses its hard stop`);
+    assert(direction>0?!zoom.canZoomIn:!zoom.canZoomOut,`${view}: stopped zoom remains enabled`);
+    const held=frames;
+    for(let i=0;i<5;i++)spatial.zoom(direction);
+    await settled(false);
+    assert(frames===held,`${view}: repeated stopped zoom rendered ${frames-held} extra frames (${JSON.stringify(spatial.metrics().zoom)})`);
+    zoomChecks.push({view,direction,...zoom});
+  }
+}
 try {
   const started = performance.now();
   spatial = createSpatialScene({ container: stage, preferences:{graphics}, clock:testClock, shadowComparison:params.has('shadows'), onFrame(state) {
@@ -45,13 +59,17 @@ try {
   } });
   await settled(); const readyMs = Math.round(performance.now() - started);
   sample('tower', params.has('shadows')?85:69);
+  await verifyZoomStops('tower');spatial.goTo('tower',null,{instant:true,reset:true});await settled();
   // Include all five sharp floors plus the uncached city and its four new ground/park batches.
   spatial.goTo('explore', null, { instant: true }); await settled(); sample('explore', 85);
+  await verifyZoomStops('explore');spatial.goTo('explore',null,{instant:true,reset:true});await settled();
   for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
     // Count both the sharp interior and the small scenery/blur passes.
     spatial.goTo('section', id, { instant: true }); await settled(); sample(id, 75);
+    if(id==='about'){await verifyZoomStops(id);spatial.overview();await settled();}
     for (const [index, room] of floorContent[id].rooms.entries()) {
       spatial.focusRoom(index, { instant: true }); await settled(); sample(`${id}/${room.id}`, 75);
+      if(id==='about'&&index===0){await verifyZoomStops(`${id}/${room.id}`);spatial.focusRoom(index,{instant:true});await settled();}
       const objects = spatial.objectsForRoom(id, index), before = spatial.metrics();
       assert(objects.length >= 5, `${id}/${room.id}: missing interactive objects`);
       const beforeObjectFrames = objectFrames;
@@ -96,6 +114,9 @@ try {
   assert(maxFrameCalls <= 100, `Transition/background passes exceed 100 draws: ${maxFrameCalls}`);
   // Exercise both live graphics paths, including repeated changes after GPU warm-up.
   spatial.goTo('section','projects',{instant:true}); await settled();
+  // Each terrain variant uploads once on first use; compare allocations only
+  // after both have rendered, then reject any growth on subsequent switches.
+  for(const quality of ['standard','low']){spatial.setPreferences({graphics:quality});await settled();}
   const qualityChecks = [], allocated = new Map();
   for (const quality of ['standard','low','standard','low','standard','low',graphics]) {
     spatial.setPreferences({graphics:quality}); await settled();
@@ -108,7 +129,7 @@ try {
   }
   assert(allocated.get('low').pixelRatio < allocated.get('standard').pixelRatio, 'Low graphics does not reduce resolution');
   assert(allocated.get('low').calls < allocated.get('standard').calls, 'Low graphics does not reduce draw calls');
-  output.textContent = JSON.stringify({ viewport: `${width}x${height}`, graphics, requestedDpr: requestedDpr || devicePixelRatio, userAgent: navigator.userAgent, readyMs, idleFramesOver250ms: idleFrames, maxFrameCalls, stableGeometryCount: memory, stableGeometryAfterResize: resizedMemory, clockChanges, objectChecks, qualityChecks, rows }, null, 2);
+  output.textContent = JSON.stringify({ viewport: `${width}x${height}`, graphics, requestedDpr: requestedDpr || devicePixelRatio, userAgent: navigator.userAgent, readyMs, idleFramesOver250ms: idleFrames, maxFrameCalls, stableGeometryCount: memory, stableGeometryAfterResize: resizedMemory, clockChanges, objectChecks, zoomChecks, qualityChecks, rows }, null, 2);
   spatial.dispose();
   assert(stage.querySelector('canvas') === null, 'Disposal leaves a canvas behind');
   assert(spatial.metrics().geometries === 0, 'Disposal leaves uploaded GPU geometries behind');

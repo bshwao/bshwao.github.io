@@ -4,6 +4,8 @@ import { cityPalette,citySun } from './city-palette.js';
 import { readCityTime } from './city-time.js';
 import { applyDistrictDepth } from './district-style.js';
 import { applyGroundTexture } from './ground-materials.js';
+import { createIslandGeometry } from './city-island.js';
+import { oceanY } from './city-geography.js';
 export {cityPalette,citySun};
 
 /** Exterior-only material/light system. Interface and occupied floors stay light. */
@@ -18,6 +20,8 @@ export function createCityEnvironment(initialTime=readCityTime()) {
       starVisibility:{value:1},
       sunDirection:{value:new T.Vector3()},moonDirection:{value:new T.Vector3()},
       sunVisibility:{value:0},moonVisibility:{value:0},sunColor:{value:new T.Color('#fff0ce')},
+      oceanEye:{value:new T.Vector3()},oceanLevel:{value:oceanY},
+      seaColor:{value:new T.Color('#285c76')},seaHaze:{value:new T.Color(cityPalette.haze)},
       stars:{value:Array.from({length:32},(_,i)=>{
         const azimuth=i*2.3999632297,y=.10+(i+.5)/32*.84,radius=Math.sqrt(1-y*y);
         return new T.Vector3(Math.cos(azimuth)*radius,y,Math.sin(azimuth)*radius);
@@ -26,7 +30,8 @@ export function createCityEnvironment(initialTime=readCityTime()) {
     vertexShader:`varying highp vec3 skyDirection;
       void main(){skyDirection=position;vec4 p=projectionMatrix*modelViewMatrix*vec4(position,1.0);gl_Position=p.xyww;}`,
     fragmentShader:`varying highp vec3 skyDirection;
-      uniform vec3 zenith,horizon,stars[32],sunDirection,moonDirection,sunColor;
+      uniform vec3 zenith,horizon,stars[32],sunDirection,moonDirection,sunColor,oceanEye,seaColor,seaHaze;
+      uniform float oceanLevel;
       uniform float starVisibility,sunVisibility,moonVisibility;
       #include <common>
       #include <dithering_pars_fragment>
@@ -43,24 +48,44 @@ export function createCityEnvironment(initialTime=readCityTime()) {
         float moonShade=sqrt(max(0.0,1.0-pow(moonDistance/.008,2.0)));
         sky+=vec3(.22,.30,.44)*exp(-moonDistance*moonDistance*1200.0)*.07*moonVisibility;
         sky=mix(sky,vec3(.58,.68,.82)*(.72+.28*moonShade),moonDisc*moonVisibility);
+        // Ray/sea-plane intersection gives an ocean horizon with no finite
+        // mesh edge or far-plane cutoff. Ripples are static and world anchored.
+        if(d.y<edge){
+          float distanceToSea=max(oceanEye.y-oceanLevel,.1)/max(-d.y,.0002);
+          vec2 seaPoint=oceanEye.xz+d.xz*distanceToSea;
+          float footprint=max(length(fwidth(seaPoint)),.001);
+          float resolved=1.0-smoothstep(2.0,18.0,footprint);
+          float ripple=(sin(seaPoint.x*.13+seaPoint.y*.04)+sin(seaPoint.y*.21-seaPoint.x*.03))*.018*resolved;
+          float swell=sin(seaPoint.x*.028+seaPoint.y*.013)*sin(seaPoint.y*.045-seaPoint.x*.007)*.07*(1.0-smoothstep(12.0,90.0,footprint));
+          float haze=1.0-exp(-distanceToSea/3500.0);
+          vec3 water=mix(seaColor*(1.0+ripple+swell),seaHaze,haze*.88);
+          float reflection=pow(max(0.0,dot(d.xz/max(length(d.xz),.0001),normalize(sunDirection.xz))),40.0);
+          water+=sunColor*reflection*sunVisibility*.10*exp(-abs(d.y)*18.0)*(1.0-haze);
+          sky=mix(water,sky,smoothstep(-edge,edge,d.y));
+        }
         gl_FragColor=vec4(sky,1.0);
         #include <colorspace_fragment>
         #include <dithering_fragment>
       }`,
   });
   const sky=new T.Mesh(new T.BoxGeometry(2,2,2),material);sky.name='local-time-sky';sky.frustumCulled=false;sky.renderOrder=-100;root.add(sky);
-  const groundMaterial=applyGroundTexture(applyDistrictDepth(new T.MeshBasicMaterial({color:'#7b8b70',transparent:true}),.98),'terrain');
-  const ground=new T.Mesh(new T.PlaneGeometry(12000,12000),groundMaterial);ground.rotation.x=-Math.PI/2;ground.position.y=-.82;ground.renderOrder=-20;ground.name='city-ground';root.add(ground);
+  const groundMaterial=applyGroundTexture(applyDistrictDepth(new T.MeshBasicMaterial({vertexColors:true,transparent:true}),.68),'terrain');
+  const terrainGeometries=[createIslandGeometry(),createIslandGeometry(true)];
+  const ground=new T.Mesh(terrainGeometries[0],groundMaterial);ground.renderOrder=-20;ground.name='city-ground';root.add(ground);
+  const seaBase=new T.Color('#285c76'),seaTint=new T.Color();
   let timeState=initialTime;
   const setTime=state=>{
     timeState=state;
     material.uniforms.sunDirection.value.fromArray(state.sunDirection);
     material.uniforms.moonDirection.value.fromArray(state.moonDirection);
     material.uniforms.sunColor.value.set(state.keyColor);
+    material.uniforms.seaColor.value.copy(seaBase).multiply(seaTint.set(state.tint)).multiplyScalar(.42+state.daylight*.58);
+    material.uniforms.seaHaze.value.set(state.haze);
   };
   setTime(initialTime);
-  return {root,sky,setTime,update(camera,visibility){
+  return {root,sky,setTime,terrainGeometries,setLowGraphics(value){ground.geometry=terrainGeometries[value?1:0];},update(camera,visibility){
     sky.position.copy(camera.position);root.visible=visibility>.001;
+    material.uniforms.oceanEye.value.copy(camera.position);
     material.uniforms.zenith.value.set(timeState.zenith).lerp(paper,1-visibility);
     material.uniforms.horizon.value.set(timeState.horizon).lerp(paper,1-visibility);
     material.uniforms.starVisibility.value=visibility*timeState.stars;

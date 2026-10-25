@@ -24,7 +24,7 @@ export function applyDistrictDepth(material, strength = .68) {
       '#include <tonemapping_fragment>',
       `float cityLit=${glow==='vertex'?'vCityGlow':glow==='windows'?'smoothstep(.02,.16,gl_FragColor.r-gl_FragColor.b)':'0.0'};
        gl_FragColor.rgb=gl_FragColor.rgb*cityTint+vec3(.78,.43,.14)*cityLit*cityNight*.75;
-       float districtFade = smoothstep(districtReference - 65.0, districtReference + 125.0, vDistrictDepth) * ${strength.toFixed(3)};
+       float districtFade = smoothstep(districtReference - 65.0, districtReference + 1400.0, vDistrictDepth) * ${strength.toFixed(3)};
        gl_FragColor.rgb = mix(gl_FragColor.rgb, districtHaze, districtFade);
        #include <tonemapping_fragment>`);
   };

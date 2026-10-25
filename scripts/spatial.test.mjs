@@ -9,6 +9,8 @@ import { viewportLayout } from '../assets/spatial-layout.js';
 import { floorContent } from '../assets/floor-content.js';
 import { sections } from '../assets/tower-geometry.js';
 import { sectionColors } from '../assets/color-theme.js';
+import { outdoorTerrainFloor } from '../assets/city-island.js';
+import { outdoorCameraPose } from '../assets/camera-framing.js';
 
 const root = resolve(import.meta.dirname, '..');
 const mobile = process.argv.includes('--mobile');
@@ -276,6 +278,35 @@ assert.ok(lastCamera.position.distanceTo(initialCamera) > 1, 'Visible zoom-in mo
 assert.equal(hint.hidden, true, 'Using the view dismisses onboarding');
 click('#zoom-out'); await settleCamera();
 assert.ok(lastCamera.position.distanceTo(initialCamera) < .001, 'Zoom-out reverses the camera step');
+async function verifyZoomStops(label,{gestures=false,resize=false}={}){
+  const canvas=w.document.querySelector('canvas');
+  const key=value=>canvas.dispatchEvent(new w.KeyboardEvent('keydown',{key:value,bubbles:true,cancelable:true}));
+  const wheel=deltaY=>canvas.dispatchEvent(new w.WheelEvent('wheel',{deltaY,bubbles:true,cancelable:true}));
+  for(const [value,button,field,delta]of [['+','zoom-in','zoomMin',-10000],['-','zoom-out','zoomMax',10000]]){
+    for(let i=0;i<90;i++)key(value);await settleCamera();
+    assert.ok(Math.abs(Number(main.dataset.zoomDistance)-Number(main.dataset[field]))<.02,`${label}: the real camera reaches its ${field} boundary`);
+    assert.equal(w.document.querySelector(`#${button}`).disabled,true,`${label}: its button disables at the boundary`);
+    const stopped=lastCamera.position.clone();
+    const stoppedRenders=renders;
+    for(let i=0;i<4;i++)key(value);await settleCamera();
+    assert.equal(renders,stoppedRenders,`${label}: zooming against a stop does not schedule redundant renders`);
+    for(let i=0;i<4;i++){key(value);wheel(delta);}await settleCamera();
+    assert.ok(lastCamera.position.distanceTo(stopped)<.003,`${label}: repeated keyboard and wheel input cannot pass the hard stop`);
+    if(gestures){
+      sendMouse('pointerdown',150,200,1);sendMouse('pointermove',150,value==='+'?-20000:20000,1);sendMouse('pointerup',150,200,1);await settleCamera();
+      assert.ok(Number(main.dataset.zoomDistance)>=Number(main.dataset.zoomMin)-.02&&Number(main.dataset.zoomDistance)<=Number(main.dataset.zoomMax)+.02,`${label}: middle-button dolly stays bounded`);
+      sendMouse('pointerdown',150,200,0,'touch',21);sendMouse('pointerdown',250,200,0,'touch',22);
+      sendMouse('pointermove',value==='+'?20150:151,200,0,'touch',22);
+      sendMouse('pointerup',150,200,0,'touch',21);sendMouse('pointerup',250,200,0,'touch',22);await settleCamera();
+      assert.ok(Number(main.dataset.zoomDistance)>=Number(main.dataset.zoomMin)-.02&&Number(main.dataset.zoomDistance)<=Number(main.dataset.zoomMax)+.02,`${label}: pinch stays bounded`);
+    }
+    if(resize)for(const viewport of [[320,568],[650,390],originalViewport]){
+      await resizeTo(...viewport);
+      assert.ok(Number(main.dataset.zoomDistance)>=Number(main.dataset.zoomMin)-.02&&Number(main.dataset.zoomDistance)<=Number(main.dataset.zoomMax)+.02,`${label}: resizing at a stop applies the new viewport's limits`);
+    }
+  }
+}
+await verifyZoomStops('city',{gestures:true,resize:true});click('#reset-spatial');await settleCamera();
 const settings = w.document.querySelector('#view-settings');
 click('#show-controls-hint'); assert.equal(hint.hidden, false);
 w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
@@ -304,9 +335,25 @@ assert.deepEqual(savedPreferences, { motion: 'system', graphics: 'low', controls
 await selectPreference('#graphics-preference', 'standard');
 assert.equal(lastRenderer.pixelRatio, standardRatio, 'Standard graphics restores the original resolution');
 assert.equal(w.document.querySelector('canvas').dataset.quality, '0');
+const fullTerrain=lastScene.getObjectByName('city-ground').geometry;
+await selectPreference('#graphics-preference','low');
+assert.ok(lastScene.getObjectByName('city-ground').geometry.attributes.position.count<fullTerrain.attributes.position.count*.7,'Low graphics thins individual trees while retaining all terrain');
+await selectPreference('#graphics-preference','standard');
+assert.equal(lastScene.getObjectByName('city-ground').geometry,fullTerrain,'Changing graphics reuses the full terrain geometry');
 // At street level a solid foreground building must block the tower behind it.
 const outdoorCanvas = w.document.querySelector('canvas');
 const cameraKey = key => outdoorCanvas.dispatchEvent(new w.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+const originalTarget=outdoorCameraPose('tower',viewportWidth,viewportHeight).target;
+let raisedViews=0;
+for(const radius of [2300,3200,3500])for(let i=0;i<16;i++){
+  lastCamera.position.setFromSphericalCoords(radius,1.56,i*Math.PI/8).add(originalTarget);lastCamera.lookAt(originalTarget);
+  cameraKey('ArrowDown');await tick(32);await settleCamera();
+  const floor=outdoorTerrainFloor(lastCamera.position.x,lastCamera.position.z);
+  if(floor>10)raisedViews++;
+  assert.ok(lastCamera.position.y>=floor-.002,'Low outdoor orbit clears the actual mountain/foothill surface');
+}
+assert.ok(raisedViews>=8,'Camera clearance is exercised over different mountain regions and distances');
+click('#reset-spatial');await settleCamera();
 for(let i=0;i<24;i++){cameraKey('ArrowDown');await tick(16);}
 await settleCamera();assert.ok(lastCamera.position.y>=1.49,'Outdoor orbit stops above street level');
 click('#reset-spatial');await settleCamera();
@@ -356,6 +403,7 @@ assert.ok(sections.every(section => lastScene.getObjectByName(`cap-plans-${secti
 assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the expanded tower');
 assert.equal(main.dataset.transition, 'idle');
 if (!reduced) assert.ok(middle.distanceTo(lastCamera.position) > 1, 'Camera moves throughout expansion');
+await verifyZoomStops('expanded tower',{gestures:true});click('#reset-spatial');await settleCamera();
 
 // Exercise the actual vendored OrbitControls using left-button pointer events.
 const canvas = w.document.querySelector('canvas');
@@ -554,6 +602,7 @@ for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
   assert.equal(canvas.dataset.section, id); assert.equal(main.dataset.transition, 'idle');
   assert.equal(w.document.querySelector('#complete-portfolio').getAttribute('href'), `./reading.html#${id === 'resume' ? 'education' : id}`, 'The complete portfolio opens the corresponding reading section');
   assertFloorFramed(id);
+  await verifyZoomStops(`${id} floor`);click('#reset-spatial');await settleCamera();
   assert.ok(w.document.querySelector('#interior-content').textContent.trim().length > 40);
   const count = w.document.querySelectorAll('#station-navigation button').length;
   for (let i = 0; i < count; i++) {
@@ -565,6 +614,7 @@ for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
       assert.deepEqual([...w.document.querySelectorAll('#interior-content .project-summary dt')].map(node => node.textContent), ['What I built', 'My contribution', 'Result']);
     }
     assertRoomFramed(['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id), i);
+    await verifyZoomStops(`${id}/${i} room`,{resize:id==='about'&&i===0});click(`#station-navigation [data-station="${i}"]`);await settleCamera();
     await verifyRoomObjects(sections.findIndex(section => section.id === id), i);
   }
   click('#floor-overview'); await tick(800);

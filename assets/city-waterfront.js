@@ -4,6 +4,7 @@ import { cityPalette } from './city-environment.js';
 import { applyDistrictDepth } from './district-style.js';
 import { applyGroundTexture } from './ground-materials.js';
 import { planRoadMarkings } from './road-markings.js';
+import { oceanY } from './city-geography.js';
 
 /** A static river, quays, bridges and riverwalk, sharing five geometry batches. */
 export function createCityWaterfront() {
@@ -16,6 +17,13 @@ export function createCityWaterfront() {
   let active = null;
   const vertex = (layer,point,tint,surface=0) => {
     layers[layer].positions.push(...point); layers[layer].colors.push(...color(tint));
+    if(layer==='water'){
+      const downstream=T.MathUtils.smoothstep(point[0],riverPlan.mouthX-5,riverPlan.maxX);
+      const halfWidth=riverPlan.halfWidth*(1+T.MathUtils.smoothstep(point[0],riverPlan.mouthX-65,riverPlan.maxX)*1.4);
+      const edge=T.MathUtils.smoothstep(Math.abs(point[2]-riverCenter(point[0]))/halfWidth,.65,1);
+      const feather=T.MathUtils.smoothstep(point[0],riverPlan.mouthX-15,riverPlan.mouthX+20);
+      layers[layer].colors.push((1-downstream)*(1-edge*feather));
+    }
     layers[layer].glow.push(active?.glow?1:0);layers[layer].surface.push(surface);
     active?.bounds.expandByPoint(new T.Vector3(...point));
   };
@@ -34,13 +42,15 @@ export function createCityWaterfront() {
   }
   const box = (layer,x,y,z,w,h,d,tint) => solid(layer,cube,x,y,z,w,h,d,tint);
   const waterY=riverPlan.waterY,walkY=-.32,half=riverPlan.halfWidth,walk=riverPlan.promenadeWidth;
-  const nextRiverX=x=>Math.min(x+(Math.abs(x+.01)>=2000?500:Math.abs(x+.01)>600?200:20),riverPlan.maxX);
+  const nextRiverX=x=>Math.min(x+20,riverPlan.maxX);
+  const levelAt=x=>waterY+(oceanY-waterY)*T.MathUtils.smoothstep(x,riverPlan.mouthX+20,riverPlan.maxX);
+  const widthAt=x=>half*(1+T.MathUtils.smoothstep(x,riverPlan.mouthX-65,riverPlan.maxX)*1.4);
 
   feature('river',()=>{
     for(let x=riverPlan.minX;x<riverPlan.maxX;x=nextRiverX(x)) {
-      const next=nextRiverX(x),a=riverCenter(x),b=riverCenter(next);
-      for(const [lo,hi,tint]of [[-half,-half*.65,'#19394b'],[-half*.65,0,'#1b4861'],[0,half*.65,'#214f68'],[half*.65,half,'#19394b']]) {
-        quad('water',[x,waterY,a+lo],[x,waterY,a+hi],[next,waterY,b+hi],[next,waterY,b+lo],tint);
+      const next=nextRiverX(x),a=riverCenter(x),b=riverCenter(next),wa=widthAt(x),wb=widthAt(next);
+      for(const [lo,hi,tint]of [[-1,-.65,'#19394b'],[-.65,0,'#1b4861'],[0,.65,'#214f68'],[.65,1,'#19394b']]) {
+        quad('water',[x,levelAt(x),a+lo*wa],[x,levelAt(x),a+hi*wa],[next,levelAt(next),b+hi*wb],[next,levelAt(next),b+lo*wb],tint);
       }
     }
     // Fixed low-contrast ripple strokes suggest reflected city lights without
@@ -50,9 +60,17 @@ export function createCityWaterfront() {
       line([x,waterY+.014,z],[x+length,waterY+.014,z-.1],i%6===0?'#b3a27d':'#456d85');
     }
   });
+  feature('headwater-lake',()=>{
+    const x=riverPlan.minX,z=riverCenter(x);
+    for(let i=0;i<48;i++) {
+      const a=i*Math.PI/24,b=(i+1)*Math.PI/24;
+      for(const point of [[x,waterY,z],[x+Math.cos(b)*55,waterY,z+Math.sin(b)*36],[x+Math.cos(a)*55,waterY,z+Math.sin(a)*36]]) vertex('water',point,'#1b4861');
+    }
+  });
   for(const side of [-1,1]) feature('riverbank',()=>{
-    for(let x=riverPlan.minX;x<riverPlan.maxX;x=nextRiverX(x)) {
-      const next=nextRiverX(x),a=riverCenter(x)+side*half,b=riverCenter(next)+side*half;
+    // Urban promenades finish inland; the river alone reaches the sea.
+    for(let x=-560;x<560;x+=20) {
+      const next=Math.min(x+20,560),a=riverCenter(x)+side*half,b=riverCenter(next)+side*half;
       const outerA=a+side*walk,outerB=b+side*walk;
       quad('quays',[x,walkY,Math.min(a,outerA)],[x,walkY,Math.max(a,outerA)],[next,walkY,Math.max(b,outerB)],[next,walkY,Math.min(b,outerB)],'#7f8d98');
       const wall=[[x,waterY-.2,a],[x,walkY,a],[next,walkY,b],[next,waterY-.2,b]];
@@ -130,12 +148,12 @@ export function createCityWaterfront() {
   for(const [name,layer]of Object.entries(layers)) {
     const geometry=new T.BufferGeometry();
     geometry.setAttribute('position',new T.Float32BufferAttribute(layer.positions,3));
-    geometry.setAttribute('color',new T.Float32BufferAttribute(layer.colors,3));
+    geometry.setAttribute('color',new T.Float32BufferAttribute(layer.colors,name==='water'?4:3));
     geometry.setAttribute('cityGlow',new T.Float32BufferAttribute(layer.glow,1));
     geometry.setAttribute('surfaceKind',new T.Float32BufferAttribute(layer.surface,1));
     const material=applyDistrictDepth(name==='reflections'
       ?new T.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.55})
-      :new T.MeshBasicMaterial({vertexColors:true}),name==='water'?.72:.30);
+      :new T.MeshBasicMaterial({vertexColors:true,transparent:name==='water',depthWrite:name!=='water'}),name==='water'?.72:.30);
     if(name==='fixtures')material.userData.cityGlowMode='vertex';
     else if(name==='quays')applyGroundTexture(material,'mixed');
     else if(name==='water')applyGroundTexture(material,'water');

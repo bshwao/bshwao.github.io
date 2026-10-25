@@ -2,12 +2,26 @@ import * as T from './vendor/three.module.min.js';
 import { cityEnvelopes } from './city-layout.js';
 import { sections, setbacks, footprint, towerHeight } from './tower-geometry.js';
 import { outdoorViewLayout } from './spatial-layout.js';
+import { citySceneryRadius, islandFramingRadius } from './city-geography.js';
 
 const openingAzimuth = Math.atan2(.42, 1);
 
 /** Keep fine facade/roof layers distinguishable in the depth buffer at any zoom. */
 export function cameraDepthRange(distance) {
-  return { near: Math.max(.1, Math.floor(distance * .2) / 10), far: Math.max(1000, Math.ceil((distance + 600) / 100) * 100) };
+  return { near: Math.max(.1, Math.floor(distance * .2) / 10), far: Math.ceil((distance + citySceneryRadius + 100) / 100) * 100 };
+}
+
+/** Allow the entire island to fit even in a narrow portrait viewport. */
+export function islandZoomLimit(width, height) {
+  const halfAngle = Math.atan(Math.tan(T.MathUtils.degToRad(17)) * Math.min(1, width / height));
+  return islandFramingRadius * 1.1 / Math.sin(halfAngle);
+}
+
+/** Practical user zoom ranges, relative to each view's fitted default camera. */
+export function cameraZoomLimits({mode,width,height,fitDistance,radius=0,focusedRoom=false}) {
+  if(mode==='tower')return {min:Math.max(140,fitDistance*.55),max:Math.max(fitDistance*1.1,islandZoomLimit(width,height))};
+  if(mode==='explore')return {min:fitDistance*.65,max:fitDistance*2.2};
+  return {min:Math.min(fitDistance*.9,Math.max(radius*1.4,fitDistance*.65)),max:fitDistance*(focusedRoom?1.8:1.9)};
 }
 
 export function outdoorFramingPoints(mode, width, height=900) {

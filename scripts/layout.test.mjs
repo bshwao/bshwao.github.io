@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { viewportLayout, roomMarkerLayout, outdoorViewLayout, towerLabelLayout } from '../assets/spatial-layout.js';
-import { outdoorCameraPose, outdoorFramingPoints, cameraDepthRange } from '../assets/camera-framing.js';
+import { outdoorCameraPose, outdoorFramingPoints, cameraDepthRange, cameraZoomLimits, islandZoomLimit } from '../assets/camera-framing.js';
 import * as T from '../assets/vendor/three.module.min.js';
 import { renderBudget } from '../assets/render-budget.js';
 
@@ -14,6 +14,24 @@ test('camera depth precision separates thin architectural layers through the zoo
     const depth = distance + (distance >= 80 ? 180 : 0);
     const quantized = z => Math.floor((new T.Vector3(0,0,-z).applyMatrix4(camera.projectionMatrix).z * .5 + .5) * (2 ** 24 - 1));
     assert.ok(quantized(depth + .025) - quantized(depth) >= 2, `Roof/face layers retain depth separation at distance ${distance}`);
+  }
+});
+
+test('zoom limits contain the fitted view and keep each scene at a useful scale',()=>{
+  for(const [width,height]of [[1280,720],[390,844],[650,390],[1920,1080]]){
+    for(const mode of ['tower','explore']){
+      const pose=outdoorCameraPose(mode,width,height),fitDistance=pose.position.distanceTo(pose.target);
+      const bounds=cameraZoomLimits({mode,width,height,fitDistance});
+      assert.ok(Number.isFinite(bounds.min)&&Number.isFinite(bounds.max)&&bounds.min>0);
+      assert.ok(bounds.min<fitDistance&&bounds.max>fitDistance,'Reset framing is always inside both hard stops');
+      if(mode==='tower')assert.ok(bounds.max<=islandZoomLimit(width,height)*1.01,'City zoom-out stops at the island overview');
+      else assert.ok(bounds.max<=fitDistance*2.21,'Expanded floors cannot shrink to a distant dot');
+    }
+    for(const focusedRoom of [false,true])for(const fitDistance of [20,80,250]){
+      const bounds=cameraZoomLimits({mode:'section',width,height,fitDistance,radius:fitDistance*.3,focusedRoom});
+      assert.ok(bounds.min>=fitDistance*.6&&bounds.min<fitDistance);
+      assert.ok(bounds.max>fitDistance&&bounds.max<=fitDistance*2,'Floors and rooms retain a bounded close-up range');
+    }
   }
 });
 
