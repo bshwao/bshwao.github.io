@@ -9,6 +9,7 @@ import { createInteriorStructure } from './interior-structure.js';
 import { createObjectInteractions } from './object-interactions.js';
 import { buildBoxSurfaces } from './surface-geometry.js';
 import { furnishPenthouse, furnishPenthouseExtensions } from './penthouse-details.js';
+import { furnishSeatedRobot,createGalleryResident } from './floor-residents.js';
 
 // Separate shell pieces and cushions avoid exposed coplanar faces after batching.
 export const sofaPanels = [
@@ -130,7 +131,9 @@ export function createInterior(section, content) {
           const leg=cylinder(p,x+side*.37,.43,z+end*.36,.045,.86,'ink');leg.rotation.z=-side*.065;
         }
         for(const dx of [-.4,-.2,0,.2,.4])box(p,x+dx,1.43,z+.43,.065,.9,.08,'equipment');
-        box(p,x,1.9,z+.43,.95,.1,.12,'structure');return;
+        box(p,x,1.9,z+.43,.95,.1,.12,'structure');
+        if(section.id==='about'){p.userData.seatedResident=true;furnishSeatedRobot(p,x,z,{box,cylinder,sphere});}
+        return;
       }
       box(p, x, .9, z, .95, .17, 1, 'equipment');
       box(p, x, 1.45, z + .43, .95, 1, .13, 'equipment');
@@ -450,6 +453,7 @@ export function createInterior(section, content) {
     room.region = { ...region };
     room.design=roomDesign;
     room.scale = scale;
+    room.landing = landing;
     room.extensionCount = extension.count;
     roomModels.push(room);
     anchors.push(new T.Vector3(position.x, unit * 4.7, position.z));
@@ -544,7 +548,12 @@ export function createInterior(section, content) {
   }
   paintRooms();
   const interactions = createObjectInteractions(objects);
-  return { group, pickables, anchors, reach, unit, rooms: roomModels, architecture, interactions,
+  group.updateMatrixWorld(true);
+  const residentObstacles=section.id==='about'?objects.filter(object=>object.roomIndex===0).map(object=>object.bounds.clone().applyMatrix4(roomModels[0].group.matrixWorld)):[];
+  const resident=section.id==='about'?createGalleryResident(group,roomModels[0],unit,roomModels[0].landing,interiorRoomDesign('about',0).colors,residentObstacles):null;
+  if(resident){roomModels[0].bounds.union(resident.bounds);roomModels[0].center=roomModels[0].bounds.getCenter(new T.Vector3());roomModels[0].radius=roomModels[0].bounds.getBoundingSphere(new T.Sphere()).radius;}
+  return { group, pickables, anchors, reach, unit, rooms: roomModels, architecture, interactions,resident,
+    updateResidents(time,animate){return resident?.update(time,{visible:focusedRoom===null||focusedRoom===0,animate})||{changed:false,moving:false};},
     setActiveRoom(index) { if (activeRoom === index) return; activeRoom = index; paintRooms(); },
     setHoveredRoom(index) { if (hoveredRoom === index) return; hoveredRoom = index; paintRooms(); },
     setFocus(index, amount = 1) {

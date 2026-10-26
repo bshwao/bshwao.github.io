@@ -10,6 +10,7 @@ import { readViewPreferences, saveViewPreferences, shouldReduceMotion } from './
 import { createPortfolioIntro } from './portfolio-intro.js';
 import { penthouseGameMarkup, createPenthousePlay } from './penthouse-play.js';
 import { penthouseExperienceMarkup,createPenthouseExperiences } from './penthouse-experiences.js';
+import { residentPauseKey,readResidentPause } from './floor-residents.js';
 
 const page = document.querySelector('#main');
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -17,6 +18,7 @@ let spatial, currentId = null, currentRoomIndex = null, revision = 0;
 const defaultTitle = document.title;
 let routeKey = '', fallbackActive = false;
 let readingView, localClock, intro, penthousePlay, penthouseExperiences;
+let residentsPaused=false;
 let preferenceStorage;
 try { preferenceStorage = window.localStorage; } catch { /* Private browsing may deny storage. */ }
 let viewPreferences = readViewPreferences(preferenceStorage);
@@ -59,6 +61,7 @@ function roomMarkup(room, index) {
     ${room.projectId ? `<div class="project-actions">${renderCaseStudyLink(room.projectId)}${(room.links || []).map(link).join('')}</div>` : ''}
     ${room.summary ? renderProjectSummary(room.summary) : room.description ? `<p class="interior-intro">${escape(room.description)}</p>` : ''}
     ${currentId==='penthouse'?penthouseExperienceMarkup(index):''}
+    ${currentId==='about'?`<div class="resident-controls"><p>Two robot companions: a gallery walker and a seated study partner.</p><button type="button" data-resident-pause aria-pressed="${residentsPaused}">${residentsPaused?'Resume walking robot':'Pause walking robot'}</button></div>`:''}
     ${room.facts ? `<dl class="interior-facts">${room.facts.map(item => `<div><dt>${escape(item.value)}</dt><dd>${escape(item.label)}</dd></div>`).join('')}</dl>` : ''}
     ${(room.paragraphs || []).map(text => `<p>${escape(text)}</p>`).join('')}
     ${renderStory(room.story)}
@@ -182,7 +185,13 @@ function syncRoute({ instant = false, force = false } = {}) {
 }
 
 function onFrame(state) {
-  penthouseExperiences?.onFrame(state);
+  const residentButton=page.querySelector('[data-resident-pause]');
+  if(residentButton){
+    const paused=state.reducedMotion||residentsPaused,label=state.reducedMotion?'Robot paused · reduced motion':paused?'Resume walking robot':'Pause walking robot';
+    if(residentButton.disabled!==state.reducedMotion)residentButton.disabled=state.reducedMotion;
+    if(residentButton.getAttribute('aria-pressed')!==String(paused))residentButton.setAttribute('aria-pressed',String(paused));
+    if(residentButton.textContent!==label)residentButton.textContent=label;
+  }
   if (!state.transitionType && page.dataset.transition === 'idle') intro?.ready();
   setData(page, 'motion', state.reducedMotion ? 'reduced' : 'full');
   setData(document.documentElement, 'motion', state.reducedMotion ? 'reduced' : 'full');
@@ -282,6 +291,7 @@ async function start() {
   document.body.classList.add('js-enabled');
   let introStorage;
   try { introStorage = window.sessionStorage; } catch { /* Storage may be denied. */ }
+  residentsPaused=readResidentPause(introStorage);
   const introMotion = matchMedia('(prefers-reduced-motion: reduce)');
   intro = createPortfolioIntro({
     dialog: document.querySelector('#portfolio-intro'), page, storage: introStorage,
@@ -335,7 +345,7 @@ async function start() {
     const toy=spatial.objectsForRoom('penthouse',1).find(object=>/controller|arcade/i.test(object.name));
     if(toy)spatial.activateObject(toy.id,{notify:false});
   });
-  penthouseExperiences=createPenthouseExperiences({container:$('#interior-content'),stage:$('#spatial-stage'),
+  penthouseExperiences=createPenthouseExperiences({container:$('#interior-content'),
     onAtmosphere:value=>spatial?.setPenthouseAtmosphere(value),
     reducedMotion:()=>shouldReduceMotion(viewPreferences.motion,introMotion.matches)});
   observeLabels();
@@ -345,6 +355,7 @@ async function start() {
   spatial = createSpatialScene({
     container: $('#spatial-stage'),
     preferences: viewPreferences,
+    residentsPaused,
     onSelectSection: id => navigate(id || 'explore'),
     onSelectRoom: index => selectRoom(index, { focus: true }),
     onObjectActivate: object => penthouseExperiences?.onObject(object),
@@ -413,6 +424,7 @@ async function start() {
   });
   page.addEventListener('click', event => {
     if (fallbackActive) return;
+    if(event.target.closest('[data-resident-pause]')){residentsPaused=!residentsPaused;spatial.setResidentsPaused(residentsPaused);try{introStorage?.setItem(residentPauseKey,String(residentsPaused));}catch{}return;}
     if (event.target.closest('[data-room-object], [data-station], [data-section], #unfold-structure')) dismissHint();
     const object = event.target.closest('[data-room-object]');
     if (object) { spatial.activateObject(Number(object.dataset.roomObject)); return; }

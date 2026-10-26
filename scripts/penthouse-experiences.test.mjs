@@ -33,17 +33,17 @@ test('room activities open from content and furniture, keep desktop/game state, 
   }finally{f.close();}
 });
 
-test('lighting and weather controls drive normalized scene state, lamp object, and projected glass rain',()=>{
+test('lighting and weather controls drive scene state without a bedroom rain overlay',()=>{
   const f=fixture();try{
     f.mount('penthouse');
     const select=f.find('[data-bedroom-lighting]');select.value='night';select.dispatchEvent(new f.w.Event('change',{bubbles:true}));
     assert.deepEqual(f.atmospheres.at(-1),{hour:22,brightness:.55,lamps:true,weather:'clear',ambient:'off'});
     f.experience.onObject({sectionId:'penthouse',roomIndex:0,name:'Bedside lamp'});assert.equal(f.atmospheres.at(-1).lamps,false);
     const rain=f.find('[data-bedroom-weather]');rain.value='rain';rain.dispatchEvent(new f.w.Event('change',{bubbles:true}));
-    const layer=f.find('.penthouse-weather');assert.equal(layer.hidden,true);
-    f.experience.onFrame({selectedId:'penthouse',bedroomWindow:{visible:true,points:[{x:0,y:0},{x:100,y:0},{x:100,y:50},{x:0,y:50}]}});assert.equal(layer.hidden,false);
+    assert.equal(f.atmospheres.at(-1).weather,'rain');
+    assert.equal(f.find('.penthouse-weather'),null,'Rain is rendered behind the interior by the scene, never on top of the bedroom');
     f.mount('penthouse',2);f.mount('penthouse',0);assert.equal(f.find('[data-bedroom-lighting]').value,'night');assert.equal(f.find('[data-bedroom-weather]').value,'rain');
-    f.mount('projects');assert.equal(layer.hidden,true);
+    f.mount('projects');assert.equal(f.atmospheres.at(-1),null);
   }finally{f.close();}
 });
 

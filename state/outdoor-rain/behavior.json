@@ -1,0 +1,25 @@
+{
+  "reducedMotion": {
+    "motion": "reduced",
+    "rainTime": "0.000"
+  },
+  "afterLeaving": {
+    "atmosphere": "local",
+    "background": "blurred",
+    "bedsideLamps": "off",
+    "daylight": "1.0000",
+    "detail": "full",
+    "engine": "three.js r180",
+    "focusedRoom": "",
+    "graphics": "standard",
+    "interiorBrightness": "1.000",
+    "localHour": "9.183",
+    "mode": "explore",
+    "outdoorNight": "0.000",
+    "outdoorWeather": "clear",
+    "quality": "0",
+    "rainTime": "544.501",
+    "section": "",
+    "timeOfDay": "morning"
+  }
+}

@@ -1,0 +1,13 @@
+✔ the two robot trial is confined to Level 01, with the seated partner attached to the study chair (4232.7377ms)
+✔ the walking route is closed, keeps its complete animated envelope on the floor, and clears fixed furnishings (1157.0873ms)
+✔ walking changes position and articulated limbs while leaving the seated robot and GPU buffers intact (847.6553ms)
+✔ pause, reduced-motion input, and another room stop walking without hidden-time catch-up (631.9148ms)
+✔ the optional pause preference is tab-local and safe when storage is denied (1.8189ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7729.3992

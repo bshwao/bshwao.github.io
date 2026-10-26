@@ -1,0 +1,19 @@
+{
+  "viewport": "480x320",
+  "interiorChangedPixels": 0,
+  "lowGraphicsInteriorChangedPixels": 0,
+  "exteriorMovingPixels": 2259,
+  "outdoorPixels": 114799,
+  "dayLuminance": 151.3817999997303,
+  "nightLuminance": 82.55020000020887,
+  "nightRatio": 0.5453112593479265,
+  "restoresOriginalPixels": true,
+  "stableResources": {
+    "geometries": 2,
+    "textures": 2
+  },
+  "lowResources": {
+    "geometries": 2,
+    "textures": 1
+  }
+}

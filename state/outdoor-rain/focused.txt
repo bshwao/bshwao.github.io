@@ -1,0 +1,53 @@
+✔ presets carry distinct complete room atmospheres (1.9502ms)
+✔ normalization retains device time and bounds untrusted room settings (0.3986ms)
+✔ room activities open from content and furniture, keep desktop/game state, and close on navigation (281.1031ms)
+✔ lighting and weather controls drive scene state without a bedroom rain overlay (32.6548ms)
+✔ dropping local audio into the compact player selects it without uploading or starting playback (17.0942ms)
+✔ every road has supported center and edge paint outside intersections (634.3385ms)
+✔ the previously blank downtown extensions carry visible paint and retain crossing gaps (0.7717ms)
+✔ night environment is smooth, static, world-oriented and independent of interiors (155.3ms)
+✖ city blur isolates the sharp subject, caches unchanged views, and releases its bounded targets (3.514ms)
+✔ the complete city and woodland sit on finite dry land with a continuous sea-level shore (842.8583ms)
+✔ camera depth contains the whole coast and maximum zoom fits desktop and portrait views (3.3755ms)
+✔ the river has an inland lake and fades into the ocean at matching sea level (0.8918ms)
+✔ the ocean follows the camera and local light without allocating distant water meshes (23.4185ms)
+✔ finished parks, planted edges and ground detail stay clear of buildings, avenues and water (34.6702ms)
+✔ street additions stay batched, supported and clear of live approaches (0.7461ms)
+✔ the city has distinct height/depth layers and independent lots with open streets and approaches (3.7389ms)
+✔ outer streets connect to downtown and both bridges without crossing occupied land or water (19.9761ms)
+✔ outer neighborhoods have street access, public space and a bounded transition to woodland (53.3821ms)
+✔ river, bridges and riverwalk occupy real space without flooding the city or hiding the landmark (6.7095ms)
+✔ generated architecture and rooftop details fit their shared skyline envelopes (60.0709ms)
+✔ bundled tower has a broad podium, long shafts, flat roof and two unequal mounted antennae (1.9517ms)
+✔ opening composition keeps the full main tower prominent at a lower camera on desktop and phones (34.6436ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 21
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3650.8665
+
+✖ failing tests:
+
+test at scripts\skyline.test.mjs:88:1
+✖ city blur isolates the sharp subject, caches unchanged views, and releases its bounded targets (3.514ms)
+  AssertionError [ERR_ASSERTION]: Rain is composited before the occupied tower is restored
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///C:/Users/erich/OneDrive/Documents/GitHub/bshwao.github.io/scripts/skyline.test.mjs:114:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

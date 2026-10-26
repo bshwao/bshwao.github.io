@@ -2,7 +2,7 @@ import { createMusicEngine,musicPlayerMarkup,createMusicPlayer } from './penthou
 import { arcadeMarkup,createArcade } from './penthouse-arcade.js';
 import { bedroomMarkup,desktopMarkup,createDesktop } from './penthouse-bedroom.js';
 import { starMapMarkup,createStarMap } from './penthouse-star-map.js';
-import { atmospherePresets,normalizeAtmosphere,createBedroomWeather } from './penthouse-atmosphere.js';
+import { atmospherePresets,normalizeAtmosphere } from './penthouse-atmosphere.js';
 
 export function penthouseExperienceMarkup(index){
   if(index===0)return bedroomMarkup();
@@ -12,8 +12,8 @@ export function penthouseExperienceMarkup(index){
 }
 
 /** Persistent activity controllers; room content can be replaced independently. */
-export function createPenthouseExperiences({container,stage,onAtmosphere=()=>{},reducedMotion=()=>false}){
-  const engine=createMusicEngine(),weather=createBedroomWeather(stage),dialogs=new Map();
+export function createPenthouseExperiences({container,onAtmosphere=()=>{},reducedMotion=()=>false}){
+  const engine=createMusicEngine(),dialogs=new Map();
   const events=new window.AbortController(),options={signal:events.signal};
   let compact=null,active=false,atmosphere=normalizeAtmosphere(),presetId='',disposed=false;
   function dialogFor(kind){
@@ -47,7 +47,7 @@ export function createPenthouseExperiences({container,stage,onAtmosphere=()=>{},
   }
   function applyAtmosphere(next,{sound=true}={}){
     atmosphere=normalizeAtmosphere(next);onAtmosphere(active?atmosphere:null);
-    weather.setState({weather:atmosphere.weather,visible:active,reducedMotion:reducedMotion()});paintAtmosphere();
+    paintAtmosphere();
     if(sound)void engine.setAmbient(active?atmosphere.ambient:'off');
   }
   function mount(sectionId,index){
@@ -56,7 +56,7 @@ export function createPenthouseExperiences({container,stage,onAtmosphere=()=>{},
     compact?.dispose();compact=null;
     active=nextActive;
     for(const {dialog}of dialogs.values())if(dialog.open)dialog.close();
-    if(!active){onAtmosphere(null);weather.setState({visible:false});return;}
+    if(!active){onAtmosphere(null);return;}
     compact=createMusicPlayer(container,engine,{onExpand:()=>open('music'),reducedMotion});
     // Returning to the floor restores its appearance without autoplaying sound.
     applyAtmosphere(atmosphere,{sound:false});
@@ -76,7 +76,6 @@ export function createPenthouseExperiences({container,stage,onAtmosphere=()=>{},
   },options);
   return {
     mount,open,
-    onFrame(state){weather.setWindow(state.bedroomWindow?.points||[],Boolean(state.bedroomWindow?.visible));weather.setState({visible:state.selectedId==='penthouse'&&active,reducedMotion:reducedMotion()});},
     onObject({sectionId,roomIndex,name}){
       if(sectionId!=='penthouse')return;
       if(roomIndex===3&&name==='Telescope')open('sky');
@@ -85,6 +84,6 @@ export function createPenthouseExperiences({container,stage,onAtmosphere=()=>{},
       if(roomIndex===1&&/Arcade machine|Game controller|Game console/.test(name))open('arcade');
       if(roomIndex===2&&name==='Vinyl record')open('music');
     },
-    dispose(){if(disposed)return;disposed=true;events.abort();compact?.dispose();engine.dispose();weather.dispose();for(const {dialog,controller}of dialogs.values()){controller.dispose();if(dialog.open)dialog.close();dialog.remove();}dialogs.clear();},
+    dispose(){if(disposed)return;disposed=true;events.abort();compact?.dispose();engine.dispose();for(const {dialog,controller}of dialogs.values()){controller.dispose();if(dialog.open)dialog.close();dialog.remove();}dialogs.clear();},
   };
 }

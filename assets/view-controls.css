@@ -3,6 +3,10 @@
 .zoom-controls { display: flex; gap: 4px; }
 .spatial-tools .zoom-controls button { padding: 0; width: 44px; font: 20px/1 var(--mono); }
 .spatial-tools button:disabled { opacity: .5; cursor: default; }
+.resident-controls{margin:18px 0;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--accent-tint)}
+.resident-controls p{margin:0 0 9px;font:11px/1.6 var(--mono)}
+.resident-controls button{min-height:44px;padding:9px 12px;border:1px solid var(--accent-ink);border-radius:5px;background:var(--raised);color:var(--accent-ink);font:11px/1.5 var(--mono)}
+.resident-controls button:focus-visible{outline:3px solid var(--accent-ink);outline-offset:3px}
 .view-settings { position: relative; font: 10px/1.6 var(--mono); color: var(--ink); }
 .view-settings > summary { display: flex; align-items: center; justify-content: center; min-width: 72px; min-height: 44px; padding: 8px 12px; box-sizing: border-box; cursor: pointer; list-style: none; }
 .view-settings > summary::-webkit-details-marker { display: none; }
