@@ -1,5 +1,11 @@
 # Release verification
 
+## Bedroom furniture layout (local) — October 26, 2026
+
+The bedroom computer has moved out from behind the headboard into a separate work area. Its desk, keyboard, mouse, computer tower and five-wheel task chair form one aligned composition, with independently selectable desk, monitor and chair. The nightstand is beside the head of the bed, the ottoman is at the foot, and the plant occupies the perimeter. Existing room fitting and door landings remain intact.
+
+All 179 source/server tests, 76 module/reference checks and five DOM/camera integration modes pass. The new geometry regression checks actual batched furniture bounds for chair/monitor alignment, an aisle beside the bed, a separate desk footprint, an unobstructed chair area and a full-height chair back. Native review verifies the chair response and monitor-to-desktop action with no warnings/errors. Desktop, simulated portrait and landscape WebGL sweeps pass all 31 views, resource reuse, idle rendering and disposal. Evidence is in `state/bedroom-layout/`.
+
 ## First-floor robots removed (local) — October 26, 2026
 
 Both About-floor companions have been removed, along with their pause controls, storage hook, animation scheduling, geometry module and dedicated trial tests. Existing furniture and room interactions remain. The robot-specific vertex-color path was also removed from room batching. Earlier robot entries below describe superseded trial checkpoints.

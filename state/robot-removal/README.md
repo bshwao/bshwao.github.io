@@ -1,11 +1,19 @@
-# First-floor robots removed
+# First-Floor Robot Removal — Verification
 
-The two About-floor characters, their controls, animation code and dedicated tests are removed. The study chair, desk, gallery furniture and room interactions remain. Robot-specific vertex-color support has been removed from batching and object feedback.
+**Checkpoint:** October 26, 2026.
 
-- `check.txt`: all 178 source/server tests and 76 syntax/reference checks pass.
-- `integration.txt`: all five DOM/camera integration modes pass.
-- `webgl-desktop.json`: all 31 views pass, zero idle frames, stable GPU resources and disposal.
-- `gallery.jpg`, `study.jpg`: native production views with no robots or robot controls.
-- `diff-check.txt`: whitespace verification.
+## Scope
 
-Earlier robot screenshots and reports are historical trial evidence.
+Both About-floor robots were removed, including their controls, animation scheduler, geometry module, and dedicated tests. Robot-specific vertex-color handling was removed from batching and object feedback. The desk, chair, gallery furniture, and existing room interactions remain.
+
+## Recorded results
+
+| Artifact | Coverage |
+| --- | --- |
+| [check.txt](check.txt) | 178 source/server tests and 76 module/reference checks passed |
+| [integration.txt](integration.txt) | All five DOM/camera integration modes passed |
+| [webgl-desktop.json](webgl-desktop.json) | 31 views, zero idle frames, stable resources, and complete GPU disposal |
+| [gallery.jpg](gallery.jpg), [study.jpg](study.jpg) | Production browser captures without robots or robot controls |
+| [diff-check.txt](diff-check.txt) | Clean whitespace check |
+
+Earlier robot directories are archived trial evidence. This report describes the October 26 implementation; see [QA.md](../../QA.md) for the full verification history.

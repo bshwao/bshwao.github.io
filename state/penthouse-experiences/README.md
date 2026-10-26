@@ -1,19 +1,33 @@
-# Penthouse acceptance evidence — October 26, 2026
+# Penthouse Activities — Verification
 
-| Requested behavior | Implementation and evidence |
+**Checkpoint:** October 26, 2026.
+
+## Scope
+
+This directory records the initial browser acceptance checks for music, games, bedroom tools, and the telescope atlas. Two behaviors were subsequently revised: music playback is now confined to the listening nook, and bedroom rain is rendered in the exterior scene. The earlier screenshots retain the initial implementation.
+
+## Feature evidence
+
+| Feature | Recorded evidence |
 | --- | --- |
-| Compact music player and full-screen visualizer | `penthouse-music.js`, `penthouse-experiences.js`; `visualizer.jpg`, `phone-layouts.json`, `player-phone.jpg`. Desktop dialog fills 1280×720; portrait dialog fills 390×844. Native Escape returns to the same room and restores the opener. |
-| Rights-safe included music and bedroom lofi | Three original synthesized scores/PCM WAVs with CC0 dedication in `assets/audio/penthouse/LICENSE.md`; reproducibility, format, dynamics and loop-boundary regressions in `penthouse-tracks.test.mjs`. Shared playback is available in both rooms. No listening-quality claim is inferred from waveform tests. |
-| Actual audio-reactive graphics with style changes | `visualizer-signal.json` contains distinct live analyser RMS samples for all four styles; `playback-seek.json` records Soft Circuit playing at 0:21/0:42 with RMS .17942 and no playback error. Compact frame count remains fixed while expanded. `penthouse-music.test.mjs` verifies exact injected FFT and waveform bytes, so animation is not driven by a timer approximation. |
-| Personal audio drag/drop and picker | Native file chooser imported soft-circuit.wav as a local track, with subtitle “Your audio · stays on this device”, live waveform RMS .06480 and no playback error. Drop-event integration verifies the compact player selects the file, does not autoplay, and revokes its URL on disposal. Engine tests cover MIME/extension validation, 100 MB/file and 12-local-track bounds. No files upload. |
-| Snake, 2048, Sudoku | Native movement/pause controls, keyboard tile merge (score 4, tile 4), and conflicting Sudoku entry were exercised. `sudoku.jpg`; eight engine/DOM tests cover game rules, unique puzzles, clues, conflicts, controls and pause/disposal. |
-| Bedroom atmosphere | `atmosphere.json` records Rainy Night at22/.62/lamp on/rain; Golden Hour at18/.95/lamp off/clear; Late-Night Coding at23/.48/lamp on/clear. `rainy-bedroom.jpg` shows lit lamp and projected glass rain. Leaving the floor restores local time, hides rain and stops audio; lamp coloring settles without an ongoing scene loop. |
-| Bedroom computer | Physical monitor button opens the same native desktop as the content action. `bedroom-desktop.jpg`; native terminal help/ls, notes save/reload, minimize, editor source and a rendered HTML preview were checked. Unit tests cover virtual paths, window management/keyboard movement, notes storage denial, and stripped active/external markup in the sandbox. QA notes were cleared afterward. |
-| Interactive telescope sky | Physical Telescope control opens the atlas. Native selection of Rigel/Orion, zoom and keyboard pan verified; `star-atlas.jpg`. Seven tests cover sourced catalog data, projection, search/filter, select, drag, pinch and keyboard controls. |
-| Optional first-person seating | Deliberately deferred as requested; saved in `ROADMAP.md`. |
+| Compact player and full-screen visualizer | [visualizer.jpg](visualizer.jpg), [player-phone.jpg](player-phone.jpg), [phone-layouts.json](phone-layouts.json); dialog sizing and focus restoration |
+| Original included music | Three reproducible CC0 recordings; [audio provenance](../../assets/audio/penthouse/LICENSE.md) and track tests |
+| Audio-reactive visualization | [visualizer-signal.json](visualizer-signal.json), [playback-seek.json](playback-seek.json); changing analyser samples across four visual styles |
+| Local audio import | File-picker playback and drop-event integration; file validation, limits, and ObjectURL disposal |
+| Snake, 2048, and Sudoku | Browser controls, keyboard interaction, conflict feedback, and game-rule tests; [sudoku.jpg](sudoku.jpg) |
+| Bedroom atmosphere | [atmosphere.json](atmosphere.json), [rainy-bedroom.jpg](rainy-bedroom.jpg); preset state and floor-exit reset |
+| Bedroom desktop | [bedroom-desktop.jpg](bedroom-desktop.jpg); terminal, notes persistence, window controls, and sandboxed editor preview |
+| Telescope atlas | [star-atlas.jpg](star-atlas.jpg); star selection, constellation filtering, zoom, and keyboard pan |
 
-`check.txt`: 183 source/server tests and 75 module/reference checks. `integration.txt`: desktop, portrait, reduced motion, shared-room entry and unavailable-WebGL integration pass. The expected unavailable-WebGL fixture emits its deliberate startup error before checking the text fallback.
+Imported audio remains on the visitor's device. First-person sky-lounge seating remains optional future work in [ROADMAP.md](../../ROADMAP.md).
 
-`accessibility-desktop.json` and `accessibility-phone.json`: 31 views each, zero automated A/AA violations. `webgl-desktop.json` and `webgl-phone.json`: 31 scene views, 23 object-response groups, unchanged draw/raster ceilings, zero idle scene frames and successful GPU disposal. Navigation baselines stay248/246 and `navigationFirstDraws` is empty. Portrait results use a simulated Chromium viewport, not a physical phone.
+## Recorded validation
 
-The native preview server on port4175 was restarted after the byte-range fix. The user's existing port4173 process was left intact. Server tests verify full/ranged/HEAD responses and invalid range handling over local loopback.
+- [check.txt](check.txt): 183 source/server tests and 75 module/reference checks passed.
+- [integration.txt](integration.txt): all five integration modes passed. The unavailable-WebGL fixture intentionally logs its startup error before checking the reading fallback.
+- [accessibility-desktop.json](accessibility-desktop.json) and [accessibility-phone.json](accessibility-phone.json): 31 views each, with no automated WCAG A/AA violations.
+- [webgl-desktop.json](webgl-desktop.json) and [webgl-phone.json](webgl-phone.json): 31 views, object responses in 23 rooms, stable resources, zero idle scene frames, and complete disposal.
+
+The preview server's full, HEAD, and byte-range audio responses were also verified. Phone results are simulated Chromium layouts, not physical-device benchmarks.
+
+See [outdoor-rain/](../outdoor-rain/README.md) for the corrected exterior weather and [QA.md](../../QA.md) for subsequent checkpoints.

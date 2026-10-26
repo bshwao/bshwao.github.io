@@ -69,3 +69,21 @@ test('restaged focal furnishings have different orientations while attached part
   const deskSize=objectBounds(desk).getSize(new T.Vector3());assert.ok(deskSize.z>deskSize.x*1.5,'The maker desk is a lengthwise island');
   assert.ok(desk.parts.some(part=>!part.normals),'Restaging keeps outlines with their animated solid ranges');
 });
+
+test('the bedroom workstation has an aligned task chair and stays separate from the sleeping area',()=>{
+  const interior=interiors.get('penthouse');
+  const find=name=>interior.interactions.objects.find(object=>object.name===name);
+  const chair=find('Bedroom computer chair'),desk=find('Bedroom computer desk'),monitor=find('Bedroom computer monitor');
+  assert.ok(chair&&desk&&monitor,'The desk, task chair and working monitor remain individually selectable');
+  assert.equal(chair.kind,'seat');
+  const seat=objectBounds(chair),table=objectBounds(desk),screen=objectBounds(monitor),bed=objectBounds(find('Pillows and duvet')),ottoman=objectBounds(find('Soft ottoman'));
+  const center=box=>box.getCenter(new T.Vector3()).setY(0);
+  const towardDesk=center(table).sub(center(seat)).normalize(),towardScreen=center(screen).sub(center(table)).normalize();
+  assert.ok(towardDesk.dot(towardScreen)>.98,'The chair is centered in front of the desk and faces its monitor');
+  const gap=(a,b)=>Math.max(a.min.x-b.max.x,b.min.x-a.max.x,a.min.z-b.max.z,b.min.z-a.max.z);
+  assert.ok(gap(seat,bed)>.7,'The complete chair footprint clears the bed and leaves a walking aisle');
+  assert.ok(gap(table,bed)>1.5,'The workstation occupies a separate area instead of hiding behind the headboard');
+  assert.ok(gap(ottoman,seat)>.5&&gap(ottoman,table)>.5,'The ottoman does not occupy the desk sitting area');
+  assert.ok(seat.max.y>1.7,'The computer has a full-height backrest rather than a bedside stool');
+  assert.ok(center(seat).distanceTo(center(table))<center(seat).distanceTo(center(bed)),'The task chair belongs to the workstation');
+});

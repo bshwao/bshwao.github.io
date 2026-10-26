@@ -1,13 +1,20 @@
-# Two-robot trial — Level 01 / About
+# First-Floor Robot Trial — Archived Verification
 
-- `gallery.jpg` and `motion-final.json`: final visible patrol lane behind the front benches. Native app samples show the walking robot changing position without an interaction.
-- `study.jpg`: the stationary robot at the existing study desk/chair.
-- `motion.json`: native pause/resume and study-close-up checks; the walker stops while out of view. These samples precede the final lane visibility adjustment.
-- `focused.txt`: five resident regressions. The whole animated mesh is checked over a complete loop against its swept envelope, all actual furnishing bounds and the room floor.
-- `check.txt`: 183 source/server tests, 77 syntax/reference checks.
-- `integration.txt`: five DOM/camera modes. `integration-desktop-final.txt` reruns the final patrol framing on desktop.
-- `webgl-desktop.json` and `webgl-phone.json`: real Chromium/WebGL sweeps with explicit live movement/pause tests, no new GPU resources during movement, zero paused idle frames, unchanged render budgets and successful disposal. The walker adds one mesh; the desk companion stays in the existing chair batch.
-- `accessibility-desktop.json` and `accessibility-phone.json`: 31 views each, no automated A/AA violations.
-- `production-console.json`: native production warning/error log.
+**Status:** Superseded. Both first-floor robots have been removed; see [robot-removal/](../robot-removal/README.md).
 
-The prototype is confined to About. Motion follows the global reduced-motion preference and the visible gallery; pause is remembered only for this tab. Physical-device and cross-engine benchmarks are outside these Chromium viewport checks. No external character assets or dependencies were added.
+## Historical scope
+
+The trial placed a walking robot in the About gallery and a stationary companion at the study desk. Movement respected reduced motion, room visibility, and a tab-local pause preference.
+
+## Evidence
+
+- [gallery.jpg](gallery.jpg), [study.jpg](study.jpg), and [motion-final.json](motion-final.json): final placement and continuous patrol.
+- [motion.json](motion.json): pause/resume and offscreen behavior before the final patrol-lane adjustment.
+- [focused.txt](focused.txt): five resident regressions, including animated mesh and furniture clearance.
+- [check.txt](check.txt): 183 source/server tests and 77 module/reference checks.
+- [integration.txt](integration.txt), [integration-desktop-final.txt](integration-desktop-final.txt): integration and final framing checks.
+- WebGL reports: movement, pause, idle rendering, stable resources, budgets, and disposal.
+- Accessibility reports: 31 views per layout with no automated A/AA violations.
+- [production-console.json](production-console.json): browser warning/error log.
+
+These artifacts describe the discontinued trial. Phone coverage uses simulated Chromium viewports.

@@ -88,7 +88,7 @@ export function furnishPenthouse(index, p, api) {
   }
 
   if(index===0) {
-    note('Bedroom with a real bed, layered bedding and bedside reading corner',()=>{
+    note('Bedroom with separate sleeping, bedside and computer work areas',()=>{
       rug(-.8,-.35,3.65,4.85);
       const bedFrame=part(-.75,.35,-.45,2.85,.38,4.0,'equipment');
       for(const x of [-1.85,.35])for(const z of [-2.08,1.2])part(x,.13,z,.15,.26,.15,'ink');
@@ -114,8 +114,8 @@ export function furnishPenthouse(index, p, api) {
         const hem=new T.Mesh(new T.TubeGeometry(path,96,.0035,4,false),bedFrame.material);
         hem.userData.surface='equipment';hem.userData.outline=false;p.add(hem);
       });
-      cabinet(2.05,-1.75,1.2,.95,1.1);
-      lamp(2.3,-1.94,1.035);books(1.83,1.035,-1.45,'Bedside books');
+      cabinet(1.45,-1.75,1.2,.95,1.1);
+      lamp(1.65,-1.94,1.035);books(1.17,1.035,-1.45,'Bedside books');
       interact(p,'Slippers','bounce',()=>{
         for(const side of [-1,1]) {
           const x=.91+side*.18;
@@ -124,23 +124,50 @@ export function furnishPenthouse(index, p, api) {
         }
       });
       interact(p,'Soft ottoman','sofa',()=>{
-        part(2.62,.32,1.0,1.15,.64,1.1,'equipment');
-        part(2.62,.69,1.0,1.11,.12,1.06,'glass');
+        part(-.75,.32,2.75,1.15,.64,1.1,'equipment');
+        part(-.75,.69,2.75,1.11,.12,1.06,'glass');
       });
-      plant(p,-3.05,1.8);
-      note('A compact bedroom computer desk with a working desktop',()=>{
-        part(1.3,1.18,-3.0,2.4,.14,.78,'equipment');
-        for(const x of [.25,2.35])for(const z of [-3.29,-2.71])part(x,.55,z,.085,1.1,.085,'equipment');
-        part(1.3,1.3,-3.14,.72,.09,.38,'ink');
-        part(1.3,1.54,-3.14,.075,.45,.075,'ink');
-        interact(p,'Bedroom computer monitor','display',()=>{
-          part(1.3,1.99,-3.14,1.8,1.05,.12,'ink');
-          part(1.3,1.99,-3.071,1.64,.89,.018,'glass');
-          part(.91,2.12,-3.056,.67,.34,.012,'structure');
-          for(let i=0;i<3;i++)part(1.6,2.16-i*.16,-3.056,.39,.04,.012,'equipment');
+      plant(p,-3.1,2.6);
+      note('Side-wall computer workstation with a task chair and clear sitting space',()=>{
+        // Face the monitor into a dedicated work area, away from the headboard.
+        // All desk components share this transform before the room is fitted.
+        const workstation=group(p,3.75,0,.35,-Math.PI/2);
+        const deskPart=(x,y,z,w,h,d,mat='structure')=>box(workstation,x,y,z,w,h,d,mat);
+        interact(workstation,'Bedroom computer desk','pulse',()=>{
+          deskPart(0,1.55,0,2.8,.14,1.25,'equipment');
+          for(const x of [-1.22,1.22])for(const z of [-.48,.48])deskPart(x,.75,z,.085,1.5,.085,'equipment');
+          deskPart(0,.35,-.49,2.45,.08,.075,'equipment');
+          deskPart(-.99,.63,-.14,.43,1.18,.66,'ink');
+          for(const y of [.39,.58,.77])deskPart(-.99,y,.198,.29,.035,.018,'equipment');
+          deskPart(0,1.67,-.32,.72,.09,.38,'ink');
+          deskPart(0,1.91,-.32,.075,.45,.075,'ink');
+          deskPart(0,1.65,.31,1.14,.04,.33,'structure');
+          for(let row=0;row<3;row++)for(let col=0;col<9;col++)deskPart(-.49+col*.12,1.675,.2+row*.105,.085,.01,.06,'equipment');
+          const mouse=sphere(workstation,.89,1.68,.32,.1,'glass');mouse.scale.set(.1,.045,.14);
         });
-        part(1.3,1.27,-2.78,1.14,.04,.25,'structure');
-        for(let row=0;row<2;row++)for(let col=0;col<9;col++)part(.81+col*.12,1.295,-2.83+row*.1,.085,.01,.06,'equipment');
+        interact(workstation,'Bedroom computer monitor','display',()=>{
+          deskPart(0,2.36,-.32,1.8,1.05,.12,'ink');
+          deskPart(0,2.36,-.251,1.64,.89,.018,'glass');
+          deskPart(-.39,2.49,-.236,.67,.34,.012,'structure');
+          for(let i=0;i<3;i++)deskPart(.3,2.53-i*.16,-.236,.39,.04,.012,'equipment');
+        });
+        interact(workstation,'Bedroom computer chair','seat',()=>{
+          const chair=group(workstation,0,0,1.37);
+          cylinder(chair,0,.46,0,.07,.56,'ink');
+          for(let i=0;i<5;i++){
+            const a=i*Math.PI*2/5,x=Math.cos(a)*.5,z=Math.sin(a)*.5;
+            wire(chair,[[0,.23,0],[x,.12,z]],'equipment',.04);
+            const wheel=cylinder(chair,x,.09,z,.09,.075,'ink');wheel.rotation.z=Math.PI/2;wheel.rotation.y=-a;
+          }
+          box(chair,0,.78,0,1.06,.13,.97,'equipment');
+          box(chair,0,.88,-.025,1.0,.14,.9,'glass');
+          const back=box(chair,0,1.34,.42,.99,.96,.12,'equipment');back.rotation.x=.1;
+          const pad=box(chair,0,1.35,.345,.86,.79,.07,'glass');pad.rotation.x=.1;
+          for(const side of [-1,1]){
+            box(chair,side*.49,1.045,.06,.055,.33,.055,'equipment');
+            box(chair,side*.49,1.24,.035,.12,.075,.63,'structure');
+          }
+        });
       });
     });
   }else if(index===1) {

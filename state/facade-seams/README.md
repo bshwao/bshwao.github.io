@@ -1,7 +1,16 @@
-# Facade seam fix
+# Facade Seam Correction — Verification
 
-The four structural base slab sides were coplanar with the facade of the section below. Raycasts measured zero separation at all four joins. Recessing the slab perimeter by .08 model units gives the exterior wall one visible surface while retaining each solid slab in unfolded/interior views.
+## Scope
 
-`before.png` and `after-front.png` use the same close camera. `after-side.png`, `after-unfolded.png` and `after-floor.png` cover other affected views. `massing.txt` records the new geometric clearance/raycast regression; `check.txt` and `integration.txt` record all 105 source tests and five integration modes passing. Both WebGL reports pass 26 views, resource reuse, rendering budgets, idle checks and disposal. `production-console.json` is empty.
+Structural slab sides previously coincided with the facade below them at four section joins. The correction recesses the slab perimeter by 0.08 model units, preserving solid slabs while separating the exterior surfaces.
 
-The temporary port 4175 preview was stopped after verification. Phone coverage is a browser viewport simulation.
+## Recorded results
+
+- [before.png](before.png) and [after-front.png](after-front.png) use matching close-up cameras.
+- [after-side.png](after-side.png), [after-unfolded.png](after-unfolded.png), and [after-floor.png](after-floor.png) cover additional affected views.
+- [massing.txt](massing.txt) records geometric clearance and raycast checks.
+- [check.txt](check.txt) and [integration.txt](integration.txt) record 105 source tests and all five integration modes passing.
+- The WebGL reports pass 26 views, rendering budgets, idle behavior, resource reuse, and disposal.
+- [production-console.json](production-console.json) records no warnings or errors.
+
+Phone coverage is a Chromium viewport simulation. Results apply to this implementation checkpoint; see [QA.md](../../QA.md) for later verification.
