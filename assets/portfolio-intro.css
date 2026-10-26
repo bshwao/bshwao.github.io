@@ -27,7 +27,8 @@ dialog.portfolio-intro::backdrop { background: transparent; backdrop-filter: non
 .intro-eyebrow { font: 9px/1.8 var(--mono); letter-spacing: .085em; text-transform: uppercase; color: var(--muted); }
 .intro-copy h2 {
   margin: 20px 0 24px; color: var(--ink); font: 400 clamp(84px, 8.8vw, 144px)/.98 var(--serif);
-  letter-spacing: -.065em; white-space: nowrap; text-align: center;
+  letter-spacing: -.065em; white-space: nowrap; text-align: left;
+  text-indent: -.055em; /* Align the serif's visible edge with the copy. */
 }
 .intro-dot { color: var(--accent-ink); }
 #intro-description { font: 400 clamp(21px, 2.05vw, 29px)/1.42 var(--serif); letter-spacing: -.018em; max-width: 25ch; color: var(--muted); }

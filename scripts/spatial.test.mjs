@@ -521,7 +521,13 @@ assert.equal(w.document.querySelector('canvas').dataset.background,'blurred','Op
 assert.equal(lastScene.getObjectByName('city-waterfront').visible,false,'River scenery joins the blurred pass instead of covering unfolded floors');
 assert.equal(lastScene.getObjectByName('city-outskirts').visible,false,'Outer neighborhoods join the blurred background instead of covering the tower');
 const middle = lastCamera.position.clone();
-await tick(900);
+await tick(171);
+if(!reduced){
+  assert.ok(towerModules()[0].position.y>sections[0].low+50+5,'Unfolding stretches past the final crown height before recoiling');
+  const modules=towerModules();
+  for(let i=0;i<modules.length-1;i++)assert.ok(modules[i].position.y>=modules[i+1].position.y+sections[i+1].high-sections[i+1].low-1e-5,'Springing floors keep vertical clearance');
+}
+await tick(729);
 assert.equal(main.dataset.mode, 'explore');
 assert.equal(w.document.querySelector('canvas').dataset.background,'blurred','City and landscaping stay defocused while choosing a section');
 assert.ok(sections.every(section => lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Expansion reveals all cut-face plans');
@@ -752,7 +758,17 @@ click('#floor-overview'); await settleCamera();
 click('#back-to-structure'); await settleCamera();
 assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Leaving an interior restores the expanded view after viewport changes');
 assert.ok(lastCamera.quaternion.angleTo(savedOutdoorRotation) < .001, 'Leaving an interior restores the expanded viewing angle');
-w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await settleCamera();
+w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+if(!reduced){
+  const crownHeights=[];
+  for(let sample=0;sample<41;sample++){
+    await tick(32);const modules=towerModules();crownHeights.push(modules[0].position.y);
+    for(let i=0;i<modules.length-1;i++)assert.ok(modules[i].position.y>=modules[i+1].position.y+sections[i+1].high-sections[i+1].low-1e-5,'Landing floors never pass through the floor underneath');
+  }
+  assert.ok(crownHeights.some((height,i)=>i>0&&height>crownHeights[i-1]+.03),'The collapsing tower rebounds upward before its final landing');
+}
+await settleCamera();
+for(const [index,module]of towerModules().entries())assert.ok(module.position.distanceTo(new THREE.Vector3(0,sections[index].low,0))<1e-5,'The rubber-band effect leaves no residual floor displacement');
 assert.ok(lastCamera.position.distanceTo(openingPosition) < .02, 'Collapsing restores the independent assembled city camera');
 click('#unfold-structure'); await settleCamera();
 assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Unfolding restores the previous expanded orbit and zoom');

@@ -14,6 +14,23 @@ export function staggerProgress(progress,index,count,expanding=true){
   return motionPhase(progress,delay,.84+delay);
 }
 
+/** Wind up, release past the mark, recoil, then settle on the exact pose.
+ * Closing lands on the stack before bouncing upward, rather than pushing
+ * floors through one another. Each turning point has zero velocity.
+ */
+export function rubberBandProgress(progress,index,count,expanding=true){
+  const rank=expanding?index:count-1-index;
+  const delay=count>1?.16*rank/(count-1):0;
+  const t=T.MathUtils.clamp((progress-delay)/.84,0,1);
+  const beats=expanding?[[0,0],[.09,-.04],[.66,1.18],[.84,.955],[1,1]]
+    :[[0,0],[.08,-.035],[.64,1],[.81,.87],[1,1]];
+  for(let i=1;i<beats.length;i++)if(t<=beats[i][0]){
+    const [start,from]=beats[i-1],[end,to]=beats[i];
+    return T.MathUtils.lerp(from,to,motionPhase(t,start,end));
+  }
+  return 1;
+}
+
 /** Orbit the moving subject rather than cutting a chord through it.
  * Radius blends optically in log space. The small clearance/yaw bow has
  * zero velocity and acceleration at either end, without spring overshoot.

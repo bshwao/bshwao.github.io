@@ -6,12 +6,13 @@ Each subdirectory represents a specific implementation checkpoint. Test counts, 
 
 ## Latest recorded checkpoint
 
-[Tower and room motion](spatial-motion/README.md) records the October 26, 2026 trajectory tests, camera/color continuity checks, source and integration suites, and desktop/portrait WebGL review. Refer to [QA.md](../QA.md) for the verification timeline and [ROADMAP.md](../ROADMAP.md) for remaining work.
+[Tower rubber-band motion](tower-rubber-band/README.md) records the October 26, 2026 spring-motion tests, floor-clearance checks, source and integration suites, and native toggle review. Refer to [QA.md](../QA.md) for the verification timeline and [ROADMAP.md](../ROADMAP.md) for remaining work.
 
 ## Feature evidence
 
 | Area | Evidence |
 | --- | --- |
+| Tower anticipation, overshoot and landing rebound | [tower-rubber-band/](tower-rubber-band/README.md) |
 | Tower expansion and room camera motion | [spatial-motion/](spatial-motion/README.md) |
 | Unified play room games dashboard | [game-dashboard/](game-dashboard/README.md) |
 | Room descriptions and activity copy | [room-copy/](room-copy/README.md) |

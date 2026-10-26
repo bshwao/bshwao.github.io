@@ -1,0 +1,19 @@
+✔ motion easing clamps time and settles with zero endpoint velocity and acceleration (1.219ms)
+✔ phase windows hold their endpoints outside the active beat and ease inside it (0.1637ms)
+✔ azimuth differences cross the angle seam by the shortest route in either direction (1.8191ms)
+✔ floor staggering opens from the crown and closes from the base without changing final transforms (0.7369ms)
+✔ rubber-band unfolding winds up, overshoots and recoils before an exact resting pose (3.2214ms)
+✔ rubber-band beats keep the crown-first and base-first cascade in time (0.2223ms)
+✔ camera flights preserve exact endpoints and input poses while returning independent vectors (1.885ms)
+✔ camera travel uses optical zoom pacing and avoids a full orbit across the angle seam (0.5541ms)
+✔ clearance and yaw create a bounded camera bow which returns to rest at both ends (0.7056ms)
+✔ near-pole and degenerate camera offsets remain finite throughout a flight (1.7975ms)
+✔ interrupted-flight carry continues incoming motion and disappears before the new arrival (0.2267ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 139.5128

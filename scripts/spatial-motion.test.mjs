@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from '../assets/vendor/three.module.min.js';
-import {motionEase,motionPhase,shortestAngle,staggerProgress,sampleCameraFlight} from '../assets/spatial-motion.js';
+import {motionEase,motionPhase,shortestAngle,staggerProgress,rubberBandProgress,sampleCameraFlight} from '../assets/spatial-motion.js';
 
 const radians=degrees=>degrees*Math.PI/180;
 const close=(actual,expected,tolerance=1e-9)=>assert.ok(Math.abs(actual-expected)<=tolerance,`${actual} should be within ${tolerance} of ${expected}`);
@@ -67,6 +67,38 @@ test('floor staggering opens from the crown and closes from the base without cha
     assert.ok(closing[5]>closing[0],`Base should lead at ${t}`);
     for(let i=1;i<6;i++){assert.ok(opening[i]<=opening[i-1]);assert.ok(closing[i]>=closing[i-1]);}
   }
+});
+
+test('rubber-band unfolding winds up, overshoots and recoils before an exact resting pose',()=>{
+  for(const expanding of [true,false])for(let index=0;index<6;index++){
+    assert.equal(rubberBandProgress(-1,index,6,expanding),0);
+    assert.equal(rubberBandProgress(0,index,6,expanding),0);
+    assert.equal(rubberBandProgress(1,index,6,expanding),1);
+    assert.equal(rubberBandProgress(2,index,6,expanding),1);
+    for(let i=0;i<=300;i++){
+      const value=rubberBandProgress(i/300,index,6,expanding);
+      assert.ok(Number.isFinite(value)&&value>=-.041&&value<=1.181);
+    }
+  }
+  const opening=t=>rubberBandProgress(t*.84,0,6,true);
+  close(opening(.09),-.04);close(opening(.66),1.18);close(opening(.84),.955);
+  const closing=t=>rubberBandProgress(t*.84,5,6,false);
+  close(closing(.08),-.035);close(closing(.64),1);close(closing(.81),.87);
+  assert.ok(closing(.9)<1,'The landed stack rebounds upward before settling');
+  const h=.00001;
+  for(const sample of [opening,closing]){
+    assert.ok(Math.abs(sample(h)/h)<.001);
+    assert.ok(Math.abs((1-sample(1-h))/h)<.001);
+  }
+});
+
+test('rubber-band beats keep the crown-first and base-first cascade in time',()=>{
+  const opening=t=>Array.from({length:6},(_,i)=>rubberBandProgress(t,i,6,true));
+  const closing=t=>Array.from({length:6},(_,i)=>rubberBandProgress(t,i,6,false));
+  assert.ok(opening(.3)[0]>opening(.3)[5]);
+  assert.ok(closing(.3)[5]>closing(.3)[0]);
+  assert.equal(opening(.9)[0],1,'The crown rests while the lower floors finish their recoil');
+  assert.equal(closing(.9)[5],1,'The base rests while the upper floors finish their recoil');
 });
 
 test('camera flights preserve exact endpoints and input poses while returning independent vectors',()=>{

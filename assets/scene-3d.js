@@ -12,7 +12,7 @@ import { readCityTime,createCityClock } from './city-time.js';
 import { normalizeViewPreferences, shouldReduceMotion } from './view-preferences.js';
 import { outdoorTerrainFloor } from './city-island.js';
 import { normalizeAtmosphere } from './penthouse-atmosphere.js';
-import { motionEase as ease, motionPhase as phase, staggerProgress, sampleCameraFlight } from './spatial-motion.js';
+import { motionEase as ease, motionPhase as phase, staggerProgress, rubberBandProgress, sampleCameraFlight } from './spatial-motion.js';
 
 const lerp = T.MathUtils.lerp;
 
@@ -333,10 +333,19 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       camera.position.copy(pose.position);controls.target.copy(pose.target);
       model.modules.forEach((module, index) => {
         const unfolding=!animation.continuation&&animation.from.expansion!==animation.to.expansion;
-        const progress=unfolding?staggerProgress(structureProgress,index,model.modules.length,animation.to.expansion>animation.from.expansion):ease(structureProgress);
+        const progress=animation.rubber?rubberBandProgress(t,index,model.modules.length,animation.to.expansion>animation.from.expansion)
+          :unfolding?staggerProgress(structureProgress,index,model.modules.length,animation.to.expansion>animation.from.expansion):ease(structureProgress);
         module.group.position.lerpVectors(animation.from.modules[index], animation.to.modules[index], progress);
         cuts[index] = lerp(animation.from.cuts[index], animation.to.cuts[index], cutProgress);
       });
+      if(animation.rubber){
+        // Let a landing rebound travel up the stack; floors never sink into
+        // the section beneath them during the cartoony compression beat.
+        for(let index=model.modules.length-2;index>=0;index--){
+          const lower=model.modules[index+1];
+          model.modules[index].group.position.y=Math.max(model.modules[index].group.position.y,lower.group.position.y+lower.high-lower.low);
+        }
+      }
       if (t === 1) {
         const done = animation.done;
         animation = null; controls.enabled = true;
@@ -440,7 +449,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     if(changed)camera.lookAt(controls.target);
     return changed;
   }
-  function move(to, duration, done, kind = 'scene', {continuation=false}={}) {
+  function move(to, duration, done, kind = 'scene', {continuation=false,rubber=false}={}) {
     const interrupted=Boolean(animation),remaining=reduceMotion||duration<=0?0:Math.max(1,duration);
     const carry=(velocity,distance)=>interrupted?velocity.clone().multiplyScalar(remaining).clampLength(0,Math.max(.001,distance*.45)):new T.Vector3();
     const carryPosition=carry(cameraVelocity,camera.position.distanceTo(to.position)),carryTarget=carry(targetVelocity,controls.target.distanceTo(to.target));
@@ -449,7 +458,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     controls.minDistance = .01;
     controls.maxDistance = Infinity;
     animation = {
-      start: performance.now(), duration: remaining, kind, progress: 0, continuation,
+      start: performance.now(), duration: remaining, kind, progress: 0, continuation, rubber:rubber&&!continuation,
       from: { position: camera.position.clone(), target: controls.target.clone(), screenCenter: screenCenter.clone(), districtVisibility, contextVisibility, expansion, reveal, panel, focusAmount, roomFades:[...roomFades], modules: model.modules.map(module => module.group.position.clone()), cuts: [...cuts] },
       to: { focusAmount: 0, districtVisibility, contextVisibility:selected?0:1, roomFades:selected?selected.interior.rooms.map((_,index)=>focusedRoom!==null&&index!==focusedRoom?1:0):[], ...to, position: to.position.clone(), target: to.target.clone(), screenCenter: (to.screenCenter || screenCenter).clone() }, done,
       path:{arc:kind==='room'?.055:selected?.09:.035,yaw:kind==='room'?.035:0,carryPosition,carryTarget},
@@ -496,7 +505,8 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     else if (!reset && previousMode !== nextMode && savedViews.has(nextMode)) pose = savedViews.get(nextMode);
     else pose = framing(nextMode, width, height, reset ? null : nextMode==='explore'?exploreDirection:direction);
     const to = { ...pose, focusAmount:validRoom===null?0:1, expansion: desiredExpansion, districtVisibility: nextMode==='tower' ? 1 : 0, reveal: selected ? 1 : 0, panel: selected ? 1 : 0, modules: modulePositions, cuts: model.modules.map(module => module === selected ? 1 : 0) };
-    move(to, instant ? 0 : nextMode === 'section' ? 1850 : previousMode === 'section' ? 1550 : 1300, onComplete);
+    move(to, instant ? 0 : nextMode === 'section' ? 1850 : previousMode === 'section' ? 1550 : 1300, onComplete,'scene',
+      {rubber:previousMode!=='section'&&nextMode!=='section'&&previousMode!==nextMode});
     canvas.dataset.mode = nextMode;
     canvas.dataset.section = selected?.id || '';
     canvas.setAttribute('aria-label', selected ? `3D cutaway of ${selected.name}: ${selected.theme}. Left mouse drag or arrow keys to orbit. Hover furniture to preview it; click or tap to animate it and explore its room. Keyboard object controls are in the room content panel.` : 'Interactive 3D city skyline. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold the main tower.');

@@ -1,5 +1,11 @@
 # Release verification
 
+## Tower rubber-band motion (local) — October 26, 2026
+
+The outdoor tower toggle now adds anticipation, an overshoot and recoil when expanding, and a landing rebound when collapsing. A vertical clearance pass keeps adjacent sections from passing through one another. Camera and room flights retain the previous smooth motion, resize resumes without replaying the bounce, reduced motion completes immediately, and every section returns to its exact resting transform.
+
+All 201 source/server tests, 82 module/reference checks, and five DOM/camera integration modes pass. New scene assertions verify crown overshoot, landing rebound, clearance throughout collapse, and no residual floor displacement. Native captures exercise both toggles with no browser warnings/errors. Evidence is in `state/tower-rubber-band/`.
+
 ## Tower and room motion (local) — October 26, 2026
 
 Tower unfolding now cascades through the floors, camera travel follows a shallow orbital arc with logarithmic zoom, and room focus blends the existing material colors. Direct room routes use one continuous entry rather than a separate room tween after the floor opens. Retargets preserve camera and color continuity, resize resumes without replaying reveal phases, and reduced motion completes immediately. Room content receives a short entrance effect that also respects reduced motion.
