@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "rooms": 23,
+  "checked": [
+    "profile",
+    "experience",
+    "education",
+    "skills",
+    "personal credentials, volunteering and languages",
+    "flowst8: identity, status, dates, links, technical bullets, stack and image metadata",
+    "test-shell: identity, status, dates, links, technical bullets, stack and image metadata",
+    "poltergeist: identity, status, dates, links, technical bullets, stack and image metadata"
+  ],
+  "roomInvariants": "Routes, names, project references, metrics, technical bullets, entry details, links, activities and non-penthouse tags preserved."
+}

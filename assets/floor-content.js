@@ -11,26 +11,20 @@ const resumeDownload = {
 export const floorContent = {
   penthouse: {
     rooms: [
-      { id:'a',number:'01',name:'Bedroom',title:'Make yourself at home.',
-        description:'You made it to the top. Take a break in a bedroom above the city.',
-        paragraphs:['Settle in with an atmosphere of your own. Rainy Night, Golden Hour and Late-Night Coding change the room and the city outside. Click the computer monitor to open a small desktop with a terminal, notes, projects and a code studio.'],
-        tags:['A little downtime','Click, tap or use the object controls'],
+      { id:'a',number:'01',name:'Bedroom',title:'Bedroom',
+        paragraphs:['The computer monitor opens a terminal, notes, project files and an HTML/CSS editor.'],
       },
-      { id:'b',number:'02',name:'Play lounge',title:'One more round?',
-        description:'A sofa, a game corner and a few toys that refuse to sit still.',
-        paragraphs:['Open the arcade for Snake, 2048 or Sudoku. The tabletop also has a quick game of noughts and crosses. Your progress stays while you explore this floor.'],
+      { id:'b',number:'02',name:'Play lounge',title:'Games',
+        paragraphs:['Click the arcade machine or controller to play Snake, 2048 or Sudoku.'],
         activity:'tic-tac-toe',
       },
-      { id:'c',number:'03',name:'Listening nook',title:'Drop the needle.',
-        description:'Original lofi, your own audio and a visualizer that follows the sound.',
-        paragraphs:['Choose an included track or drop in an audio file from your device. Expand the player and switch between spectrum, waveform, orbit and constellation views; each follows the live audio signal.'],
+      { id:'c',number:'03',name:'Listening nook',title:'Music',
+        paragraphs:['Click the vinyl record to open the full-screen visualizer.'],
       },
-      { id:'d',number:'04',name:'Sky lounge',title:'Stay a little longer.',
-        description:'A soft seat, a telescope and a small universe on the table.',
-        paragraphs:['Click the telescope to open the star atlas. Pan, zoom, select stars and discover constellation sketches, or search for a familiar name. The city can wait.'],
+      { id:'d',number:'04',name:'Sky lounge',title:'Star atlas',
+        paragraphs:['Click the telescope to browse 33 stars and seven constellations.'],
       },
     ],
-    note:'After hours / a place for visitors to play, explore and unwind.',
   },
   about: {
     rooms: [
@@ -41,7 +35,6 @@ export const floorContent = {
         title: profile.name,
         description: `Electrical engineering at ${profile.university}, ${profile.location}.`,
         paragraphs: [
-          'My work spans circuits and code: designing circuit boards, connecting sensors, and building software that makes systems work together.',
           "With McGill Formula Electric, I work on the race car's low-voltage electronics. My software projects include autonomous driving simulation, a real-time productivity application, and a UNIX shell built in C.",
         ],
       },
@@ -64,8 +57,8 @@ export const floorContent = {
         name: 'Common room',
         title: 'Music & community',
         entries: [
-          { title: 'At the piano', detail: personalNotes[0].description },
-          { title: 'Around the community', detail: personalNotes[1].description },
+          { title: 'Piano', detail: personalNotes[0].description },
+          { title: 'Volunteering', detail: personalNotes[1].description },
         ],
       },
       {
@@ -73,11 +66,9 @@ export const floorContent = {
         number: '04',
         name: 'Conversation',
         title: 'Languages',
-        description: personalNotes[3].description,
         tags: ['English', 'Mandarin', 'French'],
       },
     ],
-    note: 'An introduction, in four rooms.',
   },
 
   projects: {
@@ -130,7 +121,6 @@ export const floorContent = {
         links: [{ label: 'View Poltergeist source', href: poltergeist.url }],
       },
     ],
-    note: 'Selected work across driving simulation, real-time applications, and operating systems.',
   },
 
   experience: {
@@ -150,7 +140,7 @@ export const floorContent = {
         id: 'b',
         number: '02',
         name: 'Network room',
-        title: 'Connected systems',
+        title: 'Sensors & CAN network',
         bullets: [formulaElectric.bullets[1]],
         facts: [
           { value: '6', label: 'Integrated sensors' },
@@ -161,7 +151,7 @@ export const floorContent = {
         id: 'c',
         number: '03',
         name: 'Diagnostic bay',
-        title: 'Finding the fault',
+        title: 'Electrical troubleshooting',
         bullets: [formulaElectric.bullets[2]],
         facts: [
           { value: '5', label: 'Vehicle-wide faults resolved' },
@@ -172,7 +162,7 @@ export const floorContent = {
         id: 'd',
         number: '04',
         name: 'Inspection bay',
-        title: 'Verified for the track',
+        title: 'Electrical inspection',
         bullets: [formulaElectric.bullets[3]],
         facts: [{ value: '1st', label: 'Electrical inspection attempt passed' }],
         tags: ['Formula SAE', 'Electrical testing'],
@@ -215,13 +205,11 @@ export const floorContent = {
         id: 'd',
         number: '04',
         name: 'Document room',
-        title: 'The résumé',
-        description: 'Download the complete résumé for experience, projects, education, skills, and activities.',
+        title: 'Résumé',
         entries: [{ title: 'Linux Foundation', detail: personalNotes[2].description }],
         links: [resumeDownload],
       },
     ],
-    note: 'Education, technical skills, and the complete résumé.',
   },
 
   contact: {
@@ -230,7 +218,7 @@ export const floorContent = {
         id: 'a',
         number: '01',
         name: 'Correspondence',
-        title: 'Write a note',
+        title: 'Email',
         description: profile.email,
         links: [{ label: 'Send an email', href: `mailto:${profile.email}` }],
       },
@@ -259,6 +247,5 @@ export const floorContent = {
         links: [resumeDownload],
       },
     ],
-    note: 'A place to start the conversation.',
   },
 };

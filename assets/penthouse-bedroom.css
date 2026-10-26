@@ -31,7 +31,6 @@
 .penthouse-desktop .desktop-launchers button { display: flex; gap: 9px; align-items: center; border-color: #78917a; background: #d5dfbf; }
 .penthouse-desktop .desktop-launchers button > span { min-width: 24px; font-size: 16px; }
 .penthouse-desktop .desktop-workspace { position: relative; isolation: isolate; height: 550px; overflow: hidden; border: 1px solid #62806d; border-radius: 8px; background: radial-gradient(ellipse at 25% 15%,#456b52 0,transparent 60%),linear-gradient(150deg,#2c5042,#152e2b 80%); }
-.penthouse-desktop .desktop-workspace::before { position: absolute; right: 20px; bottom: 14px; content: 'A SMALL SPACE TO MAKE THINGS'; color: #b7ccaf; opacity: .6; font-size: 9px; letter-spacing: .15em; pointer-events: none; }
 .penthouse-desktop .desktop-window { position: absolute; width: min(510px,calc(100% - 24px)); max-width: 100%; overflow: hidden; border: 1px solid #738574; border-radius: 8px; background: var(--desk-panel); color: var(--desk-ink); box-shadow: 0 10px 30px #071c2360; }
 .penthouse-desktop .desktop-window[data-active="true"] { border-color: #d2e0ae; box-shadow: 0 0 0 2px #abc891,0 12px 35px #071c2370; }
 .penthouse-desktop .desktop-window:focus { outline: none; }

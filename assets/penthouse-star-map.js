@@ -141,8 +141,7 @@ export function fitSkyStars(stars, viewport) {
 export function starMapMarkup() {
   const id = `penthouse-sky-${++instance}`;
   return `<section class="penthouse-sky" data-sky-root aria-label="Star atlas">
-    <div class="penthouse-sky-heading"><div><p class="penthouse-sky-eyebrow">THE PENTHOUSE OBSERVATORY</p><h3>Follow a constellation.</h3></div><span class="penthouse-sky-edition">33 STARS / 7 CONSTELLATIONS</span></div>
-    <p class="penthouse-sky-intro">An illustrative catalog atlas, centered on the north celestial pole. Explore familiar patterns from different seasons.</p>
+    <div class="penthouse-sky-heading"><div><p class="penthouse-sky-eyebrow">STAR ATLAS</p><h3>Star catalog</h3></div><span class="penthouse-sky-edition">33 STARS / 7 CONSTELLATIONS</span></div>
     <div class="penthouse-sky-layout"><div class="penthouse-sky-chart-column">
       <div class="penthouse-sky-toolbar" role="group" aria-label="Map controls"><button type="button" data-sky-action="out" aria-label="Zoom out">−</button><output data-sky-zoom aria-label="Map zoom">1.0×</output><button type="button" data-sky-action="in" aria-label="Zoom in">+</button><button type="button" data-sky-action="reset">Reset view</button><button type="button" data-sky-action="lines" aria-pressed="true">Connections</button></div>
       <div class="penthouse-sky-viewport" data-sky-viewport tabindex="0" role="region" aria-label="Interactive star map" aria-describedby="${id}-instructions"><svg data-sky-svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 600" aria-hidden="true" focusable="false"></svg><span class="penthouse-sky-chart-note">NORTH POLAR VIEW · J2000</span></div>

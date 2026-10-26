@@ -1,0 +1,163 @@
+[
+  {
+    "route": "#penthouse/a",
+    "heading": "Bedroom",
+    "note": "",
+    "noteHidden": true,
+    "text": "01 / BEDROOM\n\nBedroom\nRoom settings\nRainy Night\nGolden Hour\nLate-Night Coding\nLight\nLocal time\nDay\nNight\nWeather\nClear\nRain\nRoom sound\nOff\nRain\nCity at night\nOpen bedroom desktop ↗\n\nThe computer monitor opens a terminal, notes, project files and an HTML/CSS editor.\n\nPlay with room objects"
+  },
+  {
+    "route": "#penthouse/b",
+    "heading": "Games",
+    "note": "",
+    "noteHidden": true,
+    "text": "02 / PLAY LOUNGE\n\nGames\nArcade\nOpen arcade ↗\n\nClick the arcade machine or controller to play Snake, 2048 or Sudoku.\n\nNoughts & crosses\n\nYou’re X. The house plays O.\n\nYour move.\n\nNew game ↻\nPlay with room objects"
+  },
+  {
+    "route": "#penthouse/c",
+    "heading": "Music",
+    "note": "",
+    "noteHidden": true,
+    "text": "03 / LISTENING NOOK\n\nMusic\nWindow Light\n\nWarm keys · 72 BPM\n\nExpand ↗\nTrack\nWindow Light\nNight Bus\nSoft Circuit\n↤\nPlay ▶\n↦\nLoop\n0:00\n0:40\nVisual style\nSpectrum\nWaveform\nOrbit\nConstellation\nVolume\nDrop your audio here\nor choose files · kept on this device\n\nIncluded tracks are original synthesized compositions. CC0 / credits ↗\n\nClick the vinyl record to open the full-screen visualizer.\n\nPlay with room objects"
+  },
+  {
+    "route": "#penthouse/d",
+    "heading": "Star atlas",
+    "note": "",
+    "noteHidden": true,
+    "text": "04 / SKY LOUNGE\n\nStar atlas\nOpen star atlas ↗\n\nClick the telescope to browse 33 stars and seven constellations.\n\nPlay with room objects"
+  },
+  {
+    "route": "#about/a",
+    "heading": "Eric Hsu",
+    "note": "",
+    "noteHidden": true,
+    "text": "01 / ORIENTATION\n\nEric Hsu\n\nElectrical engineering at McGill University, Montréal, QC.\n\nWith McGill Formula Electric, I work on the race car's low-voltage electronics. My software projects include autonomous driving simulation, a real-time productivity application, and a UNIX shell built in C.\n\nPlay with room objects"
+  },
+  {
+    "route": "#about/b",
+    "heading": "Engineering student",
+    "note": "",
+    "noteHidden": true,
+    "text": "02 / STUDY\n\nEngineering student\nMcGill University\n\nBachelor of Engineering, Electrical Engineering\n\nExpected 2030 · Montréal, QC\n\nPlay with room objects"
+  },
+  {
+    "route": "#about/c",
+    "heading": "Music & community",
+    "note": "",
+    "noteHidden": true,
+    "text": "03 / COMMON ROOM\n\nMusic & community\nPiano\n\nRoyal Conservatory of Music Level 10 Piano with Honors.\n\nVolunteering\n\nVolunteered at McHacks 13 and McGill TechFair.\n\nPlay with room objects"
+  },
+  {
+    "route": "#about/d",
+    "heading": "Languages",
+    "note": "",
+    "noteHidden": true,
+    "text": "04 / CONVERSATION\n\nLanguages\nEnglish\nMandarin\nFrench\nPlay with room objects"
+  },
+  {
+    "route": "#projects/a",
+    "heading": "flowst8",
+    "note": "",
+    "noteHidden": true,
+    "text": "01 / MAIN WORKSHOP\n\nflowst8\nComplete\nRead full case study ↗\nView flowst8 source\n↗\nView the Devpost submission\n↗\nWhat I built\nA focus dashboard using Apple Watch heart-rate data and keyboard activity.\nMy contribution\nBackend services and frontend–backend integration.\nResult\nA hackathon prototype with live data, focus scores, and audio alerts.\n\nContributor · Team of three · Hack The Hill III · September 2026\n\nHackathon scope\n\nWe prioritized connecting wearable data, backend services, and the dashboard over UI polish to meet the hackathon deadline.\n\nPython, FastAPI, and WebSockets connect keyboard activity with Apple Watch heart-rate data ingested through Pulsoid.\nDocker connects the services, with TimescaleDB storing the incoming time-series data.\nThe frontend presents the live signals and focus state, with ElevenLabs audio alerts supporting the notification flow.\nPython\nFastAPI\nWebSockets\nTypeScript\nNext.js\nDocker\nTimescaleDB\nLive signals, estimated focus score, and heart-rate trace.\nHeart-rate connection events during integration debugging.\nApple Watch heart-rate capture during the prototype demonstration.\nThe companion broadcasting interface used to check the heart-rate connection.\nPlay with room objects"
+  },
+  {
+    "route": "#projects/b",
+    "heading": "Test-Shell",
+    "note": "",
+    "noteHidden": true,
+    "text": "02 / SYSTEMS LAB\n\nTest-Shell\nComplete\nRead full case study ↗\nView Test-Shell source\n↗\nWhat I built\nA compact UNIX command interpreter in C with built-ins, pipelines, redirection, and background execution.\nMy contribution\nA self-directed implementation to practice command parsing, POSIX processes, pipes, and file descriptors.\nResult\nCompleted a working shell with nine built-in commands and external command execution.\n\nPersonal C programming exercise\n\nImplemented nine built-in commands, including cd, pwd, echo, env, export, and history.\nUsed fork, execvp, and waitpid for external commands, with pipe and dup2 connecting command pipelines.\nAdded argument parsing, basic I/O redirection, background execution, and cleanup of command allocations.\nC\nPOSIX\nUNIX\nProcess management\nPlay with room objects"
+  },
+  {
+    "route": "#projects/c",
+    "heading": "Poltergeist",
+    "note": "",
+    "noteHidden": true,
+    "text": "03 / SIMULATION LAB\n\nPoltergeist\nOngoing\nRead full case study ↗\nView Poltergeist source\n↗\nWhat I built\nA CARLA scenario runner and dashboard for evaluating autonomous driving agents.\nMy contribution\nScenario setup, simulator measurements, and the dashboard for reviewing recorded runs.\nResult\nLocal runs with matched seeds, camera/LiDAR recordings, and behavior reports. Development is ongoing.\n\nAutonomous driving simulation & evaluation\n\nIntended users\n\nI’m building this to pitch a repeatable stress-testing platform to autonomous-driving companies and startups.\n\nSimulation measurements\n\nI use CARLA position, speed, and timing data to calculate braking, stopping distance, clearance, and time to collision. The dashboard keeps units and unavailable measurements explicit.\n\nBuilt a React and TypeScript dashboard with a FastAPI backend to create, save, validate, and execute parameterized driving scenarios.\nImplemented repeatable agent comparisons with matched seeds, failure search, reproduction, and scenario minimization.\nLinked agent observations and proposed/applied controls to telemetry, synchronized RGB camera and LiDAR recordings, and behavior reports.\nIntegrated a Python agent SDK and pretrained PlanT 2.0 reference controller for local driving experiments.\nPython\nFastAPI\nReact\nTypeScript\nCARLA\nSQLite\nPydantic\nOpen full image ↗\nScenario setup: map selection, seeded parameters, validation, and execution settings.\nOpen full image ↗\nAgent comparison using synthetic integration-test data, illustrating the workflow rather than a real-world driving result.\nFrame-linked decision review from a deterministic synthetic fixture: inputs, applied controls, and measured response.\nAn RGB sensor frame from a documented live CARLA 0.9.16 integration run.\nPlay with room objects"
+  },
+  {
+    "route": "#experience/a",
+    "heading": "McGill Formula Electric",
+    "note": "McGill Formula Electric · Electronic Systems Team · September 2025–Present",
+    "noteHidden": false,
+    "text": "01 / ELECTRONICS LAB\n\nMcGill Formula Electric\n\nElectronic Systems Team Member\n\n21%\nReduction in board area\n\nSeptember 2025 – Present · Montréal, QC\n\nDesigned and tested four-layer KiCad PCBs for the race car's low-voltage system, reducing board area by 21% while meeting signal-integrity requirements.\nKiCad\nFour-layer PCBs\nLow-voltage electronics\nPlay with room objects"
+  },
+  {
+    "route": "#experience/b",
+    "heading": "Sensors & CAN network",
+    "note": "McGill Formula Electric · Electronic Systems Team · September 2025–Present",
+    "noteHidden": false,
+    "text": "02 / NETWORK ROOM\n\nSensors & CAN network\n6\nIntegrated sensors\n8\nCAN network nodes\nIntegrated six sensors and built a CAN network across eight nodes, eliminating dropped messages during track testing.\nPlay with room objects"
+  },
+  {
+    "route": "#experience/c",
+    "heading": "Electrical troubleshooting",
+    "note": "McGill Formula Electric · Electronic Systems Team · September 2025–Present",
+    "noteHidden": false,
+    "text": "03 / DIAGNOSTIC BAY\n\nElectrical troubleshooting\n5\nVehicle-wide faults resolved\n50+\nPeople on the multidisciplinary team\nDiagnosed and resolved five vehicle-wide electrical faults with a multidisciplinary team of more than 50 people.\nPlay with room objects"
+  },
+  {
+    "route": "#experience/d",
+    "heading": "Electrical inspection",
+    "note": "McGill Formula Electric · Electronic Systems Team · September 2025–Present",
+    "noteHidden": false,
+    "text": "04 / INSPECTION BAY\n\nElectrical inspection\n1st\nElectrical inspection attempt passed\nVerified electrical systems against Formula SAE technical requirements and passed electrical inspection on the first attempt.\nFormula SAE\nElectrical testing\nPlay with room objects"
+  },
+  {
+    "route": "#resume/a",
+    "heading": "Education",
+    "note": "",
+    "noteHidden": true,
+    "text": "01 / ACADEMIC ARCHIVE\n\nEducation\nMcGill University\n\nBachelor of Engineering, Electrical Engineering\n\nExpected 2030 · Montréal, QC\n\nRichmond Hill High School\n\nOntario Secondary School Diploma\n\n2025 · GPA: 97.5% · Honour Roll, Grades 9–12 · Richmond Hill, ON\n\nPlay with room objects"
+  },
+  {
+    "route": "#resume/b",
+    "heading": "Programming",
+    "note": "",
+    "noteHidden": true,
+    "text": "02 / CODE LIBRARY\n\nProgramming\nPython\nC\nC++\nJava\nJavaScript\nTypeScript\nBash / Shell\nSQL\nHTML\nPlay with room objects"
+  },
+  {
+    "route": "#resume/c",
+    "heading": "Systems & engineering",
+    "note": "",
+    "noteHidden": true,
+    "text": "03 / TECHNICAL REFERENCE\n\nSystems & engineering\nSystems & tools\n\nLinux · UNIX · Git · Docker · Node.js · Verilog / SystemVerilog · UVM · CARLA · CAD\n\nElectrical engineering\n\nCircuit analysis · Digital logic design · Microcontrollers · PCB design · Electronic testing & troubleshooting · Oscilloscopes & multimeters · Hardware-software integration · Memory controllers · Breadboarding · Technical documentation\n\nPlay with room objects"
+  },
+  {
+    "route": "#resume/d",
+    "heading": "Résumé",
+    "note": "",
+    "noteHidden": true,
+    "text": "04 / DOCUMENT ROOM\n\nRésumé\nLinux Foundation\n\nLFS101 certification from the Linux Foundation.\n\nDownload résumé · PDF\n↗\nPlay with room objects"
+  },
+  {
+    "route": "#contact/a",
+    "heading": "Email",
+    "note": "",
+    "noteHidden": true,
+    "text": "01 / CORRESPONDENCE\n\nEmail\n\nerichsu8681@gmail.com\n\nSend an email\n↗\nPlay with room objects"
+  },
+  {
+    "route": "#contact/b",
+    "heading": "GitHub",
+    "note": "",
+    "noteHidden": true,
+    "text": "02 / CODE EXCHANGE\n\nGitHub\n\ngithub.com/bshwao\n\nExplore the repositories\n↗\nPlay with room objects"
+  },
+  {
+    "route": "#contact/c",
+    "heading": "LinkedIn",
+    "note": "",
+    "noteHidden": true,
+    "text": "03 / CONNECTIONS\n\nLinkedIn\n\nEric Hsu\n\nConnect on LinkedIn\n↗\nPlay with room objects"
+  },
+  {
+    "route": "#contact/d",
+    "heading": "Montréal, QC",
+    "note": "",
+    "noteHidden": true,
+    "text": "04 / COORDINATES\n\nMontréal, QC\n\nMcGill University · Electrical Engineering\n\nDownload résumé · PDF\n↗\nPlay with room objects"
+  }
+]

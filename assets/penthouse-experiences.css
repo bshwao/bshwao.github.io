@@ -16,7 +16,6 @@
 .penthouse-visualizer-dialog .penthouse-dialog-body { flex:1;display:flex;padding:0; }
 .penthouse-player { background:#15282d;color:#eff2e6;border:1px solid #36595b;border-radius:14px;overflow:hidden;margin:22px 0;padding:18px; }
 .penthouse-player .music-heading { display:flex;justify-content:space-between;gap:10px;align-items:start; }
-.penthouse-player .music-kicker { font:9px/1.4 var(--mono);letter-spacing:.12em;color:#a9c9c1;margin:0 0 7px; }
 .penthouse-player h4 { font:400 25px/1.2 var(--serif);margin:0 0 6px;color:#f5ddbb; }
 .penthouse-player [data-music-subtitle] { font:11px/1.5 var(--mono);margin:0;color:#b8cfc9; }
 .penthouse-player button { min-height:44px;min-width:44px;border:1px solid #7b9b96;border-radius:7px;color:#eff2e6;background:#203a3e;padding:9px 12px;font:12px/1.3 var(--mono); }
@@ -24,7 +23,6 @@
 .penthouse-player [data-music-expand] { padding:8px;font-size:10px;white-space:nowrap; }
 .penthouse-player .music-art { position:relative;margin:16px 0;border:1px solid #355052;border-radius:9px;overflow:hidden;background:#111e25; }
 .penthouse-player canvas { display:block;width:100%;height:150px; }
-.penthouse-player [data-music-idle] { position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:#111e2540;color:#d8dfd4;font:11px/1.5 var(--mono);margin:0;padding:15px;pointer-events:none; }
 .penthouse-player [hidden] { display:none!important; }
 .penthouse-player label { display:block;font:11px/1.5 var(--mono);color:#d0dfd6; }
 .penthouse-player select { display:block;width:100%;min-height:44px;border:1px solid #708e8a;border-radius:6px;background:#203a3e;color:#fff4df;padding:8px;font:12px/1.4 var(--mono);margin-top:5px; }

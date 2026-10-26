@@ -1,5 +1,11 @@
 # Release verification
 
+## Room copy review (local) — October 26, 2026
+
+All 23 room panels and their shared activity dialogs were reviewed for filler, duplicated descriptions and promotional language. The five referenced examples are removed, along with generic room footers, redundant project backstory, desktop slogans and game taglines. Concrete portfolio details, activity instructions, privacy notices and catalog/source qualifications remain. The complete reading page is regenerated from the same content; missing descriptions and notes no longer render empty or undefined text.
+
+The source suite passes 179 tests and 76 module/reference checks; all five DOM/camera integration modes pass. Browser captures record the rendered text of every room and the cleaned penthouse panels. The atlas, visualizer, arcade and desktop dialogs open and close without console warnings/errors. A comparison against the preceding content verifies that profile, education, credentials, experience, skills, metrics, technical bullets, routes, source links and image metadata are preserved. Evidence and the scope audit are in `state/room-copy/`.
+
 ## Bedroom furniture layout (local) — October 26, 2026
 
 The bedroom computer has moved out from behind the headboard into a separate work area. Its desk, keyboard, mouse, computer tower and five-wheel task chair form one aligned composition, with independently selectable desk, monitor and chair. The nightstand is beside the head of the bed, the ottoman is at the foot, and the plant occupies the perimeter. Existing room fitting and door landings remain intact.

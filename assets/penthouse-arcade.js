@@ -145,28 +145,27 @@ function directionMarkup(game) {
 export function arcadeMarkup() {
   const id = `penthouse-arcade-${++markupId}`;
   return `<section class="penthouse-arcade" aria-label="Penthouse arcade">
-    <p class="arcade-eyebrow">A little time off</p>
     <div class="arcade-tabs" role="tablist" aria-label="Choose a game">${[['snake', 'Snake'], ['2048', '2048'], ['sudoku', 'Sudoku']].map(([game, label], i) => `<button type="button" role="tab" id="${id}-tab-${game}" aria-controls="${id}-${game}" aria-selected="${i === 0}" tabindex="${i === 0 ? '0' : '-1'}" data-arcade-tab="${game}">${label}</button>`).join('')}</div>
     <section class="arcade-panel" id="${id}-snake" role="tabpanel" aria-labelledby="${id}-tab-snake" data-arcade-panel="snake">
-      <div class="arcade-game-heading"><div><h3>Snake</h3><p>A bite at a time.</p></div><p class="arcade-score">Apples <strong data-snake-score>0</strong></p></div>
+      <div class="arcade-game-heading"><div><h3>Snake</h3></div><p class="arcade-score">Apples <strong data-snake-score>0</strong></p></div>
       <p class="arcade-instructions" id="${id}-snake-help">Use arrow keys, W A S D, or the buttons. Collect the apple; avoid the walls and your tail.</p>
       <div class="arcade-snake-board" tabindex="0" role="img" aria-label="Snake board. Press Start to play." aria-describedby="${id}-snake-help" data-snake-board></div>
       <div class="arcade-game-controls"><button type="button" class="arcade-primary" data-snake-toggle>Start</button><button type="button" data-snake-reset>New game</button>${directionMarkup('snake')}</div>
-      <p class="arcade-status" role="status" aria-live="polite" data-snake-status>Ready when you are. Press Start.</p>
+      <p class="arcade-status" role="status" aria-live="polite" data-snake-status>Press Start.</p>
     </section>
     <section class="arcade-panel" id="${id}-2048" role="tabpanel" aria-labelledby="${id}-tab-2048" data-arcade-panel="2048" hidden>
-      <div class="arcade-game-heading"><div><h3>2048</h3><p>Make room for something bigger.</p></div><p class="arcade-score">Score <strong data-2048-score>0</strong></p></div>
+      <div class="arcade-game-heading"><div><h3>2048</h3></div><p class="arcade-score">Score <strong data-2048-score>0</strong></p></div>
       <p class="arcade-instructions" id="${id}-2048-help">Use arrow keys, swipe the board, or use the buttons. Matching tiles join. Reach 2048, then keep going.</p>
       <div class="arcade-2048-board" tabindex="0" role="group" aria-label="2048 board" aria-describedby="${id}-2048-help" data-2048-board></div>
       <div class="arcade-game-controls"><button type="button" data-2048-reset>New game</button>${directionMarkup('2048')}</div>
       <p class="arcade-status" role="status" aria-live="polite" data-2048-status>Pick a direction to begin.</p>
     </section>
     <section class="arcade-panel" id="${id}-sudoku" role="tabpanel" aria-labelledby="${id}-tab-sudoku" data-arcade-panel="sudoku" hidden>
-      <div class="arcade-game-heading"><div><h3>Sudoku</h3><p>Nine little moments of clarity.</p></div><p class="arcade-score">Filled <strong data-sudoku-score>0 / 81</strong></p></div>
+      <div class="arcade-game-heading"><div><h3>Sudoku</h3></div><p class="arcade-score">Filled <strong data-sudoku-score>0 / 81</strong></p></div>
       <p class="arcade-instructions" id="${id}-sudoku-help">Fill each row, column, and 3 × 3 box with 1–9. Dark numbers are fixed clues. Conflicts are marked as you type. Scroll the grid sideways on a small screen.</p>
       <div class="arcade-sudoku-scroll"><div class="arcade-sudoku-board" role="group" aria-label="Sudoku grid" aria-describedby="${id}-sudoku-help" data-sudoku-board>${Array.from({length: 81}, (_, i) => `<input type="text" inputmode="numeric" pattern="[1-9]" maxlength="1" autocomplete="off" spellcheck="false" data-sudoku-cell="${i}" aria-label="Row ${Math.floor(i / 9) + 1}, column ${i % 9 + 1}"${i % 9 === 2 || i % 9 === 5 ? ' class="arcade-box-right"' : ''}${Math.floor(i / 9) === 2 || Math.floor(i / 9) === 5 ? ' data-box-bottom' : ''}>`).join('')}</div></div>
       <div class="arcade-game-controls"><button type="button" class="arcade-primary" data-sudoku-check>Check progress</button><button type="button" data-sudoku-reset>Reset</button><button type="button" data-sudoku-new>New puzzle</button></div>
-      <p class="arcade-status" role="status" aria-live="polite" data-sudoku-status>A fresh puzzle. Take your time.</p>
+      <p class="arcade-status" role="status" aria-live="polite" data-sudoku-status>Puzzle ready.</p>
     </section>
   </section>`;
 }
@@ -209,7 +208,7 @@ export function createArcade(container, {onPlay = () => {}} = {}) {
     if (!enabled || disposed) return;
     if (['over', 'won'].includes(snake.status)) snake = createSnakeState();
     snake = {...snake, status: 'running'};
-    stopTimer(); paintSnake(); status('snake', 'Keep going. An apple is waiting.'); onPlay();
+    stopTimer(); paintSnake(); status('snake', 'Running.'); onPlay();
     timer = window.setInterval(() => {
       const dialog = root.closest('dialog');
       if (disposed || !enabled || active !== 'snake' || !root.isConnected || document.hidden || (dialog && !dialog.open)) {
@@ -217,7 +216,7 @@ export function createArcade(container, {onPlay = () => {}} = {}) {
       }
       const previousScore = snake.score;
       snake = stepSnake(snake); paintSnake();
-      if (snake.score !== previousScore) status('snake', `${snake.score} ${snake.score === 1 ? 'apple' : 'apples'}. Keep going.`);
+      if (snake.score !== previousScore) status('snake', `${snake.score} ${snake.score === 1 ? 'apple' : 'apples'}.`);
       if (snake.status === 'over' || snake.status === 'won') {
         stopTimer();
         status('snake', snake.status === 'won' ? 'Every square filled. You win!' : `That’s the round. ${snake.score} ${snake.score === 1 ? 'apple' : 'apples'} collected. Play again?`);
@@ -238,8 +237,8 @@ export function createArcade(container, {onPlay = () => {}} = {}) {
   function play2048(direction) {
     const previous = tiles;
     tiles = move2048(tiles, direction); paint2048();
-    if (tiles.over) status('2048', 'No moves left. Start a new game for another go.');
-    else if (!previous.won && tiles.won) status('2048', '2048! You made it. Keep going for a bigger tile.');
+    if (tiles.over) status('2048', 'No moves left.');
+    else if (!previous.won && tiles.won) status('2048', '2048 reached. You can continue playing.');
     else if (tiles.moved) status('2048', `${tiles.score} points. Largest tile: ${Math.max(...tiles.board)}.`);
     else status('2048', 'No tiles moved. Try another direction.');
     if (tiles.moved) onPlay();

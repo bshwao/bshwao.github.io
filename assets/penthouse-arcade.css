@@ -1,7 +1,6 @@
 .penthouse-arcade { --arcade-ink: var(--ink, #2e322d); --arcade-paper: var(--paper, #f3efe3); --arcade-raised: var(--raised, #faf8f0); --arcade-line: var(--line, #c4c2b3); --arcade-accent: var(--accent-ink, #365e57); color: var(--arcade-ink); width: 100%; min-width: 0; }
 .penthouse-arcade *, .penthouse-arcade *::before, .penthouse-arcade *::after { box-sizing: border-box; }
 .penthouse-arcade [hidden] { display: none !important; }
-.penthouse-arcade .arcade-eyebrow { margin: 0 0 10px; font: 9px/1.5 var(--mono, monospace); letter-spacing: .13em; text-transform: uppercase; color: var(--muted, #62675b); }
 .penthouse-arcade .arcade-tabs { display: flex; gap: 5px; padding: 4px; border: 1px solid var(--arcade-line); border-radius: 9px; background: var(--arcade-paper); }
 .penthouse-arcade button { min-width: 44px; min-height: 44px; border: 1px solid var(--arcade-line); border-radius: 5px; padding: 10px 14px; background: var(--arcade-raised); color: var(--arcade-ink); font: 11px/1.35 var(--mono, monospace); cursor: pointer; touch-action: manipulation; }
 .penthouse-arcade button:hover { border-color: var(--arcade-accent); }

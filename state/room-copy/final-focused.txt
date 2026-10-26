@@ -1,0 +1,48 @@
+✔ Snake advances only while running, rejects reversing, grows on food, and leaves its input intact (5.3201ms)
+✔ Snake detects walls and its body but can enter a vacated tail square (0.6488ms)
+✔ 2048 lines merge from the moving edge without double merges (0.6198ms)
+✔ 2048 moves in all four directions, only spawns on a move, and identifies wins and dead boards (1.6174ms)
+✔ Sudoku transformations preserve valid solutions, every clue, and a unique solvable puzzle (1350.6539ms)
+✔ Arcade tabs, controls, clue protection, conflict feedback, and disposal work in the mounted DOM (271.6071ms)
+✔ Snake pauses on visibility loss and detachment and its interval is cleared on tab changes and disposal (161.8305ms)
+✔ Arcade deactivation preserves the current game and removes its handlers until reactivated (128.8313ms)
+✔ bedroom controls expose the scene integrations and a desktop without nesting dialogs (358.4716ms)
+✔ terminal commands read an isolated virtual filesystem and return only named application actions (3.0783ms)
+✔ preview strips active markup and external resources and adds a restrictive CSP before user content (124.2743ms)
+✔ notes persist locally and retain a visible session-only fallback when storage fails or its getter is denied (314.8198ms)
+✔ windows launch, focus, minimize, close and restore without destroying application state (86.8454ms)
+✔ window movement has bounded keyboard and pointer controls, and editor tabs support arrow navigation (140.3314ms)
+✔ terminal renders input as text, opens project files, recalls history and clears only its output (46.4793ms)
+✔ room activities open from content and furniture, keep desktop/game state, and close on navigation (731.2721ms)
+✔ lighting and weather controls drive scene state without a bedroom rain overlay (47.833ms)
+✔ dropping local audio into the compact player selects it without uploading or starting playback (31.1373ms)
+✔ creation and subscriptions never autoplay or create an AudioContext (204.3435ms)
+✔ explicit play builds one shared graph and returns the analyser’s actual signal (36.8191ms)
+✔ transport preserves playback through track changes and validates timeline, loop, and visual styles (22.0537ms)
+✔ blocked playback remains recoverable and unsupported visualization retains usable audio (35.2607ms)
+✔ a partial graph failure never reports an available analyser (27.6432ms)
+✔ local audio accepts MIME or known extensions, enforces size/count limits, and revokes only owned ObjectURLs (18.6179ms)
+✔ ambient sound starts only on request, changes timbre, and disconnects on room stop (19.7269ms)
+✔ pending ambient resumes cannot start stale sounds after replacement or disposal (14.9185ms)
+✔ dispose detaches audio events and closes/disconnects the graph once (20.9587ms)
+✔ compact and expanded music markup expose labels and unique control IDs (103.2781ms)
+✔ catalog positions and sketches are complete, sourced, and within the map (3.4275ms)
+✔ polar projection preserves pole, equator radius, and right ascension orientation (0.4291ms)
+✔ coordinate conversion inverts, zoom remains anchored, and pan/zoom are bounded (1.588ms)
+✔ search/filter and hit selection resolve real stars and empty space (1.5429ms)
+✔ native controls, search, selection, keyboard, and reset change the mounted atlas (585.5123ms)
+✔ wheel, drag, and touch pinch update projection and dispose detaches all controls (128.4602ms)
+✔ markup labels are instance-safe and stars remain keyboard-selectable (23.9389ms)
+✔ reading SVG uses the actual occupied section cut and matching numbered regions (549.3817ms)
+✔ reading hotspots reach every original room and use the shared map anchors (420.6158ms)
+✔ cap plan segments cannot bridge the empty L recess and furnish every content room (189.4696ms)
+✔ both entry pages share a real, correctly sized social card and canonical URLs (10.6294ms)
+✔ crawl configuration indexes the canonical pages and all room assets resolve locally (9.8019ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16014.5972

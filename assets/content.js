@@ -11,32 +11,32 @@ export const profile = {
 
 export const rooms = [
   {
-    id: 'penthouse', number: '06', name: 'Penthouse', title: 'Make yourself at home.',
-    eyebrow: 'After hours', description: 'A bedroom in the sky, with music, games and small things to play with.',
+    id: 'penthouse', number: '06', name: 'Penthouse', title: 'Penthouse',
+    eyebrow: 'Penthouse', description: 'Music, games, desktop tools, room settings and a star atlas.',
   },
   {
     id: "about",
     number: "01",
     name: "About",
-    title: "A little introduction.",
+    title: "About Eric",
     eyebrow: "About Eric",
     description:
-      "Electrical engineering at McGill. An interest in the systems where hardware and software meet.",
+      "Electrical engineering student at McGill University in Montréal.",
   },
   {
     id: "projects",
     number: "02",
     name: "Projects",
-    title: "Ideas, put to work.",
+    title: "Projects",
     eyebrow: "Selected projects",
     description:
-      "Driving simulations, a real-time focus application, and a UNIX shell in C: a look at what I have been building.",
+      "Autonomous driving simulation, a real-time focus dashboard, and a UNIX shell in C.",
   },
   {
     id: "experience",
     number: "03",
     name: "Experience",
-    title: "Engineering in practice.",
+    title: "Engineering experience",
     eyebrow: "Experience",
     description:
       "PCBs, sensors, CAN networks, and electrical testing with McGill Formula Electric.",
@@ -45,19 +45,19 @@ export const rooms = [
     id: "resume",
     number: "04",
     name: "Résumé",
-    title: "The details, on paper.",
+    title: "Education & skills",
     eyebrow: "Education & skills",
     description:
-      "My education, technical toolkit, and résumé, collected in one place.",
+      "Education, programming languages, engineering tools, and résumé download.",
   },
   {
     id: "contact",
     number: "05",
     name: "Contact",
-    title: "Start a conversation.",
+    title: "Contact",
     eyebrow: "Contact",
     description:
-      "Find me in Montréal, write me an email, or connect through GitHub and LinkedIn.",
+      "Email, GitHub, and LinkedIn.",
   },
 ];
 
@@ -69,24 +69,16 @@ export const projects = [
     category: "Contributor · Team of three · Hack The Hill III",
     year: "September 2026",
     description:
-      "A real-time productivity application designed to calculate dynamic focus scores, detect developer fatigue, and prompt timely breaks.",
+      "A real-time focus dashboard using Apple Watch heart-rate data and keyboard activity, with fatigue estimates and break alerts.",
     summary: {
-      built: "A live focus dashboard that combines Apple Watch heart-rate data and keyboard activity to prompt timely breaks.",
-      contribution: "Backend services and frontend–backend integration in a team of three at Hack The Hill III.",
-      result: "Delivered an end-to-end hackathon prototype with live signals, focus scores, and audio alerts.",
+      built: "A focus dashboard using Apple Watch heart-rate data and keyboard activity.",
+      contribution: "Backend services and frontend–backend integration.",
+      result: "A hackathon prototype with live data, focus scores, and audio alerts.",
     },
     story: [
       {
-        title: "My contribution",
-        text: "I worked mainly on the backend and the connection between the frontend and backend, bringing separately developed components together into a usable application.",
-      },
-      {
-        title: "Building against the clock",
-        text: "The hackathon deadline left little time for polish or repeated revision. We prioritized getting the wearable data, backend services, and interface working together as one end-to-end prototype.",
-      },
-      {
-        title: "What we delivered",
-        text: "A working prototype that brings heart-rate and keyboard activity into a live focus dashboard and alerts. The experience taught me how much practical debugging and coordination it takes to connect independently built parts.",
+        title: "Hackathon scope",
+        text: "We prioritized connecting wearable data, backend services, and the dashboard over UI polish to meet the hackathon deadline.",
       },
     ],
     bullets: [
@@ -101,13 +93,13 @@ export const projects = [
       {
         src: "./assets/projects/flowst8/focus-dashboard.png",
         alt: "flowst8 dashboard showing focus score, heart-rate signals, keyboard activity, and a heart-rate trace",
-        caption: "The prototype dashboard brings the incoming signals and estimated focus state into one view.",
+        caption: "Live signals, estimated focus score, and heart-rate trace.",
         width: 806, height: 328,
       },
       {
         src: "./assets/projects/flowst8/event-stream.png",
         alt: "flowst8 event stream showing repeated heart-rate connection messages",
-        caption: "Connection events made the frontend and backend integration visible while debugging.",
+        caption: "Heart-rate connection events during integration debugging.",
         width: 806, height: 328,
       },
       {
@@ -137,20 +129,6 @@ export const projects = [
       contribution: "A self-directed implementation to practice command parsing, POSIX processes, pipes, and file descriptors.",
       result: "Completed a working shell with nine built-in commands and external command execution.",
     },
-    story: [
-      {
-        title: "Why I built it",
-        text: "I started Test-Shell as a short, self-directed project to test my C programming skills and understand what happens between entering a command and seeing a program run.",
-      },
-      {
-        title: "A deliberately small scope",
-        text: "The aim was to explore a useful subset of shell behavior. It supports common built-ins, external commands, pipelines, and basic redirection, without attempting to reproduce all of Bash.",
-      },
-      {
-        title: "What I practiced",
-        text: "The project gave me a concrete way to work with child processes, pipes, file descriptors, argument parsing, and cleanup after each command. The emphasis was hands-on learning through a compact implementation.",
-      },
-    ],
     bullets: [
       "Implemented nine built-in commands, including cd, pwd, echo, env, export, and history.",
       "Used fork, execvp, and waitpid for external commands, with pipe and dup2 connecting command pipelines.",
@@ -168,22 +146,18 @@ export const projects = [
     description:
       "A CARLA-based platform for creating hazardous driving scenarios, evaluating autonomous agents, and reviewing telemetry, sensor recordings, and failure evidence.",
     summary: {
-      built: "A CARLA-based workflow for repeatable driving scenarios, autonomous agent evaluation, and evidence review.",
-      contribution: "Building the scenario-to-review workflow and translating simulator motion into explicit driving measurements.",
-      result: "Ongoing: the current local workflow connects scenario setup, agent runs, recordings, and behavior review for comparison.",
+      built: "A CARLA scenario runner and dashboard for evaluating autonomous driving agents.",
+      contribution: "Scenario setup, simulator measurements, and the dashboard for reviewing recorded runs.",
+      result: "Local runs with matched seeds, camera/LiDAR recordings, and behavior reports. Development is ongoing.",
     },
     story: [
       {
-        title: "Who I am building it for",
-        text: "I started Poltergeist with the goal of pitching a repeatable stress-testing platform to autonomous driving companies and smaller startups. The idea is to give different models a common set of challenging conditions and make their responses easier to compare.",
+        title: "Intended users",
+        text: "I’m building this to pitch a repeatable stress-testing platform to autonomous-driving companies and startups.",
       },
       {
-        title: "From simulator physics to useful measurements",
-        text: "The biggest engineering challenge was understanding CARLA's vehicle motion and translating it into meaningful dashboard values. That meant connecting position, speed, and timing data to braking, stopping, clearance, and time-to-collision calculations, while keeping units and unavailable measurements explicit.",
-      },
-      {
-        title: "What the platform makes possible",
-        text: "The current local workflow brings scenario setup, agent execution, recorded evidence, and behavior review together. It gives a team a repeatable starting point for investigating failures and comparing model versions under controlled conditions.",
+        title: "Simulation measurements",
+        text: "I use CARLA position, speed, and timing data to calculate braking, stopping distance, clearance, and time to collision. The dashboard keeps units and unavailable measurements explicit.",
       },
     ],
     bullets: [
@@ -198,7 +172,7 @@ export const projects = [
       {
         src: "./assets/projects/poltergeist/scenario-workspace.png",
         alt: "Poltergeist scenario workspace with map selection, seeded parameters, recipe validation, and execution settings",
-        caption: "Scenario setup: map selection, seeded parameters, validation, and execution settings. Open the full image to explore the workspace.",
+        caption: "Scenario setup: map selection, seeded parameters, validation, and execution settings.",
         width: 1280, height: 3583, preview: "top",
       },
       {
@@ -281,19 +255,19 @@ export const skills = [
 
 export const personalNotes = [
   {
-    title: "Away from the workbench",
+    title: "Piano",
     description: "Royal Conservatory of Music Level 10 Piano with Honors.",
   },
   {
-    title: "Around the community",
+    title: "Volunteering",
     description: "Volunteered at McHacks 13 and McGill TechFair.",
   },
   {
-    title: "Always learning",
+    title: "Linux certification",
     description: "LFS101 certification from the Linux Foundation.",
   },
   {
-    title: "In conversation",
+    title: "Languages",
     description: "English, Mandarin, and French.",
   },
 ];

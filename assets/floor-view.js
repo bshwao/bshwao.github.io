@@ -60,7 +60,8 @@ export function createSectionReadingView({ onClose, onTower, onNavigate }) {
     sheet.classList.add('has-shared-plan');
     document.querySelector('#room-location').textContent = `LEVEL ${section.number} / INTERIOR PLAN`;
     document.querySelector('#room-title').textContent = section.name;
-    document.querySelector('#floor-description').textContent = content.note;
+    document.querySelector('#floor-description').textContent = content.note || '';
+    document.querySelector('#floor-description').hidden = !content.note;
     const index = rooms.indexOf(section);
     const previous = rooms[(index + rooms.length - 1) % rooms.length];
     const next = rooms[(index + 1) % rooms.length];

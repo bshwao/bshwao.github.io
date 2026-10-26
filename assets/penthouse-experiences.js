@@ -6,9 +6,9 @@ import { atmospherePresets,normalizeAtmosphere } from './penthouse-atmosphere.js
 
 export function penthouseExperienceMarkup(index){
   if(index===0)return bedroomMarkup();
-  if(index===1)return `<section class="penthouse-feature"><h4>The pocket arcade</h4><p>Snake, 2048 and Sudoku. A quick round, or a longer stay.</p><button type="button" data-penthouse-open="arcade">Open the arcade ↗</button></section>`;
+  if(index===1)return `<section class="penthouse-feature"><h4>Arcade</h4><button type="button" data-penthouse-open="arcade">Open arcade ↗</button></section>`;
   if(index===2)return musicPlayerMarkup({id:'listening-music'});
-  return `<section class="penthouse-feature"><h4>A window into the night sky</h4><p>Pan across the stars, trace constellations and get to know the brightest lights. Click the telescope, or open the atlas here.</p><button type="button" data-penthouse-open="sky">Explore the star atlas ↗</button></section>`;
+  return `<div class="penthouse-feature"><button type="button" data-penthouse-open="sky">Open star atlas ↗</button></div>`;
 }
 
 /** Persistent activity controllers; room content can be replaced independently. */
@@ -18,7 +18,7 @@ export function createPenthouseExperiences({container,onAtmosphere=()=>{},reduce
   let compact=null,active=false,atmosphere=normalizeAtmosphere(),presetId='',disposed=false;
   function dialogFor(kind){
     if(dialogs.has(kind))return dialogs.get(kind);
-    const titles={music:'Watch the sound',arcade:'A little friendly competition',desktop:'The bedroom desktop',sky:'A window into the night sky'};
+    const titles={music:'Audio visualizer',arcade:'Arcade',desktop:'Bedroom desktop',sky:'Star atlas'};
     const dialog=document.createElement('dialog');dialog.id=`penthouse-${kind}-dialog`;
     dialog.className=`penthouse-dialog${kind==='music'?' penthouse-visualizer-dialog':''}`;
     dialog.setAttribute('aria-labelledby',`${dialog.id}-title`);

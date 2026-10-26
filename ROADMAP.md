@@ -15,7 +15,7 @@ The first-floor robot experiment has been removed. Its evidence remains archived
 
 ## Recorded verification
 
-The October 26, 2026 checkpoint in [state/bedroom-layout/](state/bedroom-layout/README.md) records:
+The October 26, 2026 [bedroom layout](state/bedroom-layout/README.md) and [room copy review](state/room-copy/README.md) checkpoints record:
 
 | Check | Result |
 | --- | --- |

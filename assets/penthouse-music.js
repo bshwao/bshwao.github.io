@@ -84,8 +84,8 @@ export function signalMetrics({frequencies,waveform}){
 
 export function musicPlayerMarkup({expanded=false,id='penthouse-player'}={}){
   return `<section class="penthouse-player ${expanded?'is-expanded':''}" aria-label="Music player">
-    <div class="music-heading"><div><p class="music-kicker">AFTER HOURS / ORIGINALS</p><h4 data-music-title>Window Light</h4><p data-music-subtitle>Original lofi · CC0</p></div>${expanded?'':'<button type="button" data-music-expand aria-label="Expand music visualizer">Expand ↗</button>'}</div>
-    <div class="music-art"><canvas data-music-canvas role="img" aria-label="Audio-reactive music visualization"></canvas><p data-music-idle>Press play. Watch the sound.</p></div>
+    <div class="music-heading"><div><h4 data-music-title>Window Light</h4><p data-music-subtitle>Original lofi · CC0</p></div>${expanded?'':'<button type="button" data-music-expand aria-label="Expand music visualizer">Expand ↗</button>'}</div>
+    <div class="music-art"><canvas data-music-canvas role="img" aria-label="Audio-reactive music visualization"></canvas></div>
     <label class="music-select" for="${id}-track">Track<select id="${id}-track" data-music-track>${penthouseTracks.map((track,index)=>`<option value="${index}">${escape(track.title)}</option>`).join('')}</select></label>
     <div class="music-transport"><button type="button" data-music-prev aria-label="Previous track">↤</button><button class="music-play" type="button" data-music-play aria-label="Play music">Play ▶</button><button type="button" data-music-next aria-label="Next track">↦</button><label class="music-loop"><input type="checkbox" data-music-loop checked> Loop</label></div>
     <div class="music-timeline"><span data-music-elapsed>0:00</span><input type="range" min="0" max="1" value="0" step=".1" data-music-seek aria-label="Seek through track" disabled><span data-music-duration>0:00</span></div>
@@ -139,7 +139,6 @@ export function createMusicPlayer(container,engine,{onExpand=()=>{},reducedMotio
   const unsubscribe=engine.subscribe(state=>{
     $('[data-music-title]').textContent=state.track.title;$('[data-music-subtitle]').textContent=state.track.subtitle;
     $('[data-music-play]').textContent=state.playing?'Pause Ⅱ':'Play ▶';$('[data-music-play]').setAttribute('aria-label',state.playing?'Pause music':'Play music');
-    $('[data-music-idle]').hidden=state.playing&&state.signalAvailable;
     $('[data-music-status]').textContent=state.error;$('[data-music-elapsed]').textContent=formatAudioTime(state.currentTime);$('[data-music-duration]').textContent=formatAudioTime(state.duration);
     const seek=$('[data-music-seek]');seek.max=String(state.duration||1);seek.value=String(state.currentTime);seek.disabled=!state.duration;
     $('[data-music-volume]').value=String(state.volume);$('[data-music-loop]').checked=state.loop;$('[data-music-style]').value=state.style;

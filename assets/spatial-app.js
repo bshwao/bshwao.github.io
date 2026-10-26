@@ -102,7 +102,8 @@ function sectionMarkup(id) {
   const index = sections.indexOf(section);
   const previous = sections[(index + sections.length - 1) % sections.length], next = sections[(index + 1) % sections.length];
   $('#interior-navigation').innerHTML = `<a href="#${previous.id}" data-section="${previous.id}" aria-label="Previous floor: ${escape(previous.name)}">← ${escape(previous.name)}</a><a href="#${next.id}" data-section="${next.id}" aria-label="Next floor: ${escape(next.name)}">${escape(next.name)} →</a>`;
-  $('#interior-note').textContent = content.note;
+  $('#interior-note').textContent = content.note || '';
+  $('#interior-note').hidden = !content.note;
   selectRoom(0, { moveCamera: false });
 }
 

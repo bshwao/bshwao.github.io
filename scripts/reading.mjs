@@ -59,7 +59,7 @@ export function renderReadingPage() {
       <a class="drawing-label" href="./index.html">E.H. / Structures &amp; systems <span aria-hidden="true">↗</span></a>
       <p class="drawing-label">Portfolio / Reading view</p>
       <h1>${escape(profile.name)}</h1>
-      <p class="intro">Electrical engineering at ${escape(profile.university)}.<br>Circuits, code, and the systems they make together.</p>
+      <p class="intro">Electrical engineering at ${escape(profile.university)}.</p>
       <p class="coordinates">${escape(profile.location)} · ${escape(profile.graduation)}</p>
       <div class="header-links">${link(`mailto:${profile.email}`, 'Email')} ${link(profile.github, 'GitHub')} ${link(profile.linkedin, 'LinkedIn')} <a href="./assets/eric-hsu-resume.pdf" download="Eric-Hsu-Resume.pdf">Download résumé <span class="file-type">PDF</span></a></div>
       <nav aria-label="Portfolio sections">
@@ -123,7 +123,6 @@ ${skills.map(group => `          <div><dt>${escape(group.label)}</dt><dd>${escap
       <section id="contact" aria-labelledby="contact-title">
         <p class="section-number" aria-hidden="true">06 / Correspondence</p>
         <h2 id="contact-title">Contact</h2>
-        <p>Based in ${escape(profile.location)}. Find my work, get in touch, or download the complete résumé.</p>
         <ul class="contact-list">
           <li><span>Email</span> ${link(`mailto:${profile.email}`, profile.email)}</li>
           <li><span>GitHub</span> ${link(profile.github, profile.github.replace('https://', ''))}</li>
@@ -133,13 +132,11 @@ ${skills.map(group => `          <div><dt>${escape(group.label)}</dt><dd>${escap
       </section>
       <section id="penthouse" aria-labelledby="penthouse-title">
         <p class="section-number" aria-hidden="true">After hours / The penthouse</p>
-        <h2 id="penthouse-title">After hours</h2>
-        <p>A place above the city to pause, explore, and play. This apartment is just for visitors: a bedroom, game lounge, listening nook, and sky lounge.</p>
-        <p>In the interactive view, click or tap furnishings to animate them, or use the named object controls in each room. This floor is a little downtime, with no portfolio reading required.</p>
+        <h2 id="penthouse-title">Penthouse</h2>
         <p>${link('./index.html#penthouse', 'Enter the interactive penthouse')} <span aria-hidden="true">↗</span></p>
 ${floorContent.penthouse.rooms.map(room => `        <article class="portfolio-entry" id="penthouse-room-${escape(room.id)}">
           <h3>${escape(room.name)}</h3>
-          <p>${escape(room.description)}</p>
+          ${(room.paragraphs || []).map(text => `<p>${escape(text)}</p>`).join('')}
           <p>${link(`./index.html#penthouse/${room.id}`, `Explore the ${room.name.toLowerCase()}`)} <span aria-hidden="true">↗</span></p>
         </article>`).join('\n')}
       </section>
