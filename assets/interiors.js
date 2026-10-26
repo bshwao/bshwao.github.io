@@ -34,6 +34,7 @@ export function createInterior(section, content) {
   const lineMaterial = new T.LineBasicMaterial({ color: palette.muted, transparent: true, opacity: .8, depthWrite: false });
   const pickables = [], anchors = [], roomModels = [], objects = [];
   let activeRoom = 0, hoveredRoom = null, focusedRoom = null, focusAmount = 0;
+  let roomFocusFades = null;
   const unitBox = new T.BoxGeometry(1, 1, 1), unitCylinder = new T.CylinderGeometry(1, 1, 1, 20);
   const unitRing=new T.TorusGeometry(1,.09,5,16),unitSphere=new T.SphereGeometry(1,8,6),unitLeaf=new T.SphereGeometry(.42,6,5);
   const shared = new Set([unitBox, unitCylinder,unitRing,unitSphere,unitLeaf]), edgeSources = new Map();
@@ -536,7 +537,7 @@ export function createInterior(section, content) {
     architecture.line.opacity = T.MathUtils.lerp(.4, .12, contextFade);
     for (const surface of contextSurfaces) surface.material.color.copy(surface.color).lerp(white, contextFade * .94);
     roomModels.forEach((room, index) => {
-      const fade = focusedRoom !== null && index !== focusedRoom && index !== hoveredRoom ? focusAmount : 0;
+      const fade = index===hoveredRoom?0:roomFocusFades?.[index]??(focusedRoom !== null && index !== focusedRoom ? focusAmount : 0);
       room.line.color.set(index === activeRoom ? theme.ink : index === hoveredRoom ? palette.ink : design.outline).lerp(white, fade * .65);
       const opacity = index === activeRoom ? 1 : index === hoveredRoom ? .95 : .58;
       room.line.opacity = T.MathUtils.lerp(opacity, .14, fade);
@@ -550,10 +551,12 @@ export function createInterior(section, content) {
   return { group, pickables, anchors, reach, unit, rooms: roomModels, architecture, interactions,
     setActiveRoom(index) { if (activeRoom === index) return; activeRoom = index; paintRooms(); },
     setHoveredRoom(index) { if (hoveredRoom === index) return; hoveredRoom = index; paintRooms(); },
-    setFocus(index, amount = 1) {
+    setFocus(index, amount = 1, fades = null) {
       const next = Number.isInteger(index) && roomModels[index] ? index : null, fade = next === null ? 0 : T.MathUtils.clamp(amount, 0, 1);
-      if (focusedRoom === next && focusAmount === fade) return;
-      focusedRoom = next; focusAmount = fade; paintRooms();
+      const values=fades?roomModels.map((_,i)=>T.MathUtils.clamp(fades[i]||0,0,1)):null;
+      const unchanged=values?roomFocusFades&&values.every((v,i)=>v===roomFocusFades[i]):roomFocusFades===null;
+      if (focusedRoom === next && focusAmount === fade && unchanged) return;
+      focusedRoom = next; focusAmount = fade; roomFocusFades=values; paintRooms();
     },
   };
 }

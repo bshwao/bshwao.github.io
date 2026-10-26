@@ -6,12 +6,13 @@ Each subdirectory represents a specific implementation checkpoint. Test counts, 
 
 ## Latest recorded checkpoint
 
-[Play room games dashboard](game-dashboard/README.md) records the October 26, 2026 game regressions, source and integration suites, responsive accessibility checks, and native interaction review. Refer to [QA.md](../QA.md) for the verification timeline and [ROADMAP.md](../ROADMAP.md) for remaining work.
+[Tower and room motion](spatial-motion/README.md) records the October 26, 2026 trajectory tests, camera/color continuity checks, source and integration suites, and desktop/portrait WebGL review. Refer to [QA.md](../QA.md) for the verification timeline and [ROADMAP.md](../ROADMAP.md) for remaining work.
 
 ## Feature evidence
 
 | Area | Evidence |
 | --- | --- |
+| Tower expansion and room camera motion | [spatial-motion/](spatial-motion/README.md) |
 | Unified play room games dashboard | [game-dashboard/](game-dashboard/README.md) |
 | Room descriptions and activity copy | [room-copy/](room-copy/README.md) |
 | Bedroom furniture layout | [bedroom-layout/](bedroom-layout/README.md) |

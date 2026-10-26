@@ -12,9 +12,8 @@ import { readCityTime,createCityClock } from './city-time.js';
 import { normalizeViewPreferences, shouldReduceMotion } from './view-preferences.js';
 import { outdoorTerrainFloor } from './city-island.js';
 import { normalizeAtmosphere } from './penthouse-atmosphere.js';
+import { motionEase as ease, motionPhase as phase, staggerProgress, sampleCameraFlight } from './spatial-motion.js';
 
-const ease = t => t * t * t * (t * (t * 6 - 15) + 10);
-const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - start), 0, 1));
 const lerp = T.MathUtils.lerp;
 
 /** One persistent scene and camera: tower, exploded assembly, and inhabited cutaway. */
@@ -89,7 +88,11 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   let width = 1, height = 1, mode = 'tower', selected = null;
   let focusedRoom = null, contextRoom = null, activeRoom = 0, hoveredRoom = null, hasViewport = false;
   let expansion = 0, reveal = 0, panel = 0, focusAmount = 0;
+  let roomFades = [];
+  const cameraVelocity=new T.Vector3(),targetVelocity=new T.Vector3();
+  let lastMotionTime=null;
   let districtVisibility = 1;
+  let contextVisibility = 1;
   const screenCenter = new T.Vector2(.5, .5);
   let animation = null, frame = 0, effectTimer = null, dirty = true, disposed = false;
   let zoomRange={min:1,max:2};
@@ -226,7 +229,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       const x=point.dot(right),y=point.dot(up);
       distance=Math.max(distance,point.dot(direction)+Math.max(x/(x>=0?rightSpace:-left),y/(y>=0?top:-bottom)));
     }
-    const fit=animation.kind==='room'?phase(animation.progress,0,.2):phase(cuts[selected.index],.25,.55);
+    const fit=animation.kind==='room'?phase(animation.progress,0,.2):phase(cuts[selected.index],.25,.55)*phase(animation.progress,0,.12);
     camera.position.copy(controls.target).addScaledVector(direction,lerp(initialDistance,distance,fit));
   }
   function updateProjection() {
@@ -241,7 +244,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
   function updateModel() {
     model.modules.forEach((module, index) => {
       const surrounding = mode === 'section' && module !== selected;
-      const context = surrounding && animation?.kind === 'scene' ? 1 - phase(animation.progress, .18, .7) : surrounding ? 0 : 1;
+      const context = surrounding ? contextVisibility : 1;
       // Room flights keep the other floors isolated; only a scene entry can show them.
       module.group.visible = !surrounding || context > .001;
       const cut = cuts[index];
@@ -263,7 +266,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       module.base.material.color.set(cityPalette.metal).lerp(module.cutTint,expansion).lerp(paper, module === selected ? focusAmount * .8 : 1 - context);
       module.base.children[0].material.color.set(palette.muted).lerp(module.cutInk,expansion);
       module.base.children[0].material.opacity = (.28 + .52 * expansion) * context * (module === selected ? 1 - focusAmount * .72 : 1);
-      module.interior.setFocus?.(module === selected ? contextRoom : null, focusAmount);
+      module.interior.setFocus?.(module === selected ? contextRoom : null, focusAmount, module===selected?roomFades:null);
     });
     model.groundLine.opacity = .45;
     model.district.setPresentation(0, 0);
@@ -305,33 +308,39 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     backdrop.setWeatherTime(reduceMotion?0:time/1000);
     canvas.dataset.rainTime=(reduceMotion?0:time/1000).toFixed(3);
     let moving = false;
+    const motionSample=animation?{position:camera.position.clone(),target:controls.target.clone()}:null;
     if (animation) {
       const t = animation.duration === 0 ? 1 : T.MathUtils.clamp((time - animation.start) / animation.duration, 0, 1);
       const e = ease(t);
       animation.progress = t;
-      const entering = animation.kind === 'scene' && mode === 'section';
-      const leaving = animation.kind === 'scene' && animation.from.reveal > animation.to.reveal;
-      const cameraProgress = entering ? phase(t, .1, 1) : e;
-      const structureProgress = entering ? phase(t, 0, .76) : e;
+      const entering = !animation.continuation && animation.kind === 'scene' && mode === 'section';
+      const leaving = !animation.continuation && animation.kind === 'scene' && animation.from.reveal > animation.to.reveal;
+      const cameraProgress = entering ? T.MathUtils.clamp((t-.04)/.96,0,1) : t;
+      const structureProgress = entering ? T.MathUtils.clamp(t/.76,0,1) : t;
       const cutProgress = entering ? phase(t, .28, .9) : leaving ? phase(t, 0, .65) : e;
       expansion = lerp(animation.from.expansion, animation.to.expansion, e);
       reveal = lerp(animation.from.reveal, animation.to.reveal, e);
       districtVisibility = lerp(animation.from.districtVisibility, animation.to.districtVisibility,
-        animation.to.districtVisibility<animation.from.districtVisibility ? phase(t,0,.24)
+        animation.continuation?e:animation.to.districtVisibility<animation.from.districtVisibility ? phase(t,0,.24)
           : animation.to.districtVisibility>animation.from.districtVisibility ? phase(t,.66,1) : e);
+      contextVisibility=lerp(animation.from.contextVisibility,animation.to.contextVisibility,entering?phase(t,.18,.7):e);
       screenCenter.lerpVectors(animation.from.screenCenter, animation.to.screenCenter, entering ? phase(t, .22, .9) : e);
       panel = lerp(animation.from.panel, animation.to.panel, entering ? phase(t, .48, .96) : leaving ? phase(t, 0, .55) : e);
       focusAmount = lerp(animation.from.focusAmount, animation.to.focusAmount, e);
-      camera.position.lerpVectors(animation.from.position, animation.to.position, cameraProgress);
-      camera.position.addScaledVector(animation.lift, Math.sin(Math.PI * cameraProgress));
-      controls.target.lerpVectors(animation.from.target, animation.to.target, cameraProgress);
+      const focusProgress=animation.continuation?e:entering?phase(t,.55,1):phase(t,.06,.94);
+      roomFades=animation.to.roomFades.map((fade,index)=>lerp(animation.from.roomFades[index]||0,fade,focusProgress));
+      const pose=sampleCameraFlight(animation.from,animation.to,cameraProgress,animation.path);
+      camera.position.copy(pose.position);controls.target.copy(pose.target);
       model.modules.forEach((module, index) => {
-        module.group.position.lerpVectors(animation.from.modules[index], animation.to.modules[index], structureProgress);
+        const unfolding=!animation.continuation&&animation.from.expansion!==animation.to.expansion;
+        const progress=unfolding?staggerProgress(structureProgress,index,model.modules.length,animation.to.expansion>animation.from.expansion):ease(structureProgress);
+        module.group.position.lerpVectors(animation.from.modules[index], animation.to.modules[index], progress);
         cuts[index] = lerp(animation.from.cuts[index], animation.to.cuts[index], cutProgress);
       });
       if (t === 1) {
         const done = animation.done;
         animation = null; controls.enabled = true;
+        cameraVelocity.set(0,0,0);targetVelocity.set(0,0,0);lastMotionTime=null;
         setControlLimits();
         done?.();
       }
@@ -342,6 +351,9 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     containInteriorFlight();
     let changed = controls.update();
     if(!animation)changed=constrainCamera()||changed;
+    // Measure the rendered pose after containment, so a rapid retarget also
+    // preserves the motion of framing corrections rather than an ideal path.
+    if(animation&&motionSample){if(lastMotionTime!==null&&time>lastMotionTime){cameraVelocity.copy(camera.position).sub(motionSample.position).divideScalar(time-lastMotionTime);targetVelocity.copy(controls.target).sub(motionSample.target).divideScalar(time-lastMotionTime);}lastMotionTime=time;}
     updateEnclosedSurfaces();
     updateProjection();
     if (dirty || moving || changed || objectMotion?.changed) {
@@ -428,16 +440,19 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     if(changed)camera.lookAt(controls.target);
     return changed;
   }
-  function move(to, duration, done, kind = 'scene') {
+  function move(to, duration, done, kind = 'scene', {continuation=false}={}) {
+    const interrupted=Boolean(animation),remaining=reduceMotion||duration<=0?0:Math.max(1,duration);
+    const carry=(velocity,distance)=>interrupted?velocity.clone().multiplyScalar(remaining).clampLength(0,Math.max(.001,distance*.45)):new T.Vector3();
+    const carryPosition=carry(cameraVelocity,camera.position.distanceTo(to.position)),carryTarget=carry(targetVelocity,controls.target.distanceTo(to.target));
     // Drain orbital inertia before taking the new animation's starting pose.
     controls.enableDamping = false; controls.update(); controls.enableDamping = !reduceMotion;
     controls.minDistance = .01;
     controls.maxDistance = Infinity;
     animation = {
-      start: performance.now(), duration: reduceMotion || duration <= 0 ? 0 : Math.max(1, duration), kind, progress: 0,
-      from: { position: camera.position.clone(), target: controls.target.clone(), screenCenter: screenCenter.clone(), districtVisibility, expansion, reveal, panel, focusAmount, modules: model.modules.map(module => module.group.position.clone()), cuts: [...cuts] },
-      to: { focusAmount: 0, districtVisibility, ...to, position: to.position.clone(), target: to.target.clone(), screenCenter: (to.screenCenter || screenCenter).clone() }, done,
-      lift: new T.Vector3(0, kind === 'scene' && selected ? Math.min(18, camera.position.distanceTo(to.position) * .09) : kind === 'room' ? Math.min(selected.interior.unit * 2, camera.position.distanceTo(to.position) * .12) : 0, 0),
+      start: performance.now(), duration: remaining, kind, progress: 0, continuation,
+      from: { position: camera.position.clone(), target: controls.target.clone(), screenCenter: screenCenter.clone(), districtVisibility, contextVisibility, expansion, reveal, panel, focusAmount, roomFades:[...roomFades], modules: model.modules.map(module => module.group.position.clone()), cuts: [...cuts] },
+      to: { focusAmount: 0, districtVisibility, contextVisibility:selected?0:1, roomFades:selected?selected.interior.rooms.map((_,index)=>focusedRoom!==null&&index!==focusedRoom?1:0):[], ...to, position: to.position.clone(), target: to.target.clone(), screenCenter: (to.screenCenter || screenCenter).clone() }, done,
+      path:{arc:kind==='room'?.055:selected?.09:.035,yaw:kind==='room'?.035:0,carryPosition,carryTarget},
     };
     controls.enabled = false;
     hover = null; hoveredRoom = null; selected?.interior.setHoveredRoom(null);
@@ -445,9 +460,10 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     canvas.style.cursor = 'grab';
     invalidate();
   }
-  function goTo(nextMode, id, { instant = false, onComplete, reset = false } = {}) {
+  function goTo(nextMode, id, { instant = false, onComplete, reset = false, roomIndex = null } = {}) {
     model.modules.forEach(module => module.interior.interactions.reset());
     const previousMode = mode;
+    const previousSection = selected;
     const direction = camera.position.clone().sub(controls.target);
     const exploreDirection=new T.Vector3(direction.x,Math.hypot(direction.x,direction.z)/Math.tan(1.13),direction.z);
     if (previousMode !== 'section' && previousMode !== nextMode && !reset) {
@@ -460,9 +476,11 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     modelDirty = true;
     selected = nextMode === 'section' ? model.modules.find(module => module.id === id) : null;
     refreshAtmosphere();
-    focusedRoom = null; contextRoom = null; activeRoom = 0; hoveredRoom = null;
-    canvas.dataset.focusedRoom = '';
-    selected?.interior.setActiveRoom(0);
+    const validRoom=selected&&Number.isInteger(roomIndex)&&selected.interior.rooms[roomIndex]?roomIndex:null;
+    focusedRoom = validRoom; contextRoom = validRoom; activeRoom = validRoom??0; hoveredRoom = null;
+    if(selected!==previousSection)roomFades=selected?selected.interior.rooms.map(()=>0):[];
+    canvas.dataset.focusedRoom = validRoom===null?'':String(validRoom);
+    selected?.interior.setActiveRoom(activeRoom);
     selected?.interior.setHoveredRoom(null);
     if (nextMode === 'section' && !selected) throw new Error('Unknown section');
     if (nextMode === 'section' && !savedViews.has('explore')) savedViews.set('explore', framing('explore', width, height, exploreDirection));
@@ -474,10 +492,10 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       return offset;
     });
     let pose;
-    if (selected) pose = interiorFraming(selected, null, modulePositions[selected.index]);
+    if (selected) pose = interiorFraming(selected, validRoom, modulePositions[selected.index]);
     else if (!reset && previousMode !== nextMode && savedViews.has(nextMode)) pose = savedViews.get(nextMode);
     else pose = framing(nextMode, width, height, reset ? null : nextMode==='explore'?exploreDirection:direction);
-    const to = { ...pose, expansion: desiredExpansion, districtVisibility: nextMode==='tower' ? 1 : 0, reveal: selected ? 1 : 0, panel: selected ? 1 : 0, modules: modulePositions, cuts: model.modules.map(module => module === selected ? 1 : 0) };
+    const to = { ...pose, focusAmount:validRoom===null?0:1, expansion: desiredExpansion, districtVisibility: nextMode==='tower' ? 1 : 0, reveal: selected ? 1 : 0, panel: selected ? 1 : 0, modules: modulePositions, cuts: model.modules.map(module => module === selected ? 1 : 0) };
     move(to, instant ? 0 : nextMode === 'section' ? 1850 : previousMode === 'section' ? 1550 : 1300, onComplete);
     canvas.dataset.mode = nextMode;
     canvas.dataset.section = selected?.id || '';
@@ -640,7 +658,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
         pose = { target, position: viewDirection.multiplyScalar(scale).add(target), screenCenter: newFrame.screenCenter };
       }
       const remaining = animation.duration - (performance.now() - animation.start);
-      move({ ...animation.to, ...pose }, remaining, animation.done, animation.kind);
+      move({ ...animation.to, ...pose }, remaining, animation.done, animation.kind,{continuation:true});
     }
     hasViewport = true;
     if (!animation) setControlLimits();

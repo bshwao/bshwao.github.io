@@ -1,0 +1,25 @@
+✔ every room retains independently animated objects and exact batched picking identities (2622.2512ms)
+✔ object responses stay isolated, retrigger safely, and remove spatial motion when reduced motion changes (134.1473ms)
+✔ penthouse bedding and toys provide visible finite movement with a reduced-motion alternative (136.2908ms)
+✔ inspection car tires and brake hubs remain concentric through animation and retriggering (155.7515ms)
+✔ sofa frame panels and cushions have no intersecting or exposed coplanar faces (0.7168ms)
+✔ complete furnished rooms fit their assigned usable bays and leave the service core clear (828.7848ms)
+✔ every floor has an elevator and a stair contained by the shared service region (723.5741ms)
+✔ interior rails remain on the slab around the concave L recess (718.1449ms)
+✔ motion easing clamps time and settles with zero endpoint velocity and acceleration (1.5509ms)
+✔ phase windows hold their endpoints outside the active beat and ease inside it (0.3113ms)
+✔ azimuth differences cross the angle seam by the shortest route in either direction (2.7009ms)
+✔ floor staggering opens from the crown and closes from the base without changing final transforms (1.0504ms)
+✔ camera flights preserve exact endpoints and input poses while returning independent vectors (2.4925ms)
+✔ camera travel uses optical zoom pacing and avoids a full orbit across the angle seam (0.7732ms)
+✔ clearance and yaw create a bounded camera bow which returns to rest at both ends (1.5154ms)
+✔ near-pole and degenerate camera offsets remain finite throughout a flight (2.1714ms)
+✔ interrupted-flight carry continues incoming motion and disappears before the new arrival (0.3643ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5552.1035

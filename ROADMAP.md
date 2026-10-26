@@ -15,6 +15,8 @@ The first-floor robot experiment has been removed. Its evidence remains archived
 
 ## Recorded verification
 
+The October 26, 2026 [tower and room motion](state/spatial-motion/README.md) checkpoint passes 199 source/server tests, 82 module/reference checks, all five DOM/camera modes, and desktop/portrait WebGL sweeps. It adds explicit camera and material continuity checks for interrupted navigation and direct room entry.
+
 The October 26, 2026 [games dashboard](state/game-dashboard/README.md) checkpoint passes 190 source/server tests, 81 module/reference checks, all five DOM/camera integration modes, and 24 responsive game/library accessibility and overflow checks. Its report includes native game interaction evidence and environment limits.
 
 The October 26, 2026 [bedroom layout](state/bedroom-layout/README.md) and [room copy review](state/room-copy/README.md) checkpoints record:

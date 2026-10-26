@@ -15,7 +15,7 @@ const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', 
 let spatial, currentId = null, currentRoomIndex = null, revision = 0;
 const defaultTitle = document.title;
 let routeKey = '', fallbackActive = false;
-let readingView, localClock, intro, penthouseExperiences;
+let readingView, localClock, intro, penthouseExperiences, roomContentAnimation;
 let preferenceStorage;
 try { preferenceStorage = window.localStorage; } catch { /* Private browsing may deny storage. */ }
 let viewPreferences = readViewPreferences(preferenceStorage);
@@ -79,12 +79,18 @@ function selectRoom(index, { focus = false, moveCamera = true, writeRoute = true
     return;
   }
   const restoreFocus = $('#interior-content').contains(document.activeElement);
+  roomContentAnimation?.cancel();
   $('#interior-content').innerHTML = roomMarkup(content.rooms[index], index);
   penthouseExperiences?.mount(currentId,index);
   $('#interior-content').scrollTop = 0;
   $('#interior-panel').scrollTop = 0;
   page.querySelectorAll('[data-station]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.station) === index)));
-  if (moveCamera) spatial.focusRoom(index);
+  if (moveCamera) {
+    spatial.focusRoom(index);
+    if(page.dataset.motion!=='reduced')roomContentAnimation=$('#interior-content').animate?.(
+      [{opacity:.25,transform:'translateY(9px)'},{opacity:1,transform:'translateY(0)'}],
+      {duration:360,easing:'cubic-bezier(.22,1,.36,1)'});
+  }
   if (focus || restoreFocus) $('#interior-room-title').focus({ preventScroll: true });
 }
 
@@ -162,7 +168,7 @@ function syncRoute({ instant = false, force = false } = {}) {
     sectionMarkup(id);
     if (roomIndex !== null) selectRoom(roomIndex, { moveCamera: false });
   }
-  spatial.goTo(mode, id, { instant, onComplete() {
+  spatial.goTo(mode, id, { instant, roomIndex, onComplete() {
     if (token !== revision) return;
     page.dataset.transition = 'idle';
     page.classList.add('is-settled');
@@ -170,7 +176,6 @@ function syncRoute({ instant = false, force = false } = {}) {
     $('#tower-labels').inert = mode !== 'explore';
     $('#station-markers').inert = mode !== 'section';
     $('#interior-content').setAttribute('aria-busy', 'false');
-    if (id && roomIndex !== null) spatial.focusRoom(roomIndex, { instant });
     $('#spatial-hint').textContent = id ? 'SELECT A ROOM TO EXPLORE' : mode === 'explore' ? 'CHOOSE A SECTION TO EXPLORE' : 'CLICK THE STRUCTURE TO UNFOLD';
     if (readingView.active) return;
     if (id && !instant) $('#interior-room-title').focus({ preventScroll: true });
@@ -180,6 +185,7 @@ function syncRoute({ instant = false, force = false } = {}) {
 }
 
 function onFrame(state) {
+  if(state.reducedMotion)roomContentAnimation?.cancel();
   if (!state.transitionType && page.dataset.transition === 'idle') intro?.ready();
   setData(page, 'motion', state.reducedMotion ? 'reduced' : 'full');
   setData(document.documentElement, 'motion', state.reducedMotion ? 'reduced' : 'full');
@@ -264,6 +270,7 @@ function useFallback() {
   readingView?.close({ focus: false });
   localClock?.dispose();
   penthouseExperiences?.dispose();
+  roomContentAnimation?.cancel();
   spatial?.dispose();
   page.className = 'tower-page unavailable';
   for (const name of [...page.attributes].map(attribute => attribute.name)) if (name.startsWith('data-') || name === 'style') page.removeAttribute(name);

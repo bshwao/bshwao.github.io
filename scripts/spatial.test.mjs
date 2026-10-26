@@ -11,6 +11,7 @@ import { sections } from '../assets/tower-geometry.js';
 import { sectionColors } from '../assets/color-theme.js';
 import { outdoorTerrainFloor } from '../assets/city-island.js';
 import { outdoorCameraPose } from '../assets/camera-framing.js';
+import { interiorRoomDesign } from '../assets/interior-design.js';
 
 const root = resolve(import.meta.dirname, '..');
 const sectionIds=sections.map(section=>section.id);
@@ -250,10 +251,20 @@ function assertRoomFramed(sectionIndex, roomIndex, stage = 'settled') {
   assert.ok(bounds.left >= rect.left - 1 && bounds.right <= rect.right + 1 && bounds.top >= rect.top - 1 && bounds.bottom <= rect.bottom + 1 && bounds.near > -1 && bounds.far < 1,
     `${sections[sectionIndex].id} room ${roomIndex} (${stage}): furniture stays in the visible model area (${JSON.stringify(bounds)})`);
 }
-async function sampleRoomFlight(sectionIndex, roomIndex) {
+function roomSurfaceColors(id) {
+  const interior=lastScene.children.find(node=>node.isGroup).children[sectionIndex(id)].children[2];
+  return interior.children.slice(0,floorContent[id].rooms.length).map(room=>room.children.filter(node=>node.isMesh).map(mesh=>({surface:mesh.userData.surface,color:mesh.material.color.toArray()})));
+}
+function assertCameraPoseUnchanged(position,rotation,message) {
+  const displacement=lastCamera.position.distanceTo(position),rotationDelta=lastCamera.quaternion.angleTo(rotation);
+  assert.ok(displacement<1e-8,`${message}: camera position stays continuous (${displacement.toExponential(3)} units)`);
+  assert.ok(rotationDelta<1e-6,`${message}: camera orientation stays continuous (${rotationDelta.toExponential(3)} radians)`);
+}
+async function sampleRoomFlight(sectionIndex, roomIndex, onSample) {
   for (const progress of [.25, .5, .75]) {
     await tick(190);
     assertRoomFramed(sectionIndex, roomIndex, `${progress * 100}% of room flight`);
+    onSample?.(progress);
   }
   await tick(230);
 }
@@ -647,12 +658,36 @@ assert.equal(manualLink.selectionStart, 0);
 assert.equal(manualLink.selectionEnd, manualLink.value.length);
 assert.equal(w.document.querySelector('#share-status').textContent, 'Copy this link:');
 clipboardDenied = false;
-click('#station-navigation [data-station="1"]'); await tick(200);
+const firstRoomPosition=lastCamera.position.clone(),firstRoomRotation=lastCamera.quaternion.clone(),firstRoomColors=roomSurfaceColors('about');
+click('#station-navigation [data-station="1"]');
+if(!reduced){
+  assertCameraPoseUnchanged(firstRoomPosition,firstRoomRotation,'Starting a room close-up');
+  await tick(0);
+  assertCameraPoseUnchanged(firstRoomPosition,firstRoomRotation,'The first room-flight frame');
+  assert.deepEqual(roomSurfaceColors('about'),firstRoomColors,'Room surfaces retain the rendered color treatment when a new focus begins');
+}
+await tick(200);
 assert.equal(manualLink.hidden, true, 'Changing the route clears the manual copy field');
 assert.equal(w.document.querySelector('#share-status').textContent, '');
-click('#station-navigation [data-station="3"]'); await sampleRoomFlight(sectionIndex('about'), 3);
+const interruptedPosition=lastCamera.position.clone(),interruptedRotation=lastCamera.quaternion.clone(),interruptedColors=roomSurfaceColors('about');
+click('#station-navigation [data-station="3"]');
+if(!reduced){
+  assertCameraPoseUnchanged(interruptedPosition,interruptedRotation,'Rapid room retarget');
+  assert.deepEqual(roomSurfaceColors('about'),interruptedColors,'Changing the destination does not instantly swap the room surface colors');
+  await tick(0);
+  assertCameraPoseUnchanged(interruptedPosition,interruptedRotation,'The replacement room-flight frame');
+  assert.deepEqual(roomSurfaceColors('about'),interruptedColors,'The replacement flight starts from the displayed material pose');
+}
+await sampleRoomFlight(sectionIndex('about'), 3,progress=>{
+  if(!reduced&&progress===.25)assert.notDeepEqual(roomSurfaceColors('about'),interruptedColors,'Room surface colors blend during travel instead of jumping only at arrival');
+});
 assert.equal(canvas.dataset.focusedRoom, '3', 'Rapid room changes keep the most recent camera destination');
 assertRoomFramed(sectionIndex('about'), 3);
+assert.equal(main.dataset.cameraMotion,'idle','The retargeted room flight settles completely');
+for(const surface of roomSurfaceColors('about')[3]){
+  const authored=new THREE.Color(interiorRoomDesign('about',3).colors[surface.surface]);
+  assert.ok(authored.toArray().every((value,i)=>Math.abs(value-surface.color[i])<1e-8),'The destination room finishes in its authored surface palette');
+}
 w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await tick(800);
 assert.equal(main.dataset.mode, 'section', 'Escape from a close view stays on this floor');
 assert.equal(canvas.dataset.focusedRoom, '');
@@ -808,20 +843,39 @@ assert.equal(main.dataset.transition, 'idle', 'Enabling reduced motion ends the 
 motionReduced = reduced; for (const callback of [...motionListeners]) callback();
 
 // Browser history and direct deep links share the same route handler.
-w.history.pushState(null, '', '#projects/b'); w.dispatchEvent(new w.PopStateEvent('popstate')); await settleCamera();
+w.history.pushState(null, '', '#projects/b'); w.dispatchEvent(new w.PopStateEvent('popstate'));
+const directRoomPhases=[];
+for(let i=0;i<180&&frames.size;i++){await tick(16);directRoomPhases.push(main.dataset.cameraMotion);}
+const directRoomSequence=directRoomPhases.filter((phase,index)=>index===0||phase!==directRoomPhases[index-1]);
+assert.deepEqual(directRoomSequence,reduced?['idle']:['scene','idle'],'A direct room URL uses one continuous scene entry without a second room flight or stop/restart');
+assert.equal(main.dataset.transition,'idle');
 assert.equal(canvas.dataset.section, 'projects');
 assert.equal(canvas.dataset.focusedRoom, '1', 'History restoration recovers the exact room camera');
 assert.equal(w.document.querySelector('#station-navigation [data-station="1"]').getAttribute('aria-pressed'), 'true');
 assert.equal(w.document.querySelector('#interior-room-title').textContent, floorContent.projects.rooms[1].title);
 assert.equal(w.document.title, `${floorContent.projects.rooms[1].title} · Projects — Eric Hsu`);
+assertRoomFramed(sectionIndex('projects'),1,'direct room entry arrival');
 w.document.querySelector('#interior-room-title').focus();
 w.history.pushState(null, '', '#projects/c'); w.dispatchEvent(new w.HashChangeEvent('hashchange')); await tick(800);
 assert.equal(canvas.dataset.focusedRoom, '2', 'A room hash change updates the current floor without re-entering it');
 assert.equal(w.document.querySelector('#interior-room-title').textContent, floorContent.projects.rooms[2].title);
 assert.equal(w.document.activeElement, w.document.querySelector('#interior-room-title'), 'Replacing focused content keeps focus on the new room heading');
-w.history.pushState(null, '', '#resume/d'); w.dispatchEvent(new w.PopStateEvent('popstate')); await settleCamera();
+w.history.pushState(null, '', '#resume/b'); w.dispatchEvent(new w.PopStateEvent('popstate'));await tick(1400);
+const lateEntryPosition=lastCamera.position.clone(),lateEntryRotation=lastCamera.quaternion.clone(),lateEntryColors=roomSurfaceColors('resume');
+if(!reduced)assert.equal(main.dataset.cameraMotion,'scene','Retarget while the entry is still opening the interior');
+w.history.pushState(null, '', '#resume/d'); w.dispatchEvent(new w.PopStateEvent('popstate'));
+if(!reduced){
+  assertCameraPoseUnchanged(lateEntryPosition,lateEntryRotation,'A late same-floor room route change');
+  assert.deepEqual(roomSurfaceColors('resume'),lateEntryColors,'Late scene-entry retargeting preserves the existing room color blend');
+  await tick(0);
+  assertCameraPoseUnchanged(lateEntryPosition,lateEntryRotation,'The first frame after a late entry retarget');
+  assert.deepEqual(roomSurfaceColors('resume'),lateEntryColors,'The replacement entry does not reset the surface fades');
+}
+await settleCamera();
 assert.equal(canvas.dataset.section, 'resume');
 assert.equal(canvas.dataset.focusedRoom, '3');
+assert.equal(main.dataset.cameraMotion,'idle');
+assertRoomFramed(sectionIndex('resume'),3,'late scene-entry retarget arrival');
 assert.equal(w.location.hash, '#resume/d');
 assert.ok(w.document.querySelector('a[download]'));
 // Reading mode is a reversible section overlay; it never replaces the live 3D scene.

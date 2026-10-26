@@ -1,5 +1,11 @@
 # Release verification
 
+## Tower and room motion (local) — October 26, 2026
+
+Tower unfolding now cascades through the floors, camera travel follows a shallow orbital arc with logarithmic zoom, and room focus blends the existing material colors. Direct room routes use one continuous entry rather than a separate room tween after the floor opens. Retargets preserve camera and color continuity, resize resumes without replaying reveal phases, and reduced motion completes immediately. Room content receives a short entrance effect that also respects reduced motion.
+
+All 199 source/server tests, 82 module/reference checks, and five DOM/camera integration modes pass. New assertions cover single-flight direct entry, actual room-surface color blending, camera-pose continuity, and late entry retargets. Desktop and simulated portrait WebGL sweeps pass all 31 views, render budgets, idle behavior, stable resources, and disposal. Native review records no warnings/errors. Evidence is in `state/spatial-motion/`.
+
 ## Play room games dashboard (local) — October 26, 2026
 
 The play lounge now opens one dashboard containing Blackjack, Word Guess, three mini crosswords, Snake, 2048, Sudoku, and noughts and crosses. Game state survives switching games and modal visits; Snake pauses whenever its screen becomes inactive. All furniture entry points use the same controller, including the tabletop game, and the separate inline board is removed. New games include local word validation, duplicate-letter scoring, blackjack dealer rules and hidden cards, intersecting clues, keyboard/touch controls, and progress summaries.
