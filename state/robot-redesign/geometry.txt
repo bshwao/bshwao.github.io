@@ -1,0 +1,30 @@
+✔ the two legless hovering robots stay on Level 01, with the desk companion above its chair (1441.1203ms)
+✔ both rounded companions retain their white shells and cyan details through desk feedback (232.3172ms)
+✔ the hovering route is closed, keeps its complete animated envelope over the floor, and clears fixed furnishings (324.326ms)
+✔ gliding changes position and gentle arm poses while the desk robot and GPU buffers stay fixed (210.2862ms)
+✔ pause, reduced-motion input, and another room stop gliding without hidden-time catch-up (161.7172ms)
+✔ the optional pause preference is tab-local and safe when storage is denied (0.3873ms)
+✔ compact drawing preserves solid geometry and landmarks while reducing line work (2.2781ms)
+✔ the district reserves a clear tower plaza and non-overlapping parcels outside the streets (1.8001ms)
+✔ the decorative district has finite ground geometry within a small rendering budget (2.0465ms)
+✔ district buildings fit their parcels, keep the tower clear, and share a bounded geometry budget (596.7917ms)
+✔ colored district roofs have no competing box lids or flat planes beneath pitched roofs (9.9527ms)
+✔ blueprint road marks have visible area, face upward, and stay inside the streets (1.5304ms)
+✔ district shading keeps opaque building depth and inexpensive contact washes (31.8577ms)
+✔ district landscaping and engineering references leave building volumes clear and stay inexpensive (126.7091ms)
+✔ cap plans stay within their cut footprints and keep distinct, inexpensive furnishings (168.0548ms)
+✔ all sections have closed exterior volumes, including their cut surfaces (60.6618ms)
+✔ the full model can be hit from every azimuth rather than a single SVG-facing side (38.7907ms)
+✔ each section has furnished, selectable rooms matching every content room (73.0044ms)
+✔ detailed interiors remain within a bounded geometry and rendering budget (0.5697ms)
+✔ all room anchors lie within their section footprint (172.0131ms)
+✔ room highlighting is independent and every camera target has real furniture bounds (0.5871ms)
+✔ room focus quiets the context and restores its materials without cumulative fading (3.6244ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3581.4966

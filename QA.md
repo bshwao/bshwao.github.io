@@ -1,5 +1,27 @@
 # Release verification
 
+## First-floor robots removed (local) — October 26, 2026
+
+Both About-floor companions have been removed, along with their pause controls, storage hook, animation scheduling, geometry module and dedicated trial tests. Existing furniture and room interactions remain. The robot-specific vertex-color path was also removed from room batching. Earlier robot entries below describe superseded trial checkpoints.
+
+All 178 remaining source/server tests, 76 module/reference checks and five DOM/camera integration modes pass. Native production review confirms an empty gallery and desk chair, no robot controls and no warnings/errors. The desktop WebGL harness passes all 31 views, idle rendering, stable resources and disposal; About uses one fewer draw and the warm geometry count is 248. Evidence is in `state/robot-removal/`.
+
+## Robot floor palette (local) — October 26, 2026
+
+Both About-floor robots now take their colors from the occupied room's furniture palette. Warm shells, muted equipment trim, dark ink visors and sage eyes/hover rings replace the separate white/cyan scheme. The desk companion retains its palette through chair feedback. All 18 focused resident/interior/palette tests and 77 syntax/reference checks pass. Shape, animation, batching and draw counts are unchanged. Native screenshots are in `state/robot-palette/`.
+
+## Rounded robot redesign (local) — October 26, 2026
+
+The two About-floor companions now share a rounded pearl-white shell, dark visor, cyan eyes, small paddle hands and three descending hover rings, inspired by the supplied references. The gallery companion keeps its glide route and arm sway; the stationary companion reaches toward the study keyboard. Authored vertex colors survive chair highlighting and reset inside the existing room batches. No external models, image textures or additional draws are introduced by this redesign.
+
+All 184 source/server tests and 77 module/reference checks pass, as do the five DOM/camera integration modes. The final About interior contains 39,014 triangles, below its unchanged 40,000 ceiling. The native WebGL harness passes all 31 views at desktop, portrait-phone and landscape-phone sizes, including moving/paused residents, object responses, zero idle frames while paused, stable allocations and disposal. Desktop peak draws remain 82. Native production review confirms both shapes, colors and hovering clearance, with no warnings/errors. Screenshots and final rendering reports are in `state/robot-redesign/`.
+
+## Hovering robot update (local) — October 26, 2026
+
+Both Level 01 robots are now legless, with small hover pods beneath their bodies. The gallery patrol glides with a slow sinusoidal bob and gentle arm motion instead of a stepping gait. The desk companion stays at its desk with clearance above the chair seat; its hands remain at worktop height. Pause, reduced motion and room visibility retain their existing behavior, and no characters are added to other floors.
+
+All 25 focused resident, interior, structure and palette checks pass, plus 77 syntax/reference checks. Regressions verify that the actual gallery body has no vertices extending into legs/feet, the desk body clears its chair, the full animated envelope remains on the floor and clear of furniture, and buffer identities remain stable. Native Chromium review confirms both hover poses and reports no production warnings/errors. Screenshots and logs are in `state/robot-hover/`.
+
 ## Level 01 robot trial (local) — October 26, 2026
 
 About / Level 01 now has two stylized robot companions: one walks continuously through the orientation gallery, and one sits at the study desk. The seated model shares its chair's batched geometry and response transform. The walker uses one extra vertex-colored mesh with articulated legs/arms and a closed route behind the front benches, selected from actual furniture bounds. Its conservative swept envelope includes every vertex over a complete walking loop, stays on the occupied floor and clears the cabinets, benches and lamps. Other floors receive no additional characters.

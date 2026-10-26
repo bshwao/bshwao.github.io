@@ -25,7 +25,6 @@ const originalViewport = [viewportWidth, viewportHeight];
 const previewURL = 'http://127.0.0.1:4173/?preview=integration';
 const dom = new JSDOM(await readFile(resolve(root, 'index.html'), 'utf8'), { url: `${previewURL}${deepLink ? '#projects/b' : ''}`, pretendToBeVisual: true });
 const w = dom.window;
-w.sessionStorage.setItem('eh-resident-pause-v1','true');
 let pageHidden = false;
 Object.defineProperty(w.document, 'hidden', { get: () => pageHidden });
 const initialTitle = w.document.title;
@@ -367,13 +366,6 @@ if(drawInventory){
     probe.setPreferences({motion:'reduced'});await tick(.0001);
     assert.equal(state.transitionType,null,'A live reduced-motion change also completes on its next frame');
     assert.equal(state.expansion,0);
-    probe.setPreferences({motion:'full'});probe.goTo('section','about',{instant:true});await tick(16);
-    assert.equal(state.residents.count,2);assert.equal(state.residents.moving,true,'The Level 01 walker moves by default');
-    const robotPosition=[...state.residents.position];await tick(100);
-    assert.notDeepEqual(state.residents.position,robotPosition,'The walker changes location without clicking it');
-    probe.setResidentsPaused(true);await tick(16);assert.equal(state.residents.moving,false);
-    probe.setResidentsPaused(false);probe.focusRoom(1,{instant:true});await tick(16);
-    assert.equal(state.residents.moving,false,'The gallery walker rests when only the study is visible');
   }finally{
     probe.dispose();container.remove();
     lastScene=primary.scene;lastCamera=primary.camera;lastRenderer=primary.renderer;renders=primary.renders;

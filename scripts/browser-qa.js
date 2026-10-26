@@ -12,7 +12,7 @@ const testClock=()=>new Date(2026,9,23,testHour,0,0);
 if (requestedDpr > 0 && requestedDpr <= 4) Object.defineProperty(window, 'devicePixelRatio', { value: requestedDpr, configurable: true });
 const stage = document.querySelector('#stage'); stage.style.width = `${width}px`; stage.style.height = `${height}px`;
 const output = document.querySelector('#results'), status = document.querySelector('#status');
-const rows = [], objectChecks = [], zoomChecks = [],residentChecks=[]; let frames = 0, objectFrames = 0, latest, spatial, maxFrameCalls = 0;
+const rows = [], objectChecks = [], zoomChecks = []; let frames = 0, objectFrames = 0, latest, spatial, maxFrameCalls = 0;
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function settled(requireFrame=true) {
@@ -53,7 +53,7 @@ async function verifyZoomStops(view) {
 }
 try {
   const started = performance.now();
-  spatial = createSpatialScene({ container: stage, preferences:{graphics,motion:'full'}, residentsPaused:true, clock:testClock, debugGeometry:true, shadowComparison:params.has('shadows'), onFrame(state) {
+  spatial = createSpatialScene({ container: stage, preferences:{graphics,motion:'full'}, clock:testClock, debugGeometry:true, shadowComparison:params.has('shadows'), onFrame(state) {
     latest = state; frames++;
     if (state.moving && !state.transitionType) objectFrames++;
     if(spatial) maxFrameCalls=Math.max(maxFrameCalls,spatial.metrics().calls);
@@ -67,19 +67,6 @@ try {
   for (const {id} of sections) {
     // Count both the sharp interior and the small scenery/blur passes.
     spatial.goTo('section', id, { instant: true }); await settled(); sample(id, 75);
-    if(id==='about'){
-      const before=spatial.metrics();spatial.setResidentsPaused(false);
-      for(let i=0;i<200&&!latest.residents?.moving;i++)await delay(35);
-      assert(latest.residents.count===2&&latest.residents.moving,`The two-robot trial is missing its active walker: ${JSON.stringify({residents:latest.residents,reduced:latest.reducedMotion,reveal:latest.reveal,transition:latest.transitionType})}`);
-      const first=[...latest.residents.position];
-      for(let i=0;i<200&&first.every((value,j)=>Math.abs(value-latest.residents.position[j])<.01);i++)await delay(35);
-      const next=[...latest.residents.position];
-      assert(first.some((value,i)=>Math.abs(value-next[i])>.005),'The walking robot does not change position');
-      spatial.setResidentsPaused(true);await settled();const held=frames;await delay(150);
-      assert(frames===held,'Pausing the resident leaves a continuous render loop');
-      const after=spatial.metrics();assert(after.geometries===before.geometries&&after.textures===before.textures,'Robot movement allocates GPU resources');
-      residentChecks.push({floor:id,count:2,first,next,pausedIdleFrames:frames-held,calls:after.calls});
-    }
     if(id==='about'){await verifyZoomStops(id);spatial.overview();await settled();}
     for (const [index, room] of floorContent[id].rooms.entries()) {
       spatial.focusRoom(index, { instant: true }); await settled(); sample(`${id}/${room.id}`, 75);
@@ -154,7 +141,7 @@ try {
   }
   assert(allocated.get('low').pixelRatio < allocated.get('standard').pixelRatio, 'Low graphics does not reduce resolution');
   assert(allocated.get('low').calls < allocated.get('standard').calls, 'Low graphics does not reduce draw calls');
-  output.textContent = JSON.stringify({ viewport: `${width}x${height}`, graphics, requestedDpr: requestedDpr || devicePixelRatio, userAgent: navigator.userAgent, readyMs, idleFramesOver250ms: idleFrames, maxFrameCalls, beforeNavigationWarmup, navigationBaseline: memory, navigationAllocations,navigationFirstDraws, stableGeometryCount: memory, stableGeometryAfterResize: resizedMemory, clockChanges, objectChecks, zoomChecks,residentChecks, qualityChecks, rows }, null, 2);
+  output.textContent = JSON.stringify({ viewport: `${width}x${height}`, graphics, requestedDpr: requestedDpr || devicePixelRatio, userAgent: navigator.userAgent, readyMs, idleFramesOver250ms: idleFrames, maxFrameCalls, beforeNavigationWarmup, navigationBaseline: memory, navigationAllocations,navigationFirstDraws, stableGeometryCount: memory, stableGeometryAfterResize: resizedMemory, clockChanges, objectChecks, zoomChecks, qualityChecks, rows }, null, 2);
   spatial.dispose();
   assert(stage.querySelector('canvas') === null, 'Disposal leaves a canvas behind');
   assert(spatial.metrics().geometries === 0, 'Disposal leaves uploaded GPU geometries behind');

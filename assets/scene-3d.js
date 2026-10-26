@@ -18,7 +18,7 @@ const phase = (t, start, end) => ease(T.MathUtils.clamp((t - start) / (end - sta
 const lerp = T.MathUtils.lerp;
 
 /** One persistent scene and camera: tower, exploded assembly, and inhabited cutaway. */
-export function createSpatialScene({ container, onSelectSection, onSelectRoom, onObjectActivate, onFrame, onContextLost, preferences = {}, residentsPaused=false, shadowComparison = false, debugGeometry = false, clock=()=>new Date() }) {
+export function createSpatialScene({ container, onSelectSection, onSelectRoom, onObjectActivate, onFrame, onContextLost, preferences = {}, shadowComparison = false, debugGeometry = false, clock=()=>new Date() }) {
   let viewPreferences = normalizeViewPreferences(preferences);
   let realCityTime=readCityTime(clock()),cityTime=realCityTime,penthouseAtmosphere=null,timeSignature='';
   const renderer = new T.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'default' });
@@ -339,16 +339,12 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     }
     if (moving || modelDirty) { updateModel(); modelDirty = false; }
     const objectMotion = selected?.interior.interactions.update(time);
-    const residentMotion=selected?.interior.updateResidents(time,!animation&&reveal>.95&&!reduceMotion&&!residentsPaused);
-    const residentState=selected?.interior.resident?.state();
-    canvas.dataset.residentMoving=String(Boolean(residentMotion?.moving));
-    canvas.dataset.residentPosition=residentState?residentState.position.map(value=>value.toFixed(4)).join(','):'';
     containInteriorFlight();
     let changed = controls.update();
     if(!animation)changed=constrainCamera()||changed;
     updateEnclosedSurfaces();
     updateProjection();
-    if (dirty || moving || changed || objectMotion?.changed || residentMotion?.changed) {
+    if (dirty || moving || changed || objectMotion?.changed) {
       const distance = camera.position.distanceTo(controls.target);
       for (const reference of depthReferences) reference.value = distance;
       const lighting = amount => {
@@ -372,13 +368,13 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       } else { environment.update(camera,1); lighting(1); renderer.render(scene,camera); }
       canvas.dataset.background = districtVisibility < .999 ? viewPreferences.graphics === 'low' ? 'simplified' : 'blurred' : 'sharp';
       onFrame?.({ mode, selectedId: selected?.id, labels: labels(), expansion, reveal, panel, focusedRoom, activeRoom, hoveredRoom, hoveredObject: hoveredObject?.name || null,
-        viewport: viewportLayout(width, height), moving: Boolean(animation) || Boolean(objectMotion?.moving) || Boolean(residentMotion?.moving), transitionType: animation?.kind || null,
+        viewport: viewportLayout(width, height), moving: Boolean(animation) || Boolean(objectMotion?.moving), transitionType: animation?.kind || null,
         azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), zoom:zoomState(), reducedMotion:reduceMotion, timeOfDay:cityTime.phase,localHour:cityTime.hour,
-        atmosphere:atmosphereState(),residents:{...residentState,count:residentState?2:0,paused:residentsPaused} });
+        atmosphere:atmosphereState() });
       dirty = false;
     }
     if (animation || changed || objectMotion?.moving) invalidate();
-    else if(residentMotion?.moving||backdrop.weatherState().rain&&!reduceMotion)effectTimer=setTimeout(()=>{effectTimer=null;invalidate();},residentMotion?.moving?16:33);
+    else if(backdrop.weatherState().rain&&!reduceMotion)effectTimer=setTimeout(()=>{effectTimer=null;invalidate();},33);
   }
   function applyBudget() {
     const budget = renderBudget(width, height, devicePixelRatio, viewPreferences.graphics);
@@ -672,7 +668,6 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     geometryInventory(){return {enabled:debugGeometry,rendered:geometryDraws.size,records:[...geometryDraws.values()]};},
     metrics() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, lines: renderer.info.render.lines, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs.length, pixelRatio: renderer.getPixelRatio(), quality: viewPreferences.graphics === 'low' ? 1 : 0, zoom:zoomState(), reducedMotion:reduceMotion, graphics:viewPreferences.graphics, background: canvas.dataset.background, backdrop: backdrop.metrics(), timeOfDay:{hour:cityTime.hour,phase:cityTime.phase,daylight:cityTime.daylight,sun:cityTime.sunVisibility,moon:cityTime.moonVisibility,stars:cityTime.stars}, atmosphere:atmosphereState(), near:camera.near, far:camera.far, width, height }; },
     setPenthouseAtmosphere,
-    setResidentsPaused(value){residentsPaused=Boolean(value);invalidate();},
     setPreferences(value) {
       viewPreferences = normalizeViewPreferences({ ...viewPreferences, ...value });
       motionChange(); applyBudget(); renderer.setSize(width, height); backdrop.invalidate(); invalidate();

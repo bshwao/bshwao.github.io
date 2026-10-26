@@ -2,8 +2,6 @@
 
 All six floors now have their own interior direction: a warm, softly upholstered Penthouse; a forest-and-walnut About study; a midnight-blue Projects studio; a yellow-and-steel Experience workshop; a burgundy Résumé library; and a jade Contact reception. Each of the 23 rooms has its own furniture palette, wall/floor finishes and restaged layout. Spindle chairs, utility stools, cross-braced shelving, arched library joinery, rounded upholstery and café tables distinguish their uses while retaining the existing interactions.
 
-Level 01 / About has a two-robot trial: one walks a continuous gallery patrol, while another sits at the study desk. **Pause walking robot** freezes the walker and remembers that choice for the tab. Reduced motion also stops it, and it rests when the gallery is out of view. Other floors retain their current furnishings.
-
 The sixth tower section is a visitor penthouse: a bedroom, play lounge, listening nook and sky lounge, with 48 individually interactive furnishings. Open `#penthouse` or unfold the tower and choose Penthouse; the original five portfolio destinations retain their URLs and numbers.
 
 The listening nook offers three original synthesized lofi tracks, dedicated to the public domain under CC0. The compact player expands to a full-screen visualizer with spectrum, waveform, orbit and constellation styles, all driven by a Web Audio analyser. Visitors can drop in their own audio or use the file picker; these files stay on their device. Music starts only on request and stops when leaving the penthouse. The recordings and their provenance are in [the music credits](./assets/audio/penthouse/LICENSE.md); all three WAVs total about 5.1 MiB and load on demand.

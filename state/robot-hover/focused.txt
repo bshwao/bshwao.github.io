@@ -1,0 +1,33 @@
+✔ the two legless hovering robots stay on Level 01, with the desk companion above its chair (1608.6533ms)
+✔ the hovering route is closed, keeps its complete animated envelope over the floor, and clears fixed furnishings (294.5415ms)
+✔ gliding changes position and gentle arm poses while the desk robot and GPU buffers stay fixed (189.9901ms)
+✔ pause, reduced-motion input, and another room stop gliding without hidden-time catch-up (196.2177ms)
+✔ the optional pause preference is tab-local and safe when storage is denied (0.3447ms)
+✔ all 23 rendered rooms retain independent palettes through focus and hover transitions (7.4558ms)
+✔ every physical room floor carries its own finish in the rendered vertex buffer (28.0192ms)
+✔ the penthouse has warm physical materials and rounded upholstery while the workshop uses low utility stools (2.0982ms)
+✔ restaged focal furnishings have different orientations while attached parts remain in their object batches (1.4953ms)
+✔ solid wall joins have the analytic exposed area for duplicate, touching and intersecting panels (3.451ms)
+✔ all floors have non-overlapping wall skins, clean corner posts and separated floor finishes (1811.2697ms)
+✔ every paneled room backdrop has one clean exposed surface across its trim and display (1776.9902ms)
+✔ all architectural floors remain on the occupied L-shaped slab in four static batches (692.3993ms)
+✔ floor finishes fill every room bay and doorways provide real openings through its partitions (417.3304ms)
+✔ architectural partitions are solid and every room connects to the shared circulation (124.2475ms)
+✔ real furnishings occupy the full length and width of every architectural room (665.8178ms)
+✔ reading drawings retain the full room finishes and matching physical doorway locations (189.1347ms)
+✔ every room retains independently animated objects and exact batched picking identities (3712.1572ms)
+✔ object responses stay isolated, retrigger safely, and remove spatial motion when reduced motion changes (201.8875ms)
+✔ penthouse bedding and toys provide visible finite movement with a reduced-motion alternative (191.0678ms)
+✔ inspection car tires and brake hubs remain concentric through animation and retriggering (211.2846ms)
+✔ sofa frame panels and cushions have no intersecting or exposed coplanar faces (0.7189ms)
+✔ complete furnished rooms fit their assigned usable bays and leave the service core clear (795.6879ms)
+✔ every floor has an elevator and a stair contained by the shared service region (863.5116ms)
+✔ interior rails remain on the slab around the concave L recess (830.0808ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8235.4417

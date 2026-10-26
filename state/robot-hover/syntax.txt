@@ -1,0 +1,1 @@
+Syntax and local asset references passed (77 modules).

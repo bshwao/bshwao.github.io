@@ -1,0 +1,26 @@
+✔ the two legless hovering robots stay on Level 01, with the desk companion above its chair (1768.229ms)
+✔ both rounded companions match their room palettes and retain their colors through desk feedback (258.0883ms)
+✔ the hovering route is closed, keeps its complete animated envelope over the floor, and clears fixed furnishings (384.3897ms)
+✔ gliding changes position and gentle arm poses while the desk robot and GPU buffers stay fixed (161.8607ms)
+✔ pause, reduced-motion input, and another room stop gliding without hidden-time catch-up (164.9768ms)
+✔ the optional pause preference is tab-local and safe when storage is denied (0.2444ms)
+✔ all 23 rendered rooms retain independent palettes through focus and hover transitions (6.8136ms)
+✔ every physical room floor carries its own finish in the rendered vertex buffer (25.6849ms)
+✔ the penthouse has warm physical materials and rounded upholstery while the workshop uses low utility stools (2.3964ms)
+✔ restaged focal furnishings have different orientations while attached parts remain in their object batches (1.3939ms)
+✔ every room retains independently animated objects and exact batched picking identities (3796.8783ms)
+✔ object responses stay isolated, retrigger safely, and remove spatial motion when reduced motion changes (179.3444ms)
+✔ penthouse bedding and toys provide visible finite movement with a reduced-motion alternative (150.1816ms)
+✔ inspection car tires and brake hubs remain concentric through animation and retriggering (149.1853ms)
+✔ sofa frame panels and cushions have no intersecting or exposed coplanar faces (0.3716ms)
+✔ complete furnished rooms fit their assigned usable bays and leave the service core clear (808.5896ms)
+✔ every floor has an elevator and a stair contained by the shared service region (793.2786ms)
+✔ interior rails remain on the slab around the concave L recess (709.0243ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6902.4641
