@@ -742,14 +742,19 @@ for (const id of sectionIds) {
     }
     assertRoomFramed(sectionIndex(id), i);
     if(id==='penthouse'&&i===1){
-      const gameRoute=w.location.hash,cell=w.document.querySelector('#interior-content [data-game-cell="0"]');
+      const gameRoute=w.location.hash;
+      click('#interior-content [data-penthouse-open="arcade"]');
+      assert.equal(w.document.querySelectorAll('#penthouse-arcade-dialog [data-arcade-launch]').length,7);
+      click('#penthouse-arcade-dialog [data-arcade-launch="tic-tac-toe"]');
+      const cell=w.document.querySelector('#penthouse-arcade-dialog [data-game-cell="0"]');
       assert.ok(cell,'The play lounge exposes a real keyboard-accessible game');
-      click('#interior-content [data-game-cell="0"]');await settleCamera();
+      click('#penthouse-arcade-dialog [data-game-cell="0"]');await settleCamera();
       assert.equal(cell.textContent,'X');assert.equal(cell.disabled,true);
-      assert.equal(w.document.querySelectorAll('#interior-content [data-game-cell][data-mark="O"]').length,1,'The house replies once');
+      assert.equal(w.document.querySelectorAll('#penthouse-arcade-dialog [data-game-cell][data-mark="O"]').length,1,'The house replies once');
       assert.equal(w.location.hash,gameRoute,'Playing does not navigate away from the lounge');
-      click('#interior-content [data-game-reset]');
-      assert.ok([...w.document.querySelectorAll('#interior-content [data-game-cell]')].every(button=>!button.disabled&&!button.textContent),'A new round clears and enables all nine squares');
+      click('#penthouse-arcade-dialog [data-game-reset]');
+      assert.ok([...w.document.querySelectorAll('#penthouse-arcade-dialog [data-game-cell]')].every(button=>!button.disabled&&!button.textContent),'A new round clears and enables all nine squares');
+      click('#penthouse-arcade-dialog [data-close-experience]');
     }
     await verifyZoomStops(`${id}/${i} room`,{resize:id==='about'&&i===0});click(`#station-navigation [data-station="${i}"]`);await settleCamera();
     await verifyRoomObjects(sections.findIndex(section => section.id === id), i);

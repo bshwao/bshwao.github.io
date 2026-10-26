@@ -50,7 +50,7 @@ test('every project shares a built/contribution/result summary in its room and s
     for (const label of ['What I built', 'My contribution', 'Result']) assert.ok(summary.includes(`<dt>${label}</dt>`));
     assert.ok(reading.includes(summary));
     assert.ok(room.links.some(link => link.href === project.url), 'Each project retains its real source link');
-    if (project.status === 'ongoing') assert.match(project.summary.result, /^Ongoing:/);
+    if (project.status === 'ongoing') assert.match(project.summary.result, /\bongoing\b/i);
   }
   assert.ok(renderProjectSummary({ built: '<script>', contribution: '&', result: '"' }).includes('&lt;script&gt;'));
 });

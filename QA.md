@@ -1,5 +1,11 @@
 # Release verification
 
+## Play room games dashboard (local) — October 26, 2026
+
+The play lounge now opens one dashboard containing Blackjack, Word Guess, three mini crosswords, Snake, 2048, Sudoku, and noughts and crosses. Game state survives switching games and modal visits; Snake pauses whenever its screen becomes inactive. All furniture entry points use the same controller, including the tabletop game, and the separate inline board is removed. New games include local word validation, duplicate-letter scoring, blackjack dealer rules and hidden cards, intersecting clues, keyboard/touch controls, and progress summaries.
+
+All 190 source/server tests, 81 module/reference checks, and five DOM/camera integration modes pass. Browser audits cover the dashboard and seven games at desktop, portrait, and landscape sizes, with no horizontal overflow or automated WCAG A/AA violations. Native review exercises the games, state retention, Escape navigation, and the compact phone selector. Evidence and environment limits are recorded in `state/game-dashboard/`.
+
 ## Room copy review (local) — October 26, 2026
 
 All 23 room panels and their shared activity dialogs were reviewed for filler, duplicated descriptions and promotional language. The five referenced examples are removed, along with generic room footers, redundant project backstory, desktop slogans and game taglines. Concrete portfolio details, activity instructions, privacy notices and catalog/source qualifications remain. The complete reading page is regenerated from the same content; missing descriptions and notes no longer render empty or undefined text.

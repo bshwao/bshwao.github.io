@@ -104,7 +104,8 @@ test('Arcade tabs, controls, clue protection, conflict feedback, and disposal wo
   const arcade = createArcade(container, {onPlay: () => plays++});
   try {
     const tab = game => container.querySelector(`[data-arcade-tab="${game}"]`);
-    assert.equal(container.querySelectorAll('[role="tab"]').length, 3);
+    assert.equal(container.querySelectorAll('[role="tab"]').length, 7);
+    arcade.select('snake',false);
     container.querySelector('[data-snake-toggle]').click();
     assert.equal(plays, 1); assert.equal(container.querySelector('[data-snake-toggle]').textContent, 'Pause');
     tab('2048').click();
@@ -141,6 +142,7 @@ test('Snake pauses on visibility loss and detachment and its interval is cleared
   dom.window.clearInterval = () => { cleared++; tick = null; };
   const arcade = createArcade(container);
   try {
+    arcade.select('snake',false);
     const toggle = container.querySelector('[data-snake-toggle]');
     toggle.click(); assert.equal(typeof tick, 'function');
     Object.defineProperty(document, 'hidden', {configurable: true, value: true});
@@ -164,6 +166,7 @@ test('Arcade deactivation preserves the current game and removes its handlers un
   dom.window.clearInterval = () => { interval = null; };
   const arcade = createArcade(container, {onPlay: () => plays++});
   try {
+    arcade.select('snake',false);
     container.querySelector('[data-snake-toggle]').click();
     interval();
     const body = container.querySelector('[data-snake-board]').innerHTML;

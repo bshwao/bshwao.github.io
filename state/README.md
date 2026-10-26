@@ -6,12 +6,13 @@ Each subdirectory represents a specific implementation checkpoint. Test counts, 
 
 ## Latest recorded checkpoint
 
-[Room copy review](room-copy/README.md) records the October 26, 2026 source, integration, factual-content comparison, and rendered review of all 23 rooms. Refer to [QA.md](../QA.md) for the verification timeline and [ROADMAP.md](../ROADMAP.md) for remaining work.
+[Play room games dashboard](game-dashboard/README.md) records the October 26, 2026 game regressions, source and integration suites, responsive accessibility checks, and native interaction review. Refer to [QA.md](../QA.md) for the verification timeline and [ROADMAP.md](../ROADMAP.md) for remaining work.
 
 ## Feature evidence
 
 | Area | Evidence |
 | --- | --- |
+| Unified play room games dashboard | [game-dashboard/](game-dashboard/README.md) |
 | Room descriptions and activity copy | [room-copy/](room-copy/README.md) |
 | Bedroom furniture layout | [bedroom-layout/](bedroom-layout/README.md) |
 | Penthouse activities | [penthouse-experiences/](penthouse-experiences/README.md) |

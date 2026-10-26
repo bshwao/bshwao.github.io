@@ -8,12 +8,14 @@ This document summarizes the implemented website and the remaining verification 
 - An island city with residential neighborhoods, connected roads, river crossings, coastline, ocean, forests, and surrounding mountain terrain.
 - An introductory sequence, bounded camera zoom, room-focused navigation, shareable URLs, and browser-history support.
 - Visitor-local day/night lighting, a live clock, exterior window lighting, and cached scenery behind opened interiors.
-- Penthouse music playback and audio-reactive visualizers, local audio import, games, bedroom atmosphere controls, a simulated desktop, and a telescope star atlas.
+- Penthouse music playback and audio-reactive visualizers, local audio import, a seven-game dashboard including Blackjack, Word Guess and mini crosswords, bedroom atmosphere controls, a simulated desktop, and a telescope star atlas.
 - Keyboard and touch controls, reduced motion, low graphics, accessible reading views, and WebGL-failure recovery.
 
 The first-floor robot experiment has been removed. Its evidence remains archived under `state/`.
 
 ## Recorded verification
+
+The October 26, 2026 [games dashboard](state/game-dashboard/README.md) checkpoint passes 190 source/server tests, 81 module/reference checks, all five DOM/camera integration modes, and 24 responsive game/library accessibility and overflow checks. Its report includes native game interaction evidence and environment limits.
 
 The October 26, 2026 [bedroom layout](state/bedroom-layout/README.md) and [room copy review](state/room-copy/README.md) checkpoints record:
 

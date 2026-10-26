@@ -1,0 +1,19 @@
+✔ Blackjack decks contain 52 unique cards, and aces adjust without losing soft totals (1.7958ms)
+✔ Blackjack deals alternating cards and resolves natural wins, dealer blackjack and ties immediately (0.7626ms)
+✔ Blackjack hits, busts and dealer draws are immutable, and the dealer stands on soft 17 (0.3954ms)
+✔ Word Guess scores exact matches first and spends each duplicate answer letter only once (0.2146ms)
+✔ Word Guess validates real words without spending guesses, freezes on completion, and caps attempts at six (0.5622ms)
+✔ Each authored crossword has ten unique clued entries, fully checked intersections and a connected grid (1.1979ms)
+✔ The dashboard exposes seven games, accessible tabs and state that survives switching and returning to the library (377.5688ms)
+✔ Blackjack conceals the dealer hole card until the hand ends and counts each result once (146.873ms)
+✔ Word Guess on-screen controls validate entries and show duplicate-aware feedback without losing stronger keyboard marks (300.919ms)
+✔ Crossword editing shares intersection letters, supports keyboard direction, feedback, reveal, reset and all three puzzles (449.7178ms)
+✔ Leaving Snake via overview, Escape, dialog close or deactivation cancels its timer without resetting other games (191.6301ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2415.3563

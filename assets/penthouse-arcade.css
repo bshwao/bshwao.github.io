@@ -54,3 +54,85 @@
   .penthouse-arcade button { padding-inline: 10px; }
   .penthouse-arcade .arcade-game-heading h3 { font-size: 28px; }
 }
+
+/* Game library and shared workspace. */
+.penthouse-games-dialog { width:min(1180px,calc(100vw - 28px)); }
+.penthouse-games-dialog .penthouse-dialog-body { background:#f3f0e7; }
+.penthouse-arcade { --arcade-ink:#293d37;--arcade-paper:#eeeadf;--arcade-raised:#faf8f0;--arcade-line:#bdbfae;--arcade-accent:#365e51;--muted:#566056; }
+.game-library-heading { display:flex;align-items:center;justify-content:space-between;gap:16px;margin:4px 0 22px; }
+.game-eyebrow { display:block;font:10px/1.4 var(--mono,monospace);letter-spacing:.12em;color:#566056; }
+.game-library-heading h3 { margin:5px 0 0;font:400 clamp(28px,4vw,38px)/1.1 var(--serif,Georgia,serif); }
+.game-count { border:1px solid var(--arcade-line);border-radius:20px;padding:7px 12px;white-space:nowrap;font:11px/1.4 var(--mono,monospace); }
+.game-catalog { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px; }
+.penthouse-arcade .game-card { --game-color:#3e6250;display:flex;flex-direction:column;align-items:stretch;min-width:0;padding:14px;text-align:left;border-radius:12px;background:#faf8f1;transition:border-color .15s,background .15s; }
+.penthouse-arcade .game-card:hover { background:#fffdf6;border-color:var(--game-color); }
+.game-card.color-sage { --game-color:#506c52; }.game-card.color-blue { --game-color:#466474; }.game-card.color-amber { --game-color:#8c5a2b; }.game-card.color-rose { --game-color:#86584d; }.game-card.color-plum { --game-color:#725565; }
+.game-card-top { display:flex;justify-content:space-between;color:var(--game-color);font-size:11px; }
+.game-category { letter-spacing:.05em; }
+.game-card strong { font:400 24px/1.2 var(--serif,Georgia,serif); }
+.game-rule { display:block;min-height:2.8em;margin:6px 0 12px;font-size:10px;line-height:1.5;color:#566056; }
+.game-progress { border-top:1px solid #d9dccf;padding-top:10px;font-size:10px;color:var(--game-color); }
+.game-preview { display:flex;align-items:center;justify-content:center;gap:5px;height:70px;margin:8px 0 12px;background:#e8ede2;border-radius:7px;color:var(--game-color);overflow:hidden; }
+.preview-card { width:42px;height:60px;border:1px solid #9da99a;border-radius:4px;background:#fffdf6;box-shadow:2px 3px 0 #becab5;padding:5px;font:18px/1 var(--serif,Georgia,serif);transform:rotate(-12deg); }
+.preview-card+span { transform:rotate(13deg);margin-left:-8px; }.preview-card small { display:block;margin-top:5px; }.is-red { color:#a24536; }
+.preview-letter { display:grid;place-items:center;width:34px;height:38px;border-radius:3px;font:600 19px/1 var(--mono,monospace);color:#fffdf5;background:#4b6f52; }.preview-letter.tone-1 { background:#8c652d; }.preview-letter.tone-2 { background:#586057; }
+.preview-crossword { display:grid;grid-template-columns:repeat(5,15px);grid-template-rows:repeat(5,15px);gap:1px;align-content:center; }.preview-square { height:15px;background:#fffdf6;font:8px/1 var(--mono,monospace);padding:2px; }.preview-square.is-block { background:#466474; }
+.preview-snake svg { width:175px;height:70px; }
+.preview-number { display:grid;place-items:center;width:40px;height:40px;border-radius:5px;background:#e4d5b5;color:#51452e;font:600 20px/1 var(--serif,Georgia,serif); }.preview-number.number-2 { background:#e0b17a; }.preview-number.number-3 { background:#cb8255;color:#302a1f; }
+.preview-sudoku,.preview-tic-tac-toe { display:grid;grid-template-columns:repeat(3,22px);grid-template-rows:repeat(3,22px);gap:2px;align-content:center; }.preview-digit,.preview-mark { display:grid;place-items:center;height:22px;background:#faf8f1;font:16px/1 var(--serif,Georgia,serif); }.preview-mark { font-size:17px; }
+.game-toolbar { position:sticky;top:-20px;z-index:3;display:flex;align-items:center;gap:16px;padding:10px 0 18px;margin-bottom:20px;border-bottom:1px solid var(--arcade-line);background:#f3f0e7; }
+.game-switch { display:none;align-items:center;gap:8px;font:10px/1.4 var(--mono,monospace); }
+.game-switch select { min-height:44px;max-width:100%;border:1px solid var(--arcade-line);border-radius:5px;background:var(--arcade-raised);color:var(--arcade-ink);padding:8px;font:11px/1.3 var(--mono,monospace); }
+.game-session-note { margin-left:auto;color:#566056;font:10px/1.6 var(--mono,monospace); }
+.game-workspace-layout { display:grid;grid-template-columns:164px minmax(0,1fr);gap:26px;align-items:start; }
+.penthouse-arcade .arcade-tabs { flex-direction:column;padding:5px;gap:4px; }
+.penthouse-arcade .arcade-tabs button { flex:none;text-align:left; }
+.penthouse-arcade .arcade-panel { padding-top:0;min-width:0; }
+.game-stage { min-width:0; }
+.penthouse-arcade button:disabled { cursor:default;opacity:.55; }
+.penthouse-arcade .arcade-instructions { max-width:75ch; }
+.blackjack-table { padding:20px 24px;border:1px solid #395b4e;border-radius:12px;background:#254d40;color:#f8f3e4; }
+.blackjack-hand-heading { display:flex;align-items:center;justify-content:space-between;gap:10px; }
+.blackjack-hand-heading h4 { margin:0;font:11px/1.5 var(--mono,monospace);text-transform:uppercase;letter-spacing:.08em; }.blackjack-hand-heading>span { font:24px/1 var(--serif,Georgia,serif); }
+.blackjack-cards { display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;min-height:108px; }
+.playing-card,.card-placeholder { display:block;position:relative;width:74px;height:104px;flex:0 0 74px;border:1px solid #e3dfca;border-radius:7px;background:#fffaf0;color:#243b34;padding:8px;font:21px/1 var(--serif,Georgia,serif);box-shadow:0 3px 0 #142f2970; }
+.playing-card.is-red { color:#a03c32; }.playing-card small { display:block;font-size:18px;margin-top:4px; }.playing-card>b { position:absolute;right:10px;bottom:11px;font-size:33px;font-weight:400; }
+.card-back { display:grid;place-items:center;background:repeating-linear-gradient(45deg,#365e51 0 5px,#47705f 5px 7px);border:4px solid #f4efdf;color:#f4efdf;font-size:33px; }.card-placeholder { background:transparent;border:1px dashed #779487;box-shadow:none; }
+.blackjack-table-line { height:1px;margin:18px 0;background:#668578; }
+.word-board { display:grid;grid-template-columns:repeat(5,1fr);gap:5px;width:min(100%,280px);margin:auto;padding:3px; }
+.word-cell { display:grid;place-items:center;aspect-ratio:1;border:1px solid #afb6a7;background:#faf8f1;color:#293d37;font:600 24px/1 var(--mono,monospace);border-radius:3px; }
+.penthouse-arcade [data-mark="correct"] { background:#4b6f52;border-color:#4b6f52;color:#fffdf5; }.penthouse-arcade [data-mark="present"] { background:#8c652d;border-color:#8c652d;color:#fffdf5; }.penthouse-arcade [data-mark="absent"] { background:#515856;border-color:#515856;color:#fffdf5; }
+.word-keyboard { max-width:510px;margin:auto; }.word-key-row { display:flex;justify-content:center;gap:5px;margin-top:5px; }
+.word-play-area { display:grid;grid-template-columns:minmax(220px,280px) minmax(0,1fr);gap:28px;align-items:center; }.word-grid-area,.word-input-area { min-width:0; }.word-input-area .arcade-game-controls { justify-content:center; }
+.penthouse-arcade .word-key-row button { min-width:0;flex:1;max-width:44px;min-height:46px;padding:5px 2px;font-size:12px;font-weight:600; }
+.penthouse-arcade .word-key-row .word-wide-key { flex:1.6;max-width:67px;font-size:10px; }
+.penthouse-arcade .word-status { min-height:1.7em;text-align:center;margin:10px 0; }
+.crossword-layout { display:grid;grid-template-columns:minmax(230px,1fr) minmax(220px,1fr);gap:25px;align-items:start; }
+.cross-current { min-height:3.3em;margin:0 0 12px;padding:10px;border-left:3px solid var(--arcade-accent);background:#e3e9dc;font:11px/1.5 var(--mono,monospace); }
+.crossword-board { display:grid;grid-template-columns:repeat(5,1fr);width:min(100%,320px);aspect-ratio:1;background:#293d37;gap:1px;padding:2px;border-radius:3px;overflow:hidden; }
+.cross-cell { display:block;position:relative;min-width:0;background:#faf8f1; }.cross-block { background:#293d37; }
+.cross-number { position:absolute;top:3px;left:4px;font:9px/1 var(--mono,monospace);pointer-events:none;z-index:1; }
+.cross-cell input { appearance:none;display:block;width:100%;height:100%;min-width:0;padding:9px 0 0;border:0;border-radius:0;background:transparent;color:#293d37;text-align:center;font:600 clamp(19px,3vw,26px)/1 var(--mono,monospace);text-transform:uppercase; }
+.cross-cell[data-active="true"] { background:#e2eadd; }.cross-cell[data-selected="true"] { background:#c6d9bb; }.cross-cell[data-revealed="true"] input { text-decoration:underline;text-underline-offset:4px; }
+.cross-cell input[aria-invalid="true"] { color:#932f24;box-shadow:inset 0 -3px #a44332; }
+.cross-cell input:focus-visible { position:relative;outline-offset:-3px;z-index:2; }
+.crossword-clues { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px; }.crossword-clues h4 { margin:0 0 5px;font:400 23px/1.2 var(--serif,Georgia,serif); }.crossword-clues ol { list-style:none;margin:0;padding:0; }
+.penthouse-arcade .crossword-clues button { display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px;text-align:left;border:0;border-bottom:1px solid #d6dacb;border-radius:0;background:transparent;font-size:11px; }.crossword-clues button b { min-width:14px;color:var(--arcade-accent); }.penthouse-arcade .crossword-clues button[aria-pressed="true"] { background:#e2eadd;box-shadow:inset 3px 0 var(--arcade-accent); }
+.cross-edition { font:10px/1.5 var(--mono,monospace);color:#566056; }
+.penthouse-arcade .penthouse-game { max-width:340px;margin:0 auto;padding:18px; }.penthouse-arcade .penthouse-game-board { width:100%;margin:0; }.penthouse-arcade .penthouse-game-board button { font-size:35px; }
+@media (max-width:900px) { .game-workspace-layout { grid-template-columns:145px minmax(0,1fr);gap:20px; }.crossword-layout { grid-template-columns:1fr; }.crossword-clues { grid-template-columns:1fr 1fr;gap:18px; }.crossword-board { margin:auto; } }
+@media (max-width:1000px) { .word-play-area { grid-template-columns:1fr;gap:12px; } }
+@media (min-width:721px) and (max-width:1000px) { .game-catalog { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media (max-width:720px) {
+  .game-catalog { grid-template-columns:repeat(2,minmax(0,1fr));gap:10px; }.penthouse-arcade .game-card { padding:12px; }.game-card strong { font-size:22px; }.game-preview { height:76px;margin-block:9px 13px; }.preview-letter { width:24px;height:30px;font-size:16px; }.preview-number { width:29px;height:34px;font-size:18px; }
+  .game-workspace-layout { display:block; }.penthouse-arcade .arcade-tabs { display:none; }.game-switch { display:flex;min-width:0;margin-left:auto; }.game-toolbar { gap:8px;flex-wrap:wrap;margin-bottom:18px; }.game-session-note { display:none; }
+}
+@media (max-width:440px) {
+  .penthouse-games-dialog .penthouse-dialog-body { padding:14px; }.game-library-heading { margin-bottom:16px; }.game-rule { min-height:4.5em;font-size:9px; }.game-card strong { font-size:20px; }.game-category { font-size:9px; }.game-count { font-size:10px;padding:6px 9px; }
+  .game-toolbar { top:-14px; }
+  .game-switch { gap:5px; }.game-switch select { max-width:170px; }.penthouse-arcade .game-toolbar>button { padding-inline:10px; }.word-key-row { gap:3px; }.penthouse-arcade .word-key-row button { font-size:11px; }.penthouse-arcade .word-key-row .word-wide-key { font-size:9px; }
+  .blackjack-table { padding:15px; }.blackjack-cards { gap:7px; }.playing-card,.card-placeholder { width:61px;height:89px;flex-basis:61px;font-size:19px; }.playing-card>b { font-size:27px;right:7px;bottom:9px; }.blackjack-cards { min-height:89px; }
+  .word-board { width:min(100%,230px); }.penthouse-arcade [data-arcade-panel="wordle"] .arcade-instructions { margin-block:12px;font-size:10px; }
+  .crossword-clues { gap:12px; }.penthouse-arcade .crossword-clues button { font-size:10px;gap:6px;padding:8px 5px; }
+}
+@media (prefers-reduced-motion:reduce) { .penthouse-arcade .game-card { transition:none; } }

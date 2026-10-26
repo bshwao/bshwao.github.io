@@ -25,6 +25,14 @@ test('room activities open from content and furniture, keep desktop/game state, 
     assert.equal(desktop.open,true);assert.equal(f.find('[data-desktop-notes]').value,'A room with a view.');
     f.mount('penthouse',1);assert.equal(desktop.open,false);f.find('[data-penthouse-open="arcade"]').click();
     const arcade=f.find('#penthouse-arcade-dialog');assert.equal(arcade.open,true);
+    assert.equal(arcade.querySelectorAll('[data-arcade-launch]').length,7);
+    f.experience.onObject({sectionId:'penthouse',roomIndex:1,name:'Tabletop game pieces'});
+    assert.equal(arcade.querySelector('[data-arcade-panel="tic-tac-toe"]').hidden,false);
+    arcade.querySelector('[data-game-cell="0"]').click();arcade.close();
+    f.experience.onObject({sectionId:'penthouse',roomIndex:1,name:'Game controller'});
+    assert.equal(arcade.querySelector('[data-game-lobby]').hidden,false);
+    arcade.querySelector('[data-arcade-launch="tic-tac-toe"]').click();
+    assert.equal(arcade.querySelector('[data-game-cell="0"]').textContent,'X','Game state survives modal visits and different furniture entry points');
     f.mount('penthouse',3);assert.equal(arcade.open,false);
     f.experience.onObject({sectionId:'penthouse',roomIndex:3,name:'Telescope'});assert.equal(f.find('#penthouse-sky-dialog').open,true);
     f.mount('penthouse',2);f.find('[data-music-expand]').click();assert.equal(f.find('#penthouse-music-dialog').open,true);

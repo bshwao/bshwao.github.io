@@ -11,7 +11,7 @@ The site is a static application built with JavaScript and Three.js, hosted on G
 - **Six floors and 23 rooms:** five portfolio sections and a visitor penthouse, with distinct interiors and interactive furnishings.
 - **Island setting:** a connected city, residential neighborhoods, river crossings, coastline, ocean, forests, and varied mountain terrain.
 - **Local-time environment:** coordinated sky, exterior lighting, illuminated windows, and a device-local clock.
-- **Penthouse activities:** an audio-reactive music visualizer, local audio import, Snake, 2048, Sudoku, noughts and crosses, a bedroom desktop, atmosphere presets, and an interactive star atlas.
+- **Penthouse activities:** an audio-reactive music visualizer, local audio import, a seven-game dashboard (Blackjack, Word Guess, mini crosswords, Snake, 2048, Sudoku, and noughts and crosses), a bedroom desktop, atmosphere presets, and an interactive star atlas.
 - **Accessible navigation:** keyboard and touch controls, shareable room URLs, reduced motion, a low-graphics setting, and a complete reading fallback.
 
 Included music is original synthesized audio released under CC0. Imported audio remains on the visitor's device. The star atlas uses an offline catalog; it does not represent a location-specific live sky.

@@ -59,7 +59,7 @@ try {
     frame.contentWindow.location.hash=`penthouse/${room}`;await delay(20);await ready();await audit(`penthouse/${room} activities`);
     frame.contentDocument.querySelector(button).click();await delay(50);await audit(dialogId);
     const dialog=frame.contentDocument.getElementById(dialogId);
-    if(room==='b')for(const game of ['2048','sudoku']){dialog.querySelector(`[data-arcade-tab="${game}"]`).click();await audit(`arcade ${game}`);}
+    if(room==='b')for(const game of ['blackjack','wordle','crossword','snake','2048','sudoku','tic-tac-toe']){dialog.querySelector(`[data-arcade-launch="${game}"]`).click();await audit(`arcade ${game}`);dialog.querySelector('[data-arcade-overview]').click();}
     if(room==='a'){dialog.querySelector('[data-desktop-launch="editor"]').click();await delay(250);await audit('bedroom code studio');}
     dialog.close();await delay(20);
   }

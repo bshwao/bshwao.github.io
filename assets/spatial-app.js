@@ -8,7 +8,6 @@ import { sectionColors } from './color-theme.js';
 import { createLocalClock } from './local-clock.js';
 import { readViewPreferences, saveViewPreferences, shouldReduceMotion } from './view-preferences.js';
 import { createPortfolioIntro } from './portfolio-intro.js';
-import { penthouseGameMarkup, createPenthousePlay } from './penthouse-play.js';
 import { penthouseExperienceMarkup,createPenthouseExperiences } from './penthouse-experiences.js';
 
 const page = document.querySelector('#main');
@@ -16,7 +15,7 @@ const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', 
 let spatial, currentId = null, currentRoomIndex = null, revision = 0;
 const defaultTitle = document.title;
 let routeKey = '', fallbackActive = false;
-let readingView, localClock, intro, penthousePlay, penthouseExperiences;
+let readingView, localClock, intro, penthouseExperiences;
 let preferenceStorage;
 try { preferenceStorage = window.localStorage; } catch { /* Private browsing may deny storage. */ }
 let viewPreferences = readViewPreferences(preferenceStorage);
@@ -50,7 +49,7 @@ function roomMarkup(room, index) {
   const objectControls = objects.map(object => {
     const count = (counts.get(object.name) || 0) + 1; counts.set(object.name, count);
     const label = `${object.name}${count > 1 ? ` ${count}` : ''}`;
-    const opens=currentId==='penthouse'&&/Bedroom computer monitor|Telescope|Vinyl record|Game controller|Game console|Arcade machine/.test(object.name);
+    const opens=currentId==='penthouse'&&/Bedroom computer monitor|Telescope|Vinyl record|Game controller|Game console|Arcade machine|Tabletop game pieces/.test(object.name);
     return `<button type="button" data-room-object="${object.id}" aria-label="${opens?'Open':'Animate'} ${escape(label)}">${escape(label)} <span aria-hidden="true">${opens?'↗':'↻'}</span></button>`;
   }).join('');
   return `<p class="spatial-eyebrow">${escape(room.number)} / ${escape(room.name)}</p>
@@ -62,7 +61,6 @@ function roomMarkup(room, index) {
     ${room.facts ? `<dl class="interior-facts">${room.facts.map(item => `<div><dt>${escape(item.value)}</dt><dd>${escape(item.label)}</dd></div>`).join('')}</dl>` : ''}
     ${(room.paragraphs || []).map(text => `<p>${escape(text)}</p>`).join('')}
     ${renderStory(room.story)}
-    ${penthouseGameMarkup(room.activity)}
     ${room.bullets ? `<ul>${room.bullets.map(text => `<li>${escape(text)}</li>`).join('')}</ul>` : ''}
     ${(room.entries || []).map(item => `<section class="interior-entry"><h4>${escape(item.title)}</h4>${item.subtitle ? `<p>${escape(item.subtitle)}</p>` : ''}${item.detail ? `<p>${escape(item.detail)}</p>` : ''}</section>`).join('')}
     ${room.tags ? `<ul class="interior-tags" aria-label="Skills and topics">${room.tags.map(text => `<li>${escape(text)}</li>`).join('')}</ul>` : ''}
@@ -82,7 +80,6 @@ function selectRoom(index, { focus = false, moveCamera = true, writeRoute = true
   }
   const restoreFocus = $('#interior-content').contains(document.activeElement);
   $('#interior-content').innerHTML = roomMarkup(content.rooms[index], index);
-  penthousePlay?.mount();
   penthouseExperiences?.mount(currentId,index);
   $('#interior-content').scrollTop = 0;
   $('#interior-panel').scrollTop = 0;
@@ -266,7 +263,6 @@ function useFallback() {
   labelObserver.disconnect();
   readingView?.close({ focus: false });
   localClock?.dispose();
-  penthousePlay?.dispose();
   penthouseExperiences?.dispose();
   spatial?.dispose();
   page.className = 'tower-page unavailable';
@@ -329,11 +325,6 @@ async function start() {
     onClose: () => $('#reading-view')?.focus({ preventScroll: true }),
     onTower: () => navigate('explore'),
     onNavigate: navigate,
-  });
-  penthousePlay=createPenthousePlay($('#interior-content'),()=>{
-    if(currentId!=='penthouse')return;
-    const toy=spatial.objectsForRoom('penthouse',1).find(object=>/controller|arcade/i.test(object.name));
-    if(toy)spatial.activateObject(toy.id,{notify:false});
   });
   penthouseExperiences=createPenthouseExperiences({container:$('#interior-content'),
     onAtmosphere:value=>spatial?.setPenthouseAtmosphere(value),

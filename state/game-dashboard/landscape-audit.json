@@ -1,0 +1,69 @@
+{
+  "width": 844,
+  "height": 390,
+  "activity": "arcade",
+  "dialog": {
+    "x": 14,
+    "y": 14,
+    "width": 816,
+    "height": 362
+  },
+  "header": {
+    "top": 15,
+    "bottom": 98.375
+  },
+  "horizontalOverflow": false,
+  "dialogOverflow": false,
+  "pass": true,
+  "views": [
+    {
+      "view": "dashboard",
+      "horizontalOverflow": false,
+      "panelOverflow": false,
+      "violations": []
+    },
+    {
+      "view": "blackjack",
+      "horizontalOverflow": false,
+      "panelOverflow": false,
+      "violations": []
+    },
+    {
+      "view": "wordle",
+      "horizontalOverflow": false,
+      "panelOverflow": false,
+      "violations": []
+    },
+    {
+      "view": "crossword",
+      "horizontalOverflow": false,
+      "panelOverflow": false,
+      "violations": []
+    },
+    {
+      "view": "snake",
+      "horizontalOverflow": false,
+      "panelOverflow": false,
+      "violations": []
+    },
+    {
+      "view": "2048",
+      "horizontalOverflow": false,
+      "panelOverflow": false,
+      "violations": []
+    },
+    {
+      "view": "sudoku",
+      "horizontalOverflow": false,
+      "panelOverflow": false,
+      "violations": []
+    },
+    {
+      "view": "tic-tac-toe",
+      "horizontalOverflow": false,
+      "panelOverflow": false,
+      "violations": []
+    }
+  ],
+  "runtimeErrors": []
+}

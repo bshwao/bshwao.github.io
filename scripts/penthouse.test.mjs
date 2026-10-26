@@ -13,7 +13,7 @@ test('the visitor penthouse occupies its own top floor while original portfolio 
     ['about','01'],['projects','02'],['experience','03'],['resume','04'],['contact','05'],
   ]);
   assert.deepEqual(floorContent.penthouse.rooms.map(room=>room.name),['Bedroom','Play lounge','Listening nook','Sky lounge']);
-  assert.equal(floorContent.penthouse.rooms[1].activity,'tic-tac-toe');
+  assert.equal(floorContent.penthouse.rooms[1].activity,undefined,'All games are opened in the shared dashboard');
 });
 
 test('a valid board move produces a house reply while occupied and invalid moves cannot overwrite it',()=>{

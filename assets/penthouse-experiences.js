@@ -6,7 +6,7 @@ import { atmospherePresets,normalizeAtmosphere } from './penthouse-atmosphere.js
 
 export function penthouseExperienceMarkup(index){
   if(index===0)return bedroomMarkup();
-  if(index===1)return `<section class="penthouse-feature"><h4>Arcade</h4><button type="button" data-penthouse-open="arcade">Open arcade ↗</button></section>`;
+  if(index===1)return `<section class="penthouse-feature"><h4>Games</h4><button type="button" data-penthouse-open="arcade">Open games dashboard ↗</button></section>`;
   if(index===2)return musicPlayerMarkup({id:'listening-music'});
   return `<div class="penthouse-feature"><button type="button" data-penthouse-open="sky">Open star atlas ↗</button></div>`;
 }
@@ -18,9 +18,9 @@ export function createPenthouseExperiences({container,onAtmosphere=()=>{},reduce
   let compact=null,active=false,atmosphere=normalizeAtmosphere(),presetId='',disposed=false;
   function dialogFor(kind){
     if(dialogs.has(kind))return dialogs.get(kind);
-    const titles={music:'Audio visualizer',arcade:'Arcade',desktop:'Bedroom desktop',sky:'Star atlas'};
+    const titles={music:'Audio visualizer',arcade:'Games dashboard',desktop:'Bedroom desktop',sky:'Star atlas'};
     const dialog=document.createElement('dialog');dialog.id=`penthouse-${kind}-dialog`;
-    dialog.className=`penthouse-dialog${kind==='music'?' penthouse-visualizer-dialog':''}`;
+    dialog.className=`penthouse-dialog${kind==='music'?' penthouse-visualizer-dialog':kind==='arcade'?' penthouse-games-dialog':''}`;
     dialog.setAttribute('aria-labelledby',`${dialog.id}-title`);
     const markup=kind==='music'?musicPlayerMarkup({expanded:true,id:'expanded-music'}):kind==='arcade'?arcadeMarkup():kind==='desktop'?desktopMarkup():starMapMarkup();
     dialog.innerHTML=`<header class="penthouse-dialog-header"><div><p>PENTHOUSE / AFTER HOURS</p><h2 id="${dialog.id}-title">${titles[kind]}</h2></div><button class="penthouse-dialog-close" type="button" aria-label="Close ${kind==='music'?'visualizer':kind}" data-close-experience>×</button></header><div class="penthouse-dialog-body">${markup}</div>`;
@@ -31,13 +31,14 @@ export function createPenthouseExperiences({container,onAtmosphere=()=>{},reduce
     dialog.addEventListener('close',()=>{controller.setActive?.(false);compact?.setActive?.(true);if(record.opener?.isConnected)record.opener.focus({preventScroll:true});},options);
     return record;
   }
-  function open(kind){
+  function open(kind,game){
     if(!active||disposed)return;
     for(const [key,{dialog}]of dialogs)if(key!==kind&&dialog.open)dialog.close();
     const record=dialogFor(kind);record.opener=document.activeElement;
     if(!record.dialog.open)record.dialog.showModal();
     compact?.setActive?.(false);
     record.controller.setActive?.(true);record.controller.refresh?.();
+    if(kind==='arcade'){if(game)record.controller.select(game);else record.controller.overview(false);}
   }
   function paintAtmosphere(){
     for(const button of container.querySelectorAll('[data-bedroom-preset]'))button.setAttribute('aria-pressed',String(button.dataset.bedroomPreset===presetId));
@@ -82,6 +83,7 @@ export function createPenthouseExperiences({container,onAtmosphere=()=>{},reduce
       if(roomIndex===0&&name==='Bedroom computer monitor')open('desktop');
       if(roomIndex===0&&name==='Bedside lamp')applyAtmosphere({...atmosphere,lamps:!atmosphere.lamps},{sound:false});
       if(roomIndex===1&&/Arcade machine|Game controller|Game console/.test(name))open('arcade');
+      if(roomIndex===1&&name==='Tabletop game pieces')open('arcade','tic-tac-toe');
       if(roomIndex===2&&name==='Vinyl record')open('music');
     },
     dispose(){if(disposed)return;disposed=true;events.abort();compact?.dispose();engine.dispose();for(const {dialog,controller}of dialogs.values()){controller.dispose();if(dialog.open)dialog.close();dialog.remove();}dialogs.clear();},
