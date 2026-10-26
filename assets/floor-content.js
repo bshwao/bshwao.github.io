@@ -9,6 +9,29 @@ const resumeDownload = {
 };
 
 export const floorContent = {
+  penthouse: {
+    rooms: [
+      { id:'a',number:'01',name:'Bedroom',title:'Make yourself at home.',
+        description:'You made it to the top. Take a break in a bedroom above the city.',
+        paragraphs:['Settle in with an atmosphere of your own. Rainy Night, Golden Hour and Late-Night Coding change the room and the city outside. Click the computer monitor to open a small desktop with a terminal, notes, projects and a code studio.'],
+        tags:['A little downtime','Click, tap or use the object controls'],
+      },
+      { id:'b',number:'02',name:'Play lounge',title:'One more round?',
+        description:'A sofa, a game corner and a few toys that refuse to sit still.',
+        paragraphs:['Open the arcade for Snake, 2048 or Sudoku. The tabletop also has a quick game of noughts and crosses. Your progress stays while you explore this floor.'],
+        activity:'tic-tac-toe',
+      },
+      { id:'c',number:'03',name:'Listening nook',title:'Drop the needle.',
+        description:'Original lofi, your own audio and a visualizer that follows the sound.',
+        paragraphs:['Choose an included track or drop in an audio file from your device. Expand the player and switch between spectrum, waveform, orbit and constellation views; each follows the live audio signal.'],
+      },
+      { id:'d',number:'04',name:'Sky lounge',title:'Stay a little longer.',
+        description:'A soft seat, a telescope and a small universe on the table.',
+        paragraphs:['Click the telescope to open the star atlas. Pan, zoom, select stars and discover constellation sketches, or search for a familiar name. The city can wait.'],
+      },
+    ],
+    note:'After hours / a place for visitors to play, explore and unwind.',
+  },
   about: {
     rooms: [
       {

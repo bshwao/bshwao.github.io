@@ -1,0 +1,12 @@
+✔ the visitor penthouse occupies its own top floor while original portfolio destinations remain intact (3.3667ms)
+✔ a valid board move produces a house reply while occupied and invalid moves cannot overwrite it (0.8559ms)
+✔ noughts and crosses resolves a player win, a house win and a draw, then freezes until reset (0.8049ms)
+✔ the accessible game paints live marks and status, resets cleanly, and disposes its click handler (133.5566ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1469.7682

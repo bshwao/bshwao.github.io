@@ -1,0 +1,16 @@
+✔ every room retains independently animated objects and exact batched picking identities (2088.6748ms)
+✔ object responses stay isolated, retrigger safely, and remove spatial motion when reduced motion changes (107.0954ms)
+✔ penthouse bedding and toys provide visible finite movement with a reduced-motion alternative (98.8599ms)
+✔ inspection car tires and brake hubs remain concentric through animation and retriggering (131.1985ms)
+✔ sofa frame panels and cushions have no intersecting or exposed coplanar faces (0.4102ms)
+✔ complete furnished rooms fit their assigned usable bays and leave the service core clear (564.5562ms)
+✔ every floor has an elevator and a stair contained by the shared service region (541.2659ms)
+✔ interior rails remain on the slab around the concave L recess (539.6803ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4253.7787

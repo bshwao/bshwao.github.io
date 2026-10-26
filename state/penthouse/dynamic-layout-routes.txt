@@ -1,0 +1,24 @@
+✔ camera depth precision separates thin architectural layers through the zoom range (1.6983ms)
+✔ zoom limits contain the fitted view and keep each scene at a useful scale (4.4935ms)
+✔ phone and large-screen raster budgets stay bounded without changing navigation regions (0.2619ms)
+✔ outdoor cameras fit the district or tower inside the space reserved for controls (13.8257ms)
+✔ section labels stay spaced and accessible when their projected anchors collide or leave the screen (0.8127ms)
+✔ camera regions reserve headers and reading panels across phone orientations (0.3619ms)
+✔ room markers avoid collisions and keep the selected room available (0.4898ms)
+✔ markers outside the scene are hidden instead of piling up at its edges (0.7393ms)
+✔ a room target stays available when a long caption cannot fit beside the reading panel (0.3057ms)
+✔ room captions reserve their full width and height against other numbered targets (0.2632ms)
+✔ captions near the bottom edge are hidden without shrinking the 44px target (0.1655ms)
+✔ every floor and individual room has a stable shareable round-trip (2.0924ms)
+✔ encoded room links resolve to the same destination (0.1559ms)
+✔ unknown or excess room path segments preserve a valid floor overview (0.5204ms)
+✔ only existing integer room indexes are serialized (0.2141ms)
+✔ tower, explore, and unrecognized routes normalize safely (0.2629ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 152.223

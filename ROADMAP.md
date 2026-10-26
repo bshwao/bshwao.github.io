@@ -39,4 +39,6 @@ These plans preserve the original scope, measurements and screenshots of each co
 
 ## Ongoing maintenance
 
+Future penthouse enhancement: optional first-person seating in the sky lounge, with a seated view over the city and a clear return to the normal orbit controls. The current release keeps the interactive telescope atlas and defers this camera mode.
+
 Update project status, factual contributions, screenshots, experience, résumé and external links when the underlying information changes. Keep stable section/room IDs. A custom domain, additional city features and new services are optional and are not part of this release. See [MAINTENANCE.md](./MAINTENANCE.md).

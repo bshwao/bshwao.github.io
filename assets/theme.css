@@ -29,8 +29,9 @@
   --soft-ink: var(--muted); --blue-ink: #435b76;
   --accent: var(--teal); --accent-ink: #365e57; --accent-tint: #dbe8df;
 }
-[data-section="about"], [data-section-theme="about"], #about { --accent: #72aaa3; --accent-ink: #365e57; --accent-tint: #dbe8df; }
-[data-section="projects"], [data-section-theme="projects"], #projects { --accent: #849cb8; --accent-ink: #435b76; --accent-tint: #dde4ea; }
-[data-section="experience"], [data-section-theme="experience"], #experience { --accent: #c78979; --accent-ink: #824b3e; --accent-tint: #eddbd1; }
-[data-section="resume"], [data-section-theme="resume"], #education { --accent: #c4aa6b; --accent-ink: #6e591f; --accent-tint: #eae0c3; }
-[data-section="contact"], [data-section-theme="contact"], #contact { --accent: #bc8f9c; --accent-ink: #774b5c; --accent-tint: #e9dbe0; }
+[data-section="penthouse"], [data-section-theme="penthouse"], #penthouse { --accent: #ba704c; --accent-ink: #75442d; --accent-tint: #f0ddc7; }
+[data-section="about"], [data-section-theme="about"], #about { --accent: #547557; --accent-ink: #344e36; --accent-tint: #dce3ce; }
+[data-section="projects"], [data-section-theme="projects"], #projects { --accent: #4d83b3; --accent-ink: #314f72; --accent-tint: #dbe5ed; }
+[data-section="experience"], [data-section-theme="experience"], #experience { --accent: #bf9540; --accent-ink: #715317; --accent-tint: #eddfb8; }
+[data-section="resume"], [data-section-theme="resume"], #education { --accent: #8f4e4b; --accent-ink: #643835; --accent-tint: #eeddd1; }
+[data-section="contact"], [data-section-theme="contact"], #contact { --accent: #4c9583; --accent-ink: #2c6053; --accent-tint: #daeadf; }

@@ -11,6 +11,10 @@ export const profile = {
 
 export const rooms = [
   {
+    id: 'penthouse', number: '06', name: 'Penthouse', title: 'Make yourself at home.',
+    eyebrow: 'After hours', description: 'A bedroom in the sky, with music, games and small things to play with.',
+  },
+  {
     id: "about",
     number: "01",
     name: "About",

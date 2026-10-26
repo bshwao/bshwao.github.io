@@ -1,0 +1,16 @@
+✔ solid wall joins have the analytic exposed area for duplicate, touching and intersecting panels (3.0513ms)
+✔ all floors have non-overlapping wall skins, clean corner posts and separated floor finishes (1461.1671ms)
+✔ every paneled room backdrop has one clean exposed surface across its trim and display (1543.9814ms)
+✔ all architectural floors remain on the occupied L-shaped slab in four static batches (628.8786ms)
+✔ floor finishes fill every room bay and doorways provide real openings through its partitions (342.8967ms)
+✔ architectural partitions are solid and every room connects to the shared circulation (125.398ms)
+✔ real furnishings occupy the full length and width of every architectural room (787.5169ms)
+✔ reading drawings retain the full room finishes and matching physical doorway locations (221.6419ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6873.1047

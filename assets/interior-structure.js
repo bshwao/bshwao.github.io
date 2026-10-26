@@ -1,6 +1,7 @@
 import * as T from './vendor/three.module.min.js';
-import { insetFootprint } from './tower-geometry.js';
+import { insetFootprint,interiorFloorHeight } from './tower-geometry.js';
 import { palette, sectionColors } from './color-theme.js';
+import { interiorDesigns, interiorRoomDesign } from './interior-design.js';
 import { buildBoxSurfaces, mergeSurfaceLines } from './surface-geometry.js';
 
 /** Shared plan coordinates for the physical floor, cap drawing and reading SVG. */
@@ -29,7 +30,7 @@ export function planInteriorStructure(layout, unit) {
     const openingWidth = Math.min(1.5 * unit, region.width * .26);
     const opening = { x: entranceX(region, openingWidth, isWing), z: region.z + entrySide * (region.depth / 2 + .16),
       width: openingWidth, height: 2.65 * unit, side: isWing ? 'south' : 'north', entrySide };
-    return { index, region: { ...region }, floor: { ...region, y: .04 }, opening };
+    return { index, region: { ...region }, floor: { ...region, y: interiorFloorHeight }, opening };
   });
   const paths = rooms.map(room => {
     const { opening } = room; let points;
@@ -63,10 +64,12 @@ export function planInteriorStructure(layout, unit) {
  */
 export function createInteriorStructure(section, content, layout, unit) {
   const group = new T.Group(); group.name = 'interior-floor-architecture';
-  const colors = { structure: palette.structure, accent: sectionColors[section.id].accent, glass: palette.glass };
+  const design=interiorDesigns[section.id];
+  let roomStyle=null;
+  const colors = { structure: design.hall, accent: design.trim, glass: design.hall };
   const materials = Object.fromEntries(Object.entries(colors).map(([name, color]) =>
-    [name, new T.MeshLambertMaterial({ color, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })]));
-  const line = new T.LineBasicMaterial({ color: palette.muted, transparent: true, opacity: .58, depthWrite: false });
+    [name, new T.MeshLambertMaterial({ color:'#ffffff',vertexColors:true, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })]));
+  const line = new T.LineBasicMaterial({ color: design.outline, transparent: true, opacity: .4, depthWrite: false });
   const parts = new Map(Object.keys(colors).map(name => [name, []]));
   const lineParts = [], plainLines = [], rooms = [], features = [], solidBoxes = [];
   const plan = planInteriorStructure(layout, unit), { circulation } = plan;
@@ -75,17 +78,23 @@ export function createInteriorStructure(section, content, layout, unit) {
   const matrix = new T.Matrix4(), position = new T.Vector3(), scale = new T.Vector3(), rotation = new T.Quaternion();
   const yAxis = new T.Vector3(0, 1, 0);
   let primitiveCount = 0;
-  const wallThickness = .13 * unit, floorY = .04, height = 4 * unit;
+  const wallThickness = .13 * unit, floorY = interiorFloorHeight, floorBase=.035, height = 4 * unit;
 
-  function primitive(source, x, y, z, w, h, d, surface = 'structure', turn = 0, outline = true) {
+  function colored(geometry,color){
+    const rgb=new T.Color(color),data=new Float32Array(geometry.attributes.position.count*3);
+    for(let i=0;i<data.length;i+=3){data[i]=rgb.r;data[i+1]=rgb.g;data[i+2]=rgb.b;}
+    geometry.setAttribute('color',new T.BufferAttribute(data,3));return geometry;
+  }
+  function primitive(source, x, y, z, w, h, d, surface = 'structure', turn = 0, outline = true, finish = null) {
+    const color=finish||(roomStyle?(surface==='structure'?roomStyle.wall:surface==='accent'?roomStyle.colors.equipment:roomStyle.colors.glass):colors[surface]);
     position.set(x, y, z); scale.set(w, h, d); rotation.setFromAxisAngle(yAxis, turn);
     matrix.compose(position, rotation, scale);
-    if (source === cube) solidBoxes.push({ matrix: matrix.clone(), surface, outline });
-    else parts.get(surface).push((source.index ? source.toNonIndexed() : source.clone()).applyMatrix4(matrix));
+    if (source === cube) solidBoxes.push({ matrix: matrix.clone(), surface:`${surface}|${color}`, outline });
+    else parts.get(surface).push(colored((source.index ? source.toNonIndexed() : source.clone()).applyMatrix4(matrix),color));
     primitiveCount++;
   }
-  const box = (x, y, z, w, h, d, surface = 'structure', turn = 0, outline = true) => {
-    if (w > .0001 && h > .0001 && d > .0001) primitive(cube, x, y, z, w, h, d, surface, turn, outline);
+  const box = (x, y, z, w, h, d, surface = 'structure', turn = 0, outline = true, finish = null) => {
+    if (w > .0001 && h > .0001 && d > .0001) primitive(cube, x, y, z, w, h, d, surface, turn, outline,finish);
   };
   const stroke = (a, b) => plainLines.push(...a, ...b);
   function wall(room, x, z, w, d, h, kind = 'partition', surface = 'structure', bottom = floorY) {
@@ -94,18 +103,23 @@ export function createInteriorStructure(section, content, layout, unit) {
   }
   function plankFloor(region, index) {
     const { x, z, width: w, depth: d } = region;
-    box(x, floorY - .018, z, w, .036, d, 'structure', 0, false);
+    box(x,(floorY+floorBase)/2,z,w,floorY-floorBase,d,'structure',0,false,roomStyle.floor);
     // Joints belong to the full usable room, rather than to a tiny furniture mat.
-    const pitch = section.id === 'about' || section.id === 'resume' ? .8 * unit : 1.65 * unit;
-    const wood = section.id === 'about' || section.id === 'resume';
+    const wood = ['boards','wide-boards','parquet'].includes(roomStyle.pattern);
+    const pitch = (roomStyle.pattern==='wide-boards'?1.3:wood ? .8:roomStyle.pattern==='resin'?4.5:roomStyle.pattern==='terrazzo'?3.2:roomStyle.pattern==='large-tile'?2.4:1.65)*unit;
     for (let offset = pitch; offset < w - .12; offset += pitch)
       stroke([x - w / 2 + offset, floorY + .006, z - d / 2], [x - w / 2 + offset, floorY + .006, z + d / 2]);
     if (!wood) for (let offset = pitch; offset < d - .12; offset += pitch)
       stroke([x - w / 2, floorY + .006, z - d / 2 + offset], [x + w / 2, floorY + .006, z - d / 2 + offset]);
-    if (wood) for (let offset = pitch * 1.7, row = 0; offset < d; offset += pitch * 1.7, row++) {
+    if (wood) for (let offset = pitch * (roomStyle.pattern==='parquet'?1:2.7), row = 0; offset < d; offset += pitch * (roomStyle.pattern==='parquet'?1:2.7), row++) {
       const start = x - w / 2 + (row % 2 ? pitch : 0);
       for (let dx = 0; dx < w - pitch; dx += pitch * 2)
         stroke([start + dx, floorY + .006, z - d / 2 + offset], [Math.min(start + dx + pitch, x + w / 2), floorY + .006, z - d / 2 + offset]);
+    }
+    if(roomStyle.pattern==='terrazzo')for(let i=0;i<42;i++){
+      const fx=((i*37+index*13)%101+.5)/102,fz=((i*61+index*29)%97+.5)/98;
+      const px=x-w/2+.15+fx*(w-.3),pz=z-d/2+.15+fz*(d-.3),size=(.025+i%3*.01)*unit;
+      stroke([px-size,floorY+.006,pz],[px+size,floorY+.006,pz+size]);
     }
     // A small inset at the entrance gives every room a recognizable section finish.
     const stripeZ = z + (index === layout.regions.length - 1 ? -1 : 1) * (d / 2 - .24 * unit);
@@ -113,6 +127,7 @@ export function createInteriorStructure(section, content, layout, unit) {
   }
 
   plan.rooms.forEach((roomPlan, index) => {
+    roomStyle=interiorRoomDesign(section.id,index);
     const { region, opening } = roomPlan;
     const isWing = index === layout.regions.length - 1, entrySide = isWing ? -1 : 1;
     const minX = region.x - region.width / 2, maxX = region.x + region.width / 2;
@@ -156,20 +171,21 @@ export function createInteriorStructure(section, content, layout, unit) {
     for (const x of [doorLeft - wallThickness / 2, doorRight + wallThickness / 2])
       wall(room, x, front, wallThickness, wallThickness * 1.5, opening.height, 'door-jamb', 'accent');
     wall(room, opening.x, front, opening.width + wallThickness * 2, wallThickness * 1.5, .14 * unit, 'door-lintel', 'accent', floorY + opening.height);
-    box(opening.x, .041, front, opening.width, .008, .6 * unit, 'accent', 0, false);
+    box(opening.x,floorY+.001,front,opening.width,.008,.6*unit,'accent',0,false);
     room.floor.bounds = { minX, maxX, minZ, maxZ };
-    room.bounds = new T.Box3(new T.Vector3(minX, floorY - .036, minZ), new T.Vector3(maxX, floorY, maxZ));
+    room.bounds = new T.Box3(new T.Vector3(minX, floorBase, minZ), new T.Vector3(maxX, floorY, maxZ));
     for (const wall of room.walls) room.bounds.union(new T.Box3().setFromCenterAndSize(
       new T.Vector3(wall.x, wall.y, wall.z), new T.Vector3(wall.width, wall.height, wall.depth)));
     rooms.push(room);
   });
+  roomStyle=null;
   features.push('Full-size finished rooms with framed rear windows', 'Cutaway partitions with open corridor doorways');
 
   // A continuous finish over the actual L-shaped circulation space connects
   // all four room entrances to the aligned elevator and stair, rather than
   // leaving the core stranded in a featureless expanse of slab.
-  for (const hall of circulation.floor) box((hall.minX + hall.maxX) / 2, floorY - .018, (hall.minZ + hall.maxZ) / 2,
-    hall.maxX - hall.minX, .036, hall.maxZ - hall.minZ, 'glass', 0, false);
+  for (const hall of circulation.floor) box((hall.minX + hall.maxX) / 2,(floorY+floorBase)/2,(hall.minZ + hall.maxZ) / 2,
+    hall.maxX - hall.minX,floorY-floorBase,hall.maxZ - hall.minZ,'glass',0,false);
   const { paths } = circulation;
   // Fine paired guide strips make the shared passage visible without adding
   // obstacles, false raised tracks or a line running through the service core.
@@ -268,14 +284,14 @@ export function createInteriorStructure(section, content, layout, unit) {
     return geometry;
   }
   const skin = buildBoxSurfaces(solidBoxes);
-  for (const [surface, geometry] of skin.surfaces) parts.get(surface).push(geometry);
+  for (const [key, geometry] of skin.surfaces) {const [surface,color]=key.split('|');parts.get(surface).push(colored(geometry,color));}
   lineParts.push(skin.outline);
   const surfaces = [];
   for (const [name, geometries] of parts) {
     if (!geometries.length) { materials[name].dispose(); continue; }
-    const mesh = new T.Mesh(merge(geometries, ['position', 'normal']), materials[name]);
+    const mesh = new T.Mesh(merge(geometries, ['position', 'normal','color']), materials[name]);
     mesh.name = `floor-architecture-${name}`; mesh.userData.surface = name;
-    group.add(mesh); surfaces.push({ material: materials[name], color: new T.Color(colors[name]) });
+    group.add(mesh); surfaces.push({ material: materials[name], color: new T.Color('#ffffff') });
   }
   if (plainLines.length) {
     const geometry = new T.BufferGeometry(); geometry.setAttribute('position', new T.Float32BufferAttribute(plainLines, 3));

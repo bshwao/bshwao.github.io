@@ -3,12 +3,14 @@ import { palette, sectionColors } from './color-theme.js';
 import { floorLayout, insetFootprint, towerRoofHeight } from './tower-geometry.js';
 import { floorContent } from './floor-content.js';
 import { planInteriorStructure } from './interior-structure.js';
+import { interiorRoomDesign } from './interior-design.js';
 
 // Small architectural sketches for the closed tower's exposed cut faces.
 // These are independent of the detailed, selectable interiors below the caps.
 export function createCapPlans(section, undersideY) {
   const group = new T.Group(); group.name = `cap-plans-${section.id}`;
   const walls = [], furniture = [];
+  const furnitureColors=[];
   const faces = [], features = new Set(['perimeter-walls', 'elevator', 'stairs', 'room-partitions']);
 
   const inside = (point, polygon) => {
@@ -21,6 +23,7 @@ export function createCapPlans(section, undersideY) {
   };
 
   function face(height, y, side) {
+    let furnitureInk=new T.Color(sectionColors[section.id].ink);
     // Crown and spire levels are not occupied floors.
     if (height >= towerRoofHeight) return;
     const roomCount = floorContent[section.id].rooms.length;
@@ -48,6 +51,7 @@ export function createCapPlans(section, undersideY) {
         const start = stops[i - 1], end = stops[i], middle = (start + end) / 2;
         if (end - start < 1e-8 || !inside([a[0] + dx * middle, a[1] + dz * middle], boundary)) continue;
         target.push(a[0] + dx * start, y, a[1] + dz * start, a[0] + dx * end, y, a[1] + dz * end);
+        if(target===furniture)furnitureColors.push(...furnitureInk.toArray(),...furnitureInk.toArray());
       }
     }
     const path = (target, points, transform = p => p) => {
@@ -84,6 +88,7 @@ export function createCapPlans(section, undersideY) {
     for(const route of architecture.circulation.paths)path(walls,route.points);
 
     for (const [index, station] of stations.entries()) {
+      furnitureInk=new T.Color(interiorRoomDesign(section.id,index).colors.equipment);
       const firstFurnitureVertex = furniture.length;
       const region = station.region;
       // The cap uses the same room centres and orthogonal regions as the interior.
@@ -120,7 +125,31 @@ export function createCapPlans(section, undersideY) {
         for (const dz of [-.55, .55]) stroke([[x - .5, z + dz], [x + .5, z + dz]]);
       }
 
-      if (section.id === 'about') {
+      if (section.id === 'penthouse') {
+        if (index === 0) {
+          rect(-.35,-.1,2.9,4.6);rect(-.35,-2.55,3.15,.22);
+          rect(-1.08,-1.65,1.15,.72);rect(.38,-1.65,1.15,.72);
+          stroke([[-1.8,-.8],[1.1,-.8]]);rect(2.15,-1.8,.95,.95);circle(2.15,-1.8,.24);
+          features.add('penthouse-bed-and-pillows');
+        } else if (index === 1) {
+          rect(0,1.45,4.4,1.3);rect(0,2.05,4.4,.2);stroke([[0,.8],[0,2.1]]);
+          rect(0,-2,3.8,.65);rect(0,-.25,1.8,1);rect(0,-.25,.8,.4);
+          circle(-.23,-.25,.06);circle(.23,-.25,.06);rect(-2.85,-.7,1.05,1.6);
+          features.add('penthouse-game-lounge');
+        } else if (index === 2) {
+          rect(0,-1.3,4.2,1.65);circle(-1.05,-1.3,.62);circle(-1.05,-1.3,.16);
+          stroke([[.05,-1.85],[-.45,-1.25]]);rect(-2.8,-1.3,.7,1);rect(2.8,-1.3,.7,1);
+          rect(0,1.3,3.8,1);
+          for(let key=-1.55;key<1.6;key+=.45)stroke([[key,.85],[key,1.75]]);
+          features.add('penthouse-turntable-and-synth');
+        } else {
+          circle(-1.6,-1.3,.75);stroke([[-2.35,-1.3],[-.85,-1.3]]);stroke([[-1.6,-2.05],[-1.6,-.55]]);
+          stroke([[.5,.7],[1.3,-.8],[2.2,.7]]);stroke([[1.3,-.8],[1.3,1]]);
+          stroke([[.55,-1.8],[1.95,-2.5],[2.35,-1.75],[.95,-1.05],[.55,-1.8]]);
+          rect(-1.85,1.9,1.25,1.25);rect(.2,1.9,1.25,1.25);
+          features.add('penthouse-telescope-and-globe');
+        }
+      } else if (section.id === 'about') {
         if (index === 0) { rect(0, 0, 3.4, 1.8); chair(-1, -1.7); chair(1, 1.7); features.add('orientation-table'); }
         if (index === 1) { desk(); rect(2.9, .3, .8, 3.2); features.add('study-desk'); }
         if (index === 2) {
@@ -201,12 +230,7 @@ export function createCapPlans(section, undersideY) {
     const geometry = new T.BufferGeometry();
     geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
     if (index === 1) {
-      const colors = [], swatches = [sectionColors[section.id].ink, palette.warmInk, palette.tealInk];
-      const color = new T.Color();
-      for (let vertex = 0; vertex < positions.length / 3; vertex++) {
-        color.set(swatches[Math.floor(vertex / 12) % swatches.length]); colors.push(...color.toArray());
-      }
-      geometry.setAttribute('color', new T.Float32BufferAttribute(colors, 3));
+      geometry.setAttribute('color', new T.Float32BufferAttribute(furnitureColors, 3));
     }
     const lines = new T.LineSegments(geometry, materials[index]);
     lines.name = index === 0 ? 'plan-walls-and-core' : 'plan-furniture'; group.add(lines);

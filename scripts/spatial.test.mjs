@@ -1,6 +1,6 @@
 // DOM and camera integration checks. This does not emulate a visual WebGL browser.
 import { JSDOM } from 'jsdom';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
@@ -13,11 +13,14 @@ import { outdoorTerrainFloor } from '../assets/city-island.js';
 import { outdoorCameraPose } from '../assets/camera-framing.js';
 
 const root = resolve(import.meta.dirname, '..');
+const sectionIds=sections.map(section=>section.id);
+const sectionIndex=id=>sections.findIndex(section=>section.id===id);
 const mobile = process.argv.includes('--mobile');
 const reduced = process.argv.includes('--reduced');
 const deepLink = process.argv.includes('--deep-link');
 const unavailable = process.argv.includes('--no-webgl');
-let viewportWidth = mobile ? 390 : 1280, viewportHeight = mobile ? 844 : 800;
+const drawInventory=process.argv.includes('--draw-inventory');
+let viewportWidth = mobile ? 390 : 1280, viewportHeight = mobile ? 844 : drawInventory ? 720 : 800;
 const originalViewport = [viewportWidth, viewportHeight];
 const previewURL = 'http://127.0.0.1:4173/?preview=integration';
 const dom = new JSDOM(await readFile(resolve(root, 'index.html'), 'utf8'), { url: `${previewURL}${deepLink ? '#projects/b' : ''}`, pretendToBeVisual: true });
@@ -43,21 +46,53 @@ const frames = new Map();
 const resizeObservers = new Set(), motionListeners = new Set();
 let motionReduced = reduced;
 let lastScene, lastCamera, lastRenderer, renders = 0;
+const drawEstimates={method:'CPU visible-geometry/group estimate with frustum/layer filtering and transparent DoubleSide passes; not a WebGL measurement or GPU benchmark.',frames:0,byMode:{},peak:null,checkpoints:[]};
 class Renderer {
   constructor() {
     if (unavailable) throw new Error('WebGL unavailable');
     lastRenderer = this;
     this.domElement = w.document.createElement('canvas'); this.autoClear = true; this.target = null;
-    this.size = new THREE.Vector2(); this.info = { reset() {} };
+    this.size = new THREE.Vector2();
+    this.info = {render:{calls:0,triangles:0},reset:()=>{
+      this.commitFrame();this.info.render.calls=0;this.info.render.triangles=0;this.frameContext=null;this.frameCommitted=false;
+    }};
   }
-  setClearColor() {} dispose() {} clearDepth() {}
+  setClearColor() {} dispose() {this.commitFrame();} clearDepth() {}
   setPixelRatio(value) { this.pixelRatio = value; }
   setSize(width, height) { this.size.set(width, height); }
   getSize(target) { return target.copy(this.size); }
   getDrawingBufferSize(target) { return target.copy(this.size).multiplyScalar(this.pixelRatio).floor(); }
   getRenderTarget() { return this.target; }
   setRenderTarget(target) { this.target = target; }
-  render(scene, camera) { scene.updateMatrixWorld(); camera.updateMatrixWorld(); lastScene = scene; lastCamera = camera; renders++; }
+  commitFrame(){
+    if(!drawInventory||!this.frameContext||this.frameCommitted)return;
+    this.frameCommitted=true;drawEstimates.frames++;
+    const sample={...this.frameContext,...this.info.render};
+    const key=`${sample.graphics}/${sample.mode}`,record=drawEstimates.byMode[key]??={frames:0,peakCalls:0,peakTriangles:0};
+    record.frames++;record.peakCalls=Math.max(record.peakCalls,sample.calls);record.peakTriangles=Math.max(record.peakTriangles,sample.triangles);
+    if(!drawEstimates.peak||sample.calls>drawEstimates.peak.calls)drawEstimates.peak=sample;
+  }
+  render(scene, camera) {
+    scene.updateMatrixWorld();camera.updateMatrixWorld();lastScene=scene;lastCamera=camera;renders++;
+    if(!drawInventory)return;
+    this.frameContext??={mode:this.domElement.dataset.mode,section:this.domElement.dataset.section,room:this.domElement.dataset.focusedRoom,graphics:this.domElement.dataset.graphics,width:this.size.x,height:this.size.y,transition:w.document.querySelector('#main').dataset.transition};
+    const frustum=new THREE.Frustum().setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse));
+    scene.traverseVisible(node=>{
+      if(!(node.isMesh||node.isLine||node.isPoints)||!node.geometry||!node.layers.test(camera.layers))return;
+      if(node.frustumCulled&&!frustum.intersectsObject(node))return;
+      const geometry=node.geometry,total=geometry.index?.count??geometry.attributes.position?.count??0;
+      const add=(material,start=0,count=total)=>{
+        if(!material?.visible)return;
+        const first=Math.max(start,geometry.drawRange.start),last=Math.min(start+count,total,geometry.drawRange.start+geometry.drawRange.count);
+        if(last<=first)return;
+        const passes=node.isMesh&&material.transparent&&material.side===THREE.DoubleSide&&!material.forceSinglePass?2:1;
+        this.info.render.calls+=passes;
+        if(node.isMesh)this.info.render.triangles+=(last-first)/3*passes;
+      };
+      if(Array.isArray(node.material))for(const group of geometry.groups)add(node.material[group.materialIndex],group.start,group.count);
+      else add(node.material);
+    });
+  }
 }
 w.HTMLElement.prototype.getBoundingClientRect = () => ({ x: 0, y: 0, left: 0, top: 0, width: viewportWidth, height: viewportHeight, right: viewportWidth, bottom: viewportHeight });
 Object.defineProperty(w.HTMLElement.prototype, 'clientWidth', { get: () => viewportWidth });
@@ -121,7 +156,7 @@ function sendMouse(type, x, y, button = 0, pointerType = 'mouse', pointerId = 1)
   w.document.querySelector('canvas').dispatchEvent(event);
 }
 function assertFloorFramed(id, stage = 'settled') {
-  const index = ['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id);
+  const index = sectionIndex(id);
   const root = lastScene.children.find(node => node.isGroup);
   const module = root.children[index];
   const base = module.children[1];
@@ -186,7 +221,7 @@ async function verifyRoomObjects(sectionIndex, roomIndex) {
   assert.equal(target.clickedAt, clickedAt, 'Dragging away and back never activates an object');
   await settleCamera();
   const button = w.document.querySelector(`[data-room-object="${target.id}"]`);
-  assert.ok(button && button.getAttribute('aria-label').startsWith('Animate '), 'Objects also expose named HTML buttons');
+  assert.ok(button && /^(Animate|Open) /.test(button.getAttribute('aria-label')), 'Objects also expose named HTML buttons');
   button.closest('details').open = true; button.focus(); await tick(32);
   assert.ok(target.hover > 0, 'Keyboard focus provides the same object highlight');
   button.click(); await tick(200); assert.notEqual(target.clickedAt, null, 'The accessible button starts the same animation');
@@ -264,12 +299,68 @@ if (deepLink) {
   assert.equal(main.dataset.focusedRoom, '1', 'A fresh room URL focuses the requested room');
   assert.equal(w.document.querySelector('#interior-room-title').textContent, floorContent.projects.rooms[1].title);
   assert.equal(w.document.title, `${floorContent.projects.rooms[1].title} · Projects — Eric Hsu`);
-  assertRoomFramed(1, 1);
+  assertRoomFramed(sectionIndex('projects'), 1);
   w.history.pushState(null, '', '#tower'); w.dispatchEvent(new w.HashChangeEvent('hashchange'));
   await tick(2000);
 }
 assert.equal(main.dataset.transition, 'idle');
 assert.equal(main.dataset.mode, 'tower');
+const towerModules=()=>lastScene.children.find(node=>node.isGroup).children.slice(0,sections.length);
+assert.ok(towerModules().every((module,index)=>module.children[1].visible===(index===sections.length-1)),'Assembled facade hides encased structural slab/outline draws while retaining the ground base');
+assert.ok(towerModules().every(module=>!module.getObjectByName('tower-structural-plates')?.visible),'Closed opaque shells hide their enclosed internal floor plates');
+if(drawInventory){
+  const checkpoint=label=>{
+    lastRenderer.commitFrame();
+    drawEstimates.checkpoints.push({label,graphics:w.document.querySelector('canvas').dataset.graphics,...lastRenderer.info.render});
+  };
+  const visit=async hash=>{w.history.pushState(null,'',hash);w.dispatchEvent(new w.PopStateEvent('popstate'));await settleCamera();};
+  for(const graphics of ['standard','low']){
+    const preference=w.document.querySelector('#graphics-preference');preference.value=graphics;preference.dispatchEvent(new w.Event('change',{bubbles:true}));await settleCamera();
+    await visit('#tower');checkpoint('tower');
+    click('#unfold-structure');await settleCamera();checkpoint('explore');
+    for(const {id}of sections){
+      await visit(`#${id}`);checkpoint(`${id} overview`);
+      for(let index=0;index<floorContent[id].rooms.length;index++){
+        click(`#station-navigation [data-station="${index}"]`);await settleCamera();checkpoint(`${id}/${floorContent[id].rooms[index].id}`);
+      }
+    }
+  }
+  const loss=new w.Event('webglcontextlost',{cancelable:true});w.document.querySelector('canvas').dispatchEvent(loss);
+  const path=resolve(root,`state/penthouse/cpu-draw-inventory-${mobile?'phone':'desktop'}.json`);
+  await writeFile(path,JSON.stringify(drawEstimates,null,2));
+  console.log(JSON.stringify({method:drawEstimates.method,frames:drawEstimates.frames,peak:drawEstimates.peak,byMode:drawEstimates.byMode,opening:drawEstimates.checkpoints.filter(row=>['tower','explore'].includes(row.label)),path},null,2));
+  dom.window.close();process.exit(0);
+}
+// A native RAF can arrive less than a millisecond after a navigation request.
+// Instant calls must finish on that first frame rather than briefly revealing
+// enclosed static floor plates and uploading a new buffer on a later visit.
+{
+  const primary={scene:lastScene,camera:lastCamera,renderer:lastRenderer,renders};
+  const container=w.document.createElement('div');w.document.body.append(container);
+  const {createSpatialScene}=(await load(resolve(root,'assets/scene-3d.js'))).namespace;
+  let state,completions=0;
+  const probe=createSpatialScene({container,clock:()=>new LocalDate(),onFrame:next=>{state=next;}});
+  try{
+    await tick(.0001);
+    assert.equal(state.transitionType,null,'Initial instant camera completes even on a sub-millisecond RAF');
+    probe.goTo('section','penthouse',{instant:true,onComplete:()=>completions++});await tick(.0001);
+    assert.equal(state.transitionType,null);
+    assert.equal(state.reveal,1);assert.equal(state.expansion,1);assert.equal(state.panel,1);
+    assert.equal(completions,1,'An instant section completes on its first frame');
+    assert.ok(lastScene.children.find(node=>node.isGroup).children.slice(0,sections.length)
+      .every(module=>!module.getObjectByName('tower-structural-plates')?.visible),'Instant cuts never expose enclosed structural-plate buffers');
+    probe.focusRoom(0,{instant:true});await tick(.0001);
+    assert.equal(state.transitionType,null);assert.equal(state.focusedRoom,0);
+    probe.goTo('tower',null);await tick(.0001);
+    if(!reduced)assert.equal(state.transitionType,'scene','Ordinary navigation retains its camera flight');
+    probe.setPreferences({motion:'reduced'});await tick(.0001);
+    assert.equal(state.transitionType,null,'A live reduced-motion change also completes on its next frame');
+    assert.equal(state.expansion,0);
+  }finally{
+    probe.dispose();container.remove();
+    lastScene=primary.scene;lastCamera=primary.camera;lastRenderer=primary.renderer;renders=primary.renders;
+  }
+}
 assert.equal(lastScene.getObjectByName('district-buildings').visible, true, 'The opening view includes the surrounding district buildings');
 assert.equal(lastScene.getObjectByName('district-character').visible, true, 'The opening view includes the landscaped district');
 assert.equal(lastScene.getObjectByName('district-contact-shadows').visible, true, 'The opening city includes its contact shading');
@@ -372,7 +463,7 @@ await settleCamera();assert.ok(lastCamera.position.y>=1.49,'Outdoor orbit stops 
 click('#reset-spatial');await settleCamera();
 // The skyline opening is already at street level. The old six-step downward
 // preparation would now move the camera underneath the ground plane.
-const towerMeshes = lastScene.children.find(node => node.isGroup).children.slice(0, 5).flatMap(module => module.children[0].children.filter(node => node.isMesh));
+const towerMeshes = lastScene.children.find(node => node.isGroup).children.slice(0, sections.length).flatMap(module => module.children[0].children.filter(node => node.isMesh));
 const sceneryMeshes = ['district-buildings', 'district-character'].flatMap(name => lastScene.getObjectByName(name).children.filter(node => node.isMesh));
 let blockedPoint;
 for (let i = 0; i < 49 && !blockedPoint; i++) {
@@ -413,6 +504,15 @@ await tick(900);
 assert.equal(main.dataset.mode, 'explore');
 assert.equal(w.document.querySelector('canvas').dataset.background,'blurred','City and landscaping stay defocused while choosing a section');
 assert.ok(sections.every(section => lastScene.getObjectByName(`cap-plans-${section.id}`).visible), 'Expansion reveals all cut-face plans');
+assert.ok(towerModules().every(module=>module.children[1].visible),'Separated floors restore every exposed structural slab and its edge drawing');
+const assertBottomCaps=()=>{
+  assert.ok(towerModules().every((module,index)=>module.getObjectByName('tower-bottom-cap').visible===(index===sections.length-1||lastCamera.position.y<=module.position.y)),'Closed floor bottom caps follow the actual camera elevation while the ground cap stays visible');
+};
+assertBottomCaps();
+for(let i=0;i<24;i++){cameraKey('ArrowDown');await tick(16);}
+await settleCamera();assertBottomCaps();
+assert.ok(towerModules().slice(0,-1).every(module=>module.getObjectByName('tower-bottom-cap').visible),'A below-floor orbit restores every exposed underside');
+click('#reset-spatial');await settleCamera();assertBottomCaps();
 assert.equal(w.document.querySelector('#reading-view').hidden, true, 'Reading mode is unavailable on the expanded tower');
 assert.equal(main.dataset.transition, 'idle');
 if (!reduced) assert.ok(middle.distanceTo(lastCamera.position) > 1, 'Camera moves throughout expansion');
@@ -452,10 +552,11 @@ assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Outdoor r
 click('[data-section="about"]'); await tick(600);
 assert.equal(main.dataset.transition, reduced ? 'idle' : 'moving');
 if (!reduced) {
-  const entryModule = lastScene.children.find(node => node.isGroup).children[0];
+  const entryModule = lastScene.children.find(node => node.isGroup).children[sectionIndex('about')];
   const shell = entryModule.children[0].children.find(node => node.isMesh);
   const visibleHeight = shell.material.clippingPlanes[0].constant - entryModule.position.y;
-  assert.ok(visibleHeight > 30, 'Entry approaches the section before opening its facade');
+  const aboutSection=sections.find(section=>section.id==='about');
+  assert.ok(visibleHeight > (aboutSection.high-aboutSection.low)*.7, 'Entry approaches the section before opening its facade');
   assert.equal(Number(main.style.getPropertyValue('--interior-progress')), 0, 'The reading panel follows the architectural approach');
 }
 assert.equal(lastScene.getObjectByName('district-buildings').visible, false, 'City buildings clear before the facade opens');
@@ -473,6 +574,9 @@ assert.equal(lastScene.getObjectByName('blueprint-district').visible, false, 'Th
 assert.equal(lastScene.getObjectByName('district-buildings').visible, false, 'District buildings clear away before interior reading');
 assert.equal(lastScene.getObjectByName('district-character').visible, false, 'Landscaping and test vehicles clear away before interior reading');
 assert.equal(lastScene.getObjectByName('cap-plans-about').visible, false, 'The cap drawing clears before the furnished interior is read');
+const openAbout=towerModules()[sectionIndex('about')];
+assert.equal(openAbout.getObjectByName('tower-bottom-cap').visible,true,'An opened floor keeps its closing surface');
+assert.equal(openAbout.getObjectByName('tower-structural-plates').visible,false,'Fully clipped internal plates add no hidden draw');
 assertFloorFramed('about');
 assert.ok(w.document.querySelector('#interior-content').textContent.includes('Eric Hsu'));
 const previewButton = w.document.querySelector('#station-navigation [data-station="2"]');
@@ -487,7 +591,7 @@ assert.equal(main.dataset.hoveredRoom, '2', 'Keyboard focus offers the same room
 w.document.querySelector('#reading-view').focus(); await tick(16);
 assert.equal(main.dataset.hoveredRoom, '', 'Moving keyboard focus clears the preview');
 // Pick real room geometry, then bubble the click a browser emits after pointerup.
-const aboutRooms = lastScene.children.find(node => node.isGroup).children[0].children[2].children.slice(0, 4);
+const aboutRooms = lastScene.children.find(node => node.isGroup).children[sectionIndex('about')].children[2].children.slice(0, floorContent.about.rooms.length);
 const roomMeshes = aboutRooms.flatMap(room => room.children.filter(node => node.isMesh));
 const chosenMesh = aboutRooms[2].children.find(node => node.isMesh);
 let furniturePoint;
@@ -501,22 +605,22 @@ const furnitureX = (furniturePoint.x + 1) * viewportWidth / 2, furnitureY = (1 -
 sendMouse('pointerdown', furnitureX, furnitureY); sendMouse('pointerup', furnitureX, furnitureY);
 canvas.dispatchEvent(new w.MouseEvent('click', { bubbles: true, clientX: furnitureX, clientY: furnitureY }));
 await tick(190);
-assertRoomFramed(0, 2, '25% of overview-to-room flight');
-assert.equal(lastScene.children.find(node => node.isGroup).children.slice(0, 5).filter(node => node.visible).length, 1, 'Other tower sections stay hidden throughout a room close-up');
+assertRoomFramed(sectionIndex('about'), 2, '25% of overview-to-room flight');
+assert.equal(lastScene.children.find(node => node.isGroup).children.slice(0, sections.length).filter(node => node.visible).length, 1, 'Other tower sections stay hidden throughout a room close-up');
 assert.equal(w.location.hash, '#about/c', 'Room selection has a stable shareable URL');
 assert.equal(w.document.title, `${floorContent.about.rooms[2].title} · About — Eric Hsu`);
 assert.ok(w.document.querySelector('#interior-content').textContent.includes('Piano'));
 assert.equal(w.document.querySelector('#station-markers [data-station="2"]').getAttribute('aria-pressed'), 'true');
 await tick(190);
-assertRoomFramed(0, 2, '50% of overview-to-room flight');
+assertRoomFramed(sectionIndex('about'), 2, '50% of overview-to-room flight');
 await tick(190);
-assertRoomFramed(0, 2, '75% of overview-to-room flight');
+assertRoomFramed(sectionIndex('about'), 2, '75% of overview-to-room flight');
 await tick(470);
 assert.equal(canvas.dataset.focusedRoom, '2');
-assertRoomFramed(0, 2);
+assertRoomFramed(sectionIndex('about'), 2);
 assert.equal(main.dataset.cameraMotion, 'idle');
 assert.equal(w.document.querySelector('#floor-overview').disabled, false);
-const about = lastScene.children.find(node => node.isGroup).children[0].children[2];
+const about = lastScene.children.find(node => node.isGroup).children[sectionIndex('about')].children[2];
 assert.equal(about.children[2].children[0].children[0].material.color.getHexString(), sectionColors.about.ink.slice(1), 'The selected room has a stronger 3D outline');
 click('#share-room'); await settleImports();
 assert.equal(copiedURLs.at(-1), `${previewURL}#about/c`, 'Copy link preserves origin, path, search, and the exact room');
@@ -536,9 +640,9 @@ clipboardDenied = false;
 click('#station-navigation [data-station="1"]'); await tick(200);
 assert.equal(manualLink.hidden, true, 'Changing the route clears the manual copy field');
 assert.equal(w.document.querySelector('#share-status').textContent, '');
-click('#station-navigation [data-station="3"]'); await sampleRoomFlight(0, 3);
+click('#station-navigation [data-station="3"]'); await sampleRoomFlight(sectionIndex('about'), 3);
 assert.equal(canvas.dataset.focusedRoom, '3', 'Rapid room changes keep the most recent camera destination');
-assertRoomFramed(0, 3);
+assertRoomFramed(sectionIndex('about'), 3);
 w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await tick(800);
 assert.equal(main.dataset.mode, 'section', 'Escape from a close view stays on this floor');
 assert.equal(canvas.dataset.focusedRoom, '');
@@ -567,7 +671,7 @@ assert.ok(Math.abs(Number(main.dataset.polar) - preservedPolar) <= .002, 'Resize
 click('#station-navigation [data-station="1"]'); await tick(240);
 await resizeTo(mobile ? 650 : 844, 390); await tick(800);
 assert.equal(canvas.dataset.focusedRoom, '1', 'A resize can interrupt a room flight safely');
-assertRoomFramed(0, 1);
+assertRoomFramed(sectionIndex('about'), 1);
 await resizeTo(0, 0);
 assert.ok(lastCamera.position.toArray().every(Number.isFinite), 'A temporarily hidden viewport cannot corrupt the camera');
 await resizeTo(...originalViewport);
@@ -597,7 +701,7 @@ const hiddenRenders = renders; await tick(2000);
 assert.equal(renders, hiddenRenders, 'Hidden tabs suspend rendering even during a room flight');
 pageHidden = false; w.document.dispatchEvent(new w.Event('visibilitychange')); await settleCamera();
 assert.equal(canvas.dataset.focusedRoom, '1', 'Visibility restoration safely completes the pending room flight');
-assertRoomFramed(0, 1);
+assertRoomFramed(sectionIndex('about'), 1);
 click('#floor-overview'); await settleCamera();
 
 click('#back-to-structure'); await settleCamera();
@@ -609,7 +713,7 @@ click('#unfold-structure'); await settleCamera();
 assert.ok(lastCamera.position.distanceTo(savedOutdoorPosition) < .02, 'Unfolding restores the previous expanded orbit and zoom');
 
 // Move between all interior models and check the document/source links.
-for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
+for (const id of sectionIds) {
   w.history.pushState(null, '', `#${id}`); w.dispatchEvent(new w.HashChangeEvent('hashchange'));
   await sampleSectionEntry(id);
   assert.equal(canvas.dataset.section, id); assert.equal(main.dataset.transition, 'idle');
@@ -620,13 +724,23 @@ for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
   const count = w.document.querySelectorAll('#station-navigation button').length;
   for (let i = 0; i < count; i++) {
     click(`#station-navigation [data-station="${i}"]`);
-    await sampleRoomFlight(['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id), i);
+    await sampleRoomFlight(sectionIndex(id), i);
     assert.equal(w.location.hash, `#${id}/${floorContent[id].rooms[i].id}`);
     if (id === 'projects') {
       assert.equal(w.document.querySelector('#complete-portfolio').getAttribute('href'), `./reading.html#project-${floorContent.projects.rooms[i].projectId}`, 'Each project opens its own complete case study');
       assert.deepEqual([...w.document.querySelectorAll('#interior-content .project-summary dt')].map(node => node.textContent), ['What I built', 'My contribution', 'Result']);
     }
-    assertRoomFramed(['about', 'projects', 'experience', 'resume', 'contact'].indexOf(id), i);
+    assertRoomFramed(sectionIndex(id), i);
+    if(id==='penthouse'&&i===1){
+      const gameRoute=w.location.hash,cell=w.document.querySelector('#interior-content [data-game-cell="0"]');
+      assert.ok(cell,'The play lounge exposes a real keyboard-accessible game');
+      click('#interior-content [data-game-cell="0"]');await settleCamera();
+      assert.equal(cell.textContent,'X');assert.equal(cell.disabled,true);
+      assert.equal(w.document.querySelectorAll('#interior-content [data-game-cell][data-mark="O"]').length,1,'The house replies once');
+      assert.equal(w.location.hash,gameRoute,'Playing does not navigate away from the lounge');
+      click('#interior-content [data-game-reset]');
+      assert.ok([...w.document.querySelectorAll('#interior-content [data-game-cell]')].every(button=>!button.disabled&&!button.textContent),'A new round clears and enables all nine squares');
+    }
     await verifyZoomStops(`${id}/${i} room`,{resize:id==='about'&&i===0});click(`#station-navigation [data-station="${i}"]`);await settleCamera();
     await verifyRoomObjects(sections.findIndex(section => section.id === id), i);
   }
@@ -649,6 +763,7 @@ if (mobile) {
   }
   await resizeTo(...originalViewport); await settleCamera();
 }
+w.history.pushState(null,'','#contact');w.dispatchEvent(new w.HashChangeEvent('hashchange'));await settleCamera();
 click('#station-navigation [data-station="3"]');
 assert.equal(w.document.querySelector('#interior-content a[download]').getAttribute('href'), './assets/eric-hsu-resume.pdf');
 
@@ -714,7 +829,9 @@ assert.equal(w.document.activeElement, w.document.querySelector('#reading-view')
 assert.equal(w.location.hash, '#resume/d', 'Returning to 3D preserves the room URL');
 assert.equal(lastCamera.position.distanceTo(readingCamera), 0, 'Toggling the view preserves the camera exactly');
 click('#reading-view');
-for (const id of ['contact', 'about', 'projects', 'experience', 'resume']) {
+const readingStart=sectionIndex('resume');
+for(let step=1;step<=sections.length;step++){
+  const id=sections[(readingStart+step)%sections.length].id;
   click(`#floor-navigation [data-room="${id}"]`); await settleCamera();
   assert.equal(dialog.open, true, 'Section navigation keeps reading mode open');
   assert.equal(canvas.dataset.section, id, 'The underlying 3D model follows the selected section');

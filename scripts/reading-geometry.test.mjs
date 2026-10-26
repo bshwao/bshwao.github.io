@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { JSDOM } from 'jsdom';
-import { sections, footprint, floorLayout } from '../assets/tower-geometry.js';
+import { sections, footprint, floorLayout, towerRoofHeight } from '../assets/tower-geometry.js';
 import { floorContent } from '../assets/floor-content.js';
 import { createFloorPlan, planLayouts } from '../assets/floor-plans.js';
 import { createSectionReadingView } from '../assets/floor-view.js';
@@ -101,7 +101,7 @@ test('cap plan segments cannot bridge the empty L recess and furnish every conte
         }
       }
     }
-    assert.equal(cap.faces.some(face => face.side === 'top'), section.id !== 'about');
+    assert.equal(cap.faces.some(face => face.side === 'top'), section.high < towerRoofHeight);
     cap.group.traverse(node => { node.geometry?.dispose(); node.material?.dispose(); });
   }
 });

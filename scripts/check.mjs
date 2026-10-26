@@ -11,6 +11,7 @@ files.push(resolve(root,'scripts/shadow-study.js'));
 files.push(resolve(root,'scripts/time-qa.js'));
 files.push(resolve(root,'scripts/outskirts-qa.js'));
 files.push(resolve(root,'scripts/intro-qa.js'),resolve(root,'scripts/view-controls-qa.js'));
+files.push(resolve(root,'scripts/penthouse-preview.js'));
 for (const file of files) {
   const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
   if (result.status !== 0) { process.stderr.write(result.stderr); process.exit(1); }

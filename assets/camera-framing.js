@@ -1,6 +1,6 @@
 import * as T from './vendor/three.module.min.js';
 import { cityEnvelopes } from './city-layout.js';
-import { sections, setbacks, footprint, towerHeight } from './tower-geometry.js';
+import { sections, setbacks, footprint, towerHeight, expandedSectionOffset } from './tower-geometry.js';
 import { outdoorViewLayout } from './spatial-layout.js';
 import { citySceneryRadius, islandFramingRadius } from './city-geography.js';
 
@@ -38,10 +38,10 @@ export function outdoorFramingPoints(mode, width, height=900) {
     }
   } else {
     for (const [index, section] of sections.entries()) {
-      const offset = (index % 2 ? 1 : -1) * (index === 4 ? 10 : 8);
+      const [offset,lift] = expandedSectionOffset(index);
       const levels=[section.low,section.high,...setbacks.filter(y=>y>section.low&&y<section.high).flatMap(y=>[y-.002,y])];
       for (const y of levels) for (const [x, z] of footprint(y === section.high ? y - .002 : y, 12)) {
-        points.push(new T.Vector3(x + offset, y + (4 - index) * 10, z));
+        points.push(new T.Vector3(x + offset, y + lift, z));
       }
     }
   }

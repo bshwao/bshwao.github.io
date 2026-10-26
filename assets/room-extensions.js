@@ -16,6 +16,11 @@ export function furnishRoomExtensions(section, index, parent, bounds, region, sc
   };
   function seat(x, z, width = 1.2, back = 1) {
     interact(parent, 'Visitor bench', 'sofa', () => {
+      if(section==='experience'){
+        cylinder(parent,x,.7,z,.37,.15,'equipment');
+        cylinder(parent,x,.34,z,.06,.6,'ink');
+        for(const dx of [-.3,.3])part(x+dx,.14,z,.06,.28,.5,'ink');return;
+      }
       part(x, .7, z, width, .16, .8, 'equipment');
       part(x, 1.12, z + back * .36, width, .68, .12, 'glass');
       for (const dx of [-width * .37, width * .37]) for (const dz of [-.27, .27]) part(x + dx, .33, z + dz, .07, .66, .07, 'ink');
@@ -41,9 +46,15 @@ export function furnishRoomExtensions(section, index, parent, bounds, region, sc
   function workArea(x, z, width, depth) {
     interact(parent, 'Work table', 'pulse', () => {
       const tableW = Math.min(2.9, width * .62), tableD = Math.min(1.5, depth * .25);
-      part(x, 1.4, z, tableW, .14, tableD);
-      for (const dx of [-tableW * .4, tableW * .4]) for (const dz of [-tableD * .32, tableD * .32]) part(x + dx, .68, z + dz, .08, 1.36, .08, 'ink');
-      seat(x, z - tableD / 2 - .7, Math.min(1.1, tableW * .5), -1);
+      if(section==='contact'){
+        const top=cylinder(parent,x,1.4,z,.5,.14,'structure');top.scale.x=tableW;top.scale.z=tableD;
+        cylinder(parent,x,.69,z,.085,1.38,'equipment');
+        const foot=cylinder(parent,x,.08,z,.5,.12,'ink');foot.scale.x=tableW*.65;foot.scale.z=tableD*.65;
+      }else{
+        part(x,1.4,z,tableW,.14,tableD);
+        for(const dx of [-tableW*.4,tableW*.4])for(const dz of [-tableD*.32,tableD*.32])part(x+dx,.68,z+dz,.08,1.36,.08,'ink');
+      }
+      if(section!=='projects'&&section!=='experience')seat(x,z-tableD/2-.7,Math.min(1.1,tableW*.5),-1);
       seat(x, z + tableD / 2 + .7, Math.min(1.1, tableW * .5), 1);
       paper(parent, x - .35, 1.5, z, .65, .8, -.15);
       if (section === 'projects' || section === 'experience') {
@@ -63,12 +74,21 @@ export function furnishRoomExtensions(section, index, parent, bounds, region, sc
   const sideBands = [[minX, bounds.min.x - .4], [bounds.max.x + .4, maxX]];
   sideBands.forEach(([a, b], side) => {
     const width = b - a;
-    if (width < 2.5) return;
+    if (width < .28) return;
     const depth = maxZ - minZ, x = (a + b) / 2, z = center.z;
+    if(width<.9){
+      record(`${purpose} edge task light`,()=>{
+        cylinder(parent,x,.06,z,width*.44,.12,'equipment');
+        cylinder(parent,x,1.15,z,.035,2.2,'ink');
+        part(x,2.27,z,width-.035,.16,.42,'structure');
+        part(x,2.17,z,width*.7,.025,.3,'glass');
+      });return;
+    }
     record(`${purpose} extension ${side + 1}: table, seating and perimeter storage`, () => {
       if (width > 3.1 && depth > 4.7) workArea(x, z - .2, width, depth);
-      else seat(x, z, Math.min(width - .25, 2));
-      cabinet(x, maxZ - .5, Math.min(width - .2, 3.2), .7, section === 'resume');
+      else if(width>1.5)seat(x,z,Math.min(width-.25,2));
+      else cabinet(x,z,width-.2,.65);
+      cabinet(x, maxZ - .5, width - .2, .7, section === 'resume');
       if (depth > 6.2) cabinet(x, minZ + .5, Math.min(width - .2, 2.7), .7);
     });
   });
@@ -80,7 +100,7 @@ export function furnishRoomExtensions(section, index, parent, bounds, region, sc
   const endBands = [[minZ, bounds.min.z - .4, -1], [bounds.max.z + .4, maxZ, 1]];
   endBands.forEach(([a, b, side]) => {
     const depth = b - a;
-    if (depth < .65) return;
+    if (depth < .35) return;
     const cabinetDepth = Math.min(.75, depth - .16);
     const z = side < 0 ? a + cabinetDepth / 2 + .08 : b - cabinetDepth / 2 - .08;
     const doorway = side === entrySide;

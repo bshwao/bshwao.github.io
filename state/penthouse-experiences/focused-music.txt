@@ -1,0 +1,21 @@
+✔ room activities open from content and furniture, keep desktop/game state, and close on navigation (375.5946ms)
+✔ lighting and weather controls drive normalized scene state, lamp object, and projected glass rain (53.2393ms)
+✔ dropping local audio into the compact player selects it without uploading or starting playback (26.0268ms)
+✔ creation and subscriptions never autoplay or create an AudioContext (108.2373ms)
+✔ explicit play builds one shared graph and returns the analyser’s actual signal (15.2807ms)
+✔ transport preserves playback through track changes and validates timeline, loop, and visual styles (8.7932ms)
+✔ blocked playback remains recoverable and unsupported visualization retains usable audio (13.8641ms)
+✔ a partial graph failure never reports an available analyser (11.6582ms)
+✔ local audio accepts MIME or known extensions, enforces size/count limits, and revokes only owned ObjectURLs (16.0163ms)
+✔ ambient sound starts only on request, changes timbre, and disconnects on room stop (7.0121ms)
+✔ pending ambient resumes cannot start stale sounds after replacement or disposal (8.1158ms)
+✔ dispose detaches audio events and closes/disconnects the graph once (8.3842ms)
+✔ compact and expanded music markup expose labels and unique control IDs (57.142ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1816.9687

@@ -139,6 +139,7 @@ export function createTowerModel() {
     const caps = [];
     for (const y of [section.low, section.high]) {
       const cap = new T.Mesh(capGeometry(profileHeight(y)), slabMaterial);
+      cap.name = y === section.low ? 'tower-bottom-cap' : 'tower-top-cap';
       cap.position.y = y - section.low;
       cap.userData.sectionId = section.id;
       shell.add(cap);
@@ -146,6 +147,7 @@ export function createTowerModel() {
     }
     // Structural plates occupy the full volume, including every exposed cut.
     const platePositions = [], plateNormals = [];
+    let structuralPlates=null;
     for (let y = section.low + 3.4; y < Math.min(section.high, towerRoofHeight); y += 3.4) {
       const source = capGeometry(y), plate = source.clone();
       plate.translate(0, y - section.low, 0);
@@ -156,7 +158,7 @@ export function createTowerModel() {
       const plates = new T.BufferGeometry();
       plates.setAttribute('position', new T.Float32BufferAttribute(platePositions, 3));
       plates.setAttribute('normal', new T.Float32BufferAttribute(plateNormals, 3));
-      shell.add(new T.Mesh(plates, slabMaterial));
+      structuralPlates=new T.Mesh(plates,slabMaterial);structuralPlates.name='tower-structural-plates';shell.add(structuralPlates);
     }
     const antennas=[];
     if(index===0) {
@@ -184,7 +186,7 @@ export function createTowerModel() {
     group.add(capPlans.group);
     const maxRadius = Math.max(...footprint(section.low).map(p => Math.hypot(...p)));
     group.position.y = section.low;
-    return { ...section, colors, cutTint, cutInk, index, group, shell, clip, surface, line, lineGeometry, coarseLineGeometry, slabMaterial, caps, interior, capPlans, maxRadius, base, mesh, antennas };
+    return { ...section, colors, cutTint, cutInk, index, group, shell, clip, surface, line, lineGeometry, coarseLineGeometry, slabMaterial, caps, structuralPlates, interior, capPlans, maxRadius, base, mesh, antennas };
   });
   const ground = new T.Group(); root.add(ground);
   const groundLine = new T.LineBasicMaterial({ color: palette.draft, transparent: true, opacity: .45 });

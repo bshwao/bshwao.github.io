@@ -1,0 +1,57 @@
+.penthouse-arcade { --arcade-ink: var(--ink, #2e322d); --arcade-paper: var(--paper, #f3efe3); --arcade-raised: var(--raised, #faf8f0); --arcade-line: var(--line, #c4c2b3); --arcade-accent: var(--accent-ink, #365e57); color: var(--arcade-ink); width: 100%; min-width: 0; }
+.penthouse-arcade *, .penthouse-arcade *::before, .penthouse-arcade *::after { box-sizing: border-box; }
+.penthouse-arcade [hidden] { display: none !important; }
+.penthouse-arcade .arcade-eyebrow { margin: 0 0 10px; font: 9px/1.5 var(--mono, monospace); letter-spacing: .13em; text-transform: uppercase; color: var(--muted, #62675b); }
+.penthouse-arcade .arcade-tabs { display: flex; gap: 5px; padding: 4px; border: 1px solid var(--arcade-line); border-radius: 9px; background: var(--arcade-paper); }
+.penthouse-arcade button { min-width: 44px; min-height: 44px; border: 1px solid var(--arcade-line); border-radius: 5px; padding: 10px 14px; background: var(--arcade-raised); color: var(--arcade-ink); font: 11px/1.35 var(--mono, monospace); cursor: pointer; touch-action: manipulation; }
+.penthouse-arcade button:hover { border-color: var(--arcade-accent); }
+.penthouse-arcade .arcade-tabs button { flex: 1; border-color: transparent; background: transparent; }
+.penthouse-arcade .arcade-tabs button[aria-selected="true"], .penthouse-arcade .arcade-primary { color: var(--arcade-raised); border-color: var(--arcade-accent); background: var(--arcade-accent); }
+.penthouse-arcade :is(button, input, [tabindex]):focus-visible { outline: 2px solid var(--arcade-accent); outline-offset: 3px; }
+.penthouse-arcade .arcade-panel { padding-top: 22px; }
+.penthouse-arcade .arcade-game-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.penthouse-arcade .arcade-game-heading h3 { margin: 0; font: 400 31px/1.1 var(--serif, Georgia, serif); color: var(--arcade-ink); }
+.penthouse-arcade .arcade-game-heading p { margin: 5px 0 0; font: 11px/1.55 var(--mono, monospace); color: var(--muted, #62675b); }
+.penthouse-arcade .arcade-game-heading .arcade-score { align-self: stretch; min-width: 84px; margin: 0; padding: 7px 10px; border: 1px solid var(--arcade-line); border-radius: 5px; text-align: center; font-size: 9px; }
+.penthouse-arcade .arcade-score strong { display: block; margin-top: 3px; color: var(--arcade-ink); font: 400 21px/1.2 var(--serif, Georgia, serif); font-variant-numeric: tabular-nums; }
+.penthouse-arcade .arcade-instructions { max-width: 54ch; margin: 16px 0; color: var(--muted, #62675b); font: 11px/1.7 var(--mono, monospace); }
+.penthouse-arcade .arcade-snake-board { display: grid; grid-template-columns: repeat(16, 1fr); gap: 1px; width: min(100%, 336px); aspect-ratio: 1; margin-inline: auto; border: 6px solid var(--arcade-ink); border-radius: 7px; background: #d8ddc9; box-shadow: inset 0 0 0 1px #b9c2ad; }
+.penthouse-arcade .arcade-snake-board span { background: #dfe3d2; border-radius: 1px; }
+.penthouse-arcade .arcade-snake-board [data-cell="body"] { background: #54775b; }
+.penthouse-arcade .arcade-snake-board [data-cell="head"] { background: #294c3b; box-shadow: inset 0 0 0 2px #54775b; border-radius: 3px; }
+.penthouse-arcade .arcade-snake-board [data-cell="food"] { background: #ae4a34; border-radius: 50%; box-shadow: inset 2px 2px 0 #c66d4f; }
+.penthouse-arcade .arcade-game-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+.penthouse-arcade .arcade-directions { display: grid; grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(2, 44px); gap: 4px; margin-left: auto; }
+.penthouse-arcade .arcade-direction { width: 44px; height: 44px; padding: 0; font: 23px/1 var(--mono, monospace); }
+.penthouse-arcade .arcade-direction-up { grid-column: 2; }
+.penthouse-arcade .arcade-direction-left { grid-column: 1; grid-row: 2; }
+.penthouse-arcade .arcade-direction-down { grid-column: 2; grid-row: 2; }
+.penthouse-arcade .arcade-direction-right { grid-column: 3; grid-row: 2; }
+.penthouse-arcade .arcade-status { min-height: 3.3em; margin: 14px 0 0; font: 11px/1.65 var(--mono, monospace); color: var(--arcade-accent); }
+.penthouse-arcade .arcade-2048-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; width: min(100%, 336px); aspect-ratio: 1; margin-inline: auto; padding: 8px; border: 1px solid #968b72; border-radius: 8px; background: #a89c83; touch-action: none; user-select: none; }
+.penthouse-arcade .arcade-tile { display: flex; align-items: center; justify-content: center; min-width: 0; border-radius: 4px; background: #bdb39c; color: #3d382b; font: 600 clamp(20px, 6vw, 30px)/1 var(--serif, Georgia, serif); font-variant-numeric: tabular-nums; }
+.penthouse-arcade .arcade-tile[data-level="1"] { background: #efe8d4; }
+.penthouse-arcade .arcade-tile[data-level="2"] { background: #e9d8b3; }
+.penthouse-arcade .arcade-tile[data-level="3"] { background: #e4b07b; }
+.penthouse-arcade .arcade-tile[data-level="4"] { background: #dc9168; }
+.penthouse-arcade .arcade-tile[data-level="5"] { background: #bf694e; color: #fffaf0; }
+.penthouse-arcade .arcade-tile[data-level="6"] { background: #a44c3d; color: #fffaf0; }
+.penthouse-arcade .arcade-tile[data-level="7"] { background: #8c6134; color: #fffaf0; font-size: 25px; }
+.penthouse-arcade .arcade-tile[data-level="8"] { background: #756038; color: #fffaf0; font-size: 25px; }
+.penthouse-arcade .arcade-tile[data-level="9"] { background: #596247; color: #fffaf0; font-size: 25px; }
+.penthouse-arcade .arcade-tile[data-level="10"] { background: #3e5c46; color: #fffaf0; font-size: 22px; }
+.penthouse-arcade .arcade-tile[data-level="11"] { background: #294c3b; color: #fffaf0; font-size: 22px; }
+.penthouse-arcade .arcade-sudoku-scroll { max-width: 100%; padding: 4px; margin: -4px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: var(--arcade-line) var(--arcade-paper); }
+.penthouse-arcade .arcade-sudoku-board { display: grid; grid-template-columns: repeat(9, 44px); width: max-content; margin-inline: auto; border: 2px solid var(--arcade-ink); border-radius: 2px; overflow: hidden; }
+.penthouse-arcade .arcade-sudoku-board input { appearance: none; display: block; width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: 0; border: 0; border-radius: 0; border-right: 1px solid var(--arcade-line); border-bottom: 1px solid var(--arcade-line); background: var(--arcade-raised); color: var(--arcade-accent); text-align: center; font: 500 20px/44px var(--mono, monospace); caret-color: var(--arcade-accent); }
+.penthouse-arcade .arcade-sudoku-board input[data-fixed="true"] { color: var(--arcade-ink); font-weight: 700; background: var(--arcade-paper); cursor: default; }
+.penthouse-arcade .arcade-sudoku-board input.arcade-box-right { border-right: 2px solid var(--arcade-ink); }
+.penthouse-arcade .arcade-sudoku-board input[data-box-bottom] { border-bottom: 2px solid var(--arcade-ink); }
+.penthouse-arcade .arcade-sudoku-board input[data-conflict="true"] { color: #882e23; background: #f8ddd2; box-shadow: inset 0 -3px #a44332; }
+.penthouse-arcade .arcade-sudoku-board input:focus-visible { position: relative; z-index: 1; outline-offset: -3px; background: #e1eadc; }
+@media (max-width: 440px) {
+  .penthouse-arcade .arcade-game-controls { gap: 7px; }
+  .penthouse-arcade .arcade-directions { flex-basis: 140px; }
+  .penthouse-arcade button { padding-inline: 10px; }
+  .penthouse-arcade .arcade-game-heading h3 { font-size: 28px; }
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "activity": "music",
+    "dialog": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 844
+    },
+    "header": {
+      "top": 0,
+      "bottom": 70.1875
+    },
+    "horizontalOverflow": false,
+    "dialogOverflow": false,
+    "pass": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "activity": "bedroom",
+    "dialog": {
+      "x": 8,
+      "y": 8,
+      "width": 374,
+      "height": 828
+    },
+    "header": {
+      "top": 9,
+      "bottom": 79.1875
+    },
+    "horizontalOverflow": false,
+    "dialogOverflow": false,
+    "pass": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "activity": "arcade",
+    "dialog": {
+      "x": 8,
+      "y": 13.25,
+      "width": 374,
+      "height": 817.484375
+    },
+    "header": {
+      "top": 14.25,
+      "bottom": 84.4375
+    },
+    "horizontalOverflow": false,
+    "dialogOverflow": false,
+    "pass": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "activity": "sky",
+    "dialog": {
+      "x": 8,
+      "y": 8,
+      "width": 374,
+      "height": 828
+    },
+    "header": {
+      "top": 9,
+      "bottom": 79.1875
+    },
+    "horizontalOverflow": false,
+    "dialogOverflow": false,
+    "pass": true
+  }
+]

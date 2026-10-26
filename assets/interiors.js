@@ -1,11 +1,14 @@
 import * as T from './vendor/three.module.min.js';
-import { floorLayout, insetFootprint } from './tower-geometry.js';
-import { palette, sectionColors, roomAccents } from './color-theme.js';
+import { floorLayout, insetFootprint,interiorFloorHeight } from './tower-geometry.js';
+import { palette, sectionColors } from './color-theme.js';
+import { interiorDesigns, interiorRoomDesign } from './interior-design.js';
+import { roundedFurnitureGeometry } from './furniture-shapes.js';
 import { furnishInteriorDetails } from './interior-details.js';
 import { furnishRoomExtensions } from './room-extensions.js';
 import { createInteriorStructure } from './interior-structure.js';
 import { createObjectInteractions } from './object-interactions.js';
 import { buildBoxSurfaces } from './surface-geometry.js';
+import { furnishPenthouse, furnishPenthouseExtensions } from './penthouse-details.js';
 
 // Separate shell pieces and cushions avoid exposed coplanar faces after batching.
 export const sofaPanels = [
@@ -24,7 +27,9 @@ export function createInterior(section, content) {
   const unit = reach / 18;
   const architecture = createInteriorStructure(section, content, layout, unit);
   const theme = sectionColors[section.id];
-  const colors = { structure: palette.timber, equipment: palette.blue, ink: palette.ink, glass: palette.glass };
+  const design=interiorDesigns[section.id];
+  let roomDesign=design.rooms[0],furnishingKind=null;
+  const colors = roomDesign.colors;
   const materials = Object.fromEntries(Object.entries(colors).map(([name, color]) => [name, new T.MeshLambertMaterial({ color })]));
   const lineMaterial = new T.LineBasicMaterial({ color: palette.muted, transparent: true, opacity: .8, depthWrite: false });
   const pickables = [], anchors = [], roomModels = [], objects = [];
@@ -32,6 +37,11 @@ export function createInterior(section, content) {
   const unitBox = new T.BoxGeometry(1, 1, 1), unitCylinder = new T.CylinderGeometry(1, 1, 1, 20);
   const unitRing=new T.TorusGeometry(1,.09,5,16),unitSphere=new T.SphereGeometry(1,8,6),unitLeaf=new T.SphereGeometry(.42,6,5);
   const shared = new Set([unitBox, unitCylinder,unitRing,unitSphere,unitLeaf]), edgeSources = new Map();
+  const rounded=new Map();
+  function softGeometry(radius){
+    if(!rounded.has(radius)){const geometry=roundedFurnitureGeometry(radius);rounded.set(radius,geometry);shared.add(geometry);}
+    return rounded.get(radius);
+  }
 
   function object(parent, geometry, x, y, z, material = 'structure', turn = 0) {
     const mesh = new T.Mesh(geometry, materials[material]);
@@ -40,13 +50,19 @@ export function createInterior(section, content) {
     parent.add(mesh);
     return mesh;
   }
-  const box = (p, x, y, z, w, h, d, mat = 'structure', turn = 0) => { const mesh = object(p, unitBox, x, y, z, mat, turn); mesh.scale.set(w, h, d); return mesh; };
+  const box = (p, x, y, z, w, h, d, mat = 'structure', turn = 0) => {
+    const upholstered=furnishingKind==='sofa'&&w>.3&&h>.1&&d>.12;
+    const joinery=furnishingKind!==null&&w>1.5&&h>.11&&d>.7&&furnishingKind!=='display'&&furnishingKind!=='piano';
+    const geometry=roomDesign.roundness&&(upholstered||joinery)?softGeometry(roomDesign.roundness):unitBox;
+    const mesh=object(p,geometry,x,y,z,mat,turn);mesh.scale.set(w,h,d);return mesh;
+  };
   const cylinder = (p, x, y, z, r, h, mat = 'structure') => { const mesh = object(p, unitCylinder, x, y, z, mat); mesh.scale.set(r, h, r); return mesh; };
   const ring=(p,x,y,z,r,mat='equipment',tilt=0)=>{const mesh=object(p,unitRing,x,y,z,mat);mesh.scale.setScalar(r);mesh.rotation.x=tilt;return mesh;};
   const sphere=(p,x,y,z,r,mat='glass')=>{const mesh=object(p,unitSphere,x,y,z,mat);mesh.scale.setScalar(r);return mesh;};
   function interact(p, name, kind, build) {
     const first = p.children.length;
-    build();
+    const previousKind=furnishingKind;furnishingKind=kind;
+    try{build();}finally{furnishingKind=previousKind;}
     const meshes = [];
     for (const child of p.children.slice(first)) child.traverse(node => {
       if (node.isMesh && !node.userData.interaction) meshes.push(node);
@@ -79,7 +95,12 @@ export function createInterior(section, content) {
   function desk(p, x = 0, z = 0, monitors = 1) {
     interact(p, 'Work desk', 'pulse', () => {
       box(p, x, 1.55, z, 3.7, .16, 1.65);
-      for (const dx of [-1.55, 1.55]) box(p, x + dx, .75, z, .13, 1.5, 1.3, 'equipment');
+      if(['about','resume'].includes(section.id)){
+        for(const dx of [-1.5,1.5])for(const dz of [-.55,.55]){
+          const leg=cylinder(p,x+dx,.75,z+dz,.065,1.5,'equipment');leg.rotation.z=-Math.sign(dx)*.07;
+        }
+        box(p,x,.45,z,2.9,.08,.09,'equipment');
+      }else for (const dx of [-1.55, 1.55]) box(p, x + dx, .75, z, .13, 1.5, 1.3, 'equipment');
       for (let i = 0; i < monitors; i++) {
         const mx = x + (i - (monitors - 1) / 2) * 1.5;
         interact(p, monitors > 1 ? `Monitor ${i + 1}` : 'Monitor', 'display', () => {
@@ -98,6 +119,19 @@ export function createInterior(section, content) {
   }
   function chair(p, x, z) {
     interact(p, 'Desk chair', 'seat', () => {
+      if(section.id==='experience'){
+        cylinder(p,x,.9,z,.48,.17,'equipment');cylinder(p,x,.48,z,.07,.75,'ink');
+        for(let i=0;i<4;i++){const a=i*Math.PI/2;wire(p,[[x,.4,z],[x+Math.cos(a)*.47,.12,z+Math.sin(a)*.47]],'ink',.045);}
+        ring(p,x,.38,z,.34,'structure',Math.PI/2);return;
+      }
+      if(section.id==='about'||section.id==='resume'){
+        box(p,x,.9,z,.95,.17,1,'equipment');
+        for(const side of [-1,1])for(const end of [-1,1]){
+          const leg=cylinder(p,x+side*.37,.43,z+end*.36,.045,.86,'ink');leg.rotation.z=-side*.065;
+        }
+        for(const dx of [-.4,-.2,0,.2,.4])box(p,x+dx,1.43,z+.43,.065,.9,.08,'equipment');
+        box(p,x,1.9,z+.43,.95,.1,.12,'structure');return;
+      }
       box(p, x, .9, z, .95, .17, 1, 'equipment');
       box(p, x, 1.45, z + .43, .95, 1, .13, 'equipment');
       cylinder(p, x, .45, z, .09, .8, 'ink');
@@ -108,7 +142,11 @@ export function createInterior(section, content) {
     interact(p, 'Reference shelves', 'pulse', () => {
       const height=low?1.32:3.6;
       for (const dx of [-width / 2, width / 2]) box(p, x + dx, height/2, z, .12, height, .7, 'equipment');
-      box(p, x, height/2, z - .34, width, height, .08, 'glass');
+      if(section.id==='about')for(let i=0;i<7;i++)box(p,x+(i-3)*width*.14,height/2,z-.34,.075,height,.08,'structure');
+      else if(['projects','experience'].includes(section.id)){
+        wire(p,[[x-width*.46,.16,z-.34],[x+width*.46,height-.1,z-.34]],'ink',.025);
+        wire(p,[[x+width*.46,.16,z-.34],[x-width*.46,height-.1,z-.34]],'ink',.025);
+      }else box(p,x,height/2,z-.34,width,height,.08,'glass');
       for (const y of low?[.12,1.27]:[.12, 1.2, 2.35, 3.55]) {
         box(p, x, y, z, width, .12, .7);
         if (y > height-.5) continue;
@@ -119,6 +157,7 @@ export function createInterior(section, content) {
           box(p, bx, y + .22 + h / 2, z + .245, .09, .035, .01, 'ink');
         }
       }
+      if(section.id==='resume'&&!low)wire(p,[[x-width*.38,2.98,z+.39],[x,3.44,z+.39],[x+width*.38,2.98,z+.39]],'equipment',.045);
     });
   }
   function plant(p, x, z) {
@@ -138,7 +177,9 @@ export function createInterior(section, content) {
     });
   }
   function lounge(p) {
-    sofa(p, -2.7, 0, Math.PI / 2); sofa(p, 2.7, 0, -Math.PI / 2);
+    if(section.id==='contact'){
+      sofa(p,-.7,-1.65);sofa(p,2.7,.7,-Math.PI/2);
+    }else{sofa(p,-2.7,-.35,Math.PI/2);sofa(p,2.7,.5,-Math.PI/2);}
     cylinder(p, 0, .8, 0, 1.15, .13); cylinder(p, 0, .4, 0, .18, .7, 'equipment');
     paper(p, -.2, .89, -.1, .62, .8, -.2);
     cylinder(p, .55, .95, .2, .12, .15, 'equipment');
@@ -260,7 +301,9 @@ export function createInterior(section, content) {
   }
   function furnish(p, index) {
     const add = (name, fn) => feature(p, name, fn);
-    if (section.id === 'about') {
+    if(section.id==='penthouse'){
+      furnishPenthouse(index,p,{box,cylinder,ring,sphere,paper,wire,feature,interact,desk,chair,bookcase,sofa,plant});
+    } else if (section.id === 'about') {
       if (index === 0) add('Welcome display and drawing cabinet', () => documentStand(p, 0, 0, false));
       if (index === 1) { add('Study desk and screen', () => desk(p)); add('Reference books and shelves', () => bookcase(p, 0, -2)); plant(p, 3, 1); }
       if (index === 2) { add('Grand piano, separate keys and bench', () => piano(p)); plant(p, -2.6, -2); }
@@ -322,11 +365,13 @@ export function createInterior(section, content) {
       const count = geometry.attributes.position.count;
       if (target) bucket.ranges.push({ target, start: bucket.offset, count, key: mesh.userData.pianoKey });
       bucket.geometries.push(geometry); bucket.offset += count;
-      if (!edgeSources.has(mesh.geometry)) edgeSources.set(mesh.geometry, new T.EdgesGeometry(mesh.geometry, 25));
-      const edges = edgeSources.get(mesh.geometry).clone().applyMatrix4(transform);
-      edgeParts.push(edges);
-      if (target) edgeRanges.push({ target, start: edgeOffset, count: edges.attributes.position.count, key: mesh.userData.pianoKey });
-      edgeOffset += edges.attributes.position.count;
+      if(mesh.userData.outline!==false){
+        if (!edgeSources.has(mesh.geometry)) edgeSources.set(mesh.geometry, new T.EdgesGeometry(mesh.geometry, 25));
+        const edges = edgeSources.get(mesh.geometry).clone().applyMatrix4(transform);
+        edgeParts.push(edges);
+        if (target) edgeRanges.push({ target, start: edgeOffset, count: edges.attributes.position.count, key: mesh.userData.pianoKey });
+        edgeOffset += edges.attributes.position.count;
+      }
       if (!shared.has(mesh.geometry)) mesh.geometry.dispose();
     }
     for (const [surface, geometry] of backdrop.surfaces) {
@@ -344,7 +389,7 @@ export function createInterior(section, content) {
     }
     for (const [name, bucket] of buckets) {
       const material = materials[name].clone();
-      const color = name === 'equipment' ? roomAccents[index % roomAccents.length] : colors[name];
+      const color = interiorRoomDesign(section.id,index).colors[name];
       material.color.set(color);
       material.polygonOffset = true; material.polygonOffsetFactor = 1; material.polygonOffsetUnits = 1;
       material.vertexColors = true;
@@ -366,10 +411,15 @@ export function createInterior(section, content) {
     return { group: zone, line: roomLine, surfaces, detailCount: sources.length, features: [...(zone.userData.features || [])] };
   }
   stations.forEach((position, index) => {
+    roomDesign=interiorRoomDesign(section.id,index);
     const zone = new T.Group();
     zone.userData.roomIndex = index;
     group.add(zone); furnish(zone, index);
-    furnishInteriorDetails(section.id,index,zone,{box,cylinder,ring,sphere,paper,wire,feature,interact});
+    if(section.id!=='penthouse')furnishInteriorDetails(section.id,index,zone,{box,cylinder,ring,sphere,paper,wire,feature,interact});
+    // Stage each room as a complete composition so attached instruments,
+    // worktop objects and car hardware keep their correct relative positions.
+    const staging=new T.Matrix4().makeRotationY(roomDesign.turn);
+    for(const object of zone.children)object.applyMatrix4(staging);
     // The side wing enters from the opposite side of the hall. Face its display
     // wall away from that entrance so the room has a real, clear landing.
     if (architecture.rooms[index].opening.entrySide < 0) {
@@ -380,16 +430,25 @@ export function createInterior(section, content) {
     const bounds = new T.Box3().setFromObject(zone);
     const size = bounds.getSize(new T.Vector3()), center = bounds.getCenter(new T.Vector3());
     const region = position.region;
-    const margin = Math.min(region.width, region.depth) * .055;
-    const scale = Math.min(position.scale, (region.width - margin * 2) / size.x, (region.depth - margin * 2) / size.z);
-    const extension = furnishRoomExtensions(section.id,index,zone,bounds,region,scale,architecture.rooms[index].opening,{box,cylinder,paper,feature,interact});
+    // Reserve an actual entry landing before fitting the newly oriented
+    // composition; perimeter additions use this same inset furnishing region.
+    const entry=architecture.rooms[index].opening.entrySide;
+    const landing=Math.min(region.depth*.16,unit*1.4);
+    const usableRegion={...region,z:region.z-entry*landing/2,depth:region.depth-landing};
+    const margin = Math.min(usableRegion.width, usableRegion.depth) * .055;
+    const scale = Math.min(position.scale, (usableRegion.width - margin * 2) / size.x, (usableRegion.depth - margin * 2) / size.z);
+    const extend=section.id==='penthouse'?furnishPenthouseExtensions:furnishRoomExtensions;
+    const extension = section.id==='penthouse'
+      ? extend(index,zone,bounds,usableRegion,scale,architecture.rooms[index].opening,{box,cylinder,paper,feature,interact})
+      : extend(section.id,index,zone,bounds,usableRegion,scale,architecture.rooms[index].opening,{box,cylinder,paper,feature,interact});
     const room = batchRoom(zone, index);
     // Original furniture keeps one uniform scale. Secondary activity zones
     // occupy the bay's spare axis instead of leaving a small isolated island.
     zone.scale.setScalar(scale);
     const fittedBounds = new T.Box3().setFromObject(zone);
-    zone.position.set(region.x - center.x * scale, .052 - fittedBounds.min.y, region.z - center.z * scale);
+    zone.position.set(usableRegion.x-center.x*scale,interiorFloorHeight+.012-fittedBounds.min.y,usableRegion.z-center.z*scale);
     room.region = { ...region };
+    room.design=roomDesign;
     room.scale = scale;
     room.extensionCount = extension.count;
     roomModels.push(room);
@@ -446,7 +505,7 @@ export function createInterior(section, content) {
   segment([lift.x,lift.baseY,front],[lift.x,doorTop,front]);
   const outlineCore=[[core.x-core.width*.48,core.z-core.depth*.48],[core.x+core.width*.48,core.z-core.depth*.48],
     [core.x+core.width*.48,core.z+core.depth*.48],[core.x-core.width*.48,core.z+core.depth*.48]];
-  for(let i=0;i<4;i++)segment([outlineCore[i][0],.055,outlineCore[i][1]],[outlineCore[(i+1)%4][0],.055,outlineCore[(i+1)%4][1]]);
+  for(let i=0;i<4;i++)segment([outlineCore[i][0],interiorFloorHeight+.015,outlineCore[i][1]],[outlineCore[(i+1)%4][0],interiorFloorHeight+.015,outlineCore[(i+1)%4][1]]);
   outlineGeometry.setAttribute('position',new T.Float32BufferAttribute(vertices,3));
   // Core and stair share these source materials; room surfaces are clones.
   for (const material of [materials.glass, materials.structure]) contextSurfaces.push({ material, color: material.color.clone() });
@@ -471,12 +530,12 @@ export function createInterior(section, content) {
     const contextFade = focusedRoom === null ? 0 : focusAmount;
     lineMaterial.color.set(palette.muted).lerp(white, contextFade * .65);
     lineMaterial.opacity = T.MathUtils.lerp(.8, .1, contextFade);
-    architecture.line.color.set(palette.muted).lerp(white, contextFade * .65);
-    architecture.line.opacity = T.MathUtils.lerp(.72, .12, contextFade);
+    architecture.line.color.set(design.outline).lerp(white, contextFade * .65);
+    architecture.line.opacity = T.MathUtils.lerp(.4, .12, contextFade);
     for (const surface of contextSurfaces) surface.material.color.copy(surface.color).lerp(white, contextFade * .94);
     roomModels.forEach((room, index) => {
       const fade = focusedRoom !== null && index !== focusedRoom && index !== hoveredRoom ? focusAmount : 0;
-      room.line.color.set(index === activeRoom ? theme.ink : index === hoveredRoom ? palette.ink : palette.muted).lerp(white, fade * .65);
+      room.line.color.set(index === activeRoom ? theme.ink : index === hoveredRoom ? palette.ink : design.outline).lerp(white, fade * .65);
       const opacity = index === activeRoom ? 1 : index === hoveredRoom ? .95 : .58;
       room.line.opacity = T.MathUtils.lerp(opacity, .14, fade);
       // Opaque pale surfaces retain correct depth without transparent-wall sorting.

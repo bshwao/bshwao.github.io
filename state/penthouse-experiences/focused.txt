@@ -1,0 +1,18 @@
+✔ bedroom controls expose the scene integrations and a desktop without nesting dialogs (234.4849ms)
+✔ terminal commands read an isolated virtual filesystem and return only named application actions (2.9409ms)
+✔ preview strips active markup and external resources and adds a restrictive CSP before user content (83.2196ms)
+✔ notes persist locally and retain a visible session-only fallback when storage fails or its getter is denied (256.8405ms)
+✔ windows launch, focus, minimize, close and restore without destroying application state (94.3328ms)
+✔ window movement has bounded keyboard and pointer controls, and editor tabs support arrow navigation (118.0102ms)
+✔ terminal renders input as text, opens project files, recalls history and clears only its output (33.4137ms)
+✔ room activities open from content and furniture, keep desktop/game state, and close on navigation (545.9478ms)
+✔ lighting and weather controls drive normalized scene state, lamp object, and projected glass rain (78.6161ms)
+✔ dropping local audio into the compact player selects it without uploading or starting playback (37.648ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2644.9245

@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from '../assets/vendor/three.module.min.js';
 import { createTowerModel } from '../assets/tower-model.js';
-import { sections, footprint, stationPositions } from '../assets/tower-geometry.js';
+import { sections, footprint, stationPositions, towerRoofHeight } from '../assets/tower-geometry.js';
 import { floorContent } from '../assets/floor-content.js';
 import { districtPlan } from '../assets/district-ground.js';
 import { palette, sectionColors } from '../assets/color-theme.js';
+import { interiorDesigns } from '../assets/interior-design.js';
 import { cityLots, cityEnvelopes } from '../assets/city-layout.js';
 import { outdoorCameraPose } from '../assets/camera-framing.js';
 
@@ -230,7 +231,7 @@ test('cap plans stay within their cut footprints and keep distinct, inexpensive 
     assert.ok(capPlans.features.length >= 6, `${module.id}: meaningful furnishings`);
     signatures.add([...capPlans.features].sort().join(','));
     assert.ok(capPlans.faces.some(face => face.side === 'underside'), `${module.id}: furnished lower cut`);
-    assert.equal(capPlans.faces.some(face => face.side === 'top'), module.id !== 'about', 'The spire is preserved rather than furnished');
+    assert.equal(capPlans.faces.some(face => face.side === 'top'), module.high < towerRoofHeight, 'The spire is preserved rather than furnished');
     assert.equal(capPlans.group.children.length, 2, 'Two batched drawing layers per section');
     let count = 0;
     for (const drawing of capPlans.group.children) {
@@ -247,10 +248,10 @@ test('cap plans stay within their cut footprints and keep distinct, inexpensive 
     }
     assert.ok(count > 100 && count < 5000, `${module.id}: ${count} plan vertices`);
   }
-  assert.equal(signatures.size, 5, 'Five section-specific furnishing schemes');
+  assert.equal(signatures.size, sections.length, 'Each section has its own furnishing scheme');
 });
 
-test('all five sections have closed exterior volumes, including their cut surfaces', () => {
+test('all sections have closed exterior volumes, including their cut surfaces', () => {
   for (const module of model.modules) {
     const edges = new Map();
     const meshes = module.shell.children.filter(item => item.isMesh).slice(0, 3);
@@ -273,7 +274,8 @@ test('all five sections have closed exterior volumes, including their cut surfac
 
 test('the full model can be hit from every azimuth rather than a single SVG-facing side', () => {
   for (const module of model.modules) {
-    const center = new T.Vector3(0, (module.low + module.high) / 2, 0);
+    const height=(module.low+module.high)/2;
+    const center=new T.Box3().setFromPoints(footprint(height,12).map(([x,z])=>new T.Vector3(x,height,z))).getCenter(new T.Vector3());
     for (let i = 0; i < 24; i++) {
       const angle = i / 24 * Math.PI * 2;
       const origin = center.clone().add(new T.Vector3(Math.cos(angle) * 100, 3, Math.sin(angle) * 100));
@@ -323,7 +325,7 @@ test('each section has furnished, selectable rooms matching every content room',
     for (const mesh of module.interior.pickables) for (const n of mesh.geometry.attributes.position.array) assert.ok(Number.isFinite(n));
     assert.ok(module.base.geometry.parameters.options.depth > 0, `${module.id}: a solid floor slab`);
   }
-  assert.equal(signatures.size, 5, 'five different interior models');
+  assert.equal(signatures.size, sections.length, 'Each section has a different interior model');
 });
 
 test('detailed interiors remain within a bounded geometry and rendering budget', () => {
@@ -368,7 +370,7 @@ test('room highlighting is independent and every camera target has real furnitur
     interior.setActiveRoom(1); interior.setHoveredRoom(2);
     assert.equal(interior.rooms[1].line.color.getHexString(), sectionColors[module.id].ink.slice(1));
     assert.equal(interior.rooms[2].line.color.getHexString(), palette.ink.slice(1));
-    assert.equal(interior.rooms[0].line.color.getHexString(), palette.muted.slice(1));
+    assert.equal(interior.rooms[0].line.color.getHexString(), interiorDesigns[module.id].outline.slice(1));
     for (const room of interior.rooms) {
       assert.ok(room.radius > 0 && Number.isFinite(room.radius));
       assert.ok(room.bounds.containsPoint(room.center));

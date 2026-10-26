@@ -1,0 +1,242 @@
+{
+  "sections": 6,
+  "rooms": 23,
+  "penthouseObjects": 47,
+  "spaces": [
+    {
+      "index": 0,
+      "objects": [
+        {
+          "name": "Pillows and duvet",
+          "kind": "sofa"
+        },
+        {
+          "name": "Bedside lamp",
+          "kind": "display"
+        },
+        {
+          "name": "Bedside books",
+          "kind": "paper"
+        },
+        {
+          "name": "Slippers",
+          "kind": "bounce"
+        },
+        {
+          "name": "Soft ottoman",
+          "kind": "sofa"
+        },
+        {
+          "name": "Potted plant",
+          "kind": "plant"
+        },
+        {
+          "name": "Bedroom dressing cabinet",
+          "kind": "pulse"
+        },
+        {
+          "name": "Entry bench with cushions and a small book stack",
+          "kind": "pulse"
+        },
+        {
+          "name": "Spare cushions",
+          "kind": "sofa"
+        },
+        {
+          "name": "Entry bench with cushions and a small book stack",
+          "kind": "pulse"
+        }
+      ],
+      "features": [
+        "Bedroom with a real bed, layered bedding and bedside reading corner",
+        "Bedroom dressing cabinet",
+        "Entry bench with cushions and a small book stack",
+        "Entry bench with cushions and a small book stack"
+      ],
+      "scale": 0.7814814814814814
+    },
+    {
+      "index": 1,
+      "objects": [
+        {
+          "name": "Lounge sofa",
+          "kind": "sofa"
+        },
+        {
+          "name": "Game screen",
+          "kind": "display"
+        },
+        {
+          "name": "Game console",
+          "kind": "display"
+        },
+        {
+          "name": "Tabletop game pieces",
+          "kind": "bounce"
+        },
+        {
+          "name": "Game controller",
+          "kind": "bounce"
+        },
+        {
+          "name": "Arcade machine",
+          "kind": "display"
+        },
+        {
+          "name": "Toy robot",
+          "kind": "bounce"
+        },
+        {
+          "name": "Potted plant",
+          "kind": "plant"
+        },
+        {
+          "name": "Game library",
+          "kind": "pulse"
+        },
+        {
+          "name": "Spare cushions",
+          "kind": "sofa"
+        },
+        {
+          "name": "Entry bench with cushions and a small book stack",
+          "kind": "pulse"
+        },
+        {
+          "name": "Entry bench with cushions and a small book stack",
+          "kind": "pulse"
+        }
+      ],
+      "features": [
+        "Play lounge with a console, arcade, tabletop game and toy robot",
+        "Game library",
+        "Entry bench with cushions and a small book stack",
+        "Entry bench with cushions and a small book stack"
+      ],
+      "scale": 0.7814814814814814
+    },
+    {
+      "index": 2,
+      "objects": [
+        {
+          "name": "Vinyl record",
+          "kind": "spin"
+        },
+        {
+          "name": "Left speaker",
+          "kind": "pulse"
+        },
+        {
+          "name": "Right speaker",
+          "kind": "pulse"
+        },
+        {
+          "name": "Synthesizer keys",
+          "kind": "piano"
+        },
+        {
+          "name": "Keyboard stool",
+          "kind": "seat"
+        },
+        {
+          "name": "Listening chair",
+          "kind": "sofa"
+        },
+        {
+          "name": "Reference shelves",
+          "kind": "pulse"
+        },
+        {
+          "name": "Potted plant",
+          "kind": "plant"
+        },
+        {
+          "name": "Record library",
+          "kind": "pulse"
+        },
+        {
+          "name": "Spare cushions",
+          "kind": "sofa"
+        },
+        {
+          "name": "Entry bench with cushions and a small book stack",
+          "kind": "pulse"
+        },
+        {
+          "name": "Spare cushions",
+          "kind": "sofa"
+        },
+        {
+          "name": "Entry bench with cushions and a small book stack",
+          "kind": "pulse"
+        }
+      ],
+      "features": [
+        "Listening nook with a spinning vinyl record and playable keyboard",
+        "Record library",
+        "Entry bench with cushions and a small book stack",
+        "Entry bench with cushions and a small book stack"
+      ],
+      "scale": 0.7814814814814814
+    },
+    {
+      "index": 3,
+      "objects": [
+        {
+          "name": "Telescope",
+          "kind": "telescope"
+        },
+        {
+          "name": "Constellation globe",
+          "kind": "spin"
+        },
+        {
+          "name": "Window lounge chair",
+          "kind": "sofa"
+        },
+        {
+          "name": "Second lounge chair",
+          "kind": "sofa"
+        },
+        {
+          "name": "Cookie plate",
+          "kind": "bounce"
+        },
+        {
+          "name": "Warm mug",
+          "kind": "pulse"
+        },
+        {
+          "name": "Sky atlases",
+          "kind": "paper"
+        },
+        {
+          "name": "Potted plant",
+          "kind": "plant"
+        },
+        {
+          "name": "Window bench cushions",
+          "kind": "sofa"
+        },
+        {
+          "name": "Window bench with loose cushions",
+          "kind": "pulse"
+        },
+        {
+          "name": "Window bench cushions",
+          "kind": "sofa"
+        },
+        {
+          "name": "Window bench with loose cushions",
+          "kind": "pulse"
+        }
+      ],
+      "features": [
+        "Sky lounge with a telescope, constellation globe and refreshments",
+        "Window bench with loose cushions",
+        "Window bench with loose cushions"
+      ],
+      "scale": 0.8400000000000001
+    }
+  ]
+}

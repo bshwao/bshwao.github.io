@@ -85,9 +85,11 @@
   <path d="M222.47,94.31L263.11,106.44L263.11,107L216.49,120.91L214.59,120.91L204.83,118L202.94,118L180.26,124.77L178.37,124.77L149.39,116.12L149.39,115.56L220.58,94.31Z" fill="#eef0e8" fill-rule="evenodd" stroke="#748c80" stroke-width=".85"/>
   <path d="M216.8,105.03L216.8,67.89M232.55,109.73L232.55,81.08" stroke="#60796e" stroke-width="1.55" stroke-linecap="round"/>
   <g stroke="#a5b3a7" stroke-width=".6">
+    <path d="M277,126h110"/>
     <path d="M308.15,172.1h78.85"/><path d="M308.15,255.94h78.85"/><path d="M308.15,345.02h78.85"/><path d="M308.15,421h78.85"/><path d="M308.15,476.02h78.85"/>
   </g>
   <g fill="#667b6c" font-family="Consolas, 'Liberation Mono', monospace" font-size="8" letter-spacing="1.2">
+    <text x="398" y="128.4">06</text>
     <text x="398" y="174.50">01</text><text x="398" y="258.34">02</text><text x="398" y="347.42">03</text><text x="398" y="423.40">04</text><text x="398" y="478.42">05</text>
   </g>
   <g stroke="#c78979" stroke-width="1.2" stroke-linecap="round"><path d="M125.45,471.06L172.7,485.16"/><path d="M342.8,485.16L301.85,497.38"/></g>

@@ -1,0 +1,11 @@
+{
+  "navigationBaseline": 246,
+  "navigationAllocations": [
+    247,
+    247,
+    247
+  ]
+}
+Error: Repeated navigation grows GPU geometry allocations
+    at assert (http://127.0.0.1:4175/scripts/browser-qa.js:16:64)
+    at http://127.0.0.1:4175/scripts/browser-qa.js:100:3

@@ -1,5 +1,6 @@
 import { createSpatialScene } from '../assets/scene-3d.js';
 import { floorContent } from '../assets/floor-content.js';
+import { sections } from '../assets/tower-geometry.js';
 
 const params = new URLSearchParams(location.search);
 const width = Math.max(320, Math.min(3840, Number(params.get('width')) || 1280));
@@ -52,7 +53,7 @@ async function verifyZoomStops(view) {
 }
 try {
   const started = performance.now();
-  spatial = createSpatialScene({ container: stage, preferences:{graphics}, clock:testClock, shadowComparison:params.has('shadows'), onFrame(state) {
+  spatial = createSpatialScene({ container: stage, preferences:{graphics}, clock:testClock, debugGeometry:true, shadowComparison:params.has('shadows'), onFrame(state) {
     latest = state; frames++;
     if (state.moving && !state.transitionType) objectFrames++;
     if(spatial) maxFrameCalls=Math.max(maxFrameCalls,spatial.metrics().calls);
@@ -60,10 +61,10 @@ try {
   await settled(); const readyMs = Math.round(performance.now() - started);
   sample('tower', params.has('shadows')?85:69);
   await verifyZoomStops('tower');spatial.goTo('tower',null,{instant:true,reset:true});await settled();
-  // Include all five sharp floors plus the uncached city and its four new ground/park batches.
+  // Include every sharp floor plus the uncached city and its ground/park batches.
   spatial.goTo('explore', null, { instant: true }); await settled(); sample('explore', 85);
   await verifyZoomStops('explore');spatial.goTo('explore',null,{instant:true,reset:true});await settled();
-  for (const id of ['about', 'projects', 'experience', 'resume', 'contact']) {
+  for (const {id} of sections) {
     // Count both the sharp interior and the small scenery/blur passes.
     spatial.goTo('section', id, { instant: true }); await settled(); sample(id, 75);
     if(id==='about'){await verifyZoomStops(id);spatial.overview();await settled();}
@@ -88,11 +89,22 @@ try {
   }
   const idle = frames; await delay(250); const idleFrames = frames - idle; assert(idleFrames === 0, 'Idle scene continues rendering');
   spatial.goTo('tower', null, { instant: true }); await settled();
+  // The restored tower -> selected-floor route has a different frustum from
+  // the preceding floor-to-floor tour. Warm that exact route once so a newly
+  // visible static buffer's first upload is not classified as a navigation leak.
+  const beforeNavigationWarmup=spatial.metrics().geometries;
+  spatial.goTo('section','projects',{instant:true});await settled();
+  spatial.goTo('tower',null,{instant:true});await settled();
   const memory = spatial.metrics().geometries;
+  const navigationGeometryIds=new Set(spatial.geometryInventory().records.map(item=>item.id));
+  const navigationAllocations=[];
   for (let i = 0; i < 3; i++) {
     spatial.goTo('section', 'projects', { instant: true }); await settled();
     spatial.goTo('tower', null, { instant: true }); await settled();
+    navigationAllocations.push(spatial.metrics().geometries);
   }
+  const navigationFirstDraws=spatial.geometryInventory().records.filter(item=>!navigationGeometryIds.has(item.id));
+  output.textContent=JSON.stringify({navigationBaseline:memory,navigationAllocations,navigationFirstDraws},null,2);
   assert(spatial.metrics().geometries === memory, 'Repeated navigation grows GPU geometry allocations');
   const timeMemory=spatial.metrics(),beforeClock=frames,initialHour=testHour;
   spatial.refreshTime();await settled(false);assert(frames===beforeClock,'Unchanged minute does not redraw');
@@ -129,7 +141,7 @@ try {
   }
   assert(allocated.get('low').pixelRatio < allocated.get('standard').pixelRatio, 'Low graphics does not reduce resolution');
   assert(allocated.get('low').calls < allocated.get('standard').calls, 'Low graphics does not reduce draw calls');
-  output.textContent = JSON.stringify({ viewport: `${width}x${height}`, graphics, requestedDpr: requestedDpr || devicePixelRatio, userAgent: navigator.userAgent, readyMs, idleFramesOver250ms: idleFrames, maxFrameCalls, stableGeometryCount: memory, stableGeometryAfterResize: resizedMemory, clockChanges, objectChecks, zoomChecks, qualityChecks, rows }, null, 2);
+  output.textContent = JSON.stringify({ viewport: `${width}x${height}`, graphics, requestedDpr: requestedDpr || devicePixelRatio, userAgent: navigator.userAgent, readyMs, idleFramesOver250ms: idleFrames, maxFrameCalls, beforeNavigationWarmup, navigationBaseline: memory, navigationAllocations,navigationFirstDraws, stableGeometryCount: memory, stableGeometryAfterResize: resizedMemory, clockChanges, objectChecks, zoomChecks, qualityChecks, rows }, null, 2);
   spatial.dispose();
   assert(stage.querySelector('canvas') === null, 'Disposal leaves a canvas behind');
   assert(spatial.metrics().geometries === 0, 'Disposal leaves uploaded GPU geometries behind');

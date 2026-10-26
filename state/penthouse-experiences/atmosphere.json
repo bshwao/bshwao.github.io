@@ -1,0 +1,94 @@
+[
+  {
+    "scene": {
+      "atmosphere": "penthouse",
+      "background": "blurred",
+      "bedsideLamps": "on",
+      "daylight": "0.0000",
+      "detail": "full",
+      "engine": "three.js r180",
+      "focusedRoom": "0",
+      "graphics": "standard",
+      "interiorBrightness": "0.620",
+      "localHour": "22.000",
+      "mode": "section",
+      "quality": "0",
+      "section": "penthouse",
+      "timeOfDay": "night"
+    },
+    "weather": {
+      "animating": "true",
+      "reducedMotion": "false",
+      "weather": "rain"
+    }
+  },
+  {
+    "scene": {
+      "atmosphere": "penthouse",
+      "background": "blurred",
+      "bedsideLamps": "off",
+      "daylight": "0.5000",
+      "detail": "full",
+      "engine": "three.js r180",
+      "focusedRoom": "0",
+      "graphics": "standard",
+      "interiorBrightness": "0.950",
+      "localHour": "18.000",
+      "mode": "section",
+      "quality": "0",
+      "section": "penthouse",
+      "timeOfDay": "evening"
+    },
+    "weather": {
+      "animating": "false",
+      "reducedMotion": "false",
+      "weather": "clear"
+    }
+  },
+  {
+    "scene": {
+      "atmosphere": "penthouse",
+      "background": "blurred",
+      "bedsideLamps": "on",
+      "daylight": "0.0000",
+      "detail": "full",
+      "engine": "three.js r180",
+      "focusedRoom": "0",
+      "graphics": "standard",
+      "interiorBrightness": "0.480",
+      "localHour": "23.000",
+      "mode": "section",
+      "quality": "0",
+      "section": "penthouse",
+      "timeOfDay": "night"
+    },
+    "weather": {
+      "animating": "false",
+      "reducedMotion": "false",
+      "weather": "clear"
+    }
+  },
+  {
+    "audioControls": [
+      "Play music"
+    ],
+    "lofiPressed": "false",
+    "rainHidden": true,
+    "scene": {
+      "atmosphere": "local",
+      "background": "blurred",
+      "bedsideLamps": "off",
+      "daylight": "1.0000",
+      "detail": "full",
+      "engine": "three.js r180",
+      "focusedRoom": "",
+      "graphics": "standard",
+      "interiorBrightness": "1.000",
+      "localHour": "8.736",
+      "mode": "explore",
+      "quality": "0",
+      "section": "",
+      "timeOfDay": "morning"
+    }
+  }
+]

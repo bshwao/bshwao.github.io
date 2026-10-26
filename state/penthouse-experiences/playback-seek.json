@@ -1,0 +1,18 @@
+{
+  "track": "Soft Circuit",
+  "elapsed": "0:21",
+  "duration": "0:42",
+  "signal": {
+    "musicCanvas": "",
+    "signalEnergy": "0.17942",
+    "visualStyle": "constellation",
+    "signalFrames": "7418"
+  },
+  "compact": {
+    "musicCanvas": "",
+    "signalEnergy": "0.26262",
+    "visualStyle": "spectrum",
+    "signalFrames": "39"
+  },
+  "status": ""
+}

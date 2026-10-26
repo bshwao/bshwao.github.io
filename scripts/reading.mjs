@@ -63,7 +63,7 @@ export function renderReadingPage() {
       <p class="coordinates">${escape(profile.location)} · ${escape(profile.graduation)}</p>
       <div class="header-links">${link(`mailto:${profile.email}`, 'Email')} ${link(profile.github, 'GitHub')} ${link(profile.linkedin, 'LinkedIn')} <a href="./assets/eric-hsu-resume.pdf" download="Eric-Hsu-Resume.pdf">Download résumé <span class="file-type">PDF</span></a></div>
       <nav aria-label="Portfolio sections">
-        <a href="#about">01 About</a><a href="#projects">02 Projects</a><a href="#experience">03 Experience</a><a href="#education">04 Education</a><a href="#skills">05 Skills</a><a href="#contact">06 Contact</a>
+        <a href="#about">01 About</a><a href="#projects">02 Projects</a><a href="#experience">03 Experience</a><a href="#education">04 Education</a><a href="#skills">05 Skills</a><a href="#contact">06 Contact</a><a href="#penthouse">After hours</a>
       </nav>
     </header>
 
@@ -130,6 +130,18 @@ ${skills.map(group => `          <div><dt>${escape(group.label)}</dt><dd>${escap
           <li><span>LinkedIn</span> ${link(profile.linkedin, profile.name)}</li>
           <li><span>Résumé</span> <a href="./assets/eric-hsu-resume.pdf" download="Eric-Hsu-Resume.pdf">Download résumé (PDF)</a></li>
         </ul>
+      </section>
+      <section id="penthouse" aria-labelledby="penthouse-title">
+        <p class="section-number" aria-hidden="true">After hours / The penthouse</p>
+        <h2 id="penthouse-title">After hours</h2>
+        <p>A place above the city to pause, explore, and play. This apartment is just for visitors: a bedroom, game lounge, listening nook, and sky lounge.</p>
+        <p>In the interactive view, click or tap furnishings to animate them, or use the named object controls in each room. This floor is a little downtime, with no portfolio reading required.</p>
+        <p>${link('./index.html#penthouse', 'Enter the interactive penthouse')} <span aria-hidden="true">↗</span></p>
+${floorContent.penthouse.rooms.map(room => `        <article class="portfolio-entry" id="penthouse-room-${escape(room.id)}">
+          <h3>${escape(room.name)}</h3>
+          <p>${escape(room.description)}</p>
+          <p>${link(`./index.html#penthouse/${room.id}`, `Explore the ${room.name.toLowerCase()}`)} <span aria-hidden="true">↗</span></p>
+        </article>`).join('\n')}
       </section>
     </main>
 

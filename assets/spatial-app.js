@@ -4,17 +4,19 @@ import { roomMarkerLayout, towerLabelLayout, outdoorViewLayout } from './spatial
 import { parseRoute, routeHash } from './routes.js';
 import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus, renderProjectSummary } from './project-story.js';
 import { createSectionReadingView } from './floor-view.js';
-import { palette } from './color-theme.js';
+import { sectionColors } from './color-theme.js';
 import { createLocalClock } from './local-clock.js';
 import { readViewPreferences, saveViewPreferences, shouldReduceMotion } from './view-preferences.js';
 import { createPortfolioIntro } from './portfolio-intro.js';
+import { penthouseGameMarkup, createPenthousePlay } from './penthouse-play.js';
+import { penthouseExperienceMarkup,createPenthouseExperiences } from './penthouse-experiences.js';
 
 const page = document.querySelector('#main');
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 let spatial, currentId = null, currentRoomIndex = null, revision = 0;
 const defaultTitle = document.title;
 let routeKey = '', fallbackActive = false;
-let readingView, localClock, intro;
+let readingView, localClock, intro, penthousePlay, penthouseExperiences;
 let preferenceStorage;
 try { preferenceStorage = window.localStorage; } catch { /* Private browsing may deny storage. */ }
 let viewPreferences = readViewPreferences(preferenceStorage);
@@ -48,16 +50,19 @@ function roomMarkup(room, index) {
   const objectControls = objects.map(object => {
     const count = (counts.get(object.name) || 0) + 1; counts.set(object.name, count);
     const label = `${object.name}${count > 1 ? ` ${count}` : ''}`;
-    return `<button type="button" data-room-object="${object.id}" aria-label="Animate ${escape(label)}">${escape(label)} <span aria-hidden="true">↻</span></button>`;
+    const opens=currentId==='penthouse'&&/Bedroom computer monitor|Telescope|Vinyl record|Game controller|Game console|Arcade machine/.test(object.name);
+    return `<button type="button" data-room-object="${object.id}" aria-label="${opens?'Open':'Animate'} ${escape(label)}">${escape(label)} <span aria-hidden="true">${opens?'↗':'↻'}</span></button>`;
   }).join('');
   return `<p class="spatial-eyebrow">${escape(room.number)} / ${escape(room.name)}</p>
     <h3 id="interior-room-title" tabindex="-1">${escape(room.title)}</h3>
     ${renderProjectStatus(room.status)}
     ${room.projectId ? `<div class="project-actions">${renderCaseStudyLink(room.projectId)}${(room.links || []).map(link).join('')}</div>` : ''}
     ${room.summary ? renderProjectSummary(room.summary) : room.description ? `<p class="interior-intro">${escape(room.description)}</p>` : ''}
+    ${currentId==='penthouse'?penthouseExperienceMarkup(index):''}
     ${room.facts ? `<dl class="interior-facts">${room.facts.map(item => `<div><dt>${escape(item.value)}</dt><dd>${escape(item.label)}</dd></div>`).join('')}</dl>` : ''}
     ${(room.paragraphs || []).map(text => `<p>${escape(text)}</p>`).join('')}
     ${renderStory(room.story)}
+    ${penthouseGameMarkup(room.activity)}
     ${room.bullets ? `<ul>${room.bullets.map(text => `<li>${escape(text)}</li>`).join('')}</ul>` : ''}
     ${(room.entries || []).map(item => `<section class="interior-entry"><h4>${escape(item.title)}</h4>${item.subtitle ? `<p>${escape(item.subtitle)}</p>` : ''}${item.detail ? `<p>${escape(item.detail)}</p>` : ''}</section>`).join('')}
     ${room.tags ? `<ul class="interior-tags" aria-label="Skills and topics">${room.tags.map(text => `<li>${escape(text)}</li>`).join('')}</ul>` : ''}
@@ -77,6 +82,8 @@ function selectRoom(index, { focus = false, moveCamera = true, writeRoute = true
   }
   const restoreFocus = $('#interior-content').contains(document.activeElement);
   $('#interior-content').innerHTML = roomMarkup(content.rooms[index], index);
+  penthousePlay?.mount();
+  penthouseExperiences?.mount(currentId,index);
   $('#interior-content').scrollTop = 0;
   $('#interior-panel').scrollTop = 0;
   page.querySelectorAll('[data-station]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.station) === index)));
@@ -93,7 +100,7 @@ function sectionMarkup(id) {
   $('#station-markers').innerHTML = content.rooms.map((room, i) => `<button type="button" class="station-marker" data-station="${i}" aria-pressed="${i === 0}" aria-label="Explore room ${escape(room.number)}: ${escape(room.name)}"><span>${escape(room.number)}</span><span class="station-marker-label" aria-hidden="true">${escape(room.name)}<span class="station-marker-action">Explore room ↗</span></span></button>`).join('');
   observeLabels();
   const index = sections.indexOf(section);
-  const previous = sections[(index + 4) % 5], next = sections[(index + 1) % 5];
+  const previous = sections[(index + sections.length - 1) % sections.length], next = sections[(index + 1) % sections.length];
   $('#interior-navigation').innerHTML = `<a href="#${previous.id}" data-section="${previous.id}" aria-label="Previous floor: ${escape(previous.name)}">← ${escape(previous.name)}</a><a href="#${next.id}" data-section="${next.id}" aria-label="Next floor: ${escape(next.name)}">${escape(next.name)} →</a>`;
   $('#interior-note').textContent = content.note;
   selectRoom(0, { moveCamera: false });
@@ -118,6 +125,7 @@ function syncRoute({ instant = false, force = false } = {}) {
   const oldId = currentId;
   const sameSection = id && oldId === id && page.dataset.transition === 'idle';
   currentId = id;
+  if(id!=='penthouse')penthouseExperiences?.mount(id,null);
   page.dataset.sectionTheme = id || '';
   currentRoomIndex = roomIndex;
   const sectionName = sections.find(section => section.id === id)?.name;
@@ -133,7 +141,7 @@ function syncRoute({ instant = false, force = false } = {}) {
     else readingView.close({ focus: false });
   }
   if (sameSection) {
-    if (roomIndex === null) spatial.overview();
+    if (roomIndex === null) {penthouseExperiences?.mount(id,0);spatial.overview();}
     else selectRoom(roomIndex, { writeRoute: false });
     return;
   }
@@ -174,6 +182,7 @@ function syncRoute({ instant = false, force = false } = {}) {
 }
 
 function onFrame(state) {
+  penthouseExperiences?.onFrame(state);
   if (!state.transitionType && page.dataset.transition === 'idle') intro?.ready();
   setData(page, 'motion', state.reducedMotion ? 'reduced' : 'full');
   setData(document.documentElement, 'motion', state.reducedMotion ? 'reduced' : 'full');
@@ -257,6 +266,8 @@ function useFallback() {
   labelObserver.disconnect();
   readingView?.close({ focus: false });
   localClock?.dispose();
+  penthousePlay?.dispose();
+  penthouseExperiences?.dispose();
   spatial?.dispose();
   page.className = 'tower-page unavailable';
   for (const name of [...page.attributes].map(attribute => attribute.name)) if (name.startsWith('data-') || name === 'style') page.removeAttribute(name);
@@ -277,13 +288,13 @@ async function start() {
     reducedMotion: () => shouldReduceMotion(viewPreferences.motion, introMotion.matches),
     onEntered: () => spatial?.focus(),
   });
-  addEventListener('pagehide', event => { if (!event.persisted) intro.dispose(); });
+  addEventListener('pagehide', event => { if (!event.persisted) {intro.dispose();penthouseExperiences?.dispose();} });
   page.className = 'tower-page spatial';
   page.innerHTML = `
     <h1 class="sr-only">Eric Hsu — Electrical Engineering, Projects, and Experience</h1>
     <div class="spatial-stage" id="spatial-stage"></div>
     <div class="drawing-reference" aria-hidden="true"><span>EH—001</span><span>STRUCTURES & SYSTEMS</span></div>
-    <div class="material-key">${['teal', 'blue', 'coral', 'mustard', 'rose'].map(key => `<span aria-hidden="true" style="--swatch:${palette[key]}"></span>`).join('')}<small aria-hidden="true">CITY / LOCAL TIME</small><time id="local-clock" aria-live="off"></time></div>
+    <div class="material-key">${sections.map(section => `<span aria-hidden="true" style="--swatch:${sectionColors[section.id].accent}"></span>`).join('')}<small aria-hidden="true">CITY / LOCAL TIME</small><time id="local-clock" aria-live="off"></time></div>
     <div class="spatial-tools" role="group" aria-label="View controls">
       <div class="zoom-controls" role="group" aria-label="Zoom"><button type="button" id="zoom-out" aria-label="Zoom out" disabled>−</button><button type="button" id="zoom-in" aria-label="Zoom in" disabled>+</button></div>
       <button type="button" id="reset-spatial" aria-label="Reset the 3D camera" disabled>↺ <span>Reset view</span></button>
@@ -319,6 +330,14 @@ async function start() {
     onTower: () => navigate('explore'),
     onNavigate: navigate,
   });
+  penthousePlay=createPenthousePlay($('#interior-content'),()=>{
+    if(currentId!=='penthouse')return;
+    const toy=spatial.objectsForRoom('penthouse',1).find(object=>/controller|arcade/i.test(object.name));
+    if(toy)spatial.activateObject(toy.id,{notify:false});
+  });
+  penthouseExperiences=createPenthouseExperiences({container:$('#interior-content'),stage:$('#spatial-stage'),
+    onAtmosphere:value=>spatial?.setPenthouseAtmosphere(value),
+    reducedMotion:()=>shouldReduceMotion(viewPreferences.motion,introMotion.matches)});
   observeLabels();
   $('#reading-view').addEventListener('click', () => { if (currentId) readingView.show(currentId, currentRoomIndex); });
   const { createSpatialScene } = await import('./scene-3d.js');
@@ -328,6 +347,7 @@ async function start() {
     preferences: viewPreferences,
     onSelectSection: id => navigate(id || 'explore'),
     onSelectRoom: index => selectRoom(index, { focus: true }),
+    onObjectActivate: object => penthouseExperiences?.onObject(object),
     onFrame,
     onContextLost: () => void useFallback(true),
   });
@@ -456,7 +476,7 @@ async function start() {
     });
   }
   document.addEventListener('keydown', event => {
-    if (fallbackActive || intro.active || readingView.active || event.key !== 'Escape') return;
+    if (fallbackActive || intro.active || readingView.active || document.querySelector('.penthouse-dialog[open]') || event.key !== 'Escape') return;
     if ($('#view-settings').open) { event.preventDefault(); $('#view-settings').open = false; $('#view-settings summary').focus(); return; }
     if (!$('#controls-hint').hidden) { event.preventDefault(); dismissHint(); spatial.focus(); return; }
     if (currentId && currentRoomIndex !== null) { event.preventDefault(); navigate(currentId); return; }

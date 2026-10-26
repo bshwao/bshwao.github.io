@@ -4,6 +4,7 @@ import * as T from '../assets/vendor/three.module.min.js';
 import { sections, floorLayout } from '../assets/tower-geometry.js';
 import { floorContent } from '../assets/floor-content.js';
 import { createInterior,sofaPanels } from '../assets/interiors.js';
+import { interiorRoomDesign } from '../assets/interior-design.js';
 
 const tolerance = 1e-5;
 const rectangleContains = (region, bounds) => bounds.min.x >= region.x - region.width / 2 - tolerance
@@ -11,7 +12,7 @@ const rectangleContains = (region, bounds) => bounds.min.x >= region.x - region.
   && bounds.min.z >= region.z - region.depth / 2 - tolerance
   && bounds.max.z <= region.z + region.depth / 2 + tolerance;
 
-test('all nineteen rooms retain independently animated objects and exact batched picking identities', () => {
+test('every room retains independently animated objects and exact batched picking identities', () => {
   let rooms = 0, objects = 0;
   for (const section of sections) {
     const interior = createInterior(section, floorContent[section.id]);
@@ -49,12 +50,12 @@ test('all nineteen rooms retain independently animated objects and exact batched
       }
     }
   }
-  assert.equal(rooms, 19);
+  assert.equal(rooms, sections.reduce((sum,section)=>sum+floorContent[section.id].rooms.length,0));
   assert.ok(objects > 200, 'Primary and secondary objects participate across every floor');
 });
 
 test('object responses stay isolated, retrigger safely, and remove spatial motion when reduced motion changes', () => {
-  const interior = createInterior(sections[0], floorContent.about), controls = interior.interactions;
+  const interior = createInterior(sections.find(section=>section.id==='about'), floorContent.about), controls = interior.interactions;
   const plant = controls.objects.find(object => object.kind === 'plant');
   const piano = controls.objects.find(object => object.kind === 'piano');
   const parts = [plant, piano].flatMap(object => object.parts);
@@ -74,6 +75,23 @@ test('object responses stay isolated, retrigger safely, and remove spatial motio
   assert.ok(parts.every(part => part.geometry.attributes.color.getZ(part.start) === 1));
 });
 
+test('penthouse bedding and toys provide visible finite movement with a reduced-motion alternative',()=>{
+  const section=sections.find(section=>section.id==='penthouse'),interior=createInterior(section,floorContent.penthouse),controls=interior.interactions;
+  for(const name of ['Pillows and duvet','Toy robot','Vinyl record','Telescope']){
+    controls.reset();controls.setReducedMotion(false);
+    const target=controls.objects.find(object=>object.name===name);
+    assert.ok(target,`${name}: an individually selectable penthouse furnishing`);
+    controls.activate(target,0);controls.update(320);
+    assert.ok(target.parts.some(part=>part.rest.some((value,i)=>Math.abs(value-part.geometry.attributes.position.array[part.start*3+i])>.001)),`${name}: activation visibly changes real geometry`);
+    controls.setReducedMotion(true);controls.update(400);
+    for(const part of target.parts){
+      assert.ok(part.rest.every((value,i)=>Math.abs(value-part.geometry.attributes.position.array[part.start*3+i])<tolerance),`${name}: reduced motion restores its resting geometry`);
+    }
+    assert.ok(target.parts.some(part=>part.geometry.attributes.color.getZ(part.start)<1),`${name}: reduced motion retains visual feedback`);
+    controls.update(2000);assert.equal(controls.update(2016).moving,false,`${name}: the response settles without an animation loop`);
+  }
+});
+
 test('inspection car tires and brake hubs remain concentric through animation and retriggering', () => {
   const section = sections.find(section => section.id === 'experience');
   const interior = createInterior(section, floorContent.experience), controls = interior.interactions;
@@ -86,10 +104,12 @@ test('inspection car tires and brake hubs remain concentric through animation an
   const pairs = [];
   for (const x of [-1.3, 1.3]) for (const z of [-1.75, 1.75]) {
     // This side-wing room faces the opposite direction after furnishing.
-    const axle = new T.Vector3(-x, .6, -z);
+    const turn=interiorRoomDesign('experience',3).turn+Math.PI;
+    const axle = new T.Vector3(x,.6,z).applyAxisAngle(new T.Vector3(0,1,0),turn);
     const atAxle = roomParts.filter(part => center(part, true).distanceTo(axle) < tolerance);
-    const tire = atAxle.find(part => Math.abs(bounds(part, true).getSize(new T.Vector3()).x - .5) < tolerance);
-    const hub = atAxle.find(part => Math.abs(bounds(part, true).getSize(new T.Vector3()).x - .54) < tolerance);
+    const axis=Math.abs(Math.cos(turn))>.5?'x':'z';
+    const tire = atAxle.find(part => Math.abs(bounds(part, true).getSize(new T.Vector3())[axis] - .5) < tolerance);
+    const hub = atAxle.find(part => Math.abs(bounds(part, true).getSize(new T.Vector3())[axis] - .54) < tolerance);
     assert.ok(tire && hub, 'Each of the four wheels has its visible tire and brake hub');
     assert.ok(tire.target === car, 'The tire belongs to the car animation');
     assert.ok(hub.target === car, 'The hub shares the car animation and pivot');

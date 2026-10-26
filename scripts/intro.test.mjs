@@ -38,7 +38,7 @@ function fixture({hash='',storage=memoryStorage(),reduced=false}={}){
 test('the intro is limited to fresh home entry and safely tolerates denied session storage',()=>{
   const storage=memoryStorage();
   for(const hash of ['','#tower'])assert.equal(shouldShowIntro(hash,storage),true);
-  for(const hash of ['#explore','#about','#projects/b','#resume/d','#unknown'])assert.equal(shouldShowIntro(hash,storage),false);
+  for(const hash of ['#explore','#penthouse','#penthouse/b','#about','#projects/b','#resume/d','#unknown'])assert.equal(shouldShowIntro(hash,storage),false);
   storage.setItem(introSessionKey,'1');
   for(const hash of ['','#tower'])assert.equal(shouldShowIntro(hash,storage),false);
   storage.setItem(introSessionKey,'unexpected');assert.equal(shouldShowIntro('',storage),true);

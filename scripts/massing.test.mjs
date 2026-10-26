@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from '../assets/vendor/three.module.min.js';
-import { floorProfiles, footprint, floorLayout, sections, setbacks, towerRoofHeight } from '../assets/tower-geometry.js';
+import { floorProfiles, footprint, floorLayout, sections, setbacks, towerRoofHeight, expandedSectionOffset } from '../assets/tower-geometry.js';
 import { createTowerModel } from '../assets/tower-model.js';
 import { floorContent } from '../assets/floor-content.js';
 import { outdoorCameraPose } from '../assets/camera-framing.js';
@@ -200,7 +200,7 @@ test('outdoor cameras contain every actual shell corner through orbit on desktop
       camera.updateMatrixWorld();
       for (const [index, module] of model.modules.entries()) {
         const points = module.mesh.geometry.attributes.position;
-        const offset = mode === 'explore' ? new T.Vector3((index % 2 ? 1 : -1) * (index === 4 ? 10 : 8), (4 - index) * 10, 0) : new T.Vector3();
+        const offset = mode === 'explore' ? new T.Vector3(...expandedSectionOffset(index)) : new T.Vector3();
         for (let i = 0; i < points.count; i++) {
           const point = new T.Vector3().fromBufferAttribute(points, i).applyMatrix4(module.mesh.matrixWorld).add(offset).project(camera);
           const x = (point.x + 1) * width / 2, y = (1 - point.y) * height / 2;

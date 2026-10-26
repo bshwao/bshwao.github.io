@@ -24,10 +24,13 @@ export function createObjectInteractions(objects) {
     object.pivot.y = object.bounds.min.y;
     object.geometries = new Set(object.parts.map(part => part.geometry));
     object.hover = 0;
+    object.illumination = 0;
+    object.pulse = 0; object.wave = 0; object.progress = 1;
     object.lastTime = null;
     object.clickedAt = null;
   }
-  function paint(object, hover, pulse, wave) {
+  function paint(object, hover, pulse, wave, progress=1) {
+    object.pulse = pulse; object.wave = wave; object.progress = progress;
     const pivot = object.pivot;
     let lift = 0, turn = 0, lean = 0, scaleY = 1;
     if (!reduced) {
@@ -36,6 +39,9 @@ export function createObjectInteractions(objects) {
       if (object.kind === 'sofa') scaleY = 1 - pulse * .065;
       if (object.kind === 'paper') lift = hover * .04 + pulse * .22;
       if (object.kind === 'display') turn = wave * .09;
+      if (object.kind === 'spin') turn = progress<1 ? Math.PI*2*smooth(progress) : 0;
+      if (object.kind === 'bounce') {lift=pulse*.45;turn=wave*.14;}
+      if (object.kind === 'telescope') {turn=wave*.35;lean=wave*.07;}
     }
     rotation.makeRotationY(turn).multiply(tilt.makeRotationZ(lean));
     matrix.makeTranslation(pivot.x, pivot.y + lift, pivot.z).multiply(rotation)
@@ -50,7 +56,12 @@ export function createObjectInteractions(objects) {
         point.fromArray(part.rest, offset).applyMatrix4(matrix); point.y -= keyDip;
         position.setXYZ(vertex, point.x, point.y, point.z);
         if (normals) { normal.fromArray(part.normals, offset).applyNormalMatrix(normalMatrix); normals.setXYZ(vertex, normal.x, normal.y, normal.z); }
-        color.setXYZ(vertex, 1 + (highlight.r - 1) * strength, 1 + (highlight.g - 1) * strength, 1 + (highlight.b - 1) * strength);
+        // Persistent warm lamp color composes with the temporary highlight.
+        // It is vertex data in the existing batches, not a light or render loop.
+        color.setXYZ(vertex,
+          (1 + (highlight.r - 1) * strength) * (1 + object.illumination * 1.4),
+          (1 + (highlight.g - 1) * strength) * (1 + object.illumination * .7),
+          (1 + (highlight.b - 1) * strength) * (1 + object.illumination * .08));
       }
       for (const attribute of [position, normals, color]) if (attribute) {
         attribute.addUpdateRange(part.start * 3, part.count * 3); attribute.needsUpdate = true;
@@ -94,7 +105,7 @@ export function createObjectInteractions(objects) {
         // A single, eased response; holding the pointer never starts an idle loop.
         const pulse = smooth(Math.sin(Math.PI * progress));
         const wave = Math.sin(progress * Math.PI * 3) * (1 - progress);
-        paint(object, object.hover, pulse, wave);
+        paint(object, object.hover, pulse, wave, progress);
         if (progress === 1) object.clickedAt = null;
         if (object.hover === target && object.clickedAt === null) { active.delete(object); object.lastTime = null; }
       }
@@ -102,6 +113,19 @@ export function createObjectInteractions(objects) {
       return { changed, moving: active.size > 0 };
     },
     setReducedMotion(value) { reduced = value; if (hovered) active.add(hovered); },
+    setIllumination(predicate, value) {
+      const amount = value === true ? 1 : Number.isFinite(value) ? T.MathUtils.clamp(value, 0, 1) : 0;
+      const matches = typeof predicate === 'function' ? predicate : object => object.name === predicate;
+      let changed = false;
+      for (const object of objects) {
+        if (!matches(object) || object.illumination === amount) continue;
+        object.illumination = amount;
+        paint(object, object.hover, object.pulse, object.wave, object.progress);
+        changed = true;
+      }
+      updateBounds();
+      return changed;
+    },
     reset() {
       hovered = null;
       for (const object of objects) if (object.hover || object.clickedAt !== null || active.has(object)) {

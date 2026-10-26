@@ -1,0 +1,28 @@
+✔ all 23 rendered rooms retain independent palettes through focus and hover transitions (4.0877ms)
+✔ every physical room floor carries its own finish in the rendered vertex buffer (18.3725ms)
+✔ the penthouse has warm physical materials and rounded upholstery while the workshop uses low utility stools (1.3774ms)
+✔ restaged focal furnishings have different orientations while attached parts remain in their object batches (0.9686ms)
+✔ solid wall joins have the analytic exposed area for duplicate, touching and intersecting panels (1.9846ms)
+✔ all floors have non-overlapping wall skins, clean corner posts and separated floor finishes (1707.5227ms)
+✔ every paneled room backdrop has one clean exposed surface across its trim and display (1502.5671ms)
+✔ all architectural floors remain on the occupied L-shaped slab in four static batches (678.9179ms)
+✔ floor finishes fill every room bay and doorways provide real openings through its partitions (367.6013ms)
+✔ architectural partitions are solid and every room connects to the shared circulation (110.6311ms)
+✔ real furnishings occupy the full length and width of every architectural room (681.8649ms)
+✔ reading drawings retain the full room finishes and matching physical doorway locations (196.284ms)
+✔ every room retains independently animated objects and exact batched picking identities (3054.983ms)
+✔ object responses stay isolated, retrigger safely, and remove spatial motion when reduced motion changes (189.9695ms)
+✔ penthouse bedding and toys provide visible finite movement with a reduced-motion alternative (166.5219ms)
+✔ inspection car tires and brake hubs remain concentric through animation and retriggering (196.0883ms)
+✔ sofa frame panels and cushions have no intersecting or exposed coplanar faces (0.481ms)
+✔ complete furnished rooms fit their assigned usable bays and leave the service core clear (845.7845ms)
+✔ every floor has an elevator and a stair contained by the shared service region (775.4461ms)
+✔ interior rails remain on the slab around the concave L recess (718.8668ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7278.5009

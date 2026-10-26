@@ -1,0 +1,421 @@
+{
+  "method": "CPU visible-geometry/group estimate with frustum/layer filtering and transparent DoubleSide passes; not a WebGL measurement or GPU benchmark.",
+  "frames": 3865,
+  "byMode": {
+    "standard/tower": {
+      "frames": 2,
+      "peakCalls": 57,
+      "peakTriangles": 141194
+    },
+    "standard/explore": {
+      "frames": 82,
+      "peakCalls": 85,
+      "peakTriangles": 141876
+    },
+    "standard/section": {
+      "frames": 1800,
+      "peakCalls": 91,
+      "peakTriangles": 158220
+    },
+    "low/section": {
+      "frames": 1801,
+      "peakCalls": 87,
+      "peakTriangles": 146795
+    },
+    "low/tower": {
+      "frames": 98,
+      "peakCalls": 82,
+      "peakTriangles": 143449
+    },
+    "low/explore": {
+      "frames": 82,
+      "peakCalls": 81,
+      "peakTriangles": 130451
+    }
+  },
+  "peak": {
+    "mode": "section",
+    "section": "penthouse",
+    "room": "",
+    "graphics": "standard",
+    "width": 1280,
+    "height": 720,
+    "transition": "moving",
+    "calls": 91,
+    "triangles": 158220
+  },
+  "checkpoints": [
+    {
+      "label": "tower",
+      "graphics": "standard",
+      "calls": 57,
+      "triangles": 141194
+    },
+    {
+      "label": "explore",
+      "graphics": "standard",
+      "calls": 82,
+      "triangles": 141420
+    },
+    {
+      "label": "penthouse overview",
+      "graphics": "standard",
+      "calls": 70,
+      "triangles": 153714
+    },
+    {
+      "label": "penthouse/a",
+      "graphics": "standard",
+      "calls": 69,
+      "triangles": 153666
+    },
+    {
+      "label": "penthouse/b",
+      "graphics": "standard",
+      "calls": 69,
+      "triangles": 153666
+    },
+    {
+      "label": "penthouse/c",
+      "graphics": "standard",
+      "calls": 67,
+      "triangles": 153654
+    },
+    {
+      "label": "penthouse/d",
+      "graphics": "standard",
+      "calls": 69,
+      "triangles": 153666
+    },
+    {
+      "label": "about overview",
+      "graphics": "standard",
+      "calls": 71,
+      "triangles": 150206
+    },
+    {
+      "label": "about/a",
+      "graphics": "standard",
+      "calls": 70,
+      "triangles": 150204
+    },
+    {
+      "label": "about/b",
+      "graphics": "standard",
+      "calls": 70,
+      "triangles": 150204
+    },
+    {
+      "label": "about/c",
+      "graphics": "standard",
+      "calls": 68,
+      "triangles": 150192
+    },
+    {
+      "label": "about/d",
+      "graphics": "standard",
+      "calls": 70,
+      "triangles": 150204
+    },
+    {
+      "label": "projects overview",
+      "graphics": "standard",
+      "calls": 67,
+      "triangles": 147424
+    },
+    {
+      "label": "projects/a",
+      "graphics": "standard",
+      "calls": 65,
+      "triangles": 147422
+    },
+    {
+      "label": "projects/b",
+      "graphics": "standard",
+      "calls": 65,
+      "triangles": 147422
+    },
+    {
+      "label": "projects/c",
+      "graphics": "standard",
+      "calls": 64,
+      "triangles": 147308
+    },
+    {
+      "label": "experience overview",
+      "graphics": "standard",
+      "calls": 72,
+      "triangles": 153670
+    },
+    {
+      "label": "experience/a",
+      "graphics": "standard",
+      "calls": 71,
+      "triangles": 153670
+    },
+    {
+      "label": "experience/b",
+      "graphics": "standard",
+      "calls": 72,
+      "triangles": 153670
+    },
+    {
+      "label": "experience/c",
+      "graphics": "standard",
+      "calls": 64,
+      "triangles": 150132
+    },
+    {
+      "label": "experience/d",
+      "graphics": "standard",
+      "calls": 71,
+      "triangles": 153556
+    },
+    {
+      "label": "resume overview",
+      "graphics": "standard",
+      "calls": 72,
+      "triangles": 149964
+    },
+    {
+      "label": "resume/a",
+      "graphics": "standard",
+      "calls": 72,
+      "triangles": 149964
+    },
+    {
+      "label": "resume/b",
+      "graphics": "standard",
+      "calls": 72,
+      "triangles": 149964
+    },
+    {
+      "label": "resume/c",
+      "graphics": "standard",
+      "calls": 64,
+      "triangles": 146866
+    },
+    {
+      "label": "resume/d",
+      "graphics": "standard",
+      "calls": 72,
+      "triangles": 149964
+    },
+    {
+      "label": "contact overview",
+      "graphics": "standard",
+      "calls": 72,
+      "triangles": 152338
+    },
+    {
+      "label": "contact/a",
+      "graphics": "standard",
+      "calls": 72,
+      "triangles": 152338
+    },
+    {
+      "label": "contact/b",
+      "graphics": "standard",
+      "calls": 72,
+      "triangles": 152338
+    },
+    {
+      "label": "contact/c",
+      "graphics": "standard",
+      "calls": 64,
+      "triangles": 148616
+    },
+    {
+      "label": "contact/d",
+      "graphics": "standard",
+      "calls": 72,
+      "triangles": 152338
+    },
+    {
+      "label": "tower",
+      "graphics": "low",
+      "calls": 55,
+      "triangles": 129773
+    },
+    {
+      "label": "explore",
+      "graphics": "low",
+      "calls": 78,
+      "triangles": 129995
+    },
+    {
+      "label": "penthouse overview",
+      "graphics": "low",
+      "calls": 66,
+      "triangles": 142289
+    },
+    {
+      "label": "penthouse/a",
+      "graphics": "low",
+      "calls": 65,
+      "triangles": 142241
+    },
+    {
+      "label": "penthouse/b",
+      "graphics": "low",
+      "calls": 65,
+      "triangles": 142241
+    },
+    {
+      "label": "penthouse/c",
+      "graphics": "low",
+      "calls": 63,
+      "triangles": 142229
+    },
+    {
+      "label": "penthouse/d",
+      "graphics": "low",
+      "calls": 65,
+      "triangles": 142241
+    },
+    {
+      "label": "about overview",
+      "graphics": "low",
+      "calls": 67,
+      "triangles": 138781
+    },
+    {
+      "label": "about/a",
+      "graphics": "low",
+      "calls": 66,
+      "triangles": 138779
+    },
+    {
+      "label": "about/b",
+      "graphics": "low",
+      "calls": 66,
+      "triangles": 138779
+    },
+    {
+      "label": "about/c",
+      "graphics": "low",
+      "calls": 64,
+      "triangles": 138767
+    },
+    {
+      "label": "about/d",
+      "graphics": "low",
+      "calls": 66,
+      "triangles": 138779
+    },
+    {
+      "label": "projects overview",
+      "graphics": "low",
+      "calls": 63,
+      "triangles": 135999
+    },
+    {
+      "label": "projects/a",
+      "graphics": "low",
+      "calls": 61,
+      "triangles": 135997
+    },
+    {
+      "label": "projects/b",
+      "graphics": "low",
+      "calls": 61,
+      "triangles": 135997
+    },
+    {
+      "label": "projects/c",
+      "graphics": "low",
+      "calls": 60,
+      "triangles": 135883
+    },
+    {
+      "label": "experience overview",
+      "graphics": "low",
+      "calls": 68,
+      "triangles": 142245
+    },
+    {
+      "label": "experience/a",
+      "graphics": "low",
+      "calls": 67,
+      "triangles": 142245
+    },
+    {
+      "label": "experience/b",
+      "graphics": "low",
+      "calls": 68,
+      "triangles": 142245
+    },
+    {
+      "label": "experience/c",
+      "graphics": "low",
+      "calls": 60,
+      "triangles": 138707
+    },
+    {
+      "label": "experience/d",
+      "graphics": "low",
+      "calls": 67,
+      "triangles": 142131
+    },
+    {
+      "label": "resume overview",
+      "graphics": "low",
+      "calls": 68,
+      "triangles": 138539
+    },
+    {
+      "label": "resume/a",
+      "graphics": "low",
+      "calls": 68,
+      "triangles": 138539
+    },
+    {
+      "label": "resume/b",
+      "graphics": "low",
+      "calls": 68,
+      "triangles": 138539
+    },
+    {
+      "label": "resume/c",
+      "graphics": "low",
+      "calls": 60,
+      "triangles": 135441
+    },
+    {
+      "label": "resume/d",
+      "graphics": "low",
+      "calls": 68,
+      "triangles": 138539
+    },
+    {
+      "label": "contact overview",
+      "graphics": "low",
+      "calls": 68,
+      "triangles": 140913
+    },
+    {
+      "label": "contact/a",
+      "graphics": "low",
+      "calls": 68,
+      "triangles": 140913
+    },
+    {
+      "label": "contact/b",
+      "graphics": "low",
+      "calls": 68,
+      "triangles": 140913
+    },
+    {
+      "label": "contact/c",
+      "graphics": "low",
+      "calls": 60,
+      "triangles": 137191
+    },
+    {
+      "label": "contact/d",
+      "graphics": "low",
+      "calls": 68,
+      "triangles": 140913
+    }
+  ]
+}

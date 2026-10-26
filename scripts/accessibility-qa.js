@@ -1,4 +1,5 @@
 import { introSessionKey } from '../assets/portfolio-intro.js';
+import { sections } from '../assets/tower-geometry.js';
 
 const width = Number(new URLSearchParams(location.search).get('width')) || 1280;
 const height = Number(new URLSearchParams(location.search).get('height')) || 720;
@@ -50,15 +51,24 @@ try {
   frame.contentDocument.querySelector('#view-settings').open = false;
   frame.contentDocument.querySelector('#show-controls-hint').click(); await audit('controls hint');
   frame.contentDocument.querySelector('#dismiss-controls-hint').click();
-  for (const route of ['explore', 'about', 'projects/b', 'experience', 'resume/d', 'contact']) {
+  for (const route of ['explore',...sections.map(({id})=>id==='penthouse'?'penthouse/b':id==='projects'?'projects/b':id==='resume'?'resume/d':id)]) {
     frame.contentWindow.location.hash = route;
     await delay(20); await ready(); await audit(route);
   }
+  for(const [room,button,dialogId]of [['a','[data-bedroom-desktop]','penthouse-desktop-dialog'],['b','[data-penthouse-open="arcade"]','penthouse-arcade-dialog'],['c','[data-music-expand]','penthouse-music-dialog'],['d','[data-penthouse-open="sky"]','penthouse-sky-dialog']]){
+    frame.contentWindow.location.hash=`penthouse/${room}`;await delay(20);await ready();await audit(`penthouse/${room} activities`);
+    frame.contentDocument.querySelector(button).click();await delay(50);await audit(dialogId);
+    const dialog=frame.contentDocument.getElementById(dialogId);
+    if(room==='b')for(const game of ['2048','sudoku']){dialog.querySelector(`[data-arcade-tab="${game}"]`).click();await audit(`arcade ${game}`);}
+    if(room==='a'){dialog.querySelector('[data-desktop-launch="editor"]').click();await delay(250);await audit('bedroom code studio');}
+    dialog.close();await delay(20);
+  }
+  frame.contentWindow.location.hash='contact';await delay(20);await ready();
   frame.contentDocument.querySelector('.room-objects').open = true;
   await audit('contact object controls');
   frame.contentDocument.querySelector('.room-objects').open = false;
   frame.contentDocument.querySelector('#reading-view').click(); await delay(50); await audit('contact reading dialog');
-  for (const route of ['about', 'projects', 'experience', 'resume']) {
+  for (const {id:route} of sections.filter(section=>section.id!=='contact')) {
     frame.contentWindow.location.hash = route;
     await delay(20); await ready(); await audit(`${route} reading dialog`);
   }

@@ -1,16 +1,24 @@
 /** Shared world-space geometry. Y is up; heights use illustrative model units. */
 export const towerHeight = 148.5;
+// Keep the visible finish several depth-buffer steps above the recessed slab,
+// including distant floor-overview cameras. Furniture and core share its level.
+export const interiorFloorHeight = .12;
 // Lengthen the bundled shafts without changing their footprints or room scale.
 // Keep common elevations exact so wall, terrace and cap seams share one level.
 const elevation = height => Math.round(height * towerHeight / 110 * 1e4) / 1e4;
 export const towerRoofHeight = elevation(99.5);
 export const sections = [
-  { id: 'about', name: 'About', number: '01', low: 78.5, high: 110, theme: 'The personal study', subtitle: 'THE PERSON BEHIND THE PLANS' },
+  { id: 'penthouse', name: 'Penthouse', number: '06', low: 87.5, high: 110, theme: 'The after-hours apartment', subtitle: 'MAKE YOURSELF AT HOME' },
+  { id: 'about', name: 'About', number: '01', low: 78.5, high: 87.5, theme: 'The personal study', subtitle: 'THE PERSON BEHIND THE PLANS' },
   { id: 'projects', name: 'Projects', number: '02', low: 52.5, high: 78.5, theme: 'The makers’ workshop', subtitle: 'IDEAS / EXPERIMENTS / BUILDS' },
   { id: 'experience', name: 'Experience', number: '03', low: 31.5, high: 52.5, theme: 'The electronics laboratory', subtitle: 'CIRCUITS / SYSTEMS / THE TRACK' },
   { id: 'resume', name: 'Résumé', number: '04', low: 14.5, high: 31.5, theme: 'The reference archive', subtitle: 'EDUCATION / SKILLS / THE PDF' },
   { id: 'contact', name: 'Contact', number: '05', low: 0, high: 14.5, theme: 'The conversation lounge', subtitle: 'LET’S BUILD SOMETHING' },
 ].map(section => ({ ...section, low: elevation(section.low), high: elevation(section.high) }));
+
+export function expandedSectionOffset(index) {
+  return [(index%2?1:-1)*(index===sections.length-1?10:8),(sections.length-1-index)*10,0];
+}
 
 // A podium and three bundled shafts end at unequal heights. Almost aligned
 // west/north faces carry a continuous spine instead of a repeating pyramid.
@@ -40,7 +48,7 @@ export function profileAt(height) {
 export function footprint(height, count = 96) {
   const profile = profileAt(height);
   // The primary antenna is part of the watertight shell; the second mounts on
-  // its neighboring roof and travels with the same About section.
+  // its neighboring roof and travels with the Penthouse section.
   const scale=height>=towerRoofHeight?1-.3*Math.min(1,(height-towerRoofHeight)/(towerHeight-towerRoofHeight)):1;
   const corners=profile.polygon.map(([x,z])=>height>=towerRoofHeight?[-12+(x+12)*scale,-4+(z+4)*scale]:[x,z]);
   const samples = Math.max(1,Math.round(count/corners.length));
@@ -83,8 +91,8 @@ export function floorLayout(height,count=4) {
   });
   const unit=Math.max(...stations.map(station=>station.scale));
   const service={
-    elevator:{x:core.x-core.width*.335,z:core.z,width:1.45*unit,depth:1.4*unit,height:2.75*unit,baseY:.04},
-    stair:{x:core.x+core.width*.19,z:core.z,width:1.2*unit,count:8,going:.35*unit,rise:.19*unit,run:2.8*unit,baseY:.04},
+    elevator:{x:core.x-core.width*.335,z:core.z,width:1.45*unit,depth:1.4*unit,height:2.75*unit,baseY:interiorFloorHeight},
+    stair:{x:core.x+core.width*.19,z:core.z,width:1.2*unit,count:8,going:.35*unit,rise:.19*unit,run:2.8*unit,baseY:interiorFloorHeight},
   };
   return {outline,regions,core,stations,service,bounds:{minX:p.minX,maxX:p.maxX,minZ:p.minZ,maxZ:p.maxZ}};
 }

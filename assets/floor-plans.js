@@ -2,6 +2,7 @@ import { palette, sectionColors } from './color-theme.js';
 import { sections, floorLayout } from './tower-geometry.js';
 import { floorContent } from './floor-content.js';
 import { planInteriorStructure } from './interior-structure.js';
+import { interiorDesigns, interiorRoomDesign } from './interior-design.js';
 
 // Text retains a readable grid. The drawing and its interactive anchors use the
 // same occupied floor plate as the 3D rooms, including the shorter side wing.
@@ -86,8 +87,9 @@ export function createFloorPlan(sectionId) {
 
   let partitions = '', furnishings = '', roomNumbers = '', finishes = '';
   for (const [index, room] of layout.rooms.entries()) {
+    const roomStyle=interiorRoomDesign(id,index);
     const { x, y, width, height } = room;
-    finishes += rect(x,y,width,height,`class="plan-room-finish" data-plan-room="${index}" fill="${sectionColors[id].tint}" fill-opacity=".35" stroke="none"`);
+    finishes += rect(x,y,width,height,`class="plan-room-finish" data-plan-room="${index}" fill="${roomStyle.floor}" fill-opacity=".3" stroke="none"`);
     const left = x - .16*layout.scale, right = x + width + .16*layout.scale;
     const top = y - .16*layout.scale, bottom = y + height + .16*layout.scale;
     const center = room.opening.x, door = room.opening.width;
@@ -98,8 +100,9 @@ export function createFloorPlan(sectionId) {
     partitions += `<path class="plan-door" data-plan-door="${index}" d="M${n(center - door / 2)} ${n(entryY)}v${n(door * direction)}M${n(center + door / 2)} ${n(entryY)}A${n(door)} ${n(door)} 0 0 ${entryTop ? 1 : 0} ${n(center - door / 2)} ${n(entryY + door * direction)}" stroke-width=".7"/>`;
 
     const unit = Math.min(width / 8.4, height / 7.6);
-    const localRect = (lx, ly, w, h) => rect(room.anchorX + (lx - w / 2) * unit, room.anchorY + (ly - h / 2) * unit, w * unit, h * unit, `fill="${palette.raised}" stroke-width=".7"`);
+    const localRect = (lx, ly, w, h) => rect(room.anchorX + (lx - w / 2) * unit, room.anchorY + (ly - h / 2) * unit, w * unit, h * unit, `fill="${roomStyle.colors.structure}" stroke-width=".7"`);
     const localLine = (a, b) => line([room.anchorX + a[0] * unit, room.anchorY + a[1] * unit], [room.anchorX + b[0] * unit, room.anchorY + b[1] * unit], 'stroke-width=".55"');
+    const localCircle = (lx, ly, r) => `<circle cx="${n(room.anchorX + lx * unit)}" cy="${n(room.anchorY + ly * unit)}" r="${n(r * unit)}" fill="${palette.raised}" stroke-width=".7"/>`;
     const table = () => localRect(0, 0, 3.8, 1.8) + localRect(0, -1.7, .85, .8) + localRect(0, 1.7, .85, .8);
     const desk = () => localRect(0, 0, 3.8, 1.7) + localRect(0, .2, 1.3, .25) + localLine([0, .2], [0, -.15]) + localRect(0, -.5, 1.2, .3) + localRect(0, -1.7, .85, .8);
     const shelves = () => {
@@ -110,7 +113,27 @@ export function createFloorPlan(sectionId) {
       }
       return result;
     };
-    if (id === 'about' && index === 2) {
+    if (id === 'penthouse') {
+      if (index === 0) {
+        furnishings += localRect(-.35, -.1, 2.9, 4.6) + localRect(-.35, -2.55, 3.15, .22);
+        furnishings += localRect(-1.08, -1.65, 1.15, .72) + localRect(.38, -1.65, 1.15, .72);
+        furnishings += localLine([-1.8, -.8], [1.1, -.8]) + localRect(2.15, -1.8, .95, .95) + localCircle(2.15, -1.8, .24);
+      } else if (index === 1) {
+        furnishings += localRect(0, 1.45, 4.4, 1.3) + localRect(0, 2.05, 4.4, .2) + localLine([0, .8], [0, 2.1]);
+        furnishings += localRect(0, -2, 3.8, .65) + localRect(0, -.25, 1.8, 1) + localRect(0, -.25, .8, .4);
+        furnishings += localCircle(-.23, -.25, .06) + localCircle(.23, -.25, .06) + localRect(-2.85, -.7, 1.05, 1.6);
+      } else if (index === 2) {
+        furnishings += localRect(0, -1.3, 4.2, 1.65) + localCircle(-1.05, -1.3, .62) + localCircle(-1.05, -1.3, .16);
+        furnishings += localLine([.05, -1.85], [-.45, -1.25]) + localRect(-2.8, -1.3, .7, 1) + localRect(2.8, -1.3, .7, 1);
+        furnishings += localRect(0, 1.3, 3.8, 1);
+        for (let key = -1.55; key < 1.6; key += .45) furnishings += localLine([key, .85], [key, 1.75]);
+      } else {
+        furnishings += localCircle(-1.6, -1.3, .75) + localLine([-2.35, -1.3], [-.85, -1.3]) + localLine([-1.6, -2.05], [-1.6, -.55]);
+        furnishings += localLine([1.3, -.8], [.5, .7]) + localLine([1.3, -.8], [2.2, .7]) + localLine([1.3, -.8], [1.3, 1]);
+        furnishings += `<path d="${path([[.55,-1.8],[1.95,-2.5],[2.35,-1.75],[.95,-1.05]].map(([lx,ly])=>[room.anchorX+lx*unit,room.anchorY+ly*unit]))}" fill="${palette.raised}"/>`;
+        furnishings += localRect(-1.85, 1.9, 1.25, 1.25) + localRect(.2, 1.9, 1.25, 1.25);
+      }
+    } else if (id === 'about' && index === 2) {
       const points = [[-1.5, -1], [1.5, -1], [1.5, -.2], [.8, 1.4], [-.3, 1.8], [-1.5, .8], [-1.5, -1]];
       furnishings += `<path d="${path(points.map(([lx, ly]) => [room.anchorX + lx * unit, room.anchorY + ly * unit]))}" fill="${palette.raised}"/>`;
       furnishings += localRect(0, -1.25, 3, .4) + localRect(0, -2.2, 1.4, .6);
@@ -155,7 +178,7 @@ export function createFloorPlan(sectionId) {
     <path class="plan-outline" d="${outline}" fill="${palette.raised}" stroke-width="6.2"/>
     <path d="${outline}" stroke="${palette.raised}" stroke-width="3.7"/>
     <g clip-path="url(#plan-cut-${id})">
-      <g class="plan-finishes">${layout.hall.map(r=>rect(r.x,r.y,r.width,r.height,`fill="${palette.glass}" fill-opacity=".5" stroke="none"`)).join('')}${finishes}</g>
+      <g class="plan-finishes">${layout.hall.map(r=>rect(r.x,r.y,r.width,r.height,`fill="${interiorDesigns[id].hall}" fill-opacity=".4" stroke="none"`)).join('')}${finishes}</g>
       <g class="plan-glazing">${glazing}</g>
       <g class="plan-partitions">${partitions}</g>
       <g class="plan-circulation" stroke-dasharray="3 3" opacity=".55">${layout.circulation.map(route=>`<path data-plan-route="${route.roomIndex}" d="M${route.points.map(([x,y])=>`${n(x)} ${n(y)}`).join('L')}"/>`).join('')}</g>

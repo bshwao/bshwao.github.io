@@ -1,0 +1,24 @@
+✔ solid wall joins have the analytic exposed area for duplicate, touching and intersecting panels (2.2861ms)
+✔ all floors have non-overlapping wall skins, clean corner posts and separated floor finishes (1949.8826ms)
+✔ every paneled room backdrop has one clean exposed surface across its trim and display (1187.6376ms)
+✔ all architectural floors remain on the occupied L-shaped slab in four static batches (714.9363ms)
+✔ floor finishes fill every room bay and doorways provide real openings through its partitions (320.2808ms)
+✔ architectural partitions are solid and every room connects to the shared circulation (205.8162ms)
+✔ real furnishings occupy the full length and width of every architectural room (586.4262ms)
+✔ reading drawings retain the full room finishes and matching physical doorway locations (199.5845ms)
+✔ every room retains independently animated objects and exact batched picking identities (2734.6335ms)
+✔ object responses stay isolated, retrigger safely, and remove spatial motion when reduced motion changes (145.8877ms)
+✔ penthouse bedding and toys provide visible finite movement with a reduced-motion alternative (146.7386ms)
+✔ inspection car tires and brake hubs remain concentric through animation and retriggering (185.7776ms)
+✔ sofa frame panels and cushions have no intersecting or exposed coplanar faces (0.4712ms)
+✔ complete furnished rooms fit their assigned usable bays and leave the service core clear (777.832ms)
+✔ every floor has an elevator and a stair contained by the shared service region (790.9333ms)
+✔ interior rails remain on the slab around the concave L recess (736.6989ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7247.243

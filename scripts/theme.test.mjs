@@ -11,6 +11,7 @@ import { simulateVision, visionMatrices } from './vision-simulation.js';
 import { facadeColor } from '../assets/facade-materials.js';
 import { cityPalette } from '../assets/city-environment.js';
 import { towerHeight } from '../assets/tower-geometry.js';
+import { interiorDesigns } from '../assets/interior-design.js';
 
 const luminance = hex => {
   const linear = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4);
@@ -54,7 +55,7 @@ test('facade and cut-plan colors survive compact detail without extra geometry o
     assert.ok(furniture.count > 0);
     assert.ok(module.interior.rooms.every(room => room.surfaces.length <= 4), 'Rooms retain four batched surface draws');
     const roomColors = new Set(module.interior.rooms.flatMap(room => room.surfaces.map(surface => surface.color.getHexString())));
-    assert.ok(roomColors.has(palette.timber.slice(1)) && roomColors.has(palette.coral.slice(1)) && roomColors.has(palette.glass.slice(1)));
+    for(const room of interiorDesigns[module.id].rooms)for(const color of Object.values(room.colors))assert.ok(roomColors.has(color.slice(1)),'Every room uses its own authored material palette');
   }
 });
 

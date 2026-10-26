@@ -8,11 +8,12 @@ export const palette = Object.freeze({
   warmInk: '#8c6252', tealInk: '#4d7568', sky: '#fffdf4', bounce: '#b5b8a9', fill: '#dce6dc',
 });
 export const sectionColors = Object.freeze({
-  about: { accent: palette.teal, ink: '#365e57', tint: '#dbe8df' },
-  projects: { accent: palette.blue, ink: '#435b76', tint: '#dde4ea' },
-  experience: { accent: palette.coral, ink: '#824b3e', tint: '#eddbd1' },
-  resume: { accent: palette.mustard, ink: '#6e591f', tint: '#eae0c3' },
-  contact: { accent: palette.rose, ink: '#774b5c', tint: '#e9dbe0' },
+  penthouse: { accent:'#ba704c',ink:'#75442d',tint:'#f0ddc7' },
+  about: { accent:'#547557',ink:'#344e36',tint:'#dce3ce' },
+  projects: { accent:'#4d83b3',ink:'#314f72',tint:'#dbe5ed' },
+  experience: { accent:'#bf9540',ink:'#715317',tint:'#eddfb8' },
+  resume: { accent:'#8f4e4b',ink:'#643835',tint:'#eeddd1' },
+  contact: { accent:'#4c9583',ink:'#2c6053',tint:'#daeadf' },
 });
 export const roomAccents = [palette.teal, palette.coral, palette.blue, palette.rose];
 

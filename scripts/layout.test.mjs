@@ -4,6 +4,7 @@ import { viewportLayout, roomMarkerLayout, outdoorViewLayout, towerLabelLayout }
 import { outdoorCameraPose, outdoorFramingPoints, cameraDepthRange, cameraZoomLimits, islandZoomLimit } from '../assets/camera-framing.js';
 import * as T from '../assets/vendor/three.module.min.js';
 import { renderBudget } from '../assets/render-budget.js';
+import { sections } from '../assets/tower-geometry.js';
 
 test('camera depth precision separates thin architectural layers through the zoom range', () => {
   for (const distance of [5, 25, 80, 200, 400, 650, 1600]) {
@@ -65,9 +66,9 @@ test('outdoor cameras fit the district or tower inside the space reserved for co
 
 test('section labels stay spaced and accessible when their projected anchors collide or leave the screen', () => {
   for (const [width, height] of [[1280, 800], [844, 390], [650, 390], [520, 360], [390, 844], [320, 568]]) {
-    const points = Array.from({ length: 5 }, (_, index) => ({ id: String(index), side: index % 2 ? -1 : 1, x: index === 0 ? -300 : width / 2, y: 200, visible: index !== 4 }));
+    const points = sections.map((_, index) => ({ id: String(index), side: index % 2 ? -1 : 1, x: index === 0 ? -300 : width / 2, y: 200, visible: index !== sections.length-1 }));
     const result = towerLabelLayout(points, width, height);
-    assert.equal(result.points.filter(point => point.shown).length, 5, 'Offscreen floors retain a navigation control');
+    assert.equal(result.points.filter(point => point.shown).length, sections.length, 'Offscreen floors retain a navigation control');
     assert.equal(result.layout, outdoorViewLayout(width, height, 'explore').labelLayout);
     if (result.layout === 'dock') continue;
     for (const item of result.points) {

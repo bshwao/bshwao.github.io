@@ -147,7 +147,8 @@ export function buildBoxSurfaces(primitives) {
       let pieces = [face.points];
       for (const other of neighbors) {
         const same = other.faces.some(plane => plane.normal.dot(face.normal) > 1 - epsilon && Math.abs(plane.distance - face.distance) < epsilon);
-        const owner = (priority[box.surface] ?? 0) - (priority[other.surface] ?? 0) || box.index - other.index;
+        // Colored architectural batches retain the role before the finish key.
+        const owner = (priority[box.surface?.split('|')[0]] ?? 0) - (priority[other.surface?.split('|')[0]] ?? 0) || box.index - other.index;
         if (same && owner > 0) continue;
         pieces = pieces.flatMap(points => subtract(points, other.faces));
         if (!pieces.length) break;

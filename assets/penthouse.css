@@ -1,0 +1,10 @@
+.penthouse-game { margin: 23px 0; padding: 17px; border: 1px solid var(--line); border-radius: 10px; background: var(--accent-tint); }
+.penthouse-game h4 { font: 400 21px/1.25 var(--serif); color: var(--ink); margin: 0 0 8px; }
+.penthouse-game > p { font: 11px/1.6 var(--mono); margin: 8px 0; }
+.penthouse-game-board { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; width: min(100%,210px); margin: 14px 0; }
+.penthouse-game-board button { min-height: 50px; aspect-ratio: 1; border: 1px solid var(--line); background: var(--raised); border-radius: 4px; font: 400 27px/1 var(--serif); color: var(--accent-ink); }
+.penthouse-game-board button[data-mark="O"] { color: var(--ink); }
+.penthouse-game-board button:not(:disabled):hover { border-color: var(--accent-ink); background: var(--paper); }
+.penthouse-game-board button:disabled { cursor: default; opacity: 1; }
+.penthouse-game-reset { min-height: 44px; padding: 8px 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--accent-ink); font: 10px/1.5 var(--mono); }
+.penthouse-game :is(button,a):focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 3px; }

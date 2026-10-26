@@ -1,0 +1,46 @@
+✔ every room retains independently animated objects and exact batched picking identities (4554.6823ms)
+✔ object responses stay isolated, retrigger safely, and remove spatial motion when reduced motion changes (273.1193ms)
+✔ penthouse bedding and toys provide visible finite movement with a reduced-motion alternative (226.0279ms)
+✔ inspection car tires and brake hubs remain concentric through animation and retriggering (355.1264ms)
+✔ sofa frame panels and cushions have no intersecting or exposed coplanar faces (0.6847ms)
+✔ complete furnished rooms fit their assigned usable bays and leave the service core clear (1045.259ms)
+✔ every floor has an elevator and a stair contained by the shared service region (873.525ms)
+✔ interior rails remain on the slab around the concave L recess (854.667ms)
+✔ deliberate nested floor plates have a consistent winding and no crossing perimeter edges (9.8638ms)
+✔ the silhouette is elongated and asymmetric, with a concave attached wing and an offset crown (1.1273ms)
+✔ shared occupied regions, service core, and room anchors fit the entire floor boundary (12.2361ms)
+✔ structural floor slabs remain recessed behind the assembled facade at every section join (33.1169ms)
+✔ actual furnished room bounds fit their regions and do not collide with neighboring rooms or service core (1.9374ms)
+✔ real shell faces have area and setbacks remain horizontal rather than sloping connecting bands (73.696ms)
+✔ outdoor cameras contain every actual shell corner through orbit on desktop and both phone orientations (2483.5902ms)
+✔ compact drawing preserves solid geometry and landmarks while reducing line work (3.8361ms)
+✔ the district reserves a clear tower plaza and non-overlapping parcels outside the streets (2.5079ms)
+✔ the decorative district has finite ground geometry within a small rendering budget (2.6355ms)
+✔ district buildings fit their parcels, keep the tower clear, and share a bounded geometry budget (1198.0548ms)
+✔ colored district roofs have no competing box lids or flat planes beneath pitched roofs (25.1773ms)
+✔ blueprint road marks have visible area, face upward, and stay inside the streets (3.6563ms)
+✔ district shading keeps opaque building depth and inexpensive contact washes (78.5589ms)
+✔ district landscaping and engineering references leave building volumes clear and stay inexpensive (304.8332ms)
+✔ cap plans stay within their cut footprints and keep distinct, inexpensive furnishings (357.2702ms)
+✔ all sections have closed exterior volumes, including their cut surfaces (114.436ms)
+✔ the full model can be hit from every azimuth rather than a single SVG-facing side (59.1601ms)
+✔ each section has furnished, selectable rooms matching every content room (101.2932ms)
+✔ detailed interiors remain within a bounded geometry and rendering budget (0.8232ms)
+✔ all room anchors lie within their section footprint (249.6802ms)
+✔ room highlighting is independent and every camera target has real furniture bounds (0.9466ms)
+✔ room focus quiets the context and restores its materials without cumulative fading (11.6121ms)
+✔ the visitor penthouse occupies its own top floor while original portfolio destinations remain intact (5.7954ms)
+✔ a valid board move produces a house reply while occupied and invalid moves cannot overwrite it (5.8255ms)
+✔ noughts and crosses resolves a player win, a house win and a draw, then freezes until reset (3.4466ms)
+✔ the accessible game paints live marks and status, resets cleanly, and disposes its click handler (240.149ms)
+✔ reading SVG uses the actual occupied section cut and matching numbered regions (454.8946ms)
+✔ reading hotspots reach every original room and use the shared map anchors (529.4683ms)
+✔ cap plan segments cannot bridge the empty L recess and furnish every content room (307.6417ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8483.645

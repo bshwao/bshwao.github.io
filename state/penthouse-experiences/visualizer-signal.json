@@ -1,0 +1,70 @@
+[
+  {
+    "compact": {
+      "musicCanvas": "",
+      "signalEnergy": "0.25396",
+      "signalFrames": "43",
+      "visualStyle": "spectrum"
+    },
+    "signal": {
+      "musicCanvas": "",
+      "signalEnergy": "0.07531",
+      "signalFrames": "8584",
+      "visualStyle": "spectrum"
+    },
+    "status": "",
+    "style": "spectrum",
+    "time": "0:25"
+  },
+  {
+    "compact": {
+      "musicCanvas": "",
+      "signalEnergy": "0.25396",
+      "signalFrames": "43",
+      "visualStyle": "spectrum"
+    },
+    "signal": {
+      "musicCanvas": "",
+      "signalEnergy": "0.09452",
+      "signalFrames": "8597",
+      "visualStyle": "waveform"
+    },
+    "status": "",
+    "style": "waveform",
+    "time": "0:25"
+  },
+  {
+    "compact": {
+      "musicCanvas": "",
+      "signalEnergy": "0.25396",
+      "signalFrames": "43",
+      "visualStyle": "spectrum"
+    },
+    "signal": {
+      "musicCanvas": "",
+      "signalEnergy": "0.09815",
+      "signalFrames": "8614",
+      "visualStyle": "orbit"
+    },
+    "status": "",
+    "style": "orbit",
+    "time": "0:25"
+  },
+  {
+    "compact": {
+      "musicCanvas": "",
+      "signalEnergy": "0.25396",
+      "signalFrames": "43",
+      "visualStyle": "spectrum"
+    },
+    "signal": {
+      "musicCanvas": "",
+      "signalEnergy": "0.09806",
+      "signalFrames": "8622",
+      "visualStyle": "constellation"
+    },
+    "status": "",
+    "style": "constellation",
+    "time": "0:26"
+  }
+]

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from '../assets/vendor/three.module.min.js';
 import { JSDOM } from 'jsdom';
-import { sections, floorLayout } from '../assets/tower-geometry.js';
+import { sections, floorLayout,interiorFloorHeight } from '../assets/tower-geometry.js';
 import { floorContent } from '../assets/floor-content.js';
 import { createInterior } from '../assets/interiors.js';
 import { createInteriorStructure } from '../assets/interior-structure.js';
@@ -115,7 +115,7 @@ test('solid wall joins have the analytic exposed area for duplicate, touching an
   }
 });
 
-test('all five floors have non-overlapping wall skins, clean corner posts and separated floor finishes', () => {
+test('all floors have non-overlapping wall skins, clean corner posts and separated floor finishes', () => {
   for (const { section, structure, meshes } of fixtures) {
     assertCleanSurfaces(meshes, section.id);
     assertCleanStrokes(structure.group.getObjectByName('floor-architecture-outline').geometry.attributes.position, section.id);
@@ -127,7 +127,7 @@ test('all five floors have non-overlapping wall skins, clean corner posts and se
       // A center sample can land on the intentionally raised door threshold.
       const exposed = [.2, .5, .8].some(fraction => {
         const point = new T.Vector3(hall.minX + (hall.maxX - hall.minX) * fraction, 20, (hall.minZ + hall.maxZ) / 2);
-        return new T.Raycaster(point, new T.Vector3(0, -1, 0)).intersectObjects(meshes).some(hit => Math.abs(hit.point.y - .04) < 1e-5);
+        return new T.Raycaster(point, new T.Vector3(0, -1, 0)).intersectObjects(meshes).some(hit => Math.abs(hit.point.y - interiorFloorHeight) < 1e-5);
       });
       assert.ok(exposed, `${section.id}: the hall finish is above the slab rather than coplanar with it`);
     }
@@ -145,10 +145,10 @@ test('every paneled room backdrop has one clean exposed surface across its trim 
       rooms++;
     }
   }
-  assert.equal(rooms, 19);
+  assert.equal(rooms, sections.reduce((sum,section)=>sum+floorContent[section.id].rooms.length,0));
 });
 
-test('all five architectural floors remain on the occupied L-shaped slab in four static batches', () => {
+test('all architectural floors remain on the occupied L-shaped slab in four static batches', () => {
   for (const { section, content, layout, structure } of fixtures) {
     assert.equal(structure.rooms.length, content.rooms.length, `${section.id}: every content room receives architecture`);
     let calls = 0;
@@ -230,7 +230,7 @@ test('architectural partitions are solid and every room connects to the shared c
   }
 });
 
-test('real furnishings occupy the full length and width of all nineteen architectural rooms', () => {
+test('real furnishings occupy the full length and width of every architectural room', () => {
   let checked = 0;
   for (const section of sections) {
     const content = floorContent[section.id], interior = createInterior(section, content);
@@ -257,7 +257,7 @@ test('real furnishings occupy the full length and width of all nineteen architec
       checked++;
     }
   }
-  assert.equal(checked, 19);
+  assert.equal(checked, sections.reduce((sum,section)=>sum+floorContent[section.id].rooms.length,0));
 });
 
 test('reading drawings retain the full room finishes and matching physical doorway locations', () => {

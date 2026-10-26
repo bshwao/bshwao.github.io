@@ -1,0 +1,3 @@
+(node:40384) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+DOM/camera integration passed (desktop): room URLs, titles, clipboard/manual sharing, section reading mode, retained 3D navigation, room flights, highlighting, left-drag/touch, resize, framing, gestures, history, cancellation, keyboard, idle rendering, motion preferences, and text fallback (33574 frames).

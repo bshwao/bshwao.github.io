@@ -1,0 +1,12 @@
+✔ all 23 rendered rooms retain independent palettes through focus and hover transitions (3.8811ms)
+✔ every physical room floor carries its own finish in the rendered vertex buffer (15.4244ms)
+✔ the penthouse has warm physical materials and rounded upholstery while the workshop uses low utility stools (0.7992ms)
+✔ restaged focal furnishings have different orientations while attached parts remain in their object batches (0.3874ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1033.8262

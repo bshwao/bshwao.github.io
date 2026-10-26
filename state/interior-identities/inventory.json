@@ -1,0 +1,2616 @@
+{
+  "floorSurfaceY": 0.12,
+  "floors": [
+    {
+      "id": "penthouse",
+      "name": "Penthouse",
+      "design": "Fireside apartment",
+      "objects": 47,
+      "rooms": [
+        {
+          "id": "a",
+          "name": "Bedroom",
+          "design": "Cinnamon bedroom",
+          "palette": [
+            "#e6ac90",
+            "#eed4ac",
+            "#bb704c",
+            "#593b31"
+          ],
+          "floor": "#ba865b",
+          "wall": "#e4bd93",
+          "pattern": "wide-boards",
+          "roundness": 0.22,
+          "turnDegrees": -90,
+          "position": [
+            -13.231888888888887,
+            0.132,
+            -4.3877862693600616
+          ],
+          "scale": 0.7814814814814814,
+          "bounds": {
+            "min": [
+              -15.783426007906595,
+              0.132,
+              -9.73776839856301
+            ],
+            "max": [
+              -9.88324085998535,
+              2.8085740368101333,
+              0.35901860908672933
+            ]
+          },
+          "occupiedFraction": [
+            0.8388888835906985,
+            0.8310112763497727
+          ],
+          "objects": [
+            {
+              "name": "Pillows and duvet",
+              "kind": "sofa"
+            },
+            {
+              "name": "Bedside lamp",
+              "kind": "display"
+            },
+            {
+              "name": "Bedside books",
+              "kind": "paper"
+            },
+            {
+              "name": "Slippers",
+              "kind": "bounce"
+            },
+            {
+              "name": "Soft ottoman",
+              "kind": "sofa"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Bedroom dressing cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Entry bench with cushions and a small book stack",
+              "kind": "pulse"
+            },
+            {
+              "name": "Spare cushions",
+              "kind": "sofa"
+            },
+            {
+              "name": "Entry bench with cushions and a small book stack",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 3556
+        },
+        {
+          "id": "b",
+          "name": "Play lounge",
+          "design": "Terracotta play den",
+          "palette": [
+            "#a84e43",
+            "#f0cf9e",
+            "#d68e57",
+            "#4f343d"
+          ],
+          "floor": "#ac7955",
+          "wall": "#d7ad91",
+          "pattern": "wide-boards",
+          "roundness": 0.18,
+          "turnDegrees": -15,
+          "position": [
+            -5.27092468528244,
+            0.132,
+            -4.244844775803174
+          ],
+          "scale": 0.7814814814814814,
+          "bounds": {
+            "min": [
+              -8.150092521083176,
+              0.132,
+              -9.741675897954302
+            ],
+            "max": [
+              -2.2499073731619315,
+              2.5545925180647107,
+              0.3590186065363028
+            ]
+          },
+          "occupiedFraction": [
+            0.8388888835906981,
+            0.8313328810280333
+          ],
+          "objects": [
+            {
+              "name": "Lounge sofa",
+              "kind": "sofa"
+            },
+            {
+              "name": "Game screen",
+              "kind": "display"
+            },
+            {
+              "name": "Game console",
+              "kind": "display"
+            },
+            {
+              "name": "Tabletop game pieces",
+              "kind": "bounce"
+            },
+            {
+              "name": "Game controller",
+              "kind": "bounce"
+            },
+            {
+              "name": "Arcade machine",
+              "kind": "display"
+            },
+            {
+              "name": "Toy robot",
+              "kind": "bounce"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Game library",
+              "kind": "pulse"
+            },
+            {
+              "name": "Spare cushions",
+              "kind": "sofa"
+            },
+            {
+              "name": "Entry bench with cushions and a small book stack",
+              "kind": "pulse"
+            },
+            {
+              "name": "Entry bench with cushions and a small book stack",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 5040
+        },
+        {
+          "id": "c",
+          "name": "Listening nook",
+          "design": "Amber record room",
+          "palette": [
+            "#392e2c",
+            "#754b38",
+            "#dcae6b",
+            "#be8450"
+          ],
+          "floor": "#986740",
+          "wall": "#d5b286",
+          "pattern": "boards",
+          "roundness": 0.14,
+          "turnDegrees": 90,
+          "position": [
+            2.656055555555556,
+            0.132,
+            -4.8190378047140126
+          ],
+          "scale": 0.7814814814814814,
+          "bounds": {
+            "min": [
+              -0.5167592145425295,
+              0.132,
+              -9.741675941966255
+            ],
+            "max": [
+              5.383425933378715,
+              2.8085740368101333,
+              0.3590185625243496
+            ]
+          },
+          "occupiedFraction": [
+            0.8388888835906981,
+            0.8313328810280333
+          ],
+          "objects": [
+            {
+              "name": "Vinyl record",
+              "kind": "spin"
+            },
+            {
+              "name": "Left speaker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Right speaker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Synthesizer keys",
+              "kind": "piano"
+            },
+            {
+              "name": "Keyboard stool",
+              "kind": "seat"
+            },
+            {
+              "name": "Listening chair",
+              "kind": "sofa"
+            },
+            {
+              "name": "Reference shelves",
+              "kind": "pulse"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Record library",
+              "kind": "pulse"
+            },
+            {
+              "name": "Spare cushions",
+              "kind": "sofa"
+            },
+            {
+              "name": "Entry bench with cushions and a small book stack",
+              "kind": "pulse"
+            },
+            {
+              "name": "Spare cushions",
+              "kind": "sofa"
+            },
+            {
+              "name": "Entry bench with cushions and a small book stack",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 5928
+        },
+        {
+          "id": "d",
+          "name": "Sky lounge",
+          "design": "Rose sunset lounge",
+          "palette": [
+            "#a96467",
+            "#573c43",
+            "#efd0b2",
+            "#d69c6a"
+          ],
+          "floor": "#c69470",
+          "wall": "#ebc4a8",
+          "pattern": "wide-boards",
+          "roundness": 0.25,
+          "turnDegrees": -90,
+          "position": [
+            -7.929756816913958,
+            0.132,
+            9.473376906046528
+          ],
+          "scale": 0.611786619683445,
+          "bounds": {
+            "min": [
+              -16.297761057090963,
+              0.132,
+              7.161743448343981
+            ],
+            "max": [
+              -0.0022385228284997893,
+              2.22736914324354,
+              11.779220983026587
+            ]
+          },
+          "occupiedFraction": [
+            0.9585601490742626,
+            0.732932942013112
+          ],
+          "objects": [
+            {
+              "name": "Telescope",
+              "kind": "telescope"
+            },
+            {
+              "name": "Constellation globe",
+              "kind": "spin"
+            },
+            {
+              "name": "Window lounge chair",
+              "kind": "sofa"
+            },
+            {
+              "name": "Second lounge chair",
+              "kind": "sofa"
+            },
+            {
+              "name": "Cookie plate",
+              "kind": "bounce"
+            },
+            {
+              "name": "Warm mug",
+              "kind": "pulse"
+            },
+            {
+              "name": "Sky atlases",
+              "kind": "paper"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Window bench cushions",
+              "kind": "sofa"
+            },
+            {
+              "name": "Window bench with loose cushions",
+              "kind": "pulse"
+            },
+            {
+              "name": "Window bench cushions",
+              "kind": "sofa"
+            },
+            {
+              "name": "Window bench with loose cushions",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 7284
+        }
+      ]
+    },
+    {
+      "id": "about",
+      "name": "About",
+      "design": "Collected walnut study",
+      "objects": 77,
+      "rooms": [
+        {
+          "id": "a",
+          "name": "Orientation",
+          "design": "Forest model gallery",
+          "palette": [
+            "#385b4d",
+            "#d4b68b",
+            "#353b31",
+            "#91a786"
+          ],
+          "floor": "#a89470",
+          "wall": "#c3c4a7",
+          "pattern": "parquet",
+          "roundness": 0.035,
+          "turnDegrees": 90,
+          "position": [
+            -12.61061111111111,
+            0.132,
+            -4.663
+          ],
+          "scale": 0.7814814814814814,
+          "bounds": {
+            "min": [
+              -15.949490770551893,
+              0.132,
+              -9.716277688556247
+            ],
+            "max": [
+              -9.717175843945256,
+              3.461111289978027,
+              0.40590730328030045
+            ]
+          },
+          "occupiedFraction": [
+            0.8861111270056831,
+            0.8331016454186458
+          ],
+          "objects": [
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Document cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Architectural study model and portfolio display shelf",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Orientation gallery: map archive, model storage and visitor seating",
+              "kind": "pulse"
+            },
+            {
+              "name": "Reading and study edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Reading and study edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            }
+          ],
+          "triangles": 3892
+        },
+        {
+          "id": "b",
+          "name": "Study",
+          "design": "Oxford writing study",
+          "palette": [
+            "#c89c64",
+            "#3d505f",
+            "#a9b5ae",
+            "#32383c"
+          ],
+          "floor": "#907751",
+          "wall": "#bfc4b5",
+          "pattern": "boards",
+          "roundness": 0.06,
+          "turnDegrees": -90,
+          "position": [
+            -5.31136111111111,
+            0.13411745156923793,
+            -4.663
+          ],
+          "scale": 0.7814814814814814,
+          "bounds": {
+            "min": [
+              -8.31615742976577,
+              0.132,
+              -9.716277688556247
+            ],
+            "max": [
+              -2.0838425031591337,
+              3.463228741547265,
+              0.40590730328030045
+            ]
+          },
+          "occupiedFraction": [
+            0.886111127005683,
+            0.8331016454186458
+          ],
+          "objects": [
+            {
+              "name": "Monitor",
+              "kind": "display"
+            },
+            {
+              "name": "Desk chair",
+              "kind": "seat"
+            },
+            {
+              "name": "Work desk",
+              "kind": "pulse"
+            },
+            {
+              "name": "Reference shelves",
+              "kind": "pulse"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Task lamp",
+              "kind": "display"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Articulated study lamp, notebook and desk stationery",
+              "kind": "pulse"
+            },
+            {
+              "name": "Supply locker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Study suite: supply cupboards, reading bench and side worktable",
+              "kind": "pulse"
+            },
+            {
+              "name": "Reading and study edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Reading and study edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            }
+          ],
+          "triangles": 5356
+        },
+        {
+          "id": "c",
+          "name": "Common room",
+          "design": "Walnut recital room",
+          "palette": [
+            "#623e35",
+            "#e6c9a0",
+            "#292c2d",
+            "#aa865d"
+          ],
+          "floor": "#a47a55",
+          "wall": "#cbb397",
+          "pattern": "parquet",
+          "roundness": 0.08,
+          "turnDegrees": 15,
+          "position": [
+            2.7230852026811685,
+            0.132,
+            -4.5432381001559
+          ],
+          "scale": 0.7416370486807894,
+          "bounds": {
+            "min": [
+              -0.6965000111418931,
+              0.132,
+              -9.718668349625943
+            ],
+            "max": [
+              5.563166745713398,
+              3.2913739971274123,
+              0.40750125181500163
+            ]
+          },
+          "occupiedFraction": [
+            0.8900000128230272,
+            0.8334295968264153
+          ],
+          "objects": [
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Grand piano",
+              "kind": "piano"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Music stand, acoustic panels and metronome",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Music room: score archive, instrument case and audience seating",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            }
+          ],
+          "triangles": 7128
+        },
+        {
+          "id": "d",
+          "name": "Conversation",
+          "design": "Olive conversation salon",
+          "palette": [
+            "#6a7351",
+            "#d7bf8a",
+            "#b8b18a",
+            "#3c4537"
+          ],
+          "floor": "#ac9673",
+          "wall": "#c1c8aa",
+          "pattern": "boards",
+          "roundness": 0.13,
+          "turnDegrees": 90,
+          "position": [
+            -8.201109700229043,
+            0.132,
+            9.494093304626764
+          ],
+          "scale": 0.6012905909299397,
+          "bounds": {
+            "min": [
+              -16.316849644903993,
+              0.132,
+              7.14905994265646
+            ],
+            "max": [
+              0.016849690778826698,
+              1.9839749741893828,
+              11.839126666597068
+            ]
+          },
+          "occupiedFraction": [
+            0.9608058432754599,
+            0.7444550355461281
+          ],
+          "objects": [
+            {
+              "name": "Lounge sofa",
+              "kind": "sofa"
+            },
+            {
+              "name": "Lounge sofa",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Conversation sofas and coffee table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Language library, wall clock and coat stand",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Conversation suite: refreshment cabinet and extra lounge chairs",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Work table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Work table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 6706
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "name": "Projects",
+      "design": "Midnight maker studio",
+      "objects": 62,
+      "rooms": [
+        {
+          "id": "a",
+          "name": "Main workshop",
+          "design": "Cobalt maker island",
+          "palette": [
+            "#b0c8d4",
+            "#275a83",
+            "#63c4cc",
+            "#24313f"
+          ],
+          "floor": "#5d727d",
+          "wall": "#829cac",
+          "pattern": "resin",
+          "roundness": 0.035,
+          "turnDegrees": 90,
+          "position": [
+            -10.210807799145297,
+            0.132,
+            -5.216666666666667
+          ],
+          "scale": 1.194273504273504,
+          "bounds": {
+            "min": [
+              -15.990734112398844,
+              0.132,
+              -9.874333447228128
+            ],
+            "max": [
+              -4.559265978716987,
+              5.219605401552639,
+              -0.5589998861052043
+            ]
+          },
+          "occupiedFraction": [
+            0.8965857359750476,
+            0.7482195631424035
+          ],
+          "objects": [
+            {
+              "name": "Monitor 1",
+              "kind": "display"
+            },
+            {
+              "name": "Monitor 2",
+              "kind": "display"
+            },
+            {
+              "name": "Desk chair",
+              "kind": "seat"
+            },
+            {
+              "name": "Work desk",
+              "kind": "pulse"
+            },
+            {
+              "name": "Workstation tower",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Task lamp",
+              "kind": "display"
+            },
+            {
+              "name": "Maker pegboard, hand tools and wearable prototype station",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Maker workshop: prototype assembly bench, component archive and review seat",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 3254
+        },
+        {
+          "id": "b",
+          "name": "Systems lab",
+          "design": "Violet systems lab",
+          "palette": [
+            "#65577e",
+            "#75a8bd",
+            "#c3c1d0",
+            "#252d3d"
+          ],
+          "floor": "#555e71",
+          "wall": "#9496aa",
+          "pattern": "raised-panels",
+          "roundness": 0.025,
+          "turnDegrees": 180,
+          "position": [
+            3.0749999999999997,
+            0.132,
+            -4.629775692582664
+          ],
+          "scale": 1.2487042001787305,
+          "bounds": {
+            "min": [
+              -2.7024808515066305,
+              0.132,
+              -9.874333095161907
+            ],
+            "max": [
+              8.85248085150663,
+              5.451480178567102,
+              -0.559000011908573
+            ]
+          },
+          "occupiedFraction": [
+            0.9062715061186871,
+            0.748219524759304
+          ],
+          "objects": [
+            {
+              "name": "Server rack",
+              "kind": "pulse"
+            },
+            {
+              "name": "Server rack",
+              "kind": "pulse"
+            },
+            {
+              "name": "Monitor",
+              "kind": "display"
+            },
+            {
+              "name": "Desk chair",
+              "kind": "seat"
+            },
+            {
+              "name": "Work desk",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Patch panel, switch ports and cable management",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Desktop terminal",
+              "kind": "display"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Systems lab: backup equipment bank, spare-parts cart and service console",
+              "kind": "pulse"
+            },
+            {
+              "name": "Prototype preparation edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Prototype preparation edge task light",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 5074
+        },
+        {
+          "id": "c",
+          "name": "Simulation lab",
+          "design": "Petrol simulator studio",
+          "palette": [
+            "#2f6c70",
+            "#253840",
+            "#acbfc0",
+            "#db9f61"
+          ],
+          "floor": "#4a666b",
+          "wall": "#8caaa9",
+          "pattern": "resin",
+          "roundness": 0.05,
+          "turnDegrees": -90,
+          "position": [
+            -8.083578615384615,
+            0.132,
+            9.804
+          ],
+          "scale": 0.6038307692307692,
+          "bounds": {
+            "min": [
+              -16.61667201569425,
+              0.132,
+              7.449059942414211
+            ],
+            "max": [
+              0.31667185445403945,
+              1.7563048037822426,
+              12.15894005758579
+            ]
+          },
+          "occupiedFraction": [
+            0.9621218108038802,
+            0.7476000182812031
+          ],
+          "objects": [
+            {
+              "name": "Reference shelves",
+              "kind": "pulse"
+            },
+            {
+              "name": "Monitor",
+              "kind": "display"
+            },
+            {
+              "name": "Desk chair",
+              "kind": "seat"
+            },
+            {
+              "name": "Work desk",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Simulator steering wheel, pedals and telemetry tablet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Desktop terminal",
+              "kind": "display"
+            },
+            {
+              "name": "Supply locker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Simulation lab: telemetry console, sample archive and observer bench",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Work table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Work table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 4146
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "name": "Experience",
+      "design": "Industrial test workshop",
+      "objects": 64,
+      "rooms": [
+        {
+          "id": "a",
+          "name": "Electronics lab",
+          "design": "Safety yellow electronics bay",
+          "palette": [
+            "#bfc4b9",
+            "#d3ac43",
+            "#698e7e",
+            "#343e40"
+          ],
+          "floor": "#898e85",
+          "wall": "#c3c7b8",
+          "pattern": "concrete",
+          "roundness": 0,
+          "turnDegrees": 90,
+          "position": [
+            -11.374347222222221,
+            0.132,
+            -5.222777777777778
+          ],
+          "scale": 1.2111111111111112,
+          "bounds": {
+            "min": [
+              -16.329305486255222,
+              0.132,
+              -9.946111226611668
+            ],
+            "max": [
+              -6.6706944906446655,
+              5.291333610534668,
+              -0.4994443289438877
+            ]
+          },
+          "occupiedFraction": [
+            0.88611110051473,
+            0.740915050797473
+          ],
+          "objects": [
+            {
+              "name": "Desk chair",
+              "kind": "seat"
+            },
+            {
+              "name": "Electronics workbench",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Component drawers, multimeter and solder reel",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Supply locker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Electronics suite: assembly workbench, component stock and test seating",
+              "kind": "pulse"
+            },
+            {
+              "name": "Component preparation edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Component preparation edge task light",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 4158
+        },
+        {
+          "id": "b",
+          "name": "Network room",
+          "design": "Graphite network bay",
+          "palette": [
+            "#4c6f79",
+            "#d29a42",
+            "#b2c3c4",
+            "#293b42"
+          ],
+          "floor": "#7a888b",
+          "wall": "#b8c6c5",
+          "pattern": "raised-panels",
+          "roundness": 0,
+          "turnDegrees": 90,
+          "position": [
+            0.23313888888888906,
+            0.132,
+            -5.222777777777778
+          ],
+          "scale": 1.2111111111111112,
+          "bounds": {
+            "min": [
+              -4.829305347654555,
+              0.132,
+              -9.946111226611668
+            ],
+            "max": [
+              4.8293056479560015,
+              5.291333610534668,
+              -0.4994443289438877
+            ]
+          },
+          "occupiedFraction": [
+            0.8861111005147299,
+            0.740915050797473
+          ],
+          "objects": [
+            {
+              "name": "Server rack",
+              "kind": "pulse"
+            },
+            {
+              "name": "Server rack",
+              "kind": "pulse"
+            },
+            {
+              "name": "Infrastructure racks with vents and cable runs",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Network cable tray, service labels and patch terminal",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Desktop terminal",
+              "kind": "display"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Desktop terminal",
+              "kind": "display"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Network operations suite: UPS bank and paired maintenance desks",
+              "kind": "pulse"
+            },
+            {
+              "name": "Component preparation edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Component preparation edge task light",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 4170
+        },
+        {
+          "id": "c",
+          "name": "Diagnostic bay",
+          "design": "Copper diagnostics bay",
+          "palette": [
+            "#c6bba4",
+            "#b16d4d",
+            "#84a393",
+            "#3f4240"
+          ],
+          "floor": "#929489",
+          "wall": "#c7c3b5",
+          "pattern": "concrete",
+          "roundness": 0.015,
+          "turnDegrees": -90,
+          "position": [
+            11.427333333333333,
+            0.132,
+            -5.222777777777778
+          ],
+          "scale": 1.2111111111111112,
+          "bounds": {
+            "min": [
+              6.670694432894388,
+              0.132,
+              -9.946111226611668
+            ],
+            "max": [
+              16.329305717256336,
+              5.291333610534668,
+              -0.4994443289438877
+            ]
+          },
+          "occupiedFraction": [
+            0.8861111270056833,
+            0.740915050797473
+          ],
+          "objects": [
+            {
+              "name": "Desk chair",
+              "kind": "seat"
+            },
+            {
+              "name": "Electronics workbench",
+              "kind": "pulse"
+            },
+            {
+              "name": "Reference shelves",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Diagnostic trolley, coiled test leads and inspection clipboard",
+              "kind": "pulse"
+            },
+            {
+              "name": "Supply locker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Desktop terminal",
+              "kind": "display"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Diagnostic suite: instrument lockers, calibration worktable and technician seat",
+              "kind": "pulse"
+            },
+            {
+              "name": "Component preparation edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Component preparation edge task light",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 5400
+        },
+        {
+          "id": "d",
+          "name": "Inspection bay",
+          "design": "Crimson race workshop",
+          "palette": [
+            "#caad58",
+            "#a7463b",
+            "#d1c6b0",
+            "#30363a"
+          ],
+          "floor": "#8b8d83",
+          "wall": "#c6c6b7",
+          "pattern": "concrete",
+          "roundness": 0,
+          "turnDegrees": 90,
+          "position": [
+            -8.331149230769231,
+            0.132,
+            10.104
+          ],
+          "scale": 0.6038307692307693,
+          "bounds": {
+            "min": [
+              -16.916671613226672,
+              0.132,
+              7.74905994241421
+            ],
+            "max": [
+              0.6166718435698293,
+              1.5449639481727893,
+              12.458940057585789
+            ]
+          },
+          "occupiedFraction": [
+            0.9633705196042034,
+            0.747600018281203
+          ],
+          "objects": [
+            {
+              "name": "Formula inspection model",
+              "kind": "display"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Pit tools and inspection stand",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Supply locker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Inspection workshop: rear repair bench, wheel rack and safety stores",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Work table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Work table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 3798
+        }
+      ]
+    },
+    {
+      "id": "resume",
+      "name": "Résumé",
+      "design": "Burgundy reference library",
+      "objects": 80,
+      "rooms": [
+        {
+          "id": "a",
+          "name": "Academic archive",
+          "design": "Burgundy document gallery",
+          "palette": [
+            "#79433f",
+            "#e5d5b4",
+            "#453a32",
+            "#b3955e"
+          ],
+          "floor": "#b59a71",
+          "wall": "#ddd0b4",
+          "pattern": "parquet",
+          "roundness": 0.045,
+          "turnDegrees": 90,
+          "position": [
+            -11.366777777777777,
+            0.132,
+            -5.222777777777778
+          ],
+          "scale": 1.2111111111111112,
+          "bounds": {
+            "min": [
+              -16.329305370754668,
+              0.132,
+              -9.946111226611668
+            ],
+            "max": [
+              -6.67069437514411,
+              5.291333610534668,
+              -0.4994443289438877
+            ]
+          },
+          "occupiedFraction": [
+            0.8861111005147302,
+            0.740915050797473
+          ],
+          "objects": [
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Document cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Academic display, mortarboard and brochure rack",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Supply locker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Academic archive suite: diploma storage, reading desk and visitor chairs",
+              "kind": "pulse"
+            },
+            {
+              "name": "Document review edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Document review edge task light",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 2836
+        },
+        {
+          "id": "b",
+          "name": "Code library",
+          "design": "Mahogany book stacks",
+          "palette": [
+            "#633f32",
+            "#9d8761",
+            "#ceae7f",
+            "#3c342c"
+          ],
+          "floor": "#a3875e",
+          "wall": "#c8bb9e",
+          "pattern": "boards",
+          "roundness": 0.025,
+          "turnDegrees": 90,
+          "position": [
+            0.09688888888888898,
+            0.132,
+            -5.222777777777778
+          ],
+          "scale": 1.2111111111111112,
+          "bounds": {
+            "min": [
+              -4.829305694156224,
+              0.132,
+              -9.946111226611668
+            ],
+            "max": [
+              4.829305590205722,
+              5.291333610534668,
+              -0.4994443289438877
+            ]
+          },
+          "occupiedFraction": [
+            0.8861111270056831,
+            0.740915050797473
+          ],
+          "objects": [
+            {
+              "name": "Reference shelves",
+              "kind": "pulse"
+            },
+            {
+              "name": "Reference shelves",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Library catalogue drawers, shelf labels and book trolley",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Desktop terminal",
+              "kind": "display"
+            },
+            {
+              "name": "Code library: peripheral reference stacks and catalogue reading station",
+              "kind": "pulse"
+            },
+            {
+              "name": "Document review edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Document review edge task light",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 3776
+        },
+        {
+          "id": "c",
+          "name": "Technical reference",
+          "design": "Ink blue drafting library",
+          "palette": [
+            "#decc9e",
+            "#3d5364",
+            "#a9ad93",
+            "#3d3c36"
+          ],
+          "floor": "#b19b75",
+          "wall": "#d2ccb5",
+          "pattern": "parquet",
+          "roundness": 0.04,
+          "turnDegrees": -90,
+          "position": [
+            11.556013888888888,
+            0.13528154816654409,
+            -5.222777777777778
+          ],
+          "scale": 1.2111111111111112,
+          "bounds": {
+            "min": [
+              6.67069437514411,
+              0.132,
+              -9.946111226611668
+            ],
+            "max": [
+              16.329305659506055,
+              5.2946151587012125,
+              -0.4994443289438877
+            ]
+          },
+          "occupiedFraction": [
+            0.8861111270056831,
+            0.740915050797473
+          ],
+          "objects": [
+            {
+              "name": "Monitor",
+              "kind": "display"
+            },
+            {
+              "name": "Desk chair",
+              "kind": "seat"
+            },
+            {
+              "name": "Work desk",
+              "kind": "pulse"
+            },
+            {
+              "name": "Reference shelves",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Task lamp",
+              "kind": "display"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Technical drawing board, caliper and task lamp",
+              "kind": "pulse"
+            },
+            {
+              "name": "Desktop terminal",
+              "kind": "display"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Technical reference suite: drawing console, plan chest and review chair",
+              "kind": "pulse"
+            },
+            {
+              "name": "Document review edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Document review edge task light",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 4318
+        },
+        {
+          "id": "d",
+          "name": "Document room",
+          "design": "Ochre print atelier",
+          "palette": [
+            "#a37c40",
+            "#e4d0a8",
+            "#4d4034",
+            "#bd9477"
+          ],
+          "floor": "#baa27a",
+          "wall": "#ddd0b5",
+          "pattern": "boards",
+          "roundness": 0.06,
+          "turnDegrees": 180,
+          "position": [
+            -8.15,
+            0.132,
+            10.129557488372091
+          ],
+          "scale": 0.730213953488372,
+          "bounds": {
+            "min": [
+              -16.907825051205656,
+              0.132,
+              7.7490600069638615
+            ],
+            "max": [
+              0.6078250512056567,
+              2.4504292675062667,
+              12.458940041783176
+            ]
+          },
+          "occupiedFraction": [
+            0.962398357275347,
+            0.7476000055268753
+          ],
+          "objects": [
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Document cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Reference shelves",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Document scanner, printer and output paper trays",
+              "kind": "pulse"
+            },
+            {
+              "name": "Desktop terminal",
+              "kind": "display"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Document suite: scanning bench, collection trolley and reading seats",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Work table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Work table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 5150
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "name": "Contact",
+      "design": "Garden reception",
+      "objects": 75,
+      "rooms": [
+        {
+          "id": "a",
+          "name": "Correspondence",
+          "design": "Jade welcome desk",
+          "palette": [
+            "#407e70",
+            "#e1c9a3",
+            "#a8bf92",
+            "#354e43"
+          ],
+          "floor": "#d2bc96",
+          "wall": "#d3ddbc",
+          "pattern": "terrazzo",
+          "roundness": 0.16,
+          "turnDegrees": -90,
+          "position": [
+            -13.733996784188035,
+            0.132,
+            -6.128333333333333
+          ],
+          "scale": 1.3969957264957265,
+          "bounds": {
+            "min": [
+              -19.252169272688963,
+              0.132,
+              -11.57661679989456
+            ],
+            "max": [
+              -7.747831007089616,
+              6.083202114618741,
+              -0.6800498667721051
+            ]
+          },
+          "occupiedFraction": [
+            0.8918091678759184,
+            0.7646713637278917
+          ],
+          "objects": [
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Desk chair",
+              "kind": "seat"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Reception counter",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Reception terminal, desk bell and correspondence cubbies",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Supply locker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Correspondence suite: mail archive and paired waiting benches",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor conversation edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor conversation edge task light",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 3404
+        },
+        {
+          "id": "b",
+          "name": "Code exchange",
+          "design": "Lagoon connection bar",
+          "palette": [
+            "#d4c5a4",
+            "#347a86",
+            "#a3cfca",
+            "#354d59"
+          ],
+          "floor": "#b9c7b5",
+          "wall": "#c0d8cf",
+          "pattern": "large-tile",
+          "roundness": 0.09,
+          "turnDegrees": 90,
+          "position": [
+            0.21653433760683793,
+            0.132,
+            -6.128333333333333
+          ],
+          "scale": 1.3969957264957265,
+          "bounds": {
+            "min": [
+              -5.752169259366173,
+              0.132,
+              -11.57661679989456
+            ],
+            "max": [
+              5.7521693393029105,
+              6.083202114618741,
+              -0.6800498667721051
+            ]
+          },
+          "occupiedFraction": [
+            0.8918091936952777,
+            0.7646713637278917
+          ],
+          "objects": [
+            {
+              "name": "Monitor 1",
+              "kind": "display"
+            },
+            {
+              "name": "Monitor 2",
+              "kind": "display"
+            },
+            {
+              "name": "Desk chair",
+              "kind": "seat"
+            },
+            {
+              "name": "Work desk",
+              "kind": "pulse"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Task lamp",
+              "kind": "display"
+            },
+            {
+              "name": "Device charging station, desktop lamp and connected devices",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Supply locker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Desktop terminal",
+              "kind": "display"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Code exchange suite: device library, shared worktable and review bench",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor conversation edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor conversation edge task light",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 3512
+        },
+        {
+          "id": "c",
+          "name": "Connections",
+          "design": "Apricot tea garden",
+          "palette": [
+            "#b17652",
+            "#f0d2ab",
+            "#bac69a",
+            "#48573c"
+          ],
+          "floor": "#d8c5a0",
+          "wall": "#e1d6b8",
+          "pattern": "terrazzo",
+          "roundness": 0.22,
+          "turnDegrees": 90,
+          "position": [
+            13.646067482836354,
+            0.132,
+            -6.105413648207423
+          ],
+          "scale": 1.3911188841557496,
+          "bounds": {
+            "min": [
+              7.747727712440873,
+              0.132,
+              -11.530777429082281
+            ],
+            "max": [
+              19.252272234492153,
+              6.058166764905337,
+              -0.6800498673325652
+            ]
+          },
+          "occupiedFraction": [
+            0.8918251567481612,
+            0.7614545657368221
+          ],
+          "objects": [
+            {
+              "name": "Lounge sofa",
+              "kind": "sofa"
+            },
+            {
+              "name": "Lounge sofa",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Conversation lounge with coffee table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Tea service, side table and framed lounge artwork",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Connections lounge: hospitality credenza, tea cabinet and visitor armchairs",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor conversation edge task light",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor conversation edge task light",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 5666
+        },
+        {
+          "id": "d",
+          "name": "Coordinates",
+          "design": "Sage consultation nook",
+          "palette": [
+            "#7c9271",
+            "#ddc69c",
+            "#405446",
+            "#c4b28d"
+          ],
+          "floor": "#c3c7a4",
+          "wall": "#d3dfc4",
+          "pattern": "large-tile",
+          "roundness": 0.17,
+          "turnDegrees": -90,
+          "position": [
+            -9.402117115384616,
+            0.132,
+            12.26
+          ],
+          "scale": 0.9105384615384616,
+          "bounds": {
+            "min": [
+              -19.747362034427937,
+              0.132,
+              8.708899913164284
+            ],
+            "max": [
+              0.7473618954907941,
+              2.6815076488898355,
+              15.811100086835715
+            ]
+          },
+          "occupiedFraction": [
+            0.9532429734845921,
+            0.7476000182812033
+          ],
+          "objects": [
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Document cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Lounge sofa",
+              "kind": "sofa"
+            },
+            {
+              "name": "Potted plant",
+              "kind": "plant"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Clipboard",
+              "kind": "paper"
+            },
+            {
+              "name": "Globe consultation table, map stand and visitor notes",
+              "kind": "pulse"
+            },
+            {
+              "name": "Book collection",
+              "kind": "pulse"
+            },
+            {
+              "name": "Display shelving",
+              "kind": "pulse"
+            },
+            {
+              "name": "Supply locker",
+              "kind": "pulse"
+            },
+            {
+              "name": "Storage cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor seat",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Coordinates suite: map library, refreshment console and consultation seating",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Work table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Visitor bench",
+              "kind": "sofa"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Loose papers",
+              "kind": "paper"
+            },
+            {
+              "name": "Work table",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            },
+            {
+              "name": "Perimeter cabinet",
+              "kind": "pulse"
+            }
+          ],
+          "triangles": 5926
+        }
+      ]
+    }
+  ]
+}
