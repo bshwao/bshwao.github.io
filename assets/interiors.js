@@ -107,7 +107,7 @@ export function createInterior(section, content) {
         interact(p, monitors > 1 ? `Monitor ${i + 1}` : 'Monitor', 'display', () => {
           box(p, mx, 2.2, z - .3, 1.25, .8, .1, 'equipment');
           box(p, mx, 2.21, z - .235, 1.09, .64, .025, 'glass');
-          box(p, mx, 1.8, z - .3, .1, .35, .1, 'ink');
+          box(p, mx, 1.8, z - .3, .1, .35, .08, 'ink');
           box(p, mx, 1.67, z - .3, .55, .04, .3);
           for (let row = 0; row < 3; row++) box(p, mx - .17, 2.38 - row * .16, z - .215, .55 + row % 2 * .22, .025, .012, 'ink');
         });
@@ -143,6 +143,7 @@ export function createInterior(section, content) {
   function bookcase(p, x, z, width = 3.8, low = false) {
     interact(p, 'Reference shelves', 'pulse', () => {
       const height=low?1.32:3.6;
+      const bookSpacing=(width-.24)/8,bookScale=Math.min(1,bookSpacing*.82/.28);
       for (const dx of [-width / 2, width / 2]) box(p, x + dx, height/2, z, .12, height, .7, 'equipment');
       if(section.id==='about')for(let i=0;i<7;i++)box(p,x+(i-3)*width*.14,height/2,z-.34,.075,height,.08,'structure');
       else if(['projects','experience'].includes(section.id)){
@@ -153,10 +154,11 @@ export function createInterior(section, content) {
         box(p, x, y, z, width, .12, .7);
         if (y > height-.5) continue;
         for (let i = 0; i < 8; i++) {
-          const bx = x - width * .4 + i * width * .105;
+          // A book owns one shelf cell; narrow cases keep gaps between spines.
+          const bx = x + (i-3.5)*bookSpacing;
           const h = .7 + i % 2 * .14;
-          box(p, bx, y + .12 + h / 2, z, .16 + i % 3 * .06, h, .48, i % 3 ? 'structure' : 'equipment');
-          box(p, bx, y + .22 + h / 2, z + .245, .09, .035, .01, 'ink');
+          box(p, bx, y + .12 + h / 2, z, (.16 + i % 3 * .06)*bookScale, h, .48, i % 3 ? 'structure' : 'equipment');
+          box(p, bx, y + .22 + h / 2, z + .245, .09*bookScale, .035, .01, 'ink');
         }
       }
       if(section.id==='resume'&&!low)wire(p,[[x-width*.38,2.98,z+.39],[x,3.44,z+.39],[x+width*.38,2.98,z+.39]],'equipment',.045);
@@ -180,11 +182,12 @@ export function createInterior(section, content) {
   }
   function lounge(p) {
     if(section.id==='contact'){
-      sofa(p,-.7,-1.65);sofa(p,2.7,.7,-Math.PI/2);
+      sofa(p,-.1,-1.4);sofa(p,2.7,.7,-Math.PI/2);
     }else{sofa(p,-2.7,-.35,Math.PI/2);sofa(p,2.7,.5,-Math.PI/2);}
-    cylinder(p, 0, .8, 0, 1.15, .13); cylinder(p, 0, .4, 0, .18, .7, 'equipment');
-    paper(p, -.2, .89, -.1, .62, .8, -.2);
-    cylinder(p, .55, .95, .2, .12, .15, 'equipment');
+    const tableZ=section.id==='contact'?.6:0;
+    cylinder(p, 0, .8, tableZ, 1.15, .13); cylinder(p, 0, .4, tableZ, .18, .7, 'equipment');
+    paper(p, -.2, .89, tableZ-.1, .62, .8, -.2);
+    cylinder(p, .55, .95, tableZ+.2, .12, .15, 'equipment');
     plant(p, 3.2, -2.3);
   }
   function piano(p) {
@@ -260,20 +263,21 @@ export function createInterior(section, content) {
   }
   function car(p) {
     interact(p, 'Formula inspection model', 'display', () => {
-      box(p, 0, .11, 0, 4.6, .18, 7, 'glass');
-      box(p, 0, .7, 0, 1.4, .7, 4.6, 'equipment');
-      box(p, 0, 1.25, .1, 1.2, .5, 1.35);
-      box(p, 0, .55, -2.6, 3.3, .12, .7, 'ink');
-      box(p, 0, 1.25, 2.6, 3.5, .12, .7, 'equipment');
+      box(p, 0, .11, 0, 4.4, .18, 6.2, 'glass');
+      const assembly = new T.Group(); assembly.position.y = .2; p.add(assembly);
+      box(assembly, 0, .7, 0, 1.4, .7, 4.6, 'equipment');
+      box(assembly, 0, 1.25, .1, 1.2, .5, 1.35);
+      box(assembly, 0, .55, -2.6, 3.3, .12, .7, 'ink');
+      box(assembly, 0, 1.25, 2.6, 3.5, .12, .7, 'equipment');
       for (const x of [-1.3, 1.3]) for (const z of [-1.75, 1.75]) {
-        const wheel = object(p, new T.CylinderGeometry(.6, .6, .5, 18), x, .6, z, 'ink'); wheel.rotation.z = Math.PI / 2;
+        const wheel = object(assembly, new T.CylinderGeometry(.6, .6, .5, 20), x, .6, z, 'ink'); wheel.rotation.z = Math.PI / 2;
         // Attached wheel hardware shares the chassis animation and pivot.
-        const hub = cylinder(p, x, .6, z, .26, .54); hub.rotation.z = Math.PI / 2;
-        box(p, x / 2, .55, z, 1.3, .09, .09);
-        wire(p, [[x * .35, .8, z - .25], [x, .5, z]], 'equipment', .035);
+        const hub = cylinder(assembly, x, .6, z, .26, .54); hub.rotation.z = Math.PI / 2;
+        wire(assembly, [[x * .35, .8, z - .25], [x, .5, z]], 'equipment', .035);
       }
-      for (const z of [-1.2, -.8, -.4]) box(p, 0, 1.08, z, .8, .04, .035, 'ink');
-      wire(p, [[-.42, 1.18, .7], [-.65, 1.8, .65], [.65, 1.8, .65], [.42, 1.18, .7]], 'ink', .055);
+      for (const z of [-1.75, 1.75]) box(assembly, 0, .55, z, 2.6, .09, .09);
+      for (const z of [-1.2, -.8, -.4]) box(assembly, 0, 1.08, z, .8, .04, .035, 'ink');
+      wire(assembly, [[-.42, 1.18, .7], [-.65, 1.8, .65], [.65, 1.8, .65], [.42, 1.18, .7]], 'ink', .055);
     });
   }
   function documentStand(p, x = 0, z = 0, withPlant = true) {
@@ -351,36 +355,47 @@ export function createInterior(section, content) {
     zone.updateMatrixWorld(true);
     const inverse = zone.matrixWorld.clone().invert();
     const sources = []; zone.traverse(node => { if (node.isMesh) sources.push(node); });
-    // Fixed paneled walls and their trim form one exposed skin. Moving props
-    // retain their complete geometry so animation can never expose a hole.
-    const fixed = new Set(sources.filter(mesh => mesh.geometry === unitBox && !mesh.userData.interaction));
-    const backdrop = buildBoxSurfaces([...fixed].map(mesh => ({ matrix: inverse.clone().multiply(mesh.matrixWorld), surface: mesh.userData.surface })));
+    // Joined panels share one exposed skin only when they always move together.
+    // Separate props and piano keys retain their own complete moving surfaces.
+    const boxGroups = new Map();
+    for (const mesh of sources) if (mesh.geometry === unitBox) {
+      const target = mesh.userData.interaction || null, key = mesh.userData.pianoKey;
+      if (!boxGroups.has(target)) boxGroups.set(target, new Map());
+      const keys = boxGroups.get(target);
+      if (!keys.has(key)) keys.set(key, []);
+      keys.get(key).push({ matrix: inverse.clone().multiply(mesh.matrixWorld), surface: mesh.userData.surface, outline: mesh.userData.outline });
+    }
     const buckets = new Map(), edgeParts = [], edgeRanges = [];
     let edgeOffset = 0;
+    function appendSurface(surface, geometry, target, key) {
+      if (!buckets.has(surface)) buckets.set(surface, { geometries: [], ranges: [], offset: 0 });
+      const bucket = buckets.get(surface), count = geometry.attributes.position.count;
+      if (target && count) bucket.ranges.push({ target, start: bucket.offset, count, key });
+      bucket.geometries.push(geometry); bucket.offset += count;
+    }
+    function appendOutline(geometry, target, key) {
+      const count = geometry.attributes.position.count;
+      if (target && count) edgeRanges.push({ target, start: edgeOffset, count, key });
+      edgeParts.push(geometry); edgeOffset += count;
+    }
+    for (const [target, keys] of boxGroups) for (const [key, boxes] of keys) {
+      const skin = buildBoxSurfaces(boxes);
+      for (const [surface, geometry] of skin.surfaces) appendSurface(surface, geometry, target, key);
+      appendOutline(skin.outline, target, key);
+    }
     for (const mesh of sources) {
-      if (fixed.has(mesh)) continue;
+      if (mesh.geometry === unitBox) continue;
       const transform = inverse.clone().multiply(mesh.matrixWorld);
       const geometry = (mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry.clone()).applyMatrix4(transform);
-      const surface = mesh.userData.surface;
-      if (!buckets.has(surface)) buckets.set(surface, { geometries: [], ranges: [], offset: 0 });
-      const bucket = buckets.get(surface), target = mesh.userData.interaction;
-      const count = geometry.attributes.position.count;
-      if (target) bucket.ranges.push({ target, start: bucket.offset, count, key: mesh.userData.pianoKey });
-      bucket.geometries.push(geometry); bucket.offset += count;
+      const target = mesh.userData.interaction, key = mesh.userData.pianoKey;
+      appendSurface(mesh.userData.surface, geometry, target, key);
       if(mesh.userData.outline!==false){
         if (!edgeSources.has(mesh.geometry)) edgeSources.set(mesh.geometry, new T.EdgesGeometry(mesh.geometry, 25));
         const edges = edgeSources.get(mesh.geometry).clone().applyMatrix4(transform);
-        edgeParts.push(edges);
-        if (target) edgeRanges.push({ target, start: edgeOffset, count: edges.attributes.position.count, key: mesh.userData.pianoKey });
-        edgeOffset += edges.attributes.position.count;
+        appendOutline(edges, target, key);
       }
       if (!shared.has(mesh.geometry)) mesh.geometry.dispose();
     }
-    for (const [surface, geometry] of backdrop.surfaces) {
-      if (!buckets.has(surface)) buckets.set(surface, { geometries: [], ranges: [], offset: 0 });
-      const bucket = buckets.get(surface); bucket.geometries.push(geometry); bucket.offset += geometry.attributes.position.count;
-    }
-    edgeParts.push(backdrop.outline);
     zone.clear();
     const surfaces = [];
     function attachRanges(geometry, ranges) {

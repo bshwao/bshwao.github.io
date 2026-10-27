@@ -1,5 +1,11 @@
 # Release verification
 
+## Interior surfaces (local) — October 27, 2026
+
+All six floors and 23 rooms received a geometry and visual review. Furniture panels now share one exposed skin within their own interaction target, with independent piano-key groups preserved. Authored fixes remove cushion-edge gaps, overlapping books and rounded chair joins, plus collisions around the maker desk, simulator, network storage, diagnostic worktable, inspection car and Contact lounge. Overhead orbit navigation remains in place.
+
+All 208 source/server tests and 83 module/reference checks pass, along with the five DOM/camera integration modes. A broad scan of actual rendered buffers finds no remaining same-facing coplanar triangle overlaps within any of the 408 interaction targets. Native review covers 98 views: six floor overviews and four angles per room. Desktop and simulated portrait WebGL sweeps pass all 31 views and object responses in all 23 rooms, with peak draws of 82/78, zero idle frames, stable warmed resources and complete disposal. Production and QA browser logs contain no warnings or errors. Evidence and reproduction instructions are in `state/interior-surface-cleanup/`. Physical-device and Safari testing remain pending.
+
 ## Tower rubber-band motion (local) — October 26, 2026
 
 The outdoor tower toggle now adds anticipation, an overshoot and recoil when expanding, and a landing rebound when collapsing. A vertical clearance pass keeps adjacent sections from passing through one another. Camera and room flights retain the previous smooth motion, resize resumes without replaying the bounce, reduced motion completes immediately, and every section returns to its exact resting transform.

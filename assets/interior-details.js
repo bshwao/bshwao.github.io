@@ -51,7 +51,8 @@ export function furnishInteriorDetails(section,index,p,api) {
   function bench(x,z,w=1.8,facing=1) {
     interact(p, 'Visitor seat', 'sofa', () => {
       bar(x,.78,z,w,.14,.75,'equipment');
-      bar(x,.89,z,w-.16,.08,.61,'glass');
+      // Keep the cushion underside inside the beveled seat, including corners.
+      bar(x,.865,z,Math.min(w-.16,w*.78),.08,.55,'glass');
       bar(x,1.3,z+.34*facing,w,.72,.1,'structure');
       for(const side of [-1,1])bar(x+side*(w/2-.18),.39,z,.1,.7,.59,'equipment');
     });
@@ -61,7 +62,7 @@ export function furnishInteriorDetails(section,index,p,api) {
     bar(x,1.55,z,w,.16,d,'structure');
     for(const side of [-1,1])bar(x+side*(w/2-.12),.79,z,.1,1.43,d-.13,'equipment');
     bar(x,.3,z,w-.12,.1,d-.13,'glass');
-    bar(x,1.44,z-d/2+.04,w-.12,.1,.08,'equipment');
+    bar(x,1.44,z-d/2+.06,w-.12,.1,.08,'equipment');
   }
   function locker(x,z,w=1.2,h=2.6) {
     interact(p, 'Supply locker', 'pulse', () => {
@@ -179,12 +180,12 @@ export function furnishInteriorDetails(section,index,p,api) {
     });
   } else if(section==='projects') {
     if(index===0)add('Maker pegboard, hand tools and wearable prototype station',()=>{
-      bar(-2.95,2.15,back+.1,1.18,1.75,.08,'glass');
-      for(let i=0;i<4;i++)for(let j=0;j<3;j++)bar(-3.25+i*.22,1.9+j*.28,back+.16,.045,.045,.025,'ink');
-      for(const x of [-3.1,-2.65]){bar(x,2.25,back+.24,.055,.6,.07,'equipment');bar(x,2.53,back+.24,.24,.08,.07);}
+      bar(2.95,2.15,back+.1,1.18,1.75,.08,'glass');
+      for(let i=0;i<4;i++)for(let j=0;j<3;j++)bar(2.65+i*.22,1.9+j*.28,back+.16,.045,.045,.025,'ink');
+      for(const x of [2.65,3.1]){bar(x,2.25,back+.24,.055,.6,.07,'equipment');bar(x,2.53,back+.24,.24,.08,.07);}
       cabinet(2.85,.8,1.15,1.35,2);bar(2.85,1.48,.8,.7,.08,.65,'glass');
       ring(p,2.85,1.67,.8,.19,'ink',Math.PI/2);bar(2.85,1.86,.8,.25,.12,.27,'equipment');
-      bar(2.85,1.93,.8,.18,.025,.2,'glass');lamp(-1.65,-.5);
+      bar(2.85,1.93,.8,.18,.025,.2,'glass');lamp(-1.65,-.65);
     });
     if(index===1)add('Patch panel, switch ports and cable management',()=>{
       cabinet(2.85,-.8,1.3,1.5,2);
@@ -195,8 +196,8 @@ export function furnishInteriorDetails(section,index,p,api) {
     });
     if(index===2)add('Simulator steering wheel, pedals and telemetry tablet',()=>{
       ring(p,-.6,1.94,.85,.36,'ink',-.2);bar(-.6,1.94,.85,.5,.06,.05,'equipment');
-      bar(-.6,1.77,.85,.06,.34,.05,'equipment');bar(-.6,.12,1.15,.8,.1,.6,'equipment');
-      for(const x of [-.8,-.4]){const pedal=bar(x,.26,1.15,.22,.07,.4,'glass');pedal.rotation.x=-.45;}
+      bar(-.6,1.77,.85,.06,.34,.05,'equipment');bar(-.6,.12,.85,.8,.1,.6,'equipment');
+      for(const x of [-.8,-.4]){const pedal=bar(x,.26,.85,.22,.07,.4,'glass');pedal.rotation.x=-.45;}
       cabinet(2.95,-.5,1.0,1.35,2);clipboard(2.95,1.48,-.5);
       wire(p,[[-1.1,.55,-2.389],[-.8,.8,-2.389],[-.3,.55,-2.389],[.2,.95,-2.389],[1.1,.7,-2.389]],'ink',.018);
     });
@@ -211,12 +212,12 @@ export function furnishInteriorDetails(section,index,p,api) {
       bar(0,3.65,-1.0,4.7,.1,.4,'equipment');
       for(const x of [-2.5,2.5])bar(x,1.8,-1,.065,3.6,.065);
       for(const x of [-1.6,1.6])for(let j=0;j<3;j++)bar(x,2.9-j*.7,.77,.32,.12,.02,'glass');
-      cabinet(3,.9,.9,1.2,3);clipboard(3,1.33,.9);
+      cabinet(3.55,.9,.9,1.2,3);clipboard(3.55,1.33,.9);
     });
     if(index===2)add('Diagnostic trolley, coiled test leads and inspection clipboard',()=>{
       cabinet(-2.95,1.3,1.05,1.3,3);clipboard(-2.95,1.43,1.3);
       ring(p,2.85,1.77,-.25,.24,'ink',Math.PI/2);
-      wire(p,[[2.85,1.74,-.1],[3.3,1.5,.2],[3.25,.35,.5]],'ink',.025);
+      wire(p,[[2.85,1.78,-.1],[3.2,1.8,.1],[3.5,1.78,.4],[3.5,1.2,.5],[3.45,.35,.5]],'ink',.025);
     });
     if(index===3)add('Pit tools and inspection stand',()=>{
       cabinet(-3.05,0,.85,1.25,3);clipboard(-3.05,1.38,0);
@@ -257,8 +258,8 @@ export function furnishInteriorDetails(section,index,p,api) {
       wire(p,[[-3.2,1.37,-.5],[-2.9,1.35,-.8],[-2.5,1.37,-.5]],'ink',.015);lamp(-1.65,-.5);
     });
     if(index===2)add('Tea service, side table and framed lounge artwork',()=>{
-      bar(0,.92,0,.75,.06,.55,'equipment');
-      for(const x of [-.22,.22]){cylinder(p,x,1.04,0,.09,.18,'structure');ring(p,x+.1,1.06,0,.055,'ink');}
+      bar(0,.92,.6,.75,.06,.55,'equipment');
+      for(const x of [-.22,.22]){cylinder(p,x,1.04,.6,.09,.18,'structure');ring(p,x+.1,1.06,.6,.055,'ink');}
       cylinder(p,-3.2,.9,2.5,.32,1.7,'equipment');cylinder(p,-3.2,1.8,2.5,.55,.1,'structure');
       books(-2.9,1.43,back+.35,4);bar(-2.9,1.4,back+.35,1.3,.1,.65,'structure');
     });
@@ -356,8 +357,8 @@ export function furnishInteriorDetails(section,index,p,api) {
       seat(-2.85,2.75);
     });
     if(index===3)add('Inspection workshop: rear repair bench, wheel rack and safety stores',()=>{
-      workbench(0,-3.6,4,.6);clipboard(-.8,1.67,-3.6);
-      for(const x of [.5,1.3])bar(x,1.76,-3.6,.55,.25,.4,'equipment');
+      workbench(0,-3.5,4,.4);clipboard(-.8,1.67,-3.5);
+      for(const x of [.5,1.3])bar(x,1.76,-3.5,.55,.25,.4,'equipment');
       bar(-3.05,.15,-2.4,1.1,.16,1.9,'structure');
       for(const z of [-2.9,-1.95]) {
         const tire=cylinder(p,-3.05,.65,z,.43,.33,'ink');tire.rotation.z=Math.PI/2;
@@ -408,10 +409,10 @@ export function furnishInteriorDetails(section,index,p,api) {
       books(-.65,1.09,-2.65,5);
       cylinder(p,1.1,1.35,-2.65,.19,.48,'equipment');
       ring(p,1.32,1.35,-2.65,.14,'ink');
-      seat(-1.65,2.65);seat(1.65,2.65);
+      seat(-1.65,2.65);seat(1.4,2.65);
     });
     if(index===3)add('Coordinates suite: map library, refreshment console and consultation seating',()=>{
-      shelving(-3,-2.6,1.2,2.8);locker(2.9,-3,1.2,2.55);
+      shelving(-3,-2.6,1.2,2.8);locker(2.9,-2.65,1.2,2.55);
       cabinet(-2.95,-.3,1.05,1.2,2);
       cylinder(p,-2.95,1.44,-.3,.14,.29,'glass');
       seat(-2.9,1.35);

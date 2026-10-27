@@ -39,7 +39,7 @@ export function furnishPenthouse(index, p, api) {
       box(g,0,.45,0,1.5,.4,1.35,'equipment');
       box(g,0,.73,-.04,1.24,.16,1.1,'glass');
       box(g,0,1.09,.58,1.5,.88,.16,'structure');
-      for(const side of [-1,1])box(g,side*.67,.88,.02,.16,.4,1.2,'structure');
+      for(const side of [-1,1])box(g,side*.67,.88,-.05,.16,.4,1.06,'structure');
       for(const dx of [-.52,.52])for(const dz of [-.43,.43])cylinder(g,dx,.12,dz,.055,.24,'ink');
     });
   }

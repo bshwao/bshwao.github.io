@@ -1,0 +1,138 @@
+{
+  "command": "node state/interior-surface-cleanup/audit-flat-faces.mjs",
+  "method": {
+    "geometry": "Actual rendered batched position/normal buffers, grouped by interaction target across all six floors.",
+    "normals": "Triangles whose three vertex normals agree within dot-product .999999; same-facing planes quantized to 1e-5.",
+    "overlap": "Independent 2D triangle clipping; positive intersection area greater than 1e-5 local square units.",
+    "exclusions": "No scene-ray occlusion filter. Separate objects are not unioned or compared; this scan does not reject intentional physical intersections of plant leaves, wires, or curved components."
+  },
+  "postBoxUnionBeforeRoundedFixes": {
+    "targets": 408,
+    "affectedTargets": 4,
+    "sameFacingOverlapPairs": 38,
+    "summedPairOverlapArea": 0.11214,
+    "residuals": [
+      {
+        "floor": "penthouse",
+        "room": 2,
+        "name": "Listening chair",
+        "pairs": 6,
+        "area": 0.04036
+      },
+      {
+        "floor": "penthouse",
+        "room": 3,
+        "name": "Window lounge chair",
+        "pairs": 6,
+        "area": 0.02178
+      },
+      {
+        "floor": "penthouse",
+        "room": 3,
+        "name": "Second lounge chair",
+        "pairs": 6,
+        "area": 0.02136
+      },
+      {
+        "floor": "experience",
+        "room": 2,
+        "name": "Diagnostic suite: instrument lockers, calibration worktable and technician seat",
+        "pairs": 20,
+        "area": 0.02864
+      }
+    ],
+    "interpretation": "In-memory provenance tagging identified every residual as box-union panels against rounded ExtrudeGeometry. Target-only rays confirmed real exterior object faces. Scene-wall occlusion was not used to dismiss them.",
+    "fixes": [
+      "Penthouse cushionChair arms preserve their front edge -.58 while ending at z=.48; rounded backs begin at .50, leaving .02 separation.",
+      "Workbench rear aprons move .02 inward from the rounded tabletop back plane, removing the shared exposed plane."
+    ]
+  },
+  "final": {
+    "targets": 408,
+    "affectedTargets": 0,
+    "sameFacingOverlapPairs": 0,
+    "floors": [
+      {
+        "floor": "penthouse",
+        "targets": 50,
+        "affectedTargets": 0,
+        "sameFacingOverlapPairs": 0,
+        "conflicts": []
+      },
+      {
+        "floor": "about",
+        "targets": 77,
+        "affectedTargets": 0,
+        "sameFacingOverlapPairs": 0,
+        "conflicts": []
+      },
+      {
+        "floor": "projects",
+        "targets": 62,
+        "affectedTargets": 0,
+        "sameFacingOverlapPairs": 0,
+        "conflicts": []
+      },
+      {
+        "floor": "experience",
+        "targets": 64,
+        "affectedTargets": 0,
+        "sameFacingOverlapPairs": 0,
+        "conflicts": []
+      },
+      {
+        "floor": "resume",
+        "targets": 80,
+        "affectedTargets": 0,
+        "sameFacingOverlapPairs": 0,
+        "conflicts": []
+      },
+      {
+        "floor": "contact",
+        "targets": 75,
+        "affectedTargets": 0,
+        "sameFacingOverlapPairs": 0,
+        "conflicts": []
+      }
+    ]
+  },
+  "piano": {
+    "groups": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "solidKeyRanges": 36,
+    "outlineKeyRanges": 21,
+    "allGroupsHaveSolidAndOutline": true,
+    "maxKeyDeltaError": 5.8410542274484056e-8,
+    "maxBodyMovement": 0,
+    "maxRestoreError": 0
+  },
+  "sourceSha256": {
+    "assets/interiors.js": "59bdd23824bda5e93c95df055d011d42f45b5410f6a3bfd148b7a22592d168bd",
+    "assets/interior-details.js": "c4ff9277c798f1942861c171e38d8caff34f1092b2c5ed6a38a180e9f0c82699",
+    "assets/penthouse-details.js": "a46e116db2ff3959c84ca8bf2667b06ec64a17d62d476ea6e94ed126b47e95d4",
+    "assets/surface-geometry.js": "658590b7c45440f2fe4893fa21a16e8981d0fbe5ab349b90d14b7cc6d0219ee9",
+    "assets/furniture-shapes.js": "dcab3145453a5f6a1b1411c3222c39f3550bb096e1a4316617c8baff97e35671",
+    "scripts/interior-overlap.test.mjs": "3164280c3f6ac2114060513ac45033ea5cd17f23b60cf5d55fa3c0e395038a5e"
+  }
+}

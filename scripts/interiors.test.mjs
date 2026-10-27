@@ -101,16 +101,24 @@ test('inspection car tires and brake hubs remain concentric through animation an
   const bounds = (part, rest = false) => new T.Box3().setFromArray(rest ? part.rest
     : part.geometry.attributes.position.array.subarray(part.start * 3, (part.start + part.count) * 3));
   const center = (part, rest = false) => bounds(part, rest).getCenter(new T.Vector3());
+  const plinthGeometry = interior.rooms[car.roomIndex].group.children.find(mesh => mesh.userData.surface === 'glass').geometry;
+  const plinth = car.parts.find(part => part.normals && part.geometry === plinthGeometry);
+  assert.ok(plinth, 'The car retains its solid inspection plinth');
+  const plinthBounds = bounds(plinth, true), restCenter = center(plinth, true);
+  const face = Array.from({ length: plinth.count }, (_, i) => i).find(i => Math.abs(plinth.normals[i * 3 + 1]) < .5);
+  const restNormal = new T.Vector3().fromArray(plinth.normals, face * 3);
+  const triangle = new T.Triangle(), undoPlinth = new T.Matrix4();
   const pairs = [];
   for (const x of [-1.3, 1.3]) for (const z of [-1.75, 1.75]) {
     // This side-wing room faces the opposite direction after furnishing.
     const turn=interiorRoomDesign('experience',3).turn+Math.PI;
-    const axle = new T.Vector3(x,.6,z).applyAxisAngle(new T.Vector3(0,1,0),turn);
+    const axle = new T.Vector3(x,.8,z).applyAxisAngle(new T.Vector3(0,1,0),turn);
     const atAxle = roomParts.filter(part => center(part, true).distanceTo(axle) < tolerance);
     const axis=Math.abs(Math.cos(turn))>.5?'x':'z';
     const tire = atAxle.find(part => Math.abs(bounds(part, true).getSize(new T.Vector3())[axis] - .5) < tolerance);
     const hub = atAxle.find(part => Math.abs(bounds(part, true).getSize(new T.Vector3())[axis] - .54) < tolerance);
     assert.ok(tire && hub, 'Each of the four wheels has its visible tire and brake hub');
+    assert.ok(Math.abs(bounds(tire, true).min.y - plinthBounds.max.y) < tolerance, 'Tires rest on the actual inspection plinth instead of penetrating it');
     assert.ok(tire.target === car, 'The tire belongs to the car animation');
     assert.ok(hub.target === car, 'The hub shares the car animation and pivot');
     pairs.push({ tire, hub });
@@ -121,13 +129,27 @@ test('inspection car tires and brake hubs remain concentric through animation an
   for (const time of [80, 150, 300, 450, 600, 780, 920, 1000, 1150, 1450]) {
     if (time === 600) controls.activate(car, time);
     controls.update(time);
+    const normal = new T.Vector3().fromBufferAttribute(plinth.geometry.attributes.normal, plinth.start + face);
+    const angle = Math.atan2(normal.x, normal.z) - Math.atan2(restNormal.x, restNormal.z);
+    const currentCenter = center(plinth);
+    undoPlinth.makeTranslation(restCenter.x, restCenter.y, restCenter.z)
+      .multiply(new T.Matrix4().makeRotationY(-angle))
+      .multiply(new T.Matrix4().makeTranslation(-currentCenter.x, -currentCenter.y, -currentCenter.z));
     for (const { tire, hub } of pairs) {
       assert.ok(center(tire).distanceTo(center(hub)) < tolerance, 'Tire and hub centers stay aligned throughout the turn');
       moved ||= center(tire).distanceTo(center(tire, true)) > .01;
     }
-    for (const part of stationary) assert.deepEqual(
-      part.geometry.attributes.position.array.subarray(part.start * 3, (part.start + part.count) * 3),
-      part.rest, 'Nearby pit equipment and spare wheels stay fixed');
+    for (const part of stationary) {
+      const positions = part.geometry.attributes.position;
+      assert.deepEqual(positions.array.subarray(part.start * 3, (part.start + part.count) * 3),
+        part.rest, 'Nearby pit equipment and spare wheels stay fixed');
+      for (let vertex = part.start; vertex < part.start + part.count; vertex += 3) {
+        triangle.a.fromBufferAttribute(positions, vertex).applyMatrix4(undoPlinth);
+        triangle.b.fromBufferAttribute(positions, vertex + 1).applyMatrix4(undoPlinth);
+        triangle.c.fromBufferAttribute(positions, vertex + 2).applyMatrix4(undoPlinth);
+        assert.ok(!plinthBounds.intersectsTriangle(triangle), `${part.target.name}: pit equipment stays clear of the moving plinth`);
+      }
+    }
   }
   assert.ok(moved, 'The regression exercises spatial motion');
   controls.setReducedMotion(true); controls.update(1480);
