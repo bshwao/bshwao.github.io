@@ -1,0 +1,51 @@
+{
+  "checkedOn": "2026-10-28",
+  "method": "Connected GitHub repository metadata",
+  "repositories": [
+    {
+      "url": "https://github.com/ric-e/flowst8",
+      "name": "ric-e/flowst8",
+      "public": true,
+      "archived": false,
+      "disabled": false,
+      "defaultBranch": "main",
+      "description": "Hack the Hill III Submission"
+    },
+    {
+      "url": "https://github.com/bshwao/Test-Shell",
+      "name": "bshwao/Test-Shell",
+      "public": true,
+      "archived": false,
+      "disabled": false,
+      "defaultBranch": "main",
+      "description": "A custom Unix shell written in C, supporting command execution, process management, I/O redirection, piping, built-in commands, and robust error handling using POSIX system calls."
+    },
+    {
+      "url": "https://github.com/bshwao/Poltergeist",
+      "name": "bshwao/Poltergeist",
+      "public": true,
+      "archived": false,
+      "disabled": false,
+      "defaultBranch": "main",
+      "description": null
+    }
+  ],
+  "devpost": {
+    "url": "https://devpost.com/software/larp-the-north",
+    "title": "flowst8",
+    "result": "Verified with the public project page; team size and project description agree."
+  },
+  "contact": {
+    "email": "erichsu8681@gmail.com",
+    "github": "https://github.com/bshwao",
+    "linkedin": "https://www.linkedin.com/in/erichsu07/",
+    "result": "Destinations match the existing résumé and shared content. External profile reachability still needs browser verification.",
+    "messagesSent": false
+  },
+  "resume": {
+    "path": "assets/eric-hsu-resume.pdf",
+    "pages": 3,
+    "sha256": "6a6680f52c21b05492c1f312fc36607d3abb10b580f5ec834c9e9790c3adb274",
+    "result": "Text and all rendered pages inspected. Core profile, education, experience metrics and listed skills agree. Existing file preserved. Actual browser download still pending."
+  }
+}

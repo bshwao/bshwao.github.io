@@ -58,9 +58,7 @@
   .spatial[data-room-panel="read"] .interior-panel { top:calc(106px + var(--safe-top)); height:auto; z-index:7; --glass-top:1; --glass-bottom:.98; }
   .spatial[data-room-panel="read"] .spatial-heading { opacity:0; }
   .spatial[data-mode="section"] .spatial-bottom { display:none; }
-  .spatial .page-identity { bottom:calc(8px + var(--safe-bottom)); left:max(16px,var(--safe-left)); padding:3px 7px; border:0; background:var(--raised); box-shadow:none; -webkit-backdrop-filter:none; backdrop-filter:none; }
-  .spatial .page-identity .identity-name { font-size:10px; }
-  .spatial .page-identity > span:last-child,.spatial .drawing-edition { display:none; }
+  .spatial .page-identity,.spatial .drawing-edition { display:none; }
   .tower-labels[data-layout="dock"] { left:max(12px,var(--safe-left)); right:max(12px,var(--safe-right)); bottom:calc(112px + var(--safe-bottom)); }
   .spatial .tower-labels[data-layout="dock"] .tower-label { min-height:52px; }
   .spatial .spatial-bottom { left:max(12px,var(--safe-left)); right:max(12px,var(--safe-right)); bottom:calc(34px + var(--safe-bottom)); transform:none; padding:2px 6px 6px; }

@@ -1,0 +1,2301 @@
+{
+  "viewport": "1280x720",
+  "graphics": "standard",
+  "requestedDpr": 1,
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+  "readyMs": 2537,
+  "idleFramesOver250ms": 0,
+  "maxFrameCalls": 82,
+  "beforeNavigationWarmup": 248,
+  "navigationBaseline": 248,
+  "navigationAllocations": [
+    248,
+    248,
+    248
+  ],
+  "navigationFirstDraws": [],
+  "stableGeometryCount": 248,
+  "stableGeometryAfterResize": 254,
+  "clockChanges": [
+    {
+      "hour": 22,
+      "phase": "night",
+      "daylight": 0,
+      "sun": 0,
+      "moon": 1,
+      "stars": 1
+    },
+    {
+      "hour": 6,
+      "phase": "dawn",
+      "daylight": 0.25925925925925924,
+      "sun": 0.10811360056901896,
+      "moon": 0.30889600162576764,
+      "stars": 0.5486968449931412
+    },
+    {
+      "hour": 18,
+      "phase": "evening",
+      "daylight": 0.5,
+      "sun": 0.20850480109739422,
+      "moon": 0.20850480109739372,
+      "stars": 0.25
+    },
+    {
+      "hour": 10,
+      "phase": "morning",
+      "daylight": 1,
+      "sun": 1,
+      "moon": 0,
+      "stars": 0
+    },
+    {
+      "hour": 10,
+      "phase": "morning",
+      "daylight": 1,
+      "sun": 1,
+      "moon": 0,
+      "stars": 0
+    }
+  ],
+  "objectChecks": [
+    {
+      "room": "penthouse/a",
+      "objects": 13,
+      "calls": 34
+    },
+    {
+      "room": "penthouse/b",
+      "objects": 12,
+      "calls": 69
+    },
+    {
+      "room": "penthouse/c",
+      "objects": 13,
+      "calls": 66
+    },
+    {
+      "room": "penthouse/d",
+      "objects": 12,
+      "calls": 34
+    },
+    {
+      "room": "about/a",
+      "objects": 18,
+      "calls": 35
+    },
+    {
+      "room": "about/b",
+      "objects": 20,
+      "calls": 35
+    },
+    {
+      "room": "about/c",
+      "objects": 13,
+      "calls": 31
+    },
+    {
+      "room": "about/d",
+      "objects": 26,
+      "calls": 35
+    },
+    {
+      "room": "projects/a",
+      "objects": 21,
+      "calls": 30
+    },
+    {
+      "room": "projects/b",
+      "objects": 16,
+      "calls": 29
+    },
+    {
+      "room": "projects/c",
+      "objects": 25,
+      "calls": 29
+    },
+    {
+      "room": "experience/a",
+      "objects": 14,
+      "calls": 35
+    },
+    {
+      "room": "experience/b",
+      "objects": 15,
+      "calls": 35
+    },
+    {
+      "room": "experience/c",
+      "objects": 15,
+      "calls": 27
+    },
+    {
+      "room": "experience/d",
+      "objects": 20,
+      "calls": 71
+    },
+    {
+      "room": "resume/a",
+      "objects": 17,
+      "calls": 35
+    },
+    {
+      "room": "resume/b",
+      "objects": 14,
+      "calls": 35
+    },
+    {
+      "room": "resume/c",
+      "objects": 20,
+      "calls": 27
+    },
+    {
+      "room": "resume/d",
+      "objects": 29,
+      "calls": 35
+    },
+    {
+      "room": "contact/a",
+      "objects": 15,
+      "calls": 35
+    },
+    {
+      "room": "contact/b",
+      "objects": 17,
+      "calls": 35
+    },
+    {
+      "room": "contact/c",
+      "objects": 14,
+      "calls": 27
+    },
+    {
+      "room": "contact/d",
+      "objects": 29,
+      "calls": 35
+    }
+  ],
+  "zoomChecks": [
+    {
+      "view": "tower",
+      "direction": 1,
+      "distance": 217.36376549379008,
+      "min": 217.36376549379008,
+      "max": 5643.5009727248935,
+      "canZoomIn": false,
+      "canZoomOut": true
+    },
+    {
+      "view": "tower",
+      "direction": -1,
+      "distance": 5643.500972724893,
+      "min": 217.36376549379008,
+      "max": 5643.5009727248935,
+      "canZoomIn": true,
+      "canZoomOut": false
+    },
+    {
+      "view": "explore",
+      "direction": 1,
+      "distance": 293.9733451710161,
+      "min": 293.9733451710161,
+      "max": 994.9867067326699,
+      "canZoomIn": false,
+      "canZoomOut": true
+    },
+    {
+      "view": "explore",
+      "direction": -1,
+      "distance": 994.9867067326699,
+      "min": 293.9733451710161,
+      "max": 994.9867067326699,
+      "canZoomIn": true,
+      "canZoomOut": false
+    },
+    {
+      "view": "about",
+      "direction": 1,
+      "distance": 49.28097147955143,
+      "min": 49.28097147955143,
+      "max": 144.0520704786888,
+      "canZoomIn": false,
+      "canZoomOut": true
+    },
+    {
+      "view": "about",
+      "direction": -1,
+      "distance": 144.0520704786888,
+      "min": 49.28097147955143,
+      "max": 144.0520704786888,
+      "canZoomIn": true,
+      "canZoomOut": false
+    },
+    {
+      "view": "about/a",
+      "direction": 1,
+      "distance": 19.747715354467008,
+      "min": 19.747715354467015,
+      "max": 54.68598098160096,
+      "canZoomIn": false,
+      "canZoomOut": true
+    },
+    {
+      "view": "about/a",
+      "direction": -1,
+      "distance": 54.68598098160096,
+      "min": 19.747715354467015,
+      "max": 54.68598098160096,
+      "canZoomIn": true,
+      "canZoomOut": false
+    }
+  ],
+  "qualityChecks": [
+    {
+      "calls": 67,
+      "triangles": 152892,
+      "lines": 97799,
+      "geometries": 255,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 83.48777017391546,
+        "min": 54.26705061304504,
+        "max": 158.62676333043936,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 161.8289
+        }
+      },
+      "near": 1.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "calls": 63,
+      "triangles": 141467,
+      "lines": 25124,
+      "geometries": 255,
+      "textures": 1,
+      "programs": 64,
+      "pixelRatio": 0.85,
+      "quality": 1,
+      "zoom": {
+        "distance": 83.48777017391546,
+        "min": 54.26705061304504,
+        "max": 158.62676333043936,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "low",
+      "background": "simplified",
+      "backdrop": {
+        "width": 544,
+        "height": 306,
+        "blurPasses": 0
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 162.8955
+        }
+      },
+      "near": 1.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "calls": 67,
+      "triangles": 152892,
+      "lines": 97799,
+      "geometries": 255,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 83.48777017391546,
+        "min": 54.26705061304504,
+        "max": 158.62676333043936,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 163.8955
+        }
+      },
+      "near": 1.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "calls": 63,
+      "triangles": 141467,
+      "lines": 25124,
+      "geometries": 255,
+      "textures": 1,
+      "programs": 64,
+      "pixelRatio": 0.85,
+      "quality": 1,
+      "zoom": {
+        "distance": 83.48777017391546,
+        "min": 54.26705061304504,
+        "max": 158.62676333043936,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "low",
+      "background": "simplified",
+      "backdrop": {
+        "width": 544,
+        "height": 306,
+        "blurPasses": 0
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 164.9015
+        }
+      },
+      "near": 1.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "calls": 67,
+      "triangles": 152892,
+      "lines": 97799,
+      "geometries": 255,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 83.48777017391546,
+        "min": 54.26705061304504,
+        "max": 158.62676333043936,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 165.9015
+        }
+      },
+      "near": 1.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "calls": 63,
+      "triangles": 141467,
+      "lines": 25124,
+      "geometries": 255,
+      "textures": 1,
+      "programs": 64,
+      "pixelRatio": 0.85,
+      "quality": 1,
+      "zoom": {
+        "distance": 83.48777017391546,
+        "min": 54.26705061304504,
+        "max": 158.62676333043936,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "low",
+      "background": "simplified",
+      "backdrop": {
+        "width": 544,
+        "height": 306,
+        "blurPasses": 0
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 166.9015
+        }
+      },
+      "near": 1.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "calls": 67,
+      "triangles": 152892,
+      "lines": 97799,
+      "geometries": 255,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 83.48777017391546,
+        "min": 54.26705061304504,
+        "max": 158.62676333043936,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 167.9076
+        }
+      },
+      "near": 1.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "rows": [
+    {
+      "view": "tower",
+      "calls": 57,
+      "triangles": 141194,
+      "lines": 102781,
+      "geometries": 57,
+      "textures": 0,
+      "programs": 32,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 395.20684635234556,
+        "min": 217.36376549379008,
+        "max": 5643.5009727248935,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "sharp",
+      "backdrop": {
+        "width": 0,
+        "height": 0,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 0.43
+        }
+      },
+      "near": 7.9,
+      "far": 5300,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "explore",
+      "calls": 82,
+      "triangles": 141420,
+      "lines": 107486,
+      "geometries": 80,
+      "textures": 2,
+      "programs": 62,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 452.2666848784863,
+        "min": 293.9733451710161,
+        "max": 994.9867067326699,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 3.5331
+        }
+      },
+      "near": 9,
+      "far": 5400,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "penthouse",
+      "calls": 70,
+      "triangles": 166096,
+      "lines": 100330,
+      "geometries": 109,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 75.76410346632959,
+        "min": 49.24666725311423,
+        "max": 143.9517965860262,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 7.3391
+        }
+      },
+      "near": 1.5,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "penthouse/a",
+      "calls": 69,
+      "triangles": 166048,
+      "lines": 100330,
+      "geometries": 109,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 28.344268167917363,
+        "min": 18.423774309146285,
+        "max": 51.01968270225125,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 8.3451
+        }
+      },
+      "near": 0.5,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "penthouse/b",
+      "calls": 69,
+      "triangles": 166048,
+      "lines": 100330,
+      "geometries": 109,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 28.619697257062207,
+        "min": 18.602803217090432,
+        "max": 51.515455062711965,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 13.6784
+        }
+      },
+      "near": 0.5,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "penthouse/c",
+      "calls": 66,
+      "triangles": 165940,
+      "lines": 100318,
+      "geometries": 109,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 29.02441164108404,
+        "min": 18.86586756670463,
+        "max": 52.24394095395128,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 18.6848
+        }
+      },
+      "near": 0.5,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "penthouse/d",
+      "calls": 69,
+      "triangles": 166048,
+      "lines": 100330,
+      "geometries": 109,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 28.737610047620848,
+        "min": 18.679446530953552,
+        "max": 51.72769808571753,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 23.702599999999997
+        }
+      },
+      "near": 0.5,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "about",
+      "calls": 71,
+      "triangles": 165892,
+      "lines": 99731,
+      "geometries": 138,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 75.8168791993099,
+        "min": 49.28097147955143,
+        "max": 144.0520704786888,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 27.9693
+        }
+      },
+      "near": 1.5,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "about/a",
+      "calls": 70,
+      "triangles": 165890,
+      "lines": 99731,
+      "geometries": 138,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 30.381100545333872,
+        "min": 19.747715354467015,
+        "max": 54.68598098160096,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 31.987299999999998
+        }
+      },
+      "near": 0.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "about/b",
+      "calls": 70,
+      "triangles": 165890,
+      "lines": 99731,
+      "geometries": 138,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 30.38447469154789,
+        "min": 19.74990854950613,
+        "max": 54.6920544447862,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 38.114599999999996
+        }
+      },
+      "near": 0.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "about/c",
+      "calls": 66,
+      "triangles": 164688,
+      "lines": 99719,
+      "geometries": 138,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 30.14108351499829,
+        "min": 19.591704284748886,
+        "max": 54.253950326996915,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 43.1267
+        }
+      },
+      "near": 0.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "about/d",
+      "calls": 70,
+      "triangles": 165890,
+      "lines": 99731,
+      "geometries": 138,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 28.73893607279935,
+        "min": 18.68030844731958,
+        "max": 51.73008493103883,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 48.144800000000004
+        }
+      },
+      "near": 0.5,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "projects",
+      "calls": 67,
+      "triangles": 152892,
+      "lines": 97799,
+      "geometries": 162,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 83.48777017391546,
+        "min": 54.26705061304504,
+        "max": 158.62676333043936,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 53.1692
+        }
+      },
+      "near": 1.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "projects/a",
+      "calls": 65,
+      "triangles": 152890,
+      "lines": 97795,
+      "geometries": 162,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 35.89324605161137,
+        "min": 23.330609933547393,
+        "max": 64.60784289290046,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 54.1751
+        }
+      },
+      "near": 0.7,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "projects/b",
+      "calls": 64,
+      "triangles": 152776,
+      "lines": 97795,
+      "geometries": 162,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 36.364828666380276,
+        "min": 23.63713863314717,
+        "max": 65.45669159948447,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 59.1879
+        }
+      },
+      "near": 0.7,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "projects/c",
+      "calls": 64,
+      "triangles": 152776,
+      "lines": 97795,
+      "geometries": 162,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 29.650360136509246,
+        "min": 19.27273408873101,
+        "max": 53.370648245716644,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 64.20530000000001
+        }
+      },
+      "near": 0.5,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "experience",
+      "calls": 72,
+      "triangles": 160814,
+      "lines": 101244,
+      "geometries": 191,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 90.52016083543431,
+        "min": 58.8381045430323,
+        "max": 171.9883055873252,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 69.2295
+        }
+      },
+      "near": 1.8,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "experience/a",
+      "calls": 71,
+      "triangles": 160814,
+      "lines": 101240,
+      "geometries": 191,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 34.80042689634353,
+        "min": 22.620277482623298,
+        "max": 62.64076841341836,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 70.2295
+        }
+      },
+      "near": 0.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "experience/b",
+      "calls": 71,
+      "triangles": 160814,
+      "lines": 101240,
+      "geometries": 191,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 35.15800898520965,
+        "min": 22.85270584038627,
+        "max": 63.284416173377366,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 75.2477
+        }
+      },
+      "near": 0.7,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "experience/c",
+      "calls": 64,
+      "triangles": 155500,
+      "lines": 98238,
+      "geometries": 191,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 34.80042713505518,
+        "min": 22.62027763778587,
+        "max": 62.64076884309932,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 80.2598
+        }
+      },
+      "near": 0.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "experience/d",
+      "calls": 71,
+      "triangles": 160700,
+      "lines": 101244,
+      "geometries": 191,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 30.562168029896664,
+        "min": 19.86540921943283,
+        "max": 55.01190245381399,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 85.278
+        }
+      },
+      "near": 0.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "resume",
+      "calls": 72,
+      "triangles": 160240,
+      "lines": 99487,
+      "geometries": 220,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 90.52428431429466,
+        "min": 58.84078480429154,
+        "max": 171.9961401971599,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 90.29
+        }
+      },
+      "near": 1.8,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "resume/a",
+      "calls": 72,
+      "triangles": 160240,
+      "lines": 99487,
+      "geometries": 220,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 34.80042689634353,
+        "min": 22.6202774826233,
+        "max": 62.64076841341837,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 91.296
+        }
+      },
+      "near": 0.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "resume/b",
+      "calls": 72,
+      "triangles": 160240,
+      "lines": 99487,
+      "geometries": 220,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 34.80042713505518,
+        "min": 22.62027763778587,
+        "max": 62.64076884309932,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 96.3143
+        }
+      },
+      "near": 0.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "resume/c",
+      "calls": 64,
+      "triangles": 152318,
+      "lines": 95725,
+      "geometries": 220,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 34.80565626212621,
+        "min": 22.623676570382038,
+        "max": 62.650181271827186,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 101.3384
+        }
+      },
+      "near": 0.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "resume/d",
+      "calls": 72,
+      "triangles": 160240,
+      "lines": 99487,
+      "geometries": 220,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 30.838717151908128,
+        "min": 20.045166148740286,
+        "max": 55.509690873434636,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 106.3505
+        }
+      },
+      "near": 0.6,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "contact",
+      "calls": 72,
+      "triangles": 159970,
+      "lines": 98327,
+      "geometries": 248,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 107.78336149558586,
+        "min": 70.05918497213081,
+        "max": 204.78838684161315,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 111.3626
+        }
+      },
+      "near": 2.1,
+      "far": 5100,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "contact/a",
+      "calls": 72,
+      "triangles": 159970,
+      "lines": 98327,
+      "geometries": 248,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 40.44203425306718,
+        "min": 26.287322264493667,
+        "max": 72.79566165552092,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 112.3687
+        }
+      },
+      "near": 0.8,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "contact/b",
+      "calls": 72,
+      "triangles": 159970,
+      "lines": 98327,
+      "geometries": 248,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 40.44203425306718,
+        "min": 26.287322264493667,
+        "max": 72.79566165552092,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 117.39269999999999
+        }
+      },
+      "near": 0.8,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "contact/c",
+      "calls": 64,
+      "triangles": 152988,
+      "lines": 94663,
+      "geometries": 248,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 40.31208631939552,
+        "min": 26.202856107607083,
+        "max": 72.56175537491193,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 122.417
+        }
+      },
+      "near": 0.8,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "view": "contact/d",
+      "calls": 72,
+      "triangles": 159970,
+      "lines": 98327,
+      "geometries": 248,
+      "textures": 2,
+      "programs": 64,
+      "pixelRatio": 1,
+      "quality": 0,
+      "zoom": {
+        "distance": 36.48697243384769,
+        "min": 23.716532082001,
+        "max": 65.67655038092585,
+        "canZoomIn": true,
+        "canZoomOut": true
+      },
+      "reducedMotion": false,
+      "graphics": "standard",
+      "background": "blurred",
+      "backdrop": {
+        "width": 1280,
+        "height": 720,
+        "blurPasses": 2
+      },
+      "timeOfDay": {
+        "hour": 10,
+        "phase": "morning",
+        "daylight": 1,
+        "sun": 1,
+        "moon": 0,
+        "stars": 0
+      },
+      "atmosphere": {
+        "hour": null,
+        "brightness": 1,
+        "lamps": false,
+        "weather": "clear",
+        "ambient": "off",
+        "active": false,
+        "appliedHour": 10,
+        "realHour": 10,
+        "lampIllumination": 0,
+        "outdoors": {
+          "rain": false,
+          "night": 0,
+          "time": 127.4352
+        }
+      },
+      "near": 0.7,
+      "far": 5000,
+      "width": 1280,
+      "height": 720
+    }
+  ]
+}

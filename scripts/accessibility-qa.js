@@ -3,7 +3,7 @@ import { sections } from '../assets/tower-geometry.js';
 
 const width = Number(new URLSearchParams(location.search).get('width')) || 1280;
 const height = Number(new URLSearchParams(location.search).get('height')) || 720;
-const frame = document.querySelector('#portfolio'); frame.width = width; frame.height = height;
+let frame = document.querySelector('#portfolio'); frame.width = width; frame.height = height;
 const rows = [], results = document.querySelector('#results'), status = document.querySelector('#status');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function ready({allowIntro=false}={}) {
@@ -72,7 +72,19 @@ try {
     frame.contentWindow.location.hash = route;
     await delay(20); await ready(); await audit(`${route} reading dialog`);
   }
-  frame.src = '../reading.html'; await new Promise(resolve => frame.addEventListener('load', resolve, { once: true }));
+  // Audit the script-free page in a fresh document, independent of the open
+  // reading dialog and activity frames left by the spatial tour.
+  const previousFrame = frame;
+  frame = document.createElement('iframe');
+  frame.id = 'portfolio'; frame.title = 'Portfolio under test';
+  frame.width = width; frame.height = height; frame.src = '../reading.html';
+  const readingLoaded = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error('Complete reading portfolio did not load within 15 seconds')), 15000);
+    frame.addEventListener('load', () => { clearTimeout(timeout); resolve(); }, { once: true });
+    frame.addEventListener('error', () => { clearTimeout(timeout); reject(new Error('Complete reading portfolio failed to load')); }, { once: true });
+  });
+  previousFrame.replaceWith(frame);
+  await readingLoaded;
   await audit('complete reading portfolio');
   const count = rows.reduce((sum, row) => sum + row.violations.length, 0);
   status.textContent = count ? `FAIL — ${count} rule violations across ${rows.length} views` : `PASS — ${rows.length} views, no automated WCAG A/AA violations`;

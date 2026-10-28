@@ -1,5 +1,31 @@
 # Release verification
 
+## Phase 2 progress — October 28, 2026
+
+The desktop keyboard review verifies visible focus, floor/room entry, reading-dialog return and opening/closing all four activity dialogs with focus restored to their openers. Reduced-motion navigation works. Two semantic issues were fixed: the native clock no longer has an unsupported label, and the Word Guess letter keyboard now has a group role. The source/server suite passes all 216 tests and 87 module/reference checks after these changes; all five integration modes also pass.
+
+Phase 2 is not complete. The initial Edge accessibility sweep reached 35 views without automated violations, with manual-review items; it stalled at loading the complete reading page into its iframe. The harness now reports a bounded failure rather than waiting indefinitely. Its final sweep, contrast/browser zoom, actual résumé download, fallback views and external profile destinations still need completion. The existing résumé's three rendered pages and text were reviewed, and project repositories/Devpost were verified. Windows computer use then stopped because it could not reliably determine the active browser URL. See [the Phase 2 progress report](state/release-phase-2/README.md). Nothing was published.
+
+## Phase 1: desktop Edge verification — October 28, 2026
+
+Phase 1 is complete in the connected Windows Edge profile (user agent reports Edge 156.0.0.0), using the local preview on port 4177. UI checks cover the introduction, tower expansion and collapse, all six floors and 23 rooms, zoom/orbit/reset, desktop resizing, six reading overlays, the complete reading page, direct room reloads, Back/Forward and returning from another tab with working camera controls.
+
+Penthouse checks cover bundled music playback and all four audio-reactive styles, next/previous tracks, local WAV import, all seven games, the bedroom terminal/notes/project explorer/editor and window controls, atmosphere presets, and atlas pan/zoom/search/selection/constellation controls. The imported `night-bus.wav` plays from a local file, advances to 0:08 and produces nonzero analyser energy. Import initially required the browser extension's file-URL permission; the user enabled it and the retry passed. Temporary bedroom notes and editor content were restored.
+
+The real Edge WebGL harness passes all 31 views and object responses in all 23 rooms, zoom stops, live graphics changes, repeated navigation/resizing, resource reuse and GPU disposal. Peak rendering is 82 draw calls; idle rendering records zero frames over 250ms. App, responsive-view and harness consoles record no warnings or errors. A fresh 1280×720 capture confirms the room remains rendered after resizing. No functional application fixes were needed. Browser tab return was verified through tab selection, retained view and resumed controls; OS suspension behavior was not measured. See [the Phase 1 evidence](state/release-phase-1/README.md) for reports and captures. Accessibility/release preparation and deployment remain Phases 2 and 3.
+
+## iPhone 13 / Safari verification — October 28, 2026
+
+The user completed the automatic benchmark and saved all five manual checks on an iPhone 13 using Safari, then confirmed that mobile works well. Orbit/zoom, floor and room navigation, orientation changes, reading view and returning from another app/tab are all marked successful in the [saved manual report](state/device-runs/device-ea1c7c50-463e-4068-9f08-d7f92d1430f0.json).
+
+The automatic run completed without a hidden-page or resize interruption. Tower, expanded-tower and floor orbit averaged 59.6–59.8 FPS; unfolding averaged 55.9 FPS, opening Projects 44.8 FPS, and room flight 57.2 FPS. No idle frames were recorded over the final 500ms. These measurements cover the 390×498 embedded preview at standard graphics; they do not establish sustained full-screen performance or results on other devices. The device reports its reduced-motion preference as enabled; the benchmark requires the app's Full motion override. See [the device reports](state/device-runs/README.md) for scope and evidence. This completes the pending physical iPhone/Safari recheck for the mobile fixes.
+
+## Device benchmark startup (local) — October 28, 2026
+
+The device server serves its test page at `/`. Its relative module and frame-probe URLs incorrectly resolved outside `/scripts/`, leaving the Run performance check button without a handler. Both URLs now resolve correctly from the root and the explicit test-page path. Startup shows immediate progress, preview loading has a timeout with retry, fresh-session introductions are entered automatically, and reduced motion receives an actionable explanation. Measurements wait for camera transitions to finish; preparation-time Safari resizing is excluded from measurement interruption detection.
+
+Three HTTP/DOM regression tests pass, covering both entry paths, reachable module/probe assets, startup feedback, failed-load retry and fresh-session/reduced-motion behavior. A Chromium run at a 390×844 viewport completes all six phases and saves its report through the actual local receiver. The report in `state/device-check-fix/browser-runs/` is a desktop Chromium measurement, not a phone/Safari performance result. Physical Safari rechecking remains pending.
+
 ## Mobile touch feedback (local) — October 27, 2026
 
 The first physical iPhone review identified accidental interface selection, scattered controls, overly sensitive orbiting and an excessive zoom range. The scene chrome and device-test iframe now suppress text selection and iOS touch callouts while reading content and editors retain native selection. A compact toolbar aligns with the clock/back control, the floor title is smaller, and the bottom action area replaces the separated mobile cards. Touch rotation uses less than half the mouse speed and settles faster. Mobile camera limits allow closer inspection and stop within the city rather than backing away to the island overview; desktop limits remain unchanged.

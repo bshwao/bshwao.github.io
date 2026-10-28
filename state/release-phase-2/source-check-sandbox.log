@@ -1,0 +1,327 @@
+
+> eric-hsu-portfolio@0.1.0 check
+> node scripts/check.mjs && node scripts/theme.mjs --check && node scripts/reading.mjs --check && node --test scripts/model.test.mjs scripts/massing.test.mjs scripts/interiors.test.mjs scripts/interior-structure.test.mjs scripts/interior-overlap.test.mjs scripts/lounge-overlap.test.mjs scripts/layout.test.mjs scripts/mobile-room-panel.test.mjs scripts/spatial-motion.test.mjs scripts/routes.test.mjs scripts/site.test.mjs scripts/theme.test.mjs scripts/reading-geometry.test.mjs scripts/skyline.test.mjs scripts/city-time.test.mjs scripts/view-preferences.test.mjs scripts/wilderness.test.mjs scripts/settlement.test.mjs scripts/intro.test.mjs scripts/penthouse.test.mjs scripts/interior-design.test.mjs scripts/penthouse-arcade.test.mjs scripts/penthouse-games.test.mjs scripts/penthouse-atmosphere.test.mjs scripts/penthouse-bedroom.test.mjs scripts/penthouse-star-map.test.mjs scripts/penthouse-tracks.test.mjs scripts/penthouse-music.test.mjs scripts/penthouse-experiences.test.mjs scripts/penthouse-illumination.test.mjs scripts/serve.test.mjs scripts/device-qa.test.mjs
+
+Syntax and local asset references passed (87 modules).
+Shared color tokens and icon match the authoritative palette.
+Static reading portfolio matches the shared content.
+✔ the live clock uses device-local fields through midnight and noon (8.9076ms)
+✔ unavailable local time falls back to fixed EST across the UTC date boundary (1.4311ms)
+✔ the live clock advances each second, sleeps when hidden and disposes its timer (205.6305ms)
+✔ visitor-local morning and night select the sun, moon, stars and coordinated city lighting (3.4485ms)
+✔ dawn and dusk blend continuously and all celestial directions remain finite and normalized (60.5797ms)
+✔ one minute-aligned clock skips hidden work, catches up on return and releases its timer (0.8999ms)
+✖ both device-page URLs load their real module and start a reachable instrumented preview (113.2501ms)
+✖ a failed preview load reports the failure and re-enables retry (24.2733ms)
+✖ a fresh-session intro is entered and reduced motion gets an actionable explanation (12.0858ms)
+✔ all 23 rendered rooms retain independent palettes through focus and hover transitions (9.092ms)
+✔ every physical room floor carries its own finish in the rendered vertex buffer (34.7294ms)
+✔ the penthouse has warm physical materials and rounded upholstery while the workshop uses low utility stools (1.7009ms)
+✔ restaged focal furnishings have different orientations while attached parts remain in their object batches (2.0329ms)
+✔ the bedroom workstation has an aligned task chair and stays separate from the sleeping area (3.2821ms)
+✔ shelf and locker panels have one same-facing surface at every join throughout the tower (161.3828ms)
+✔ shelf and locker outlines have no repeated or partially overlapping strokes (11.7492ms)
+✔ rounded chair backs and workbench tops clear their adjoining plain panels (57.5598ms)
+✔ Contact tea garden leaves space between its sofas, tea table, storage and visitor seats (500.7882ms)
+✔ Contact consultation locker clears the low paneled wing divider and its cap (460.0556ms)
+✔ solid wall joins have the analytic exposed area for duplicate, touching and intersecting panels (5.4638ms)
+✔ all floors have non-overlapping wall skins, clean corner posts and separated floor finishes (5081.7384ms)
+✔ every paneled room backdrop has one clean exposed surface across its trim and display (3591.1151ms)
+✔ all architectural floors remain on the occupied L-shaped slab in four static batches (983.5447ms)
+✔ floor finishes fill every room bay and doorways provide real openings through its partitions (559.4583ms)
+✔ architectural partitions are solid and every room connects to the shared circulation (208.6796ms)
+✔ real furnishings occupy the full length and width of every architectural room (1825.7938ms)
+✔ reading drawings retain the full room finishes and matching physical doorway locations (322.5456ms)
+✔ every room retains independently animated objects and exact batched picking identities (9183.0328ms)
+✔ object responses stay isolated, retrigger safely, and remove spatial motion when reduced motion changes (389.7337ms)
+✔ penthouse bedding and toys provide visible finite movement with a reduced-motion alternative (314.3064ms)
+✔ inspection car tires and brake hubs remain concentric through animation and retriggering (357.2105ms)
+✔ sofa frame panels and cushions have no intersecting or exposed coplanar faces (0.6169ms)
+✔ complete furnished rooms fit their assigned usable bays and leave the service core clear (1805.9044ms)
+✔ every floor has an elevator and a stair contained by the shared service region (3205.6378ms)
+✔ interior rails remain on the slab around the concave L recess (2994.9126ms)
+✔ the intro is limited to fresh home entry and safely tolerates denied session storage (4.8542ms)
+✔ the static title page stays closed without JavaScript and preserves a direct reading link (456.9493ms)
+✔ entry is user paced and reveals a ready city once before recording the session (355.156ms)
+✔ an early entry request waits for the rendered city instead of revealing a blank view (193.7612ms)
+✔ reduced motion reveals the city immediately and follows the current preference (108.2847ms)
+✔ entry and replay remain usable when session storage access throws (161.1812ms)
+✔ a completed session and direct room links bypass the intro while explicit replay still works (133.2494ms)
+✔ Escape requests entry and waits for readiness instead of exposing an unfinished city (86.4879ms)
+✔ replaying from an interior can wait for the city camera to return (118.7862ms)
+✔ route or fallback dismissal cancels a pending reveal without restoring focus or marking a visit (50.1944ms)
+✔ external close and disposal release the city and leave no reveal callbacks (55.6911ms)
+✔ finishing entry does not steal focus moved outside the intro (33.4718ms)
+✔ camera depth precision separates thin architectural layers through the zoom range (5.5839ms)
+✔ zoom limits contain the fitted view and keep each scene at a useful scale (11.6399ms)
+✔ mobile zoom reaches details while stopping before a distant island overview (0.8381ms)
+✔ phone and large-screen raster budgets stay bounded without changing navigation regions (0.5117ms)
+✔ outdoor cameras fit the district or tower inside the space reserved for controls (61.8129ms)
+✔ section labels stay spaced and accessible when their projected anchors collide or leave the screen (2.1899ms)
+✔ camera regions reserve headers and reading panels across phone orientations (0.7887ms)
+✔ room markers avoid collisions and keep the selected room available (2.0381ms)
+✔ markers outside the scene are hidden instead of piling up at its edges (2.0336ms)
+✔ a room target stays available when a long caption cannot fit beside the reading panel (0.7174ms)
+✔ room captions reserve their full width and height against other numbered targets (0.5325ms)
+✔ captions near the bottom edge are hidden without shrinking the 44px target (0.3348ms)
+✔ visitor cushions remain supported at every corner of the rendered beveled seat (31.3026ms)
+✔ the narrow penthouse bookcase exposes eight separate spines with clear gaps (181.7815ms)
+✔ deliberate nested floor plates have a consistent winding and no crossing perimeter edges (7.4262ms)
+✔ the silhouette is elongated and asymmetric, with a concave attached wing and an offset crown (1.1413ms)
+✔ shared occupied regions, service core, and room anchors fit the entire floor boundary (11.8978ms)
+✔ structural floor slabs remain recessed behind the assembled facade at every section join (34.2776ms)
+✔ actual furnished room bounds fit their regions and do not collide with neighboring rooms or service core (1.6373ms)
+✔ real shell faces have area and setbacks remain horizontal rather than sloping connecting bands (87.2166ms)
+✔ outdoor cameras contain every actual shell corner through orbit on desktop and both phone orientations (2570.7454ms)
+✔ mobile panel switches preserve live activity state and exclude collapsed content from focus (307.6428ms)
+✔ room keyboard focus reveals content and returning to desktop restores a usable focus target (81.706ms)
+✔ horizontal room navigation brings a selected offscreen tab into reach in either direction (71.1117ms)
+✔ wide phone landscapes reserve a readable side panel while tablets retain their normal layout (2.5734ms)
+✔ compact drawing preserves solid geometry and landmarks while reducing line work (13.7231ms)
+✔ the district reserves a clear tower plaza and non-overlapping parcels outside the streets (3.0628ms)
+✔ the decorative district has finite ground geometry within a small rendering budget (3.5568ms)
+✔ district buildings fit their parcels, keep the tower clear, and share a bounded geometry budget (1107.7457ms)
+✔ colored district roofs have no competing box lids or flat planes beneath pitched roofs (24.9549ms)
+✔ blueprint road marks have visible area, face upward, and stay inside the streets (2.1616ms)
+✔ district shading keeps opaque building depth and inexpensive contact washes (62.1204ms)
+✔ district landscaping and engineering references leave building volumes clear and stay inexpensive (410.6461ms)
+✔ cap plans stay within their cut footprints and keep distinct, inexpensive furnishings (330.1932ms)
+✔ all sections have closed exterior volumes, including their cut surfaces (127.1589ms)
+✔ the full model can be hit from every azimuth rather than a single SVG-facing side (65.4445ms)
+✔ each section has furnished, selectable rooms matching every content room (182.501ms)
+✔ detailed interiors remain within a bounded geometry and rendering budget (0.6375ms)
+✔ all room anchors lie within their section footprint (433.5878ms)
+✔ room highlighting is independent and every camera target has real furniture bounds (1.5879ms)
+✔ room focus quiets the context and restores its materials without cumulative fading (8.1512ms)
+✔ Snake advances only while running, rejects reversing, grows on food, and leaves its input intact (5.0392ms)
+✔ Snake detects walls and its body but can enter a vacated tail square (0.643ms)
+✔ 2048 lines merge from the moving edge without double merges (0.818ms)
+✔ 2048 moves in all four directions, only spawns on a move, and identifies wins and dead boards (2.1397ms)
+✔ Sudoku transformations preserve valid solutions, every clue, and a unique solvable puzzle (2232.9758ms)
+✔ Arcade tabs, controls, clue protection, conflict feedback, and disposal work in the mounted DOM (1911.2908ms)
+✔ Snake pauses on visibility loss and detachment and its interval is cleared on tab changes and disposal (1148.7024ms)
+✔ Arcade deactivation preserves the current game and removes its handlers until reactivated (908.4674ms)
+✔ presets carry distinct complete room atmospheres (3.4376ms)
+✔ normalization retains device time and bounds untrusted room settings (0.7775ms)
+✔ bedroom controls expose the scene integrations and a desktop without nesting dialogs (550.7916ms)
+✔ terminal commands read an isolated virtual filesystem and return only named application actions (2.9969ms)
+✔ preview strips active markup and external resources and adds a restrictive CSP before user content (411.2059ms)
+✔ notes persist locally and retain a visible session-only fallback when storage fails or its getter is denied (596.6186ms)
+✔ windows launch, focus, minimize, close and restore without destroying application state (280.1298ms)
+✔ window movement has bounded keyboard and pointer controls, and editor tabs support arrow navigation (445.2216ms)
+✔ terminal renders input as text, opens project files, recalls history and clears only its output (142.1098ms)
+✔ room activities open from content and furniture, keep desktop/game state, and close on navigation (2069.3247ms)
+✔ lighting and weather controls drive scene state without a bedroom rain overlay (154.8612ms)
+✔ dropping local audio into the compact player selects it without uploading or starting playback (101.5322ms)
+✔ Blackjack decks contain 52 unique cards, and aces adjust without losing soft totals (4.1157ms)
+✔ Blackjack deals alternating cards and resolves natural wins, dealer blackjack and ties immediately (2.7751ms)
+✔ Blackjack hits, busts and dealer draws are immutable, and the dealer stands on soft 17 (0.6515ms)
+✔ Word Guess scores exact matches first and spends each duplicate answer letter only once (0.5281ms)
+✔ Word Guess validates real words without spending guesses, freezes on completion, and caps attempts at six (1.3077ms)
+✔ Each authored crossword has ten unique clued entries, fully checked intersections and a connected grid (4.7607ms)
+✔ The dashboard exposes seven games, accessible tabs and state that survives switching and returning to the library (2188.4904ms)
+✔ Blackjack conceals the dealer hole card until the hand ends and counts each result once (1245.0123ms)
+✔ Word Guess on-screen controls validate entries and show duplicate-aware feedback without losing stronger keyboard marks (1765.8254ms)
+✔ Crossword editing shares intersection letters, supports keyboard direction, feedback, reveal, reset and all three puzzles (2420.8245ms)
+✔ Leaving Snake via overview, Escape, dialog close or deactivation cancels its timer without resetting other games (766.945ms)
+✔ bedside illumination changes only its own batched ranges and creates no animation work (518.0772ms)
+✔ illumination survives highlight, click response and reset without moving the lamp (352.4025ms)
+✔ changing illumination preserves the exact in-progress object pose and finite settling (265.1397ms)
+✔ reduced-motion illumination retains color while keeping resting geometry (239.6502ms)
+✔ creation and subscriptions never autoplay or create an AudioContext (140.7239ms)
+✔ explicit play builds one shared graph and returns the analyser’s actual signal (17.9372ms)
+✔ transport preserves playback through track changes and validates timeline, loop, and visual styles (27.0565ms)
+✔ blocked playback remains recoverable and unsupported visualization retains usable audio (28.9085ms)
+✔ a partial graph failure never reports an available analyser (21.5373ms)
+✔ local audio accepts MIME or known extensions, enforces size/count limits, and revokes only owned ObjectURLs (17.8158ms)
+✔ ambient sound starts only on request, changes timbre, and disconnects on room stop (22.3879ms)
+✔ pending ambient resumes cannot start stale sounds after replacement or disposal (13.6898ms)
+✔ dispose detaches audio events and closes/disconnects the graph once (35.4861ms)
+✔ compact and expanded music markup expose labels and unique control IDs (98.6459ms)
+✔ catalog positions and sketches are complete, sourced, and within the map (19.923ms)
+✔ polar projection preserves pole, equator radius, and right ascension orientation (0.4515ms)
+✔ coordinate conversion inverts, zoom remains anchored, and pan/zoom are bounded (2.1613ms)
+✔ search/filter and hit selection resolve real stars and empty space (1.7403ms)
+✔ native controls, search, selection, keyboard, and reset change the mounted atlas (883.9432ms)
+✔ wheel, drag, and touch pinch update projection and dispose detaches all controls (380.2945ms)
+✔ markup labels are instance-safe and stars remain keyboard-selectable (42.8503ms)
+✔ Three original tracks have distinct deterministic scores and local, licensed metadata (22.9193ms)
+✔ WAVs are PCM16 mono at 22050 Hz, dynamic, unclipped, distinct, and softly joined at the loop boundary (375.5494ms)
+✔ The reusable WAV encoder rounds PCM values and safely bounds its output (0.7526ms)
+✔ The authored score reproduces the committed Window Light recording byte for byte (3052.6784ms)
+✔ the visitor penthouse occupies its own top floor while original portfolio destinations remain intact (3.5352ms)
+✔ a valid board move produces a house reply while occupied and invalid moves cannot overwrite it (2.1969ms)
+✔ noughts and crosses resolves a player win, a house win and a draw, then freezes until reset (1.9414ms)
+✔ the accessible game paints live marks and status, resets cleanly, and disposes its click handler (236.2475ms)
+✔ reading SVG uses the actual occupied section cut and matching numbered regions (671.027ms)
+✔ reading hotspots reach every original room and use the shared map anchors (951.9353ms)
+✔ cap plan segments cannot bridge the empty L recess and furnish every content room (338.2028ms)
+✔ every floor and individual room has a stable shareable round-trip (4.4249ms)
+✔ encoded room links resolve to the same destination (0.3739ms)
+✔ unknown or excess room path segments preserve a valid floor overview (1.15ms)
+✔ only existing integer room indexes are serialized (0.5144ms)
+✔ tower, explore, and unrecognized routes normalize safely (0.6035ms)
+✔ single byte-range parser handles inclusive, open-ended, suffix, and large offsets (5.2567ms)
+✔ invalid and unsatisfiable byte ranges never produce invalid file offsets (0.4556ms)
+✖ full audio responses advertise correct MIME, byte length, and range support (205.2377ms)
+✖ ranged audio GETs return exactly the requested bytes with consistent 206 headers (83.2798ms)
+✖ invalid audio ranges return 416 and the full representation size without content (138.0073ms)
+✖ HEAD, empty files, and ignored range requests retain complete-response semantics (92.0967ms)
+✖ ordinary previews, missing assets, and forbidden dot paths keep their existing statuses (74.1887ms)
+✔ new road sections form one connected network with the existing island streets (15.5607ms)
+✔ housing fills multiple outer districts with clear, supported, non-overlapping plots (30.9254ms)
+✔ community and service sites retain public road access and distinct visible structures (1.0806ms)
+✔ relocated forest crowns and rocks leave new streets, homes and civic access open (159.954ms)
+✔ expanded streets and buildings share existing batches with complete finite night-light attributes (31.5251ms)
+✔ both entry pages share a real, correctly sized social card and canonical URLs (51.7843ms)
+✔ crawl configuration indexes the canonical pages and all room assets resolve locally (39.5921ms)
+✔ every road has supported center and edge paint outside intersections (1439.6103ms)
+✔ the previously blank downtown extensions carry visible paint and retain crossing gaps (1.8185ms)
+✔ night environment is smooth, static, world-oriented and independent of interiors (368.6547ms)
+✔ city blur isolates the sharp subject, caches unchanged views, and releases its bounded targets (6.5772ms)
+✔ the complete city and woodland sit on finite dry land with a continuous sea-level shore (1787.2658ms)
+✔ camera depth contains the whole coast and maximum zoom fits desktop and portrait views (3.5093ms)
+✔ the river has an inland lake and fades into the ocean at matching sea level (1.1099ms)
+✔ the ocean follows the camera and local light without allocating distant water meshes (36.9807ms)
+✔ finished parks, planted edges and ground detail stay clear of buildings, avenues and water (50.4455ms)
+✔ street additions stay batched, supported and clear of live approaches (1.2703ms)
+✔ the city has distinct height/depth layers and independent lots with open streets and approaches (7.4959ms)
+✔ outer streets connect to downtown and both bridges without crossing occupied land or water (27.9937ms)
+✔ outer neighborhoods have street access, public space and a bounded transition to woodland (113.6379ms)
+✔ river, bridges and riverwalk occupy real space without flooding the city or hiding the landmark (14.5257ms)
+✔ generated architecture and rooftop details fit their shared skyline envelopes (117.0142ms)
+✔ bundled tower has a broad podium, long shafts, flat roof and two unequal mounted antennae (4.1419ms)
+✔ opening composition keeps the full main tower prominent at a lower camera on desktop and phones (46.6861ms)
+✔ motion easing clamps time and settles with zero endpoint velocity and acceleration (3.1191ms)
+✔ phase windows hold their endpoints outside the active beat and ease inside it (0.4532ms)
+✔ azimuth differences cross the angle seam by the shortest route in either direction (12.1334ms)
+✔ floor staggering opens from the crown and closes from the base without changing final transforms (1.9525ms)
+✔ rubber-band unfolding winds up, overshoots and recoils before an exact resting pose (8.6568ms)
+✔ rubber-band beats keep the crown-first and base-first cascade in time (0.5473ms)
+✔ camera flights preserve exact endpoints and input poses while returning independent vectors (4.668ms)
+✔ camera travel uses optical zoom pacing and avoids a full orbit across the angle seam (1.5065ms)
+✔ clearance and yaw create a bounded camera bow which returns to rest at both ends (2.1021ms)
+✔ near-pole and degenerate camera offsets remain finite throughout a flight (4.3514ms)
+✔ interrupted-flight carry continues incoming motion and disappears before the new arrival (0.5776ms)
+✔ reading and interactive ink retain text contrast on paper and section fills (3.3639ms)
+✔ both script-free entry documents include the generated palette and shared color system (11.8808ms)
+✔ facade and cut-plan colors survive compact detail without extra geometry or draws (3791.3679ms)
+✔ facade materials do not repeat every wing or restart at a section boundary (2520.9634ms)
+✔ solar facade reflections fade continuously at night without rebuilding the tower (2289.0456ms)
+✔ district shaders fade toward the exterior sky haze while reading surfaces retain paper (0.524ms)
+✔ every reading plan resolves its palette into valid SVG colors (266.0031ms)
+✔ essential text inks keep contrast under diagnostic grayscale and color-vision transforms (3.0714ms)
+✔ view preferences survive a reload and tolerate unavailable or corrupted storage (12.5416ms)
+✔ manual motion preferences override the device setting while system mode follows it (0.4586ms)
+✔ low graphics always reduces raster work on ordinary desktop and phone displays (0.8518ms)
+✔ every project shares a built/contribution/result summary in its room and static case study (34.4795ms)
+✔ landscape generation is repeatable, complete, and within its geometry budget (864.9952ms)
+✔ six mountain regions have distinct normalized terrain profiles and peak arrangements (25.6986ms)
+✔ forest distribution varies by region, species, scale and angular sector (3.7291ms)
+✔ mountain placement has uneven distances, coast sizes and open-water angular gaps (0.9318ms)
+✔ every forest root sits on actual dry terrain with usable slope (75.5308ms)
+✔ all actual terrain and forest vertices remain inside scenery and camera depth bounds (103.6389ms)
+ℹ tests 216
+ℹ suites 0
+ℹ pass 208
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27495.0502
+
+✖ failing tests:
+
+test at scripts\device-qa.test.mjs:25:1
+✖ both device-page URLs load their real module and start a reachable instrumented preview (113.2501ms)
+  [TypeError: fetch failed] {
+    [cause]: Error: connect EACCES 127.0.0.1:49672
+        at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16) {
+      errno: -4092,
+      code: 'EACCES',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 49672
+    }
+  }
+
+test at scripts\device-qa.test.mjs:42:1
+✖ a failed preview load reports the failure and re-enables retry (24.2733ms)
+  [TypeError: fetch failed] {
+    [cause]: Error: connect EACCES 127.0.0.1:49674
+        at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16) {
+      errno: -4092,
+      code: 'EACCES',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 49674
+    }
+  }
+
+test at scripts\device-qa.test.mjs:52:1
+✖ a fresh-session intro is entered and reduced motion gets an actionable explanation (12.0858ms)
+  [TypeError: fetch failed] {
+    [cause]: Error: connect EACCES 127.0.0.1:49676
+        at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16) {
+      errno: -4092,
+      code: 'EACCES',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 49676
+    }
+  }
+
+test at scripts\serve.test.mjs:64:1
+✖ full audio responses advertise correct MIME, byte length, and range support (205.2377ms)
+  Error: connect EACCES 127.0.0.1:49678
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16) {
+    errno: -4092,
+    code: 'EACCES',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 49678
+  }
+
+test at scripts\serve.test.mjs:76:1
+✖ ranged audio GETs return exactly the requested bytes with consistent 206 headers (83.2798ms)
+  Error: connect EACCES 127.0.0.1:49680
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16) {
+    errno: -4092,
+    code: 'EACCES',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 49680
+  }
+
+test at scripts\serve.test.mjs:87:1
+✖ invalid audio ranges return 416 and the full representation size without content (138.0073ms)
+  Error: connect EACCES 127.0.0.1:49682
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16) {
+    errno: -4092,
+    code: 'EACCES',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 49682
+  }
+
+test at scripts\serve.test.mjs:98:1
+✖ HEAD, empty files, and ignored range requests retain complete-response semantics (92.0967ms)
+  Error: connect EACCES 127.0.0.1:49684
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16) {
+    errno: -4092,
+    code: 'EACCES',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 49684
+  }
+
+test at scripts\serve.test.mjs:111:1
+✖ ordinary previews, missing assets, and forbidden dot paths keep their existing statuses (74.1887ms)
+  Error: connect EACCES 127.0.0.1:49686
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16) {
+    errno: -4092,
+    code: 'EACCES',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 49686
+  }

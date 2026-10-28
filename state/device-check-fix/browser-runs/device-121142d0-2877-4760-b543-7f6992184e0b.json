@@ -1,0 +1,136 @@
+{
+  "receivedAt": "2026-10-28T04:36:17.128Z",
+  "version": 1,
+  "kind": "automatic",
+  "createdAt": "2026-10-28T04:35:56.700Z",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+  "platform": "Win32",
+  "touchPoints": 0,
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "dpr": 1
+  },
+  "appViewport": {
+    "width": 375,
+    "height": 645
+  },
+  "screen": {
+    "width": 1920,
+    "height": 1080
+  },
+  "reducedMotion": false,
+  "rows": [
+    {
+      "name": "tower orbit",
+      "frames": 660,
+      "fps": 165,
+      "medianMs": 6.1,
+      "p95Ms": 6.1,
+      "callbackP95Ms": 1.4,
+      "over33ms": 0,
+      "detail": "compact",
+      "quality": "0",
+      "buffer": {
+        "width": 388,
+        "height": 667
+      }
+    },
+    {
+      "name": "unfold",
+      "frames": 174,
+      "fps": 133.5,
+      "medianMs": 6.1,
+      "p95Ms": 6.2,
+      "callbackP95Ms": 2.5,
+      "over33ms": 1,
+      "detail": "compact",
+      "quality": "0",
+      "buffer": {
+        "width": 388,
+        "height": 667
+      }
+    },
+    {
+      "name": "explore orbit",
+      "frames": 660,
+      "fps": 165,
+      "medianMs": 6.1,
+      "p95Ms": 6.2,
+      "callbackP95Ms": 1.8,
+      "over33ms": 0,
+      "detail": "compact",
+      "quality": "0",
+      "buffer": {
+        "width": 388,
+        "height": 667
+      }
+    },
+    {
+      "name": "open projects",
+      "frames": 276,
+      "fps": 147.6,
+      "medianMs": 6.1,
+      "p95Ms": 12.1,
+      "callbackP95Ms": 2.2,
+      "over33ms": 0,
+      "detail": "compact",
+      "quality": "0",
+      "buffer": {
+        "width": 388,
+        "height": 667
+      }
+    },
+    {
+      "name": "floor orbit",
+      "frames": 659,
+      "fps": 164.8,
+      "medianMs": 6.1,
+      "p95Ms": 6.2,
+      "callbackP95Ms": 1.8,
+      "over33ms": 0,
+      "detail": "compact",
+      "quality": "0",
+      "buffer": {
+        "width": 388,
+        "height": 667
+      }
+    },
+    {
+      "name": "room flight",
+      "frames": 127,
+      "fps": 165,
+      "medianMs": 6.1,
+      "p95Ms": 6.1,
+      "callbackP95Ms": 1.8,
+      "over33ms": 0,
+      "detail": "compact",
+      "quality": "0",
+      "buffer": {
+        "width": 388,
+        "height": 667
+      }
+    }
+  ],
+  "manual": {
+    "orbitZoom": false,
+    "rooms": false,
+    "resizeOrientation": false,
+    "reading": false,
+    "backgroundReturn": false
+  },
+  "deviceLabel": "",
+  "idleFramesOver500ms": 0,
+  "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F15) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "qualityTrace": [
+    {
+      "quality": "0",
+      "detail": "compact",
+      "width": 388,
+      "height": 667,
+      "time": 1713.14
+    }
+  ],
+  "status": "COMPLETE",
+  "hiddenOrResizeDuringRun": false
+}

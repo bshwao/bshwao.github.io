@@ -15,6 +15,7 @@ files.push(resolve(root,'scripts/penthouse-preview.js'));
 files.push(resolve(root,'scripts/outdoor-rain-qa.js'));
 files.push(resolve(root,'scripts/interior-surface-qa.js'));
 files.push(resolve(root,'scripts/mobile-qa.js'));
+files.push(resolve(root,'scripts/device-qa.js'),resolve(root,'scripts/device-serve.mjs'));
 for (const file of files) {
   const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
   if (result.status !== 0) { process.stderr.write(result.stderr); process.exit(1); }

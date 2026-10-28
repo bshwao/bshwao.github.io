@@ -1,0 +1,41 @@
+[
+  {
+    "game": "blackjack",
+    "status": "Push. The hand is tied."
+  },
+  {
+    "game": "wordle",
+    "score": "1 / 6",
+    "status": "1 of 6 guesses used."
+  },
+  {
+    "game": "crossword",
+    "status": "1 incorrect letter. 16 empty squares.",
+    "incorrect": "true"
+  },
+  {
+    "game": "snake",
+    "status": "Snake board. 0 apples. over."
+  },
+  {
+    "game": "2048",
+    "before": "2\n2",
+    "after": "2\n2\n4\n4",
+    "score": "4"
+  },
+  {
+    "game": "sudoku",
+    "cell": "0",
+    "score": "31 / 81",
+    "status": "3 cells conflict."
+  },
+  {
+    "game": "tic-tac-toe",
+    "board": "X\nO",
+    "status": "Your move."
+  },
+  {
+    "game": "snake pause",
+    "status": "Snake board. 0 apples. paused."
+  }
+]

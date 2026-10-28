@@ -1,0 +1,233 @@
+[
+  {
+    "section": "about",
+    "room": "Explore room 01: Orientation",
+    "canvas": {
+      "bottom": 981.171875,
+      "height": 981.171875,
+      "left": 0,
+      "right": 1978.90625,
+      "top": 0,
+      "width": 1978.90625,
+      "x": 0,
+      "y": 0
+    },
+    "focused": "0",
+    "hash": "#about/a",
+    "title": "Eric Hsu"
+  },
+  {
+    "section": "about",
+    "room": "Explore room 02: Study",
+    "canvas": {
+      "bottom": 981.171875,
+      "height": 981.171875,
+      "left": 0,
+      "right": 1978.90625,
+      "top": 0,
+      "width": 1978.90625,
+      "x": 0,
+      "y": 0
+    },
+    "focused": "1",
+    "hash": "#about/b",
+    "title": "Engineering student"
+  },
+  {
+    "section": "about",
+    "room": "Explore room 03: Common room",
+    "canvas": {
+      "bottom": 981.171875,
+      "height": 981.171875,
+      "left": 0,
+      "right": 1978.90625,
+      "top": 0,
+      "width": 1978.90625,
+      "x": 0,
+      "y": 0
+    },
+    "focused": "2",
+    "hash": "#about/c",
+    "title": "Music & community"
+  },
+  {
+    "section": "about",
+    "room": "Explore room 04: Conversation",
+    "canvas": {
+      "bottom": 981.171875,
+      "height": 981.171875,
+      "left": 0,
+      "right": 1978.90625,
+      "top": 0,
+      "width": 1978.90625,
+      "x": 0,
+      "y": 0
+    },
+    "focused": "3",
+    "hash": "#about/d",
+    "title": "Languages"
+  },
+  {
+    "section": "projects",
+    "room": "Explore room 01: Main workshop",
+    "canvas": {
+      "bottom": 981.171875,
+      "height": 981.171875,
+      "left": 0,
+      "right": 1978.90625,
+      "top": 0,
+      "width": 1978.90625,
+      "x": 0,
+      "y": 0
+    },
+    "focused": "0",
+    "hash": "#projects/a",
+    "title": "flowst8"
+  },
+  {
+    "section": "projects",
+    "room": "Explore room 02: Systems lab",
+    "canvas": {
+      "bottom": 981.171875,
+      "height": 981.171875,
+      "left": 0,
+      "right": 1978.90625,
+      "top": 0,
+      "width": 1978.90625,
+      "x": 0,
+      "y": 0
+    },
+    "focused": "1",
+    "hash": "#projects/b",
+    "title": "Test-Shell"
+  },
+  {
+    "section": "projects",
+    "room": "Explore room 03: Simulation lab",
+    "canvas": {
+      "bottom": 981.171875,
+      "height": 981.171875,
+      "left": 0,
+      "right": 1978.90625,
+      "top": 0,
+      "width": 1978.90625,
+      "x": 0,
+      "y": 0
+    },
+    "focused": "2",
+    "hash": "#projects/c",
+    "title": "Poltergeist"
+  },
+  {
+    "section": "experience",
+    "room": "Explore room 01: Electronics lab",
+    "focused": "0",
+    "hash": "#experience/a",
+    "title": "McGill Formula Electric"
+  },
+  {
+    "section": "experience",
+    "room": "Explore room 02: Network room",
+    "focused": "1",
+    "hash": "#experience/b",
+    "title": "Sensors & CAN network"
+  },
+  {
+    "section": "experience",
+    "room": "Explore room 03: Diagnostic bay",
+    "focused": "2",
+    "hash": "#experience/c",
+    "title": "Electrical troubleshooting"
+  },
+  {
+    "section": "experience",
+    "room": "Explore room 04: Inspection bay",
+    "focused": "3",
+    "hash": "#experience/d",
+    "title": "Electrical inspection"
+  },
+  {
+    "section": "resume",
+    "room": "Explore room 01: Academic archive",
+    "focused": "0",
+    "hash": "#resume/a",
+    "title": "Education"
+  },
+  {
+    "section": "resume",
+    "room": "Explore room 02: Code library",
+    "focused": "1",
+    "hash": "#resume/b",
+    "title": "Programming"
+  },
+  {
+    "section": "resume",
+    "room": "Explore room 03: Technical reference",
+    "focused": "2",
+    "hash": "#resume/c",
+    "title": "Systems & engineering"
+  },
+  {
+    "section": "resume",
+    "room": "Explore room 04: Document room",
+    "focused": "3",
+    "hash": "#resume/d",
+    "title": "Résumé"
+  },
+  {
+    "section": "contact",
+    "room": "Explore room 01: Correspondence",
+    "focused": "0",
+    "hash": "#contact/a",
+    "title": "Email"
+  },
+  {
+    "section": "contact",
+    "room": "Explore room 02: Code exchange",
+    "focused": "1",
+    "hash": "#contact/b",
+    "title": "GitHub"
+  },
+  {
+    "section": "contact",
+    "room": "Explore room 03: Connections",
+    "focused": "2",
+    "hash": "#contact/c",
+    "title": "LinkedIn"
+  },
+  {
+    "section": "contact",
+    "room": "Explore room 04: Coordinates",
+    "focused": "3",
+    "hash": "#contact/d",
+    "title": "Montréal, QC"
+  },
+  {
+    "section": "penthouse",
+    "room": "Explore room 01: Bedroom",
+    "focused": "0",
+    "hash": "#penthouse/a",
+    "title": "Bedroom"
+  },
+  {
+    "section": "penthouse",
+    "room": "Explore room 02: Play lounge",
+    "focused": "1",
+    "hash": "#penthouse/b",
+    "title": "Games"
+  },
+  {
+    "section": "penthouse",
+    "room": "Explore room 03: Listening nook",
+    "focused": "2",
+    "hash": "#penthouse/c",
+    "title": "Music"
+  },
+  {
+    "section": "penthouse",
+    "room": "Explore room 04: Sky lounge",
+    "focused": "3",
+    "hash": "#penthouse/d",
+    "title": "Star atlas"
+  }
+]

@@ -1,0 +1,264 @@
+ 
+Eric  Hsu  
+Montréal,  QC  |  647-904-5768  |  erichsu8681@gmail.com  
+LinkedIn: linkedin.com/in/erichsu07  GitHub:  github.com/bshwao 
+ 
+EXPERIENCE  
+McGill  Formula  Electric  —  Electronic  Systems  Team  Member  
+Montréal,  QC  |  Sept  2025  –  Present  
+●  Designed  and  tested  4-layer  PCBs  in  KiCad  for  the  low-voltage  system  of  a  Formula  SAE  electric  
+race
+ 
+car,
+ 
+cutting
+ 
+board
+ 
+area
+ 
+by
+ 
+21%
+ 
+while
+ 
+meeting
+ 
+signal-integrity
+ 
+requirements.
+ ●  Integrated  6  sensors  and  built  a  CAN  network  across  8  nodes,  eliminating  dropped  messages  
+during
+ 
+track
+ 
+testing.
+ ●  Diagnosed  and  resolved  5  vehicle-wide  electrical  faults  with  an  over  50+  person  multidisciplinary  
+team.
+ ●  Verified  electrical  systems  against  Formula  SAE  technical  inspection  requirements  and  passed  
+electrical
+ 
+inspection
+ 
+on
+ 
+the
+ 
+first
+ 
+attempt.
+ 
+ 
+PROJECTS  
+flowst8  —  Contributor,  team  project  (3  people)  |  Hack  The  Hill  III,  September  2026  |  [https://github.com/ric-e/flowst8]  
+●  Developed  a  real-time  productivity  web  application  designed  to  calculate  dynamic  focus  scores,  
+detect
+ 
+developer
+ 
+cognitive
+ 
+fatigue,
+ 
+and
+ 
+prompt
+ 
+timely
+ 
+breaks
+ 
+to
+ 
+prevent
+ 
+burnout.
+ ●  Engineered  an  end-to-end  data  pipeline  using  Python,  FastAPI,  and  WebSockets  to  synchronize  
+high-frequency
+ 
+keystrokes
+ 
+per
+ 
+minute
+ 
+(KPM)
+ 
+and
+ 
+live
+ 
+Apple
+ 
+Watch
+ 
+heart
+ 
+rate
+ 
+telemetry.
+ ●  Containerized  microservices  using  Docker,  implementing  TimescaleDB  for  continuous  
+time-series
+ 
+data
+ 
+storage
+ 
+and
+ 
+the
+ 
+ElevenLabs
+ 
+API
+ 
+for
+ 
+triggering
+ 
+automated,
+ 
+natural-sounding
+ 
+audio
+ 
+alerts.
+ ●  Completed  the  full-stack  integration  of  the  HTML/Next  frontend  with  Python/Typescript  backend  
+ 
+UNIX  CLI  Shell  Simulator  (Test-Shell)  |  [https://github.com/bshwao/Test-Shell]  
+●  Developed  a  lightweight  UNIX  command-line  interpreter  in  C  to  simulate  core  operating  system  
+interactions
+ 
+and
+ 
+essential
+ 
+shell
+ 
+functionalities.
+ 
+ ●  Leveraged  POSIX  system  calls  (such  as  fork,  execvp,  and  wait)  to  manage  process  creation,  child  
+process
+ 
+execution,
+ 
+and
+ 
+process
+ 
+synchronization.
+ 
+ ●  Created  input  parsing  and  memory  management  protocols  to  accurately  handle  command  
+arguments,
+ 
+prevent
+ 
+memory
+ 
+leaks,
+ 
+and
+ 
+mitigate
+ 
+zombie
+ 
+processes.
+ 
+ 
+EDUCATION  
+McGill  University  —  Montréal,  QC  
+Bachelor
+ 
+of
+ 
+Engineering,
+ 
+Electrical
+ 
+Engineering
+ 
+(Expected
+ 
+2030)
+ 
+Richmond  Hill  High  School  —  Richmond  Hill,  ON  
+Ontario
+ 
+Secondary
+ 
+School
+ 
+Diploma,
+ 
+2025
+ 
+●  GPA:  97.5%  ●  Honor  Roll  (Grades  9–12)  
+ 
+LANGUAGES  &  TECHNOLOGIES  
+Languages:  Python,  C,  C++,  Bash/Shell  Scripting,  Java,  JavaScript,  TypeScript,  HTML,  Docker,  
+Node.js,
+ 
+Linux
+ 
+OS,
+ 
+UNIX
+ 
+OS,
+ 
+SQL,
+ 
+Git,
+ 
+Verilog
+ 
+(SystemVerilog),
+ 
+UVM,
+ 
+CARLA,
+ 
+CAD
+ 
+Engineering  /  Technical:  Circuit  Analysis,  Digital  Logic  Design,  Microcontrollers,  PCB  Design,  
+Electronic
+ 
+Testing
+ 
+&
+ 
+Troubleshooting,
+ 
+Oscilloscopes
+ 
+&
+ 
+Multimeters,
+ 
+Technical
+ 
+Documentation,
+ 
+Hardware-Software
+ 
+Integration,
+ 
+Breadboard,
+ 
+Memory
+ 
+Controllers
+ 
+ 
+ACTIVITIES
+ 
+Volunteering :   
+●  McHacks  13  (500+  participants)  ●   McGill  TechFair  (1000+  participants)  
+Level  10  Piano  with  Honors  —  Royal  Conservatory  of  Music  
+ 
+LFS101  Certification  —  Linux  Foundation  
+ 
+LANGUAGES  
+●  English  ●  Mandarin  ●  French  

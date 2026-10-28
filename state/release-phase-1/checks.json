@@ -1,0 +1,274 @@
+[
+  {
+    "check": "Introduction, zoom, keyboard orbit, reset and expansion",
+    "pass": true
+  },
+  {
+    "check": "About reading view opens and returns to 3D",
+    "pass": true
+  },
+  {
+    "check": "experience reading view opens and returns",
+    "pass": true
+  },
+  {
+    "check": "resume reading view opens and returns",
+    "pass": true
+  },
+  {
+    "check": "contact reading view opens and returns",
+    "pass": true
+  },
+  {
+    "check": "penthouse reading view opens and returns",
+    "pass": true
+  },
+  {
+    "check": "Bundled music playback and all four audio-reactive visualizers",
+    "pass": true,
+    "samples": [
+      {
+        "energy": 0.22818,
+        "frames": 425,
+        "height": 687,
+        "style": "spectrum",
+        "width": 1486
+      },
+      {
+        "energy": 0.1681,
+        "frames": 429,
+        "height": 687,
+        "style": "waveform",
+        "width": 1486
+      },
+      {
+        "energy": 0.14231,
+        "frames": 432,
+        "height": 687,
+        "style": "orbit",
+        "width": 1486
+      },
+      {
+        "energy": 0.12684,
+        "frames": 435,
+        "height": 687,
+        "style": "constellation",
+        "width": 1486
+      }
+    ],
+    "nextTrack": "Night Bus",
+    "previousTrack": "Window Light"
+  },
+  {
+    "check": "All seven games and retained game state",
+    "pass": true,
+    "games": [
+      {
+        "game": "blackjack",
+        "status": "Push. The hand is tied."
+      },
+      {
+        "game": "wordle",
+        "score": "1 / 6",
+        "status": "1 of 6 guesses used."
+      },
+      {
+        "game": "crossword",
+        "status": "1 incorrect letter. 16 empty squares.",
+        "incorrect": "true"
+      },
+      {
+        "game": "snake",
+        "status": "Snake board. 0 apples. over."
+      },
+      {
+        "game": "2048",
+        "before": "2\n2",
+        "after": "2\n2\n4\n4",
+        "score": "4"
+      },
+      {
+        "game": "sudoku",
+        "cell": "0",
+        "score": "31 / 81",
+        "status": "3 cells conflict."
+      },
+      {
+        "game": "tic-tac-toe",
+        "board": "X\nO",
+        "status": "Your move."
+      },
+      {
+        "game": "snake pause",
+        "status": "Snake board. 0 apples. paused."
+      }
+    ],
+    "retainedWord": "1 / 6"
+  },
+  {
+    "check": "Bedroom terminal, saved notes, project explorer, sandboxed editor and window controls",
+    "pass": true,
+    "terminal": true,
+    "project": "Poltergeist",
+    "retainedNote": true,
+    "editorMove": -16
+  },
+  {
+    "check": "Bedroom atmosphere preset",
+    "pass": true,
+    "lighting": "night",
+    "weather": "rain"
+  },
+  {
+    "check": "Star atlas pan, zoom, connections, search, selection and constellation filtering",
+    "pass": true,
+    "skyBefore": "translate(249.75555332602852,261.78358714720673)",
+    "skyAfter": "translate(249.75555332602852,261.78358714720673)",
+    "skyZoom": "1.4×",
+    "skyCount": "7 stars in the catalog",
+    "zoomedPan": {
+      "panBefore": "translate(212.04499699013851,253.65784264872912)",
+      "panAfter": "translate(164.04499699013854,253.65784264872912)",
+      "note": "The full-catalog view is intentionally clamped; pan is checked after zooming in."
+    }
+  },
+  {
+    "check": "Reloaded direct room URL",
+    "pass": true
+  },
+  {
+    "check": "Browser Back and Forward restore the selected room",
+    "pass": true
+  },
+  {
+    "check": "Projects reading view opens and returns",
+    "pass": true
+  },
+  {
+    "check": "Desktop window resizing preserves selected room and controls",
+    "pass": true,
+    "sizes": [
+      {
+        "canvas": {
+          "bottom": 900,
+          "height": 900,
+          "left": 0,
+          "right": 1440,
+          "top": 0,
+          "width": 1440,
+          "x": 0,
+          "y": 0
+        },
+        "height": 900,
+        "overflow": false,
+        "panel": {
+          "bottom": 876,
+          "height": 786,
+          "left": 1050,
+          "right": 1416,
+          "top": 90,
+          "width": 366,
+          "x": 1050,
+          "y": 90
+        },
+        "title": "flowst8",
+        "width": 1440
+      },
+      {
+        "canvas": {
+          "bottom": 700,
+          "height": 700,
+          "left": 0,
+          "right": 1000,
+          "top": 0,
+          "width": 1000,
+          "x": 0,
+          "y": 0
+        },
+        "height": 700,
+        "overflow": false,
+        "panel": {
+          "bottom": 676,
+          "height": 586,
+          "left": 660,
+          "right": 976,
+          "top": 90,
+          "width": 316,
+          "x": 660,
+          "y": 90
+        },
+        "title": "flowst8",
+        "width": 1000
+      },
+      {
+        "canvas": {
+          "bottom": 720,
+          "height": 720,
+          "left": 0,
+          "right": 1280,
+          "top": 0,
+          "width": 1280,
+          "x": 0,
+          "y": 0
+        },
+        "height": 720,
+        "overflow": false,
+        "panel": {
+          "bottom": 696,
+          "height": 606,
+          "left": 890,
+          "right": 1256,
+          "top": 90,
+          "width": 366,
+          "x": 890,
+          "y": 90
+        },
+        "title": "flowst8",
+        "width": 1280
+      }
+    ],
+    "visualConfirmation": "resized-projects-recheck.png: fresh 1280×720 scene renders with the selected room and content panel"
+  },
+  {
+    "check": "Return from floor and collapse the tower",
+    "pass": true
+  },
+  {
+    "check": "Switch to another tab and return, preserving the view and live controls",
+    "pass": true,
+    "selectedAway": "1803575359",
+    "selectedReturn": "1803574874",
+    "before": {
+      "azimuth": "0.398",
+      "mode": "tower",
+      "room": "",
+      "section": ""
+    },
+    "after": {
+      "azimuth": "0.398",
+      "mode": "tower",
+      "room": "",
+      "section": ""
+    },
+    "orbitAfterReturn": "0.268",
+    "note": "Selected tab return and controls verified. Automation reports document visibility as visible; OS suspension was not measured."
+  },
+  {
+    "check": "Full reading page and Penthouse anchor",
+    "pass": true
+  },
+  {
+    "check": "Local WAV import, advancing playback and analyser response",
+    "pass": true,
+    "evidence": "audio-import.json"
+  },
+  {
+    "check": "Real Edge WebGL sweep",
+    "pass": true,
+    "views": 31,
+    "rooms": 23,
+    "maxFrameCalls": 82,
+    "idleFramesOver250ms": 0,
+    "evidence": "edge-webgl.json"
+  }
+]

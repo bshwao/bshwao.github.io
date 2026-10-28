@@ -17,10 +17,23 @@ addEventListener('resize', () => { if (running) interrupted = true; });
 async function settled() {
   for (let i = 0; i < 200; i++) {
     const main = frame.contentDocument?.querySelector('#main');
-    if (main?.dataset.transition === 'idle' && main.dataset.cameraMotion === 'idle') return;
+    const intro = frame.contentDocument?.querySelector('#portfolio-intro');
+    const enter = intro?.querySelector('#intro-enter');
+    if (intro?.open && enter && !enter.disabled) enter.click();
+    if (main?.dataset.transition === 'idle' && main.dataset.cameraMotion === 'idle' && !intro?.open && !main.inert) return;
+    if (main?.dataset.mode === 'fallback') throw new Error('3D is unavailable on this browser. Open the full portfolio to use its reading view.');
     await pause(50);
   }
   throw new Error('The model did not become ready. Open the full portfolio to check its fallback.');
+}
+function loadProbe() {
+  return new Promise((resolve, reject) => {
+    const cleanup = () => { clearTimeout(timer); frame.removeEventListener('load', loaded); };
+    const loaded = () => { cleanup(); resolve(); };
+    const timer = setTimeout(() => { cleanup(); reject(new Error('The test preview could not load. Refresh this page and try again.')); }, 15000);
+    frame.addEventListener('load', loaded);
+    frame.src = '/scripts/frame-probe.html';
+  });
 }
 function assertVisible() {
   if (interrupted || document.hidden) throw new Error('The page was hidden or resized during measurement. Run again with this page visible and the device held steady.');
@@ -67,15 +80,22 @@ async function persist(kind) {
 run.addEventListener('click', async () => {
   if (running) return;
   running = true; interrupted = false; run.disabled = true; document.querySelector('#save').disabled = true;
-  for (const input of document.querySelectorAll('input[name="manual"]')) input.checked = false;
-  // The frame stays visible at a fixed size while results are collected below it.
-  const available = innerHeight - document.querySelector('header').getBoundingClientRect().height;
-  document.querySelector('#stage').style.height = `${Math.max(200, available)}px`;
-  document.querySelector('#manual').open = false;
-  scrollTo(0,0);
+  report = null;
+  status.textContent = 'Preparing the performance check…';
+  output.textContent = 'Preparing a fresh preview…';
+  saveStatus.textContent = 'Results will be saved after measurement finishes.';
   try {
-    frame.src = './frame-probe.html'; await new Promise(resolve => frame.addEventListener('load',resolve,{once:true}));
+    for (const input of document.querySelectorAll('input[name="manual"]')) input.checked = false;
+    // The frame stays visible at a fixed size while results are collected below it.
+    const available = innerHeight - document.querySelector('header').getBoundingClientRect().height;
+    document.querySelector('#stage').style.height = `${Math.max(200, available)}px`;
+    document.querySelector('#manual').open = false;
+    scrollTo(0,0);
+    await loadProbe();
     await settled();
+    if (frame.contentDocument.querySelector('#main').dataset.motion === 'reduced') throw new Error('Select Full motion in the preview’s Settings before running the animation benchmark. You can restore Reduced motion afterward.');
+    // Preparing/scrolling the page may resize Safari's viewport before measurement.
+    interrupted = false;
     report = {version:1,kind:'automatic',createdAt:new Date().toISOString(),...metadata(),rows:[],manual:{},deviceLabel:''};
     const doc = frame.contentDocument;
     for (const [name,action,duration] of [
@@ -85,13 +105,13 @@ run.addEventListener('click', async () => {
       ['open projects',()=>{doc.querySelector('#tower-labels [data-section="projects"]').click();},2200],
       ['floor orbit',orbit,4000],
       ['room flight',()=>{doc.querySelector('#station-navigation [data-station="1"]').click();},1400]
-    ]) { status.textContent = `Measuring ${name}…`; await sample(name,action,duration); }
+    ]) { status.textContent = `Measuring ${name}…`; await sample(name,action,duration); await settled(); }
     await settled();
     const before = frame.contentWindow.frameProbe.length;
     await pause(500);
     report.idleFramesOver500ms = frame.contentWindow.frameProbe.length - before;
-    const gl = doc.querySelector('canvas').getContext('webgl2'), debug = gl.getExtension('WEBGL_debug_renderer_info');
-    report.renderer = debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+    const gl = doc.querySelector('canvas').getContext('webgl2'), debug = gl?.getExtension('WEBGL_debug_renderer_info');
+    report.renderer = gl ? (debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)) : 'Unavailable';
     report.qualityTrace = frame.contentWindow.frameQualityTrace;
     report.status = 'COMPLETE'; report.hiddenOrResizeDuringRun = interrupted;
     assertVisible();
@@ -100,6 +120,7 @@ run.addEventListener('click', async () => {
   } catch (error) {
     status.textContent = `Check stopped: ${error.message}`;
     if (report) { report.status = 'INCOMPLETE'; report.error = error.message; output.textContent=JSON.stringify(report,null,2); }
+    else output.textContent = status.textContent;
   } finally { running = false; run.disabled = false; }
 });
 document.querySelector('#save').addEventListener('click',()=>persist('manual'));

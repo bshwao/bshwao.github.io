@@ -34,7 +34,6 @@ export function createLocalClock(element, {
     element.dateTime = state.dateTime;
     element.title = state.title;
     element.dataset.source = state.source;
-    element.setAttribute('aria-label', `${state.title}: ${state.text}`);
     timer = schedule(refresh, 1010 - date.getTime() % 1000);
   }
   ownerDocument.addEventListener('visibilitychange', refresh);

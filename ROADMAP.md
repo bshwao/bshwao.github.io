@@ -15,6 +15,8 @@ The first-floor robot experiment has been removed. Its evidence remains archived
 
 ## Recorded verification
 
+The October 28, 2026 [iPhone 13 / Safari check](state/device-runs/README.md) completes the mobile recheck: the user saved successful orbit/zoom, room navigation, orientation, reading and background-return checks and confirmed that mobile works well. The automatic preview benchmark completed with orbiting near 60 FPS and zero idle frames in its final 500ms. Results apply to this tested device and preview size.
+
 The October 27, 2026 [phone-feedback fixes](state/mobile-usability/phone-feedback/README.md) address selection, control placement, touch sensitivity and camera limits from the initial iPhone review. They pass 213 source/server tests, five integration modes, 178 rendered usability cases and eight settings/control layouts. A physical iPhone/Safari recheck remains pending.
 
 The October 27, 2026 [mobile usability](state/mobile-usability/README.md) checkpoint adds Scene/Split/Read room panels, larger mobile controls, phone-landscape and tablet-portrait layouts, and safe-area spacing. It passes 212 source/server tests, 85 module/reference checks, five integration modes, 281 simulated usability cases, a 36-view accessibility sweep and a landscape WebGL sweep. Physical-device and Safari verification remain separate pending work.
@@ -35,13 +37,38 @@ The October 26, 2026 [bedroom layout](state/bedroom-layout/README.md) and [room 
 
 Other feature checkpoints include simulated portrait and landscape Chromium layouts, accessibility audits, audio playback, and activity-dialog interaction. Their measurements apply to the versions and environments described in each report.
 
-## Remaining work
+## Release phases
 
-- [ ] Validate the current published commit with a fresh live-site smoke review and an updated deployment report.
-- [ ] Recheck the mobile touch fixes on iPhone/Safari and complete physical-device and cross-engine testing, including the regular Edge session.
-- [ ] Review manual accessibility and actual phone performance alongside the existing automated and simulated-layout checks.
+The iPhone 13/Safari recheck and saved performance review are complete. The remaining release work proceeds in three phases.
 
-Local Chromium verification is complete for the latest recorded checkpoint. The earlier browser-connection issue is historical and is no longer an active local-testing blocker.
+### Phase 1 — Desktop browser verification
+
+- [x] Check the normal Edge session: introduction, tower expansion/collapse, all floors, room navigation, zoom and resizing.
+- [x] Exercise music playback/import, the visualizer, games, bedroom desktop and telescope atlas.
+- [x] Check reading views, room links, browser history and return from another tab.
+- [x] Fix any failures and record browser/version and results in QA.md.
+
+Complete when these flows work in Edge and any discovered functional defects are resolved.
+
+Completed October 28, 2026 in Edge 156 on Windows. The [Phase 1 report](state/release-phase-1/README.md) records the UI checks, local audio import, all 31 rendered views and object responses in all 23 rooms. No application changes were required by this pass. Phase 2 remains next.
+
+### Phase 2 — Accessibility and release preparation
+
+- [ ] Manually review keyboard navigation, visible focus, dialog focus/return, readable contrast and browser zoom.
+- [ ] Check reduced motion and the complete reading fallback.
+- [ ] Verify résumé downloads, contact links, project links and content accuracy.
+- [ ] Run the source and integration checks on the final candidate and record results.
+
+Complete when required content and controls are usable, links work and the final candidate passes its checks.
+
+### Phase 3 — Deployment and live verification
+
+- [ ] Publish the approved release candidate through the repository's deployment process.
+- [ ] Confirm the published commit and successful deployment checks.
+- [ ] Check the live introduction, tower/room routes, reading page, résumé, links and penthouse activities on desktop and iPhone/Safari.
+- [ ] Update the deployment report and QA.md with the verified revision and results.
+
+Complete when the intended revision is live and the production checks pass. These phases describe the release plan; publishing remains a separate action.
 
 ## Optional enhancement
 
