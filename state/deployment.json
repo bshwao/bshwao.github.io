@@ -1,6 +1,6 @@
 {
-  "checkedAt": "2026-10-24T13:59:40.766Z",
-  "commit": "e446760fceac0c31b37ee81bdb069f32cc02b3e3",
+  "checkedAt": "2026-10-28T20:12:15.597Z",
+  "commit": "1ee09f58da9a64fe64b3aebfdb2b91eacdb08b93",
   "origin": "https://bshwao.github.io/",
   "status": "PASS",
   "checks": [
@@ -8,50 +8,50 @@
       "path": "index.html",
       "status": 200,
       "contentType": "text/html; charset=utf-8",
-      "sha256": "2d658be09b99517afc212513250f6fd60a3d21ba49f910a3b827daa3c1093334",
-      "bytes": 4198
+      "sha256": "5af345b8b903d5a734fd752b5a39a991549c7bc73080e49250bd302b518a2092",
+      "bytes": 5914
     },
     {
       "path": "reading.html",
       "status": 200,
       "contentType": "text/html; charset=utf-8",
-      "sha256": "d2a7cfe0e6fb9aa0f8464cb3e96c50e1cfa4a09c00a8050ad760a94383e4c4eb",
-      "bytes": 20365
+      "sha256": "a1f3f95aabe4960a3af63406d545235feda08b2a8c3f3c42bc1db9f22ae91e20",
+      "bytes": 20412
     },
     {
       "path": "assets/scene-3d.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "47a3710aaf2f455717efe7e86be22a2c585ac0edf415d178d8cb5ba14009ecb0",
-      "bytes": 34456
+      "sha256": "4e9fcca4995f4fc311c7aa47d0f877cb527ae199740d5c4e7322c31ec013d37c",
+      "bytes": 48817
     },
     {
       "path": "assets/tower-model.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "d583dc739d72f34fd42284b2020af209155dc024d6bd5f013d455b51b6069705",
-      "bytes": 13481
+      "sha256": "6b7201294087a57396cc3c9a2e56aeaaa52f9334b638b1a5945f601984e284e7",
+      "bytes": 13885
     },
     {
       "path": "assets/render-budget.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "34a553c19cbac7fcba7a1f56dffdfcfcb2d5dadea7732e8962b539621b556b6a",
-      "bytes": 522
+      "sha256": "8b601227be1e2c87c2f3c496f7f1a5139232869534dd73573bfb4e81da7748c1",
+      "bytes": 616
     },
     {
       "path": "assets/color-theme.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "1e71620c80b37bc3d8ed69f87adec7671c7d89242265eec89b77246f3174d1ed",
-      "bytes": 1963
+      "sha256": "65944b96ef2d5936740200c249966a0245cfa41248f267652bf67f48041b21fe",
+      "bytes": 1983
     },
     {
       "path": "assets/theme.css",
       "status": 200,
       "contentType": "text/css; charset=utf-8",
-      "sha256": "27fc84825d69cade5b77528964f8f3fbdbc21b6330d8bbec16135155a9910779",
-      "bytes": 1468
+      "sha256": "5d3bde925b9e1df6840ce88a1ae8de440a52856d52006ac177c6e1837fd3873a",
+      "bytes": 1611
     },
     {
       "path": "assets/color-system.css",
@@ -64,36 +64,36 @@
       "path": "assets/interiors.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "60a050cac6d12744fdd23de992b60e6483f5c57c17e4bb3ad9d644cbd62f71f0",
-      "bytes": 25709
+      "sha256": "f778d26a986a9799394f229e48bf6702946ea4d39dc22005fbe6d7eb2d0515b9",
+      "bytes": 35079
     },
     {
       "path": "assets/cap-plans.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "1d6cbd4c8ae9e0c1087f2ee4e55061b0a9ba14123aaa0f671c8453028f6f40af",
-      "bytes": 11719
+      "sha256": "35b870728ce8ebcb76dc4f8431b613faf2c497fd9bbd437fd984502de439e553",
+      "bytes": 13162
     },
     {
       "path": "assets/spatial-app.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "ee17d2dd887f64f35d968b1707fb6eaaff596fd4cf3c6beee082daa76fb86edb",
-      "bytes": 24381
+      "sha256": "08687a23915c1e413e57b8224bdd1278646c5ef44dbf56fc93e373e73108fbaa",
+      "bytes": 35669
     },
     {
       "path": "assets/spatial.css",
       "status": 200,
       "contentType": "text/css; charset=utf-8",
-      "sha256": "b2ee5c47436483607c47faa9daf91417117f496f02abcfa9767ba5ee59c52aaa",
-      "bytes": 17564
+      "sha256": "336a0b96cd98ff71ae55e331b35bab45f9077c1206f57b6dadb8502f05cd82d5",
+      "bytes": 18604
     },
     {
       "path": "assets/floor-view.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "41112ed0eea8e1443731bdbfb9ff5315d594ca18f62eef1ef0ee7d86990a2567",
-      "bytes": 7837
+      "sha256": "c617ebdffe3c76dd6548e7cbf7972fc3d80e9049efae910ae011e76a0de043f1",
+      "bytes": 7990
     },
     {
       "path": "assets/floor-view.css",
@@ -120,22 +120,22 @@
       "path": "assets/project-story.css",
       "status": 200,
       "contentType": "text/css; charset=utf-8",
-      "sha256": "2bbf3b0522140e94a6e16b9547d2413e4f7b3e9ebf2ad5822394d46ebe0c7c31",
-      "bytes": 3246
+      "sha256": "fca66519209056a4e03d2542966953b7351501264c6e99fbc087b2501a869fc3",
+      "bytes": 3863
     },
     {
       "path": "assets/floor-plans.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "6692a40627822896ea1136ebd42ad063082b923961860263ac84273a764cc6ab",
-      "bytes": 12699
+      "sha256": "5454de77a46cd604ed2e61eaa268128b3e0ee592ba744efb6d7fb7b80ec35834",
+      "bytes": 14754
     },
     {
       "path": "assets/district-ground.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "38866c152240169cb4f05af0c91e029dedadf39d566be7edc1e717d02ae6a7e8",
-      "bytes": 11835
+      "sha256": "d5e8858e3246039be2725293731d09526c2fc52b63090717d410da4c113f68b1",
+      "bytes": 12479
     },
     {
       "path": "assets/district-buildings.js",
@@ -155,8 +155,8 @@
       "path": "assets/district-style.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "0723d8868e5658ec4abe75e17321776d829db2492c1000770fd125433ac1aa16",
-      "bytes": 6611
+      "sha256": "38c6b0edd948b497ee93724e1e4963fed65be30dcbf62fbcd13df55b22a9c93a",
+      "bytes": 6612
     },
     {
       "path": "assets/favicon.svg",
@@ -197,64 +197,64 @@
       "path": "QA.md",
       "status": 200,
       "contentType": "text/markdown; charset=utf-8",
-      "sha256": "3900c6dd49d37d9ec719a95acfd4ae97d02eb697b0a1189210353602da1d6dc7",
-      "bytes": 58260
+      "sha256": "a856d2e28f7b36d76941caf8921ad62eabf4569c8a7ee4af40c4488e63d6f10a",
+      "bytes": 110975
     },
     {
       "path": "ROADMAP.md",
       "status": 200,
       "contentType": "text/markdown; charset=utf-8",
-      "sha256": "e167ae3a44f102cfaf1040c45c985752d98fe67e21e654b61b16d02e96a61f62",
-      "bytes": 4302
+      "sha256": "46d029ae6f3bf2c4cc97ccacde20e874214b05772c0e311dc2c522efd2995f67",
+      "bytes": 7229
     },
     {
       "path": "MAINTENANCE.md",
       "status": 200,
       "contentType": "text/markdown; charset=utf-8",
-      "sha256": "37f9c3ee6529beff2b5e817c75c6f41782f238d12fde424aac2b9fc4f0893ab8",
-      "bytes": 20495
+      "sha256": "3a5d4bb48799c9a10f2c3a01b1a32669a40401cdc9e7add319e63a1451f296cf",
+      "bytes": 37885
     },
     {
       "path": "assets/city-layout.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "ce3625e0d44d6a9203140f8330b238cc4b1f89523272685658d3da58ea263cd6",
-      "bytes": 9744
+      "sha256": "4fa06d3470391c4ff18a81336d6c804ed8b55f2059ec7fc9218454ee563db497",
+      "bytes": 9856
     },
     {
       "path": "assets/city-environment.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "416172f803e61111e11284063ea8a4a11361870ec32ad602f604eea3a48269f2",
-      "bytes": 6183
+      "sha256": "188a4007665768c1d4e117bb92d13a64bfdc03fcd121d859fd7cbf908f57d23c",
+      "bytes": 8294
     },
     {
       "path": "assets/city-backdrop.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "bfdda9092aaaab199eded88f5132984a76ddc083754f2c1c1005fb598b52a6bb",
-      "bytes": 4559
+      "sha256": "170c60e0ab2900d54f8b78fb04b73e6429d424405bab1ebf3fe021c1e52c2c80",
+      "bytes": 7237
     },
     {
       "path": "assets/city-waterfront.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "80cd74975570ac297fd839bde23746f9eb681f2b0422ffac2c57b220934e3f23",
-      "bytes": 8277
+      "sha256": "66c1d25329e9f21fce7f0aa2baa58c2c5182be0f2e02cc423dd187d389c1a24b",
+      "bytes": 9566
     },
     {
       "path": "assets/tower-geometry.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "513c340b54b301b55e46ef3d42165c52d4a0f6fd0c4c9d09cf57eeb51328e69a",
-      "bytes": 6115
+      "sha256": "8e3f51b2583b948a8fcc22856d4978324d1ff4cf406cab5509d90ff87482baec",
+      "bytes": 6637
     },
     {
       "path": "assets/camera-framing.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "17cb7280d8b33816aeaaabae04b0afb0e226f5bed74a40569814d9ab86c316f0",
-      "bytes": 3882
+      "sha256": "13b7dbbdc8f55d49e35b7360eede7b901494b931efc548349e1de57e1e209de0",
+      "bytes": 5222
     },
     {
       "path": "assets/facade-materials.js",
@@ -288,22 +288,22 @@
       "path": "assets/city-outskirts.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "f4f543f2e05d2b498f82e8991af96012dfba82897c59343b1e68faa76def8ea4",
-      "bytes": 10654
+      "sha256": "9a61c4a24dee88ccf7f4edc2ff29af6e6d4a6938f5684e4c703a293e3a3aa90b",
+      "bytes": 9360
     },
     {
       "path": "assets/ground-materials.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "3b548066a0d5d7c974081665545844f2bf196837f873e23240a4acfe1b1de84b",
-      "bytes": 2517
+      "sha256": "2331813d8f57c015d07ea90987a118f542aeae2b626ef94ebba43adcea987314",
+      "bytes": 2643
     },
     {
       "path": "assets/interior-details.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "35bc87f80f7236a897973c2bd57f6b404db38cd05821b314e5496e6774388b3b",
-      "bytes": 20996
+      "sha256": "e15371d59a621ff8e48f1add5a906517d4f9ea54964bf8ce4a3aa31bd0e17809",
+      "bytes": 21451
     },
     {
       "path": "assets/glass.css",
@@ -316,22 +316,22 @@
       "path": "assets/interior-structure.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "e99eab27145fe1543b1e3e06fc72262b441d261c2a41dfa28076b87a0b062ab4",
-      "bytes": 18517
+      "sha256": "f9fe4fd79095d140cf714e3949e2fee0dbf054f7b1b94f61651171e0850fe40f",
+      "bytes": 21118
     },
     {
       "path": "assets/room-extensions.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "bd3aa2f76e1f48f3b8bf11883336c8d992a13eb3fe103e8623d0028cc8120311",
-      "bytes": 5570
+      "sha256": "d67c8aca50118f62c34935ba2eb991f8c24ea4f513ac96fe0422b07a48625295",
+      "bytes": 6706
     },
     {
       "path": "assets/local-clock.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "fac35949a08b7ace546f1c756a00e529988e62c8ba4853b0110ffb5527c11f76",
-      "bytes": 2291
+      "sha256": "cfc7655fbd71ee174957c53eeeb7389a45b527dd1b5d076f60f8e0c1d5a1df6e",
+      "bytes": 2218
     },
     {
       "path": "assets/app.js",
@@ -344,22 +344,22 @@
       "path": "assets/content.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "ef70ee2062d7b3b77b54d6ea6def014fe8763289c9436bc9472ad9c3feaefa60",
-      "bytes": 12126
+      "sha256": "5aa82aef982be130fa33853ddc6b1a05876f4fa5fe0748c2d2852f3027f6a62e",
+      "bytes": 10986
     },
     {
       "path": "assets/floor-content.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "e8c48a2686e8f1275cccc6ab35c5feef4d0e0371053bf94a18f9bae987f9eb2c",
-      "bytes": 7231
+      "sha256": "83d4ea76068a96f96e0f438f6df275472a2d23efc667e2e153aa1991a9b4d2e1",
+      "bytes": 7531
     },
     {
       "path": "assets/project-story.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "3faf695ae5e4272a192b61a14b29a5539fd59a6d613fa7e3e55d328b79829594",
-      "bytes": 1897
+      "sha256": "804743d251c0e47adb9c4584126ab3b3e1411f01c5702f5ef15a1f2823553aa1",
+      "bytes": 2258
     },
     {
       "path": "assets/routes.js",
@@ -372,15 +372,15 @@
       "path": "assets/spatial-layout.js",
       "status": 200,
       "contentType": "application/javascript; charset=utf-8",
-      "sha256": "01ca87b32a8e4ea3a903a1e1fe0f7055f405fba3e2b3dfad23350c1546056d69",
-      "bytes": 5795
+      "sha256": "3ca4cda43e3ed62027b2a13901e09ebf2662783b460e70b8cddd6102f752d6b7",
+      "bytes": 5810
     },
     {
       "path": "README.md",
       "status": 200,
       "contentType": "text/markdown; charset=utf-8",
-      "sha256": "bd44ca1887d4655d911208644cae0cf265f75760114f81903c985f898f5c33b7",
-      "bytes": 24132
+      "sha256": "e96804d09baf75a7cdcc9503b9e6736ecda297ebb27fec4bafc2d20c3a315ad0",
+      "bytes": 6507
     },
     {
       "path": "CITY-OUTSKIRTS-PLAN.md",
@@ -465,6 +465,356 @@
       "contentType": "image/png",
       "sha256": "cd8a1f14fe2dde8b35e5ab4ad64f3a43913a49404872d0521853e3791083f033",
       "bytes": 273388
+    },
+    {
+      "path": "assets/arcade-classics.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "33d8bd16d52fcc54549cb1e900aa74fc36246fca567c4e284817c49f22a836ce",
+      "bytes": 10165
+    },
+    {
+      "path": "assets/audio/penthouse/LICENSE.md",
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "sha256": "d14ab997c3b4b83cdf7f1fc951a17e7aab3b223f8399e60221a0a62d43955bf2",
+      "bytes": 1220
+    },
+    {
+      "path": "assets/audio/penthouse/night-bus.wav",
+      "status": 200,
+      "contentType": "audio/wav",
+      "sha256": "6e28cb05b3203b88a0104d84fce06daf005aebc0cc8a4eee78ca89312a81c93f",
+      "bytes": 1671202
+    },
+    {
+      "path": "assets/audio/penthouse/soft-circuit.wav",
+      "status": 200,
+      "contentType": "audio/wav",
+      "sha256": "030444fab9765fd8894ef34c7e9bf97dcad53bb64a1e803435afe506a09970dd",
+      "bytes": 1867808
+    },
+    {
+      "path": "assets/audio/penthouse/window-light.wav",
+      "status": 200,
+      "contentType": "audio/wav",
+      "sha256": "ddd6f851ad22946f186bef496141cfb3bdd5d98bce94524319c74d69195fa1e3",
+      "bytes": 1764044
+    },
+    {
+      "path": "assets/city-geography.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "49dee69029fbb054097d15ea214140d236b61c4664865bfeaf30a5123c1d3664",
+      "bytes": 1254
+    },
+    {
+      "path": "assets/city-island.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "2ac29ffedfc81bfd41301215eb9f362c738255270b4047fdafe8f12111278c00",
+      "bytes": 1759
+    },
+    {
+      "path": "assets/data/README.md",
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "sha256": "35c49860b8a44d3b8beb19870da9364b4720926ed4e7089d3c42e8fe864d2b15",
+      "bytes": 674
+    },
+    {
+      "path": "assets/data/WORD-LIST-LICENSE.txt",
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3",
+      "bytes": 1117
+    },
+    {
+      "path": "assets/furniture-shapes.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "dcab3145453a5f6a1b1411c3222c39f3550bb096e1a4316617c8baff97e35671",
+      "bytes": 832
+    },
+    {
+      "path": "assets/interior-design.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "16d3186de20887f9a875d262fc0c2acd4baadf103d45c1859c011746759677ac",
+      "bytes": 3751
+    },
+    {
+      "path": "assets/intro-tower.svg",
+      "status": 200,
+      "contentType": "image/svg+xml",
+      "sha256": "bb349811b6844f82ee92678be917810ea42a56742bb5ff82ffbfa1d56d7270b7",
+      "bytes": 17868
+    },
+    {
+      "path": "assets/island-settlement.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "02563d2ff2fa599d6e388472d8eececea0d75cd9a5702395169b109594d1aa66",
+      "bytes": 7148
+    },
+    {
+      "path": "assets/island-topography.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "9918b38cfd6a83877424376d754738f17e5f1f2ca683b6fbe355cafcb3af04e5",
+      "bytes": 3701
+    },
+    {
+      "path": "assets/island-wilderness.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "97a39791b8d1d77b165d86f24a8f65d8bcaf92e01a771858c1114b5f99b7fe76",
+      "bytes": 7506
+    },
+    {
+      "path": "assets/mobile-room-panel.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "be472fb3cffa933a62c18c4513ab1950a274261dca94e35d30e09861d75cde6f",
+      "bytes": 2187
+    },
+    {
+      "path": "assets/mobile.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "d30cf17f877656bb5d59de375dd3efee4fd7a0dd012a28c060ef0f7c10ec4bf2",
+      "bytes": 9419
+    },
+    {
+      "path": "assets/mountain-landscape.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "b09c4240f0f800e1f19175506e554dbc5b8dae98f029339500cb979f61e2e917",
+      "bytes": 9866
+    },
+    {
+      "path": "assets/object-interactions.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "663b48c1811bb269d6b00782f0695069701972d5d7f2cc732d7bd2a51d212c60",
+      "bytes": 6883
+    },
+    {
+      "path": "assets/penthouse-arcade.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "c49e697ee462de5a903da31289961e7863d4ca96468f770064dd25a21ae66fd5",
+      "bytes": 19106
+    },
+    {
+      "path": "assets/penthouse-arcade.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "2349abea8990d3fa1077c479b5cdd67f610da9e3f1344865c998b64b51d92d31",
+      "bytes": 262
+    },
+    {
+      "path": "assets/penthouse-atmosphere.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "e73934de63768ef3bb0cbf158e968c413e83da07ed386695f8254b4d72365cd7",
+      "bytes": 1403
+    },
+    {
+      "path": "assets/penthouse-bedroom.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "5d3517d600a52823644ea8a0e350d9dfa99f97d0798701e9df83a1d93fa90f26",
+      "bytes": 13132
+    },
+    {
+      "path": "assets/penthouse-bedroom.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "69ca197d478652fa8211b5b1392eb59fe76156c6b48141943dadc138cc63bf0f",
+      "bytes": 26480
+    },
+    {
+      "path": "assets/penthouse-details.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "a46e116db2ff3959c84ca8bf2667b06ec64a17d62d476ea6e94ed126b47e95d4",
+      "bytes": 19789
+    },
+    {
+      "path": "assets/penthouse-experiences.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "e1b11ba8d4628c9e5d295005465bbcc5ea02429798f0f3e648015b822bd9b297",
+      "bytes": 6023
+    },
+    {
+      "path": "assets/penthouse-experiences.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "4976a04351b8d44fe12afe6badbe0a23dee86ec300d4f46965ec368349aaabd0",
+      "bytes": 6549
+    },
+    {
+      "path": "assets/penthouse-game-dashboard.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "13b60c898aecb640abbb0aa45f079720acda8e1b6397f03d16991d69ef0d0bce",
+      "bytes": 31595
+    },
+    {
+      "path": "assets/penthouse-game-engines.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "3122ca3bde9777f5a9dba99db9c23a77e480dc53818d1725aa783bf08359e9a8",
+      "bytes": 4986
+    },
+    {
+      "path": "assets/penthouse-game-puzzles.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "0800252a05615f4338c793fa4aa0ad583607025f0721de175b2dc6c73ac06058",
+      "bytes": 2747
+    },
+    {
+      "path": "assets/penthouse-music.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "857d40c0abdf4ece95ea0ba0320ce548de37b00667dd007d6fe1dcab86765123",
+      "bytes": 15643
+    },
+    {
+      "path": "assets/penthouse-play.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "97dfe5ae5958cd1efd3681f616dc8ed57dc86960ea541f08899763a229eab7ad",
+      "bytes": 2999
+    },
+    {
+      "path": "assets/penthouse-star-map.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "c8cf747428b9310744ce61f269de28c6d1d6d809d0ab3cb66441894934506b62",
+      "bytes": 8309
+    },
+    {
+      "path": "assets/penthouse-star-map.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "ff7acbb931fbf0d132407b86e9cf10bf3a2ad7825b019858c911eea66d49d835",
+      "bytes": 25213
+    },
+    {
+      "path": "assets/penthouse-tracks.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "d1ad09e464d165887d3ec3fefc3912c677b7c84b1cf4de1534b3a2d25948cb4a",
+      "bytes": 735
+    },
+    {
+      "path": "assets/penthouse.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "e3d947ce913ba226190c8db7fa0a1255992b769b1f7a55c11d208b17f39a2cdb",
+      "bytes": 1173
+    },
+    {
+      "path": "assets/portfolio-intro.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "c35feea66198aa9c27fb09f00f60ca9d5fd7bfc52f4fee41bd227e9eb8cc06ee",
+      "bytes": 8268
+    },
+    {
+      "path": "assets/portfolio-intro.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "dd4c43d3881d7e4bf1458077b621a8d3e0a810d79dd9664b613827a76900b82e",
+      "bytes": 3523
+    },
+    {
+      "path": "assets/road-markings.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "386781e93344fe51b0583d11485728f85042b71cf87802ffae01c50f768e6156",
+      "bytes": 3993
+    },
+    {
+      "path": "assets/settlement-details.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "d198431e565140a65a7390363aa1dfa505e3bc96a30aa81c0f9a9e286076ee61",
+      "bytes": 8447
+    },
+    {
+      "path": "assets/spatial-motion.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "3988446c61c081667f1661925309e04582e6a3206ce9324abd39b2663a78b115",
+      "bytes": 2777
+    },
+    {
+      "path": "assets/surface-geometry.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "658590b7c45440f2fe4893fa21a16e8981d0fbe5ab349b90d14b7cc6d0219ee9",
+      "bytes": 8719
+    },
+    {
+      "path": "assets/vendor/LICENSE",
+      "status": 200,
+      "contentType": "application/octet-stream",
+      "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601",
+      "bytes": 1081
+    },
+    {
+      "path": "assets/vendor/OrbitControls.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "1eefa2b80f2776850325f826515a37164537b25254a36b0774ebca22194301f2",
+      "bytes": 38720
+    },
+    {
+      "path": "assets/vendor/README.md",
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "sha256": "1662baf5736c854c9dcfd1afa1c94f343f6869dabd82e243d367029fb2335341",
+      "bytes": 782
+    },
+    {
+      "path": "assets/vendor/three.core.min.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "61ba0df005b05991361d040d8ff670e1aadfd0ce7aeebd1fdb0725957a8957de",
+      "bytes": 381124
+    },
+    {
+      "path": "assets/vendor/three.module.min.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "e2b5ee6bccd38fd6d8a2428546b83c5f2426d84b152ef82be8055556e3b40eb6",
+      "bytes": 338908
+    },
+    {
+      "path": "assets/view-controls.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "sha256": "513a778080ac1f4a6ae012b10eb2973a2d79b6e06b5ddc9377b0c51d3ab9ae76",
+      "bytes": 4359
+    },
+    {
+      "path": "assets/view-preferences.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "2a6f2d35cabff13fc16d4a3dbca385c881f80e25eec136331208a617df955a5d",
+      "bytes": 933
+    },
+    {
+      "path": "assets/word-guesses.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "sha256": "9a9d29c147f7e2b3826999c9c5bc1c687e7d3b17563d1610f4717c98124c6745",
+      "bytes": 75608
     }
   ]
 }
