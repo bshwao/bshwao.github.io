@@ -17,20 +17,29 @@ files.push('assets/app.js','assets/content.js','assets/floor-content.js','assets
 files.push('README.md','CITY-OUTSKIRTS-PLAN.md','SKYLINE-PLAN.md','COLOR-PLAN.md','MASSING-PLAN.md');
 // Verify the committed gallery files as well as the pages linking to them.
 files.push(...execFileSync('git',['ls-tree','-r','--name-only',commit,'assets/projects'],{cwd:root,encoding:'utf8'}).trim().split('\n').filter(Boolean));
+// Include every committed runtime asset, including mobile styles, penthouse
+// modules, bundled audio and vendor files as the site grows.
+files.push(...execFileSync('git',['ls-tree','-r','--name-only',commit,'assets'],{cwd:root,encoding:'utf8'}).trim().split('\n').filter(Boolean));
+const releaseFiles = [...new Set(files)];
 const hash = (data, binary) => createHash('sha256').update(binary ? data : data.toString('utf8').replaceAll('\r\n', '\n')).digest('hex');
-const results = await Promise.allSettled(files.map(async path => {
+const checkFile = async path => {
   const response = await fetch(`${origin}${path === 'index.html' ? '' : path}?release=${commit}`, { signal: AbortSignal.timeout(30_000), cache: 'no-store' });
   if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
   if (!response.url.startsWith(origin)) throw new Error(`${path}: unexpected redirect to ${response.url}`);
-  const binary = /\.(png|jpe?g|pdf)$/.test(path), local = execFileSync('git', ['show', `${commit}:${path}`], { cwd: root, maxBuffer: 10_000_000 }), live = Buffer.from(await response.arrayBuffer());
+  const binary = /\.(png|jpe?g|pdf|wav|mp3|ogg|m4a|flac|aac|webm|mp4|woff2?|ttf|ico)$/i.test(path), local = execFileSync('git', ['show', `${commit}:${path}`], { cwd: root, maxBuffer: 10_000_000 }), live = Buffer.from(await response.arrayBuffer());
   const expected = hash(local, binary), actual = hash(live, binary);
   if (expected !== actual) throw new Error(`${path}: published content differs from the local release`);
   const contentType = response.headers.get('content-type');
   if (path.endsWith('.png') && !contentType?.startsWith('image/png')) throw new Error(`${path}: incorrect image content type`);
   if (/\.jpe?g$/.test(path) && !contentType?.startsWith('image/jpeg')) throw new Error(`${path}: incorrect JPEG content type`);
   if (path.endsWith('.pdf') && !contentType?.startsWith('application/pdf')) throw new Error(`${path}: incorrect PDF content type`);
+  if (path.endsWith('.wav') && !contentType?.startsWith('audio/')) throw new Error(`${path}: incorrect audio content type`);
   return { path, status: response.status, contentType, sha256: actual, bytes: live.length };
-}));
+};
+const results = [];
+for (let offset = 0; offset < releaseFiles.length; offset += 8) {
+  results.push(...await Promise.allSettled(releaseFiles.slice(offset, offset + 8).map(checkFile)));
+}
 const checks = results.filter(result => result.status === 'fulfilled').map(result => result.value);
 const errors = results.filter(result => result.status === 'rejected').map(result => result.reason.message);
 const result = { checkedAt: new Date().toISOString(), commit, origin, status: errors.length ? 'FAIL' : 'PASS', checks, ...(errors.length ? { errors } : {}) };

@@ -72,12 +72,16 @@ try {
     frame.contentWindow.location.hash = route;
     await delay(20); await ready(); await audit(`${route} reading dialog`);
   }
-  // Audit the script-free page in a fresh document, independent of the open
-  // reading dialog and activity frames left by the spatial tour.
+  // Load the actual reading response into an isolated document. This avoids
+  // navigating the spatial document while its native reading dialog is open.
+  const readingResponse = await fetch('../reading.html');
+  if (!readingResponse.ok) throw new Error(`Complete reading portfolio returned ${readingResponse.status}`);
+  const readingSource = await readingResponse.text();
   const previousFrame = frame;
   frame = document.createElement('iframe');
   frame.id = 'portfolio'; frame.title = 'Portfolio under test';
-  frame.width = width; frame.height = height; frame.src = '../reading.html';
+  frame.width = width; frame.height = height;
+  frame.srcdoc = readingSource.replace('<head>', `<head><base href="${new URL('../reading.html', location.href).href}">`);
   const readingLoaded = new Promise((resolve, reject) => {
     const timeout = setTimeout(() => reject(new Error('Complete reading portfolio did not load within 15 seconds')), 15000);
     frame.addEventListener('load', () => { clearTimeout(timeout); resolve(); }, { once: true });

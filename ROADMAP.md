@@ -50,16 +50,18 @@ The iPhone 13/Safari recheck and saved performance review are complete. The rema
 
 Complete when these flows work in Edge and any discovered functional defects are resolved.
 
-Completed October 28, 2026 in Edge 156 on Windows. The [Phase 1 report](state/release-phase-1/README.md) records the UI checks, local audio import, all 31 rendered views and object responses in all 23 rooms. No application changes were required by this pass. Phase 2 remains next.
+Completed October 28, 2026 in Edge 156 on Windows. The [Phase 1 report](state/release-phase-1/README.md) records the UI checks, local audio import, all 31 rendered views and object responses in all 23 rooms. No application changes were required by this pass.
 
 ### Phase 2 — Accessibility and release preparation
 
-- [ ] Manually review keyboard navigation, visible focus, dialog focus/return, readable contrast and browser zoom.
-- [ ] Check reduced motion and the complete reading fallback.
-- [ ] Verify résumé downloads, contact links, project links and content accuracy.
-- [ ] Run the source and integration checks on the final candidate and record results.
+- [x] Manually review keyboard navigation, visible focus, dialog focus/return, readable contrast and browser zoom.
+- [x] Check reduced motion and the complete reading fallback.
+- [x] Verify résumé downloads, contact links, project links and content accuracy.
+- [x] Run the source and integration checks on the final candidate and record results.
 
 Complete when required content and controls are usable, links work and the final candidate passes its checks.
+
+Completed October 28, 2026 in Edge on Windows. The [Phase 2 report](state/release-phase-2/README.md) records 36 accessibility views, actual 200% browser zoom, fallback and download checks, contrast review, 216 passing source/server tests and all five integration modes. The clock and letter-keyboard labels were corrected, the audit's reading-page loader was repaired, and LinkedIn links now use the current profile address. Phase 3 remains pending; nothing was published as part of this phase.
 
 ### Phase 3 — Deployment and live verification
 

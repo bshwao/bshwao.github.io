@@ -1,0 +1,153 @@
+{
+  "method": "Conservative glass compositing over black, plus visual day/night and activity inspection; opaque reading colors also covered by theme tests and the complete-page axe audit.",
+  "pairs": [
+    {
+      "text": "Toolbar muted ink",
+      "foreground": [
+        45,
+        61,
+        53
+      ],
+      "background": [
+        168.64000000000001,
+        171.36,
+        170
+      ],
+      "ratio": 4.977870301252116
+    },
+    {
+      "text": "Heading ink",
+      "foreground": [
+        35,
+        55,
+        46
+      ],
+      "background": [
+        168.64000000000001,
+        171.36,
+        170
+      ],
+      "ratio": 5.497740224704217
+    },
+    {
+      "text": "Interior body copy",
+      "foreground": [
+        45,
+        61,
+        53
+      ],
+      "background": [
+        198.4,
+        201.60000000000002,
+        200
+      ],
+      "ratio": 6.914448502816395
+    },
+    {
+      "text": "Selected project navigation",
+      "foreground": [
+        42.749984999999995,
+        68.499885,
+        93.00003
+      ],
+      "background": [
+        198.4,
+        201.60000000000002,
+        200
+      ],
+      "ratio": 6.030779136514953
+    }
+  ],
+  "computedSamples": [
+    {
+      "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+      "color": "rgb(45, 61, 53)",
+      "font": "20px",
+      "text": "−"
+    },
+    {
+      "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+      "color": "rgb(45, 61, 53)",
+      "font": "20px",
+      "text": "+"
+    },
+    {
+      "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+      "color": "rgb(45, 61, 53)",
+      "font": "9px",
+      "text": "↺ Reset view"
+    },
+    {
+      "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+      "color": "rgb(45, 61, 53)",
+      "font": "9px",
+      "text": "Reading viewRead"
+    },
+    {
+      "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+      "color": "rgb(45, 61, 53)",
+      "font": "9px",
+      "text": "Show controls hint"
+    },
+    {
+      "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+      "color": "rgb(45, 61, 53)",
+      "font": "9px",
+      "text": "Replay introduction"
+    },
+    {
+      "background": "linear-gradient(145deg, rgba(248, 252, 250, 0.72), rgba(248, 252, 250, 0.68))",
+      "color": "rgb(35, 55, 46)",
+      "font": "15px",
+      "text": "LEVEL 02 / THE MAKERS’ WORKSHOPProjects"
+    },
+    {
+      "background": "none",
+      "color": "color(srgb 0.167647 0.268627 0.364706)",
+      "font": "9px",
+      "text": "01Main workshop↗"
+    },
+    {
+      "background": "none",
+      "color": "rgb(45, 61, 53)",
+      "font": "9px",
+      "text": "02Systems lab↗"
+    },
+    {
+      "background": "none",
+      "color": "rgb(45, 61, 53)",
+      "font": "9px",
+      "text": "03Simulation lab↗"
+    },
+    {
+      "background": "none",
+      "color": "rgb(45, 61, 53)",
+      "font": "8px",
+      "text": "01 / Main workshop"
+    },
+    {
+      "background": "none",
+      "color": "rgb(35, 55, 46)",
+      "font": "31px",
+      "text": "flowst8"
+    },
+    {
+      "background": "none",
+      "color": "rgb(45, 61, 53)",
+      "font": "13px",
+      "text": "Contributor · Team of three · Hack The Hill III · Septe"
+    },
+    {
+      "background": "none",
+      "color": "rgb(45, 61, 53)",
+      "font": "13px",
+      "text": "We prioritized connecting wearable data, backend servic"
+    },
+    {
+      "background": "none",
+      "color": "rgb(45, 61, 53)",
+      "font": "12px",
+      "text": "Hover or focus to highlight. Click, tap, or press Enter"
+    }
+  ]
+}

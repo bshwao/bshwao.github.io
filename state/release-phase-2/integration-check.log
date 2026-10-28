@@ -2,19 +2,19 @@
 > eric-hsu-portfolio@0.1.0 test
 > node --experimental-vm-modules scripts/spatial.test.mjs && node --experimental-vm-modules scripts/spatial.test.mjs --mobile && node --experimental-vm-modules scripts/spatial.test.mjs --reduced && node --experimental-vm-modules scripts/spatial.test.mjs --deep-link && node --experimental-vm-modules scripts/spatial.test.mjs --no-webgl
 
-(node:10096) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(node:17460) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 DOM/camera integration passed (desktop): room URLs, titles, clipboard/manual sharing, section reading mode, retained 3D navigation, room flights, highlighting, left-drag/touch, resize, framing, gestures, history, cancellation, keyboard, idle rendering, motion preferences, and text fallback (31604 frames).
-(node:28652) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(node:34572) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 DOM/camera integration passed (mobile): room URLs, titles, clipboard/manual sharing, section reading mode, retained 3D navigation, room flights, highlighting, left-drag/touch, resize, framing, gestures, history, cancellation, keyboard, idle rendering, motion preferences, and text fallback (33314 frames).
-(node:17804) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(node:3056) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 DOM/camera integration passed (reduced motion): room URLs, titles, clipboard/manual sharing, section reading mode, retained 3D navigation, room flights, highlighting, left-drag/touch, resize, framing, gestures, history, cancellation, keyboard, idle rendering, motion preferences, and text fallback (6307 frames).
-(node:3588) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(node:15056) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 DOM/camera integration passed (fresh room link): room URLs, titles, clipboard/manual sharing, section reading mode, retained 3D navigation, room flights, highlighting, left-drag/touch, resize, framing, gestures, history, cancellation, keyboard, idle rendering, motion preferences, and text fallback (31605 frames).
-(node:13308) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(node:3172) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 The 3D scene could not start: Error: WebGL unavailable
     at new Renderer (file:///C:/Users/erich/OneDrive/Documents/GitHub/bshwao.github.io/scripts/spatial.test.mjs:53:28)

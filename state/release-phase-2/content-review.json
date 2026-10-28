@@ -38,14 +38,21 @@
   "contact": {
     "email": "erichsu8681@gmail.com",
     "github": "https://github.com/bshwao",
-    "linkedin": "https://www.linkedin.com/in/erichsu07/",
-    "result": "Destinations match the existing résumé and shared content. External profile reachability still needs browser verification.",
-    "messagesSent": false
+    "linkedin": "https://www.linkedin.com/in/erichsuu/",
+    "result": "GitHub profile and LinkedIn redirect/current profile verified in Edge. Website links updated to the current LinkedIn address; email agrees with the résumé.",
+    "messagesSent": false,
+    "previousLinkedin": "https://www.linkedin.com/in/erichsu07/"
   },
   "resume": {
     "path": "assets/eric-hsu-resume.pdf",
     "pages": 3,
     "sha256": "6a6680f52c21b05492c1f312fc36607d3abb10b580f5ec834c9e9790c3adb274",
-    "result": "Text and all rendered pages inspected. Core profile, education, experience metrics and listed skills agree. Existing file preserved. Actual browser download still pending."
-  }
+    "result": "Text and all three rendered pages inspected; actual Edge download matches the unchanged repository PDF byte for byte.",
+    "download": {
+      "bytes": 127160,
+      "sha256": "6a6680f52c21b05492c1f312fc36607d3abb10b580f5ec834c9e9790c3adb274",
+      "matches": true
+    }
+  },
+  "candidateBase": "809ab9be0eddff9f87bb58efc467d20d4e2623ef"
 }

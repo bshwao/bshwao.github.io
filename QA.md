@@ -1,10 +1,14 @@
 # Release verification
 
-## Phase 2 progress — October 28, 2026
+## Phase 2: accessibility and release preparation — October 28, 2026
 
 The desktop keyboard review verifies visible focus, floor/room entry, reading-dialog return and opening/closing all four activity dialogs with focus restored to their openers. Reduced-motion navigation works. Two semantic issues were fixed: the native clock no longer has an unsupported label, and the Word Guess letter keyboard now has a group role. The source/server suite passes all 216 tests and 87 module/reference checks after these changes; all five integration modes also pass.
 
-Phase 2 is not complete. The initial Edge accessibility sweep reached 35 views without automated violations, with manual-review items; it stalled at loading the complete reading page into its iframe. The harness now reports a bounded failure rather than waiting indefinitely. Its final sweep, contrast/browser zoom, actual résumé download, fallback views and external profile destinations still need completion. The existing résumé's three rendered pages and text were reviewed, and project repositories/Devpost were verified. Windows computer use then stopped because it could not reliably determine the active browser URL. See [the Phase 2 progress report](state/release-phase-2/README.md). Nothing was published.
+Phase 2 is complete. The final Edge accessibility sweep passes all 36 views, including the complete reading page, with zero automated WCAG A/AA violations. Its isolated reading document uses the actual fetched HTML and a base URL for the original styles/assets, avoiding the stalled iframe navigation. Both labeling findings are gone; all ARIA control IDs resolve. Remaining automated contrast review items were inspected visually and checked against conservative glass backgrounds: representative text ratios range from 4.98:1 to 6.91:1.
+
+Edge's native menu confirmed actual 200% browser zoom. The intro, room navigation, scrollable tabs, responsive Read mode, full reading page and game/music dialogs remain usable; the full page has no horizontal overflow. Zoom was restored to 100%. JavaScript-disabled and unavailable-WebGL fallbacks expose the reading portfolio and résumé. An actual Edge résumé download matches the repository's 127,160-byte PDF by SHA-256. GitHub, project repositories and Devpost resolve correctly; LinkedIn redirects to the current `/in/erichsuu/` profile, now used by the site's shared content and regenerated reading page. The existing résumé was preserved. App and audit consoles contain no warnings or errors; the no-WebGL probe's intentional error is separate.
+
+The final candidate passes all 216 source/server tests, 87 module/reference checks and five integration modes after the loader and link changes. See [the Phase 2 report](state/release-phase-2/README.md) for scope and captures. This completes release preparation; Phase 3 deployment and live verification remain pending. Nothing was committed or published during this completion pass.
 
 ## Phase 1: desktop Edge verification — October 28, 2026
 

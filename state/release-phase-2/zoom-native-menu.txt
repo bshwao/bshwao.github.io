@@ -1,0 +1,4 @@
+										613 button Zoom: 200%
+									586 menu item Zoom 200%
+										587 menu item Zoom out (Ctrl+Minus key)
+										588 menu item Zoom in (Ctrl+Plus key)

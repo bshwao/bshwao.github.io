@@ -1,0 +1,224 @@
+[
+  {
+    "check": "No-JavaScript entry fallback",
+    "pass": true,
+    "description": "Sandbox disables scripts; profile, projects, full reading-page link, résumé and email remain available."
+  },
+  {
+    "check": "Résumé download",
+    "pass": true,
+    "bytes": 127160,
+    "sha256": "6a6680f52c21b05492c1f312fc36607d3abb10b580f5ec834c9e9790c3adb274",
+    "method": "Actual Edge download compared byte for byte with assets/eric-hsu-resume.pdf"
+  },
+  {
+    "check": "Unavailable-WebGL fallback",
+    "pass": true,
+    "description": "Expected WebGL failure shows reload, complete reading portfolio and all section links."
+  },
+  {
+    "check": "GitHub profile destination",
+    "pass": true,
+    "url": "https://github.com/bshwao",
+    "heading": "Bshw\nbshwao · he/him"
+  },
+  {
+    "check": "LinkedIn profile destination",
+    "pass": true,
+    "requested": "https://www.linkedin.com/in/erichsu07/",
+    "resolved": "https://www.linkedin.com/in/erichsuu/",
+    "title": "(4) Eric Hsu | LinkedIn",
+    "description": "Redirects to Eric Hsu, Electrical Engineering at McGill. Website now uses the current public profile URL."
+  },
+  {
+    "check": "Contrast and visible keyboard focus review",
+    "pass": true,
+    "minimumRepresentativeRatio": 4.977870301252116,
+    "note": "Conservative glass compositing and visual night/reading/activity review; palette contrasts also pass theme tests."
+  },
+  {
+    "check": "Actual Edge browser zoom at 200%",
+    "pass": true,
+    "reading": {
+      "dpr": 2,
+      "overflow": false,
+      "sections": 7,
+      "title": "Eric Hsu — Portfolio reading view",
+      "width": 755
+    },
+    "roomControls": [
+      {
+        "hit": true,
+        "label": "Zoom out",
+        "visible": true
+      },
+      {
+        "hit": true,
+        "label": "Zoom in",
+        "visible": true
+      },
+      {
+        "hit": true,
+        "label": "Reset the 3D camera",
+        "visible": true
+      },
+      {
+        "hit": true,
+        "label": "Settings",
+        "visible": true
+      },
+      {
+        "hit": true,
+        "label": "↖ Back to tower",
+        "visible": true
+      },
+      {
+        "hit": true,
+        "label": "↗ Whole floor",
+        "visible": true
+      },
+      {
+        "hit": true,
+        "label": "Explore room 01: Main workshop",
+        "visible": true
+      },
+      {
+        "hit": true,
+        "label": "Explore room 02: Systems lab",
+        "visible": true
+      },
+      {
+        "hit": true,
+        "label": "Explore room 03: Simulation lab",
+        "visible": false
+      }
+    ],
+    "selectedRoomTab": {
+      "bounds": {
+        "bottom": 207,
+        "height": 44,
+        "left": 619.9296875,
+        "right": 740.1953125,
+        "top": 163,
+        "width": 120.265625,
+        "x": 619.9296875,
+        "y": 163
+      },
+      "text": "03Simulation lab↗"
+    },
+    "note": "Edge menu confirmed 200%; intro, room navigation, scrollable tabs and Read mode work. The responsive layout replaces the separate reading button with Scene/Split/Read.",
+    "activities": {
+      "games": [
+        {
+          "label": "Play Blackjack",
+          "inDialog": "penthouse-arcade-dialog"
+        },
+        {
+          "label": "Play Word Guess",
+          "inDialog": "penthouse-arcade-dialog"
+        },
+        {
+          "label": "Play Mini Crosswords",
+          "inDialog": "penthouse-arcade-dialog"
+        },
+        {
+          "label": "Play Snake",
+          "inDialog": "penthouse-arcade-dialog"
+        },
+        {
+          "label": "Play 2048",
+          "inDialog": "penthouse-arcade-dialog"
+        },
+        {
+          "label": "Play Sudoku",
+          "inDialog": "penthouse-arcade-dialog"
+        },
+        {
+          "label": "Play Noughts & crosses",
+          "inDialog": "penthouse-arcade-dialog"
+        }
+      ],
+      "music": [
+        {
+          "dialog": "penthouse-music-dialog",
+          "label": "Window LightNight BusSoft Circuit",
+          "tag": "SELECT",
+          "type": null
+        },
+        {
+          "dialog": "penthouse-music-dialog",
+          "label": "Previous track",
+          "tag": "BUTTON",
+          "type": "button"
+        },
+        {
+          "dialog": "penthouse-music-dialog",
+          "label": "Play music",
+          "tag": "BUTTON",
+          "type": "button"
+        },
+        {
+          "dialog": "penthouse-music-dialog",
+          "label": "Next track",
+          "tag": "BUTTON",
+          "type": "button"
+        },
+        {
+          "dialog": "penthouse-music-dialog",
+          "label": "",
+          "tag": "INPUT",
+          "type": "checkbox"
+        },
+        {
+          "dialog": "penthouse-music-dialog",
+          "label": "Seek through track",
+          "tag": "INPUT",
+          "type": "range"
+        },
+        {
+          "dialog": "penthouse-music-dialog",
+          "label": "SpectrumWaveformOrbitConstellation",
+          "tag": "SELECT",
+          "type": null
+        },
+        {
+          "dialog": "penthouse-music-dialog",
+          "label": "",
+          "tag": "INPUT",
+          "type": "range"
+        },
+        {
+          "dialog": "penthouse-music-dialog",
+          "label": "",
+          "tag": "INPUT",
+          "type": "file"
+        },
+        {
+          "dialog": "penthouse-music-dialog",
+          "label": "CC0 / credits ↗",
+          "tag": "A",
+          "type": null
+        },
+        {
+          "label": "Read the complete portfolio\n  \n    ",
+          "tag": "BODY",
+          "type": null
+        }
+      ]
+    }
+  },
+  {
+    "check": "Final accessibility sweep",
+    "pass": true,
+    "views": 36,
+    "report": "accessibility-final.json"
+  },
+  {
+    "check": "Browser zoom restored to 100%",
+    "pass": true
+  },
+  {
+    "check": "App and audit console",
+    "pass": true
+  }
+]

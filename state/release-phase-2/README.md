@@ -1,34 +1,46 @@
 # Phase 2: accessibility and release preparation
 
-Status: incomplete, October 28, 2026. Base commit: `a50cfbbdf5ebe69ec1547ffddfc147da4ced5847`, with the existing mobile/device-test working-tree changes preserved. Nothing was committed or published.
+Completed October 28, 2026 in the connected Edge profile on Windows, using the repository preview at `http://127.0.0.1:4173/`. Candidate base commit: `809ab9be0eddff9f87bb58efc467d20d4e2623ef`, plus the changes recorded here. No commit or deployment was made during this completion pass.
 
-## Completed work
+## Changes
 
-- Removed the unsupported `aria-label` from the native clock `<time>` element. Its visible text, datetime, title and non-announcing behavior remain.
-- Added a group role to the Word Guess letter keyboard so its accessible label has valid semantics.
-- Reviewed keyboard entry, visible focus on scene controls, Enter navigation into Projects and its second room, and Escape returning from reading mode to the Reading view button.
-- Opened all four penthouse activity dialogs with Enter. Each put focus on its close control, kept the next Tab inside the dialog and restored focus to its opener on Escape.
-- Selected Reduced motion and verified that floor/room navigation settled with the reduced preference and the correct selected room.
-- Inspected the existing three-page résumé through text extraction and rendered pages. Core profile, education, experience and skills agree with the site. The résumé was not edited.
-- Verified the three project repositories through the GitHub connector. Verified that the Devpost destination is the flowst8 project and agrees with its team/project description. See `content-review.json`.
-- The final source/server check passes all 216 tests and 87 module/reference checks. See `source-check.log`. The initial sandbox run's eight localhost EACCES failures are retained separately in `source-check-sandbox.log`; the rerun with loopback access passes.
-- The final integration suite passes all five modes: desktop, mobile, reduced motion, fresh room link and initial WebGL failure. See `integration-check.log`. The WebGL-unavailable message in the last mode is its intentional failure fixture.
+- The native clock retains its text, datetime and title without an unsupported accessible label.
+- The Word Guess letter keyboard has a group role for its label.
+- The accessibility harness loads the actual reading-page response into an isolated document with the original base URL. This repairs its stalled navigation while preserving the page's markup, styles and assets. Loading has a bounded failure timeout.
+- LinkedIn links use the current public profile, `https://www.linkedin.com/in/erichsuu/`. The old `/in/erichsu07/` address redirects there. The complete reading page and its structured metadata were regenerated from shared content. The résumé PDF was preserved.
 
-## Accessibility harness
+## Verification
 
-The first Edge sweep completed 35 app/activity/reading-dialog views without automated violations, but left manual-review items for contrast, the clock label, the letter-keyboard label and the existing Reading view `aria-controls` relationship. `accessibility-before.json` records this first pass, not the final candidate. Both labeling issues were fixed. The referenced reading dialog exists and opens correctly in the keyboard review.
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Final source/server suite | 216 passed; 87 module/reference checks; generated content current | `source-check.log` |
+| Final DOM/camera integration | Desktop, mobile, reduced motion, fresh room link and unavailable-WebGL modes pass | `integration-check.log` |
+| Edge accessibility sweep | 36 views, zero automated WCAG A/AA violations; all ARIA control IDs resolve | `accessibility-final.json` |
+| Keyboard and focus | Intro entry, floor/room navigation, reading return and all four activity dialogs reviewed | Earlier progress review; `games-focus.png` |
+| Reduced motion | Immediate floor/room navigation with the correct selection | Earlier progress review; integration log |
+| Contrast | Night scene, reading overlay and activity controls reviewed; representative conservative ratios 4.98:1–6.91:1 | `contrast-review.json`, `night-contrast.png`, `night-reading.png`, `games-focus.png` |
+| Actual browser zoom | Edge menu confirms 200%; DPR 2; intro, room controls, scrollable room tabs, Read mode, full reading page and activity controls work | `zoom-native-menu.txt`, `zoom-200-*.png`, `final-checks.json` |
+| JavaScript disabled | Profile, projects, reading link, résumé and email remain exposed | `no-script.png` |
+| WebGL unavailable | Reading link, section links and reload control remain exposed | `no-webgl.png` |
+| Complete reading page | All seven sections present, normal top-level navigation, no horizontal overflow at 200% | `zoom-200-reading.png`, accessibility report |
+| Résumé download | Actual Edge download matches the repository PDF by SHA-256; 127,160 bytes | `content-review.json`, `final-checks.json` |
+| Contact and project links | GitHub and LinkedIn profiles verified in Edge; three repositories verified through GitHub; Devpost project verified; email agrees with the résumé | `content-review.json`, `final-checks.json` |
+| Browser console | No warnings/errors in the app or audit | `browser-console.json` |
 
-The audit stalls when switching its iframe to the complete reading page. Its loader now uses a fresh iframe and a 15-second failure timeout so it reports that failure instead of waiting indefinitely. The rerun still reports that the reading frame did not load. A separate top-level reading tab loads successfully, but the final audit and contrast review remain unfinished. Do not describe the harness as passing all 36 views.
+The downloaded PDF has SHA-256 `6a6680f52c21b05492c1f312fc36607d3abb10b580f5ec834c9e9790c3adb274`. The earlier content review inspected its text and all three rendered pages; core profile, education, experience metrics and skills agree with the site. Personal claims were not independently certified or rewritten. No email or other message was sent.
 
-## Remaining work
+## Manual audit review
 
-- Finish the final Edge accessibility sweep, including the complete reading page, and save results after the label fixes.
-- Finish visual contrast and actual browser-zoom review. The attempted browser-key shortcut did not change zoom; it is not a passing zoom check.
-- Check no-script and unavailable-WebGL fallback in Edge.
-- Exercise the actual résumé download and verify external GitHub/LinkedIn profile destinations. Email links match the résumé; no message was sent.
-- Mark the Phase 2 roadmap only after the remaining browser requirements pass.
-- Restore the local port-4177 Motion preference from Reduced motion to its previous Full motion value after the browser checks. Browser control stopped before this could be restored.
+The clock and letter-keyboard labeling findings are absent from the final sweep. The remaining ARIA review item concerns the Reading view button's reference to a native dialog: the referenced ID exists, every harness ID-resolution check passes, and opening the reading view and returning focus were exercised by keyboard.
 
-## Browser interruption
+Automated contrast checks cannot resolve all text over the glass gradients and 3D scene. Visual inspection and conservative compositing supplement those checks. The toolbar's muted ink is 4.98:1 against its darkest glass fill over black; panel body copy is 6.91:1. Palette tests also verify essential reading colors. The complete static reading page has no remaining automated review items. These checks supplement accessibility review; they are not a screen-reader certification.
 
-The Windows computer-use tool stopped the turn because it could not identify the active browser URL with sufficient confidence to enforce its policy. No further browser or native UI actions were attempted after that stop. This is a tool restriction, not evidence of an application defect. Phase 2 remains open; Phase 3 has not started.
+At 200%, the short responsive layout replaces the separate Reading view button with Scene/Split/Read controls. Room tabs scroll to the keyboard-selected tab. All seven game cards and the music player controls, including the file input and credits link, remain reachable by keyboard. Vertical scrolling is expected; the page does not overflow horizontally.
+
+## Environment and cleanup
+
+The earlier native-control interruption was resolved by using the shared portfolio tab in a normal Edge window. Its window had been minimized; restoring it exposed the address bar and native zoom menu. The browser menu confirmed the test zoom, and 100% was restored afterward. The user's port-4173 motion preference was left unchanged, playback remained paused and no new local audio was imported. The earlier port-4177 preference is confined to that separate preview origin.
+
+The initial sandbox localhost EACCES run is retained as `source-check-sandbox.log`; the final suite runs with the loopback access its HTTP tests require. The unavailable-WebGL integration error is an intentional test fixture. `accessibility-before.json` and `accessibility-loader-failure.txt` are historical diagnostics, superseded by the passing final report.
+
+Phase 3 remains pending: publish the approved candidate, verify the deployed revision and CI, and check the live site on desktop and iPhone/Safari.

@@ -3,7 +3,7 @@ export const profile = {
   location: "Montréal, QC",
   email: "erichsu8681@gmail.com",
   github: "https://github.com/bshwao",
-  linkedin: "https://www.linkedin.com/in/erichsu07/",
+  linkedin: "https://www.linkedin.com/in/erichsuu/",
   degree: "Bachelor of Engineering, Electrical Engineering",
   university: "McGill University",
   graduation: "Expected 2030",
