@@ -3,18 +3,32 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { createPenthouseExperiences,penthouseExperienceMarkup } from '../assets/penthouse-experiences.js';
 
-function fixture(){
+function fixture({queuedClose=false}={}){
   const dom=new JSDOM('<div id="stage"></div><main></main>',{url:'https://portfolio.test/',pretendToBeVisual:true}),w=dom.window;
   const saved=new Map();
   const globals={window:w,document:w.document,ResizeObserver:class{observe(){}disconnect(){}},requestAnimationFrame:w.requestAnimationFrame.bind(w),cancelAnimationFrame:w.cancelAnimationFrame.bind(w)};
   for(const [key,value]of Object.entries(globals)){saved.set(key,Object.getOwnPropertyDescriptor(globalThis,key));Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});}
   w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};
-  w.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new w.Event('close'));};
+  const pendingClose=[];
+  w.HTMLDialogElement.prototype.close=function(){this.open=false;const notify=()=>this.dispatchEvent(new w.Event('close'));if(queuedClose)pendingClose.push(notify);else notify();};
   const container=w.document.querySelector('main'),atmospheres=[];
   const experience=createPenthouseExperiences({container,stage:w.document.querySelector('#stage'),onAtmosphere:value=>atmospheres.push(value)});
   const mount=(id,index=0)=>{container.innerHTML=id==='penthouse'?penthouseExperienceMarkup(index):'';experience.mount(id,index);};
-  return {w,container,experience,mount,atmospheres,find:selector=>w.document.querySelector(selector),close(){experience.dispose();w.close();for(const [key,descriptor]of saved)if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}};
+  return {w,container,experience,mount,atmospheres,flushClose(){while(pendingClose.length)pendingClose.shift()();},find:selector=>w.document.querySelector(selector),close(){experience.dispose();w.close();for(const [key,descriptor]of saved)if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}};
 }
+
+test('a queued close event cannot disable a reopened activity or steal focus from another dialog',()=>{
+  const f=fixture({queuedClose:true});try{
+    f.mount('penthouse',1);f.find('[data-penthouse-open="arcade"]').click();
+    const arcade=f.find('#penthouse-arcade-dialog');arcade.close();f.experience.open('arcade');f.flushClose();
+    assert.equal(arcade.open,true);
+    arcade.querySelector('[data-arcade-launch="blackjack"]').click();
+    assert.equal(arcade.querySelector('[data-game-workspace]').hidden,false,'The reopened dashboard remains enabled');
+    f.experience.open('desktop');
+    const notes=f.find('[data-desktop-notes]');notes.focus();f.flushClose();
+    assert.equal(f.w.document.activeElement,notes,'An old dialog must not restore focus into the scene behind the new modal');
+  }finally{f.close();}
+});
 
 test('room activities open from content and furniture, keep desktop/game state, and close on navigation',()=>{
   const f=fixture();try{

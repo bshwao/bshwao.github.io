@@ -79,7 +79,12 @@ export function createPreviewServer({root=workspace}={}) {
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   const port = Number(process.env.PORT || 4173);
-  createPreviewServer().listen(port, '127.0.0.1', () => {
+  const server=createPreviewServer();
+  server.on('error',error=>{
+    console.error(error.code==='EADDRINUSE'?`Port ${port} is already in use. Reuse the running preview, or set PORT to a different number.`:`Preview could not start: ${error.message}`);
+    process.exitCode=1;
+  });
+  server.listen(port, '127.0.0.1', () => {
     console.log(`Local: http://127.0.0.1:${port}`);
   });
 }

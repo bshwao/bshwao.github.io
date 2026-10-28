@@ -6,7 +6,7 @@ Each subdirectory represents a specific implementation checkpoint. Test counts, 
 
 ## Latest recorded checkpoint
 
-[Tower rubber-band motion](tower-rubber-band/README.md) records the October 26, 2026 spring-motion tests, floor-clearance checks, source and integration suites, and native toggle review. Refer to [QA.md](../QA.md) for the verification timeline and [ROADMAP.md](../ROADMAP.md) for remaining work.
+[Final review and polish](final-polish/README.md) records the October 28, 2026 local fixes and regression checks. These changes have not been published. The [Phase 3 release record](release-phase-3/README.md) identifies the verified live release and its desktop and user-reported iPhone/Safari checks. Refer to [QA.md](../QA.md) for the verification timeline and [ROADMAP.md](../ROADMAP.md) for completed scope and optional work.
 
 ## Feature evidence
 

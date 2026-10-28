@@ -1,6 +1,6 @@
 # Portfolio Roadmap
 
-This document summarizes the implemented website and the remaining verification work. Detailed measurements and historical checkpoints are recorded in [QA.md](QA.md).
+This document summarizes the implemented website, completed release verification and optional future work. Detailed measurements and historical checkpoints are recorded in [QA.md](QA.md).
 
 ## Implemented scope
 
@@ -17,9 +17,9 @@ The first-floor robot experiment has been removed. Its evidence remains archived
 
 The October 28, 2026 [iPhone 13 / Safari check](state/device-runs/README.md) completes the mobile recheck: the user saved successful orbit/zoom, room navigation, orientation, reading and background-return checks and confirmed that mobile works well. The automatic preview benchmark completed with orbiting near 60 FPS and zero idle frames in its final 500ms. Results apply to this tested device and preview size.
 
-The October 27, 2026 [phone-feedback fixes](state/mobile-usability/phone-feedback/README.md) address selection, control placement, touch sensitivity and camera limits from the initial iPhone review. They pass 213 source/server tests, five integration modes, 178 rendered usability cases and eight settings/control layouts. A physical iPhone/Safari recheck remains pending.
+The October 27, 2026 [phone-feedback fixes](state/mobile-usability/phone-feedback/README.md) address selection, control placement, touch sensitivity and camera limits from the initial iPhone review. They pass 213 source/server tests, five integration modes, 178 rendered usability cases and eight settings/control layouts. The physical iPhone/Safari recheck was pending at that checkpoint and was completed on October 28.
 
-The October 27, 2026 [mobile usability](state/mobile-usability/README.md) checkpoint adds Scene/Split/Read room panels, larger mobile controls, phone-landscape and tablet-portrait layouts, and safe-area spacing. It passes 212 source/server tests, 85 module/reference checks, five integration modes, 281 simulated usability cases, a 36-view accessibility sweep and a landscape WebGL sweep. Physical-device and Safari verification remain separate pending work.
+The October 27, 2026 [mobile usability](state/mobile-usability/README.md) checkpoint adds Scene/Split/Read room panels, larger mobile controls, phone-landscape and tablet-portrait layouts, and safe-area spacing. It passes 212 source/server tests, 85 module/reference checks, five integration modes, 281 simulated usability cases, a 36-view accessibility sweep and a landscape WebGL sweep. Physical-device and Safari verification was recorded separately on October 28.
 
 The October 26, 2026 [tower and room motion](state/spatial-motion/README.md) checkpoint passes 199 source/server tests, 82 module/reference checks, all five DOM/camera modes, and desktop/portrait WebGL sweeps. It adds explicit camera and material continuity checks for interrupted navigation and direct room entry.
 
@@ -39,7 +39,7 @@ Other feature checkpoints include simulated portrait and landscape Chromium layo
 
 ## Release phases
 
-The iPhone 13/Safari recheck and saved performance review are complete. The remaining release work proceeds in three phases.
+All three release phases, the iPhone 13/Safari recheck and the saved performance review are complete. The checklists below record that release; later local changes require their own verification before publication.
 
 ### Phase 1 — Desktop browser verification
 

@@ -4,11 +4,13 @@ import { resolve, extname, sep } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { networkInterfaces } from 'node:os';
 import { pathToFileURL } from 'node:url';
+import { parseByteRange } from './serve.mjs';
 
 const workspace = resolve(import.meta.dirname,'..');
 const scripts = new Set(['device-qa.html','device-qa.js','frame-probe.html']);
 const entries = new Set(['index.html','reading.html','robots.txt','sitemap.xml']);
-const mime = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.pdf':'application/pdf','.txt':'text/plain','.xml':'application/xml'};
+const mime = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.pdf':'application/pdf','.txt':'text/plain','.xml':'application/xml',
+  '.wav':'audio/wav','.mp3':'audio/mpeg','.ogg':'audio/ogg','.m4a':'audio/mp4','.flac':'audio/flac','.aac':'audio/aac','.webm':'audio/webm'};
 
 export function createDeviceServer({ root = workspace, resultsDir = resolve(workspace,'state/device-runs') } = {}) {
   let received = 0;
@@ -53,15 +55,24 @@ export function createDeviceServer({ root = workspace, resultsDir = resolve(work
       const target = await realpath(resolve(root,...parts));
       if (!target.startsWith(resolve(root)+sep) || !(await stat(target)).isFile()) { response.writeHead(403).end('Forbidden'); return; }
       const body = await readFile(target);
-      response.writeHead(200,{'Content-Type':mime[extname(target)] || 'application/octet-stream'});
-      response.end(request.method === 'HEAD' ? undefined : body);
+      const headers={'Content-Type':mime[extname(target).toLowerCase()] || 'application/octet-stream','Content-Length':body.length,'Accept-Ranges':'bytes'};
+      const range=request.method==='GET'&&!request.headers['if-range']?parseByteRange(request.headers.range,body.length):null;
+      if(range===false){response.writeHead(416,{...headers,'Content-Range':`bytes */${body.length}`,'Content-Length':0}).end();return;}
+      if(range){headers['Content-Range']=`bytes ${range.start}-${range.end}/${body.length}`;headers['Content-Length']=range.end-range.start+1;}
+      response.writeHead(range?206:200,headers);
+      response.end(request.method === 'HEAD' ? undefined : range?body.subarray(range.start,range.end+1):body);
     } catch (error) { response.writeHead(error instanceof SyntaxError ? 400 : 404).end('Invalid request or missing file'); }
   });
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const port = Number(process.env.PORT || 4174);
-  createDeviceServer().listen(port,'0.0.0.0',()=>{
+  const server=createDeviceServer();
+  server.on('error',error=>{
+    console.error(error.code==='EADDRINUSE'?`Port ${port} is already in use. Reuse the running preview, or set PORT to a different number.`:`Device preview could not start: ${error.message}`);
+    process.exitCode=1;
+  });
+  server.listen(port,'0.0.0.0',()=>{
     console.log(`PC: http://127.0.0.1:${port}/`);
     for (const rows of Object.values(networkInterfaces())) for (const row of rows || []) {
       if (row.family === 'IPv4' && !row.internal) console.log(`Local network: http://${row.address}:${port}/`);

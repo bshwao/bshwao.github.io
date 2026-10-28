@@ -4,7 +4,6 @@ import { roomMarkerLayout, towerLabelLayout, outdoorViewLayout } from './spatial
 import { parseRoute, routeHash } from './routes.js';
 import { renderStory, renderGallery, renderCaseStudyLink, renderProjectStatus, renderProjectSummary } from './project-story.js';
 import { createSectionReadingView } from './floor-view.js';
-import { sectionColors } from './color-theme.js';
 import { createLocalClock } from './local-clock.js';
 import { readViewPreferences, saveViewPreferences, shouldReduceMotion } from './view-preferences.js';
 import { createPortfolioIntro } from './portfolio-intro.js';
@@ -300,8 +299,7 @@ async function start() {
   page.innerHTML = `
     <h1 class="sr-only">Eric Hsu — Electrical Engineering, Projects, and Experience</h1>
     <div class="spatial-stage" id="spatial-stage"></div>
-    <div class="drawing-reference" aria-hidden="true"><span>EH—001</span><span>STRUCTURES & SYSTEMS</span></div>
-    <div class="material-key">${sections.map(section => `<span aria-hidden="true" style="--swatch:${sectionColors[section.id].accent}"></span>`).join('')}<small aria-hidden="true">CITY / LOCAL TIME</small><time id="local-clock" aria-live="off"></time></div>
+    <div class="material-key"><small aria-hidden="true">CITY / LOCAL TIME</small><time id="local-clock" aria-live="off"></time></div>
     <div class="spatial-tools" role="group" aria-label="View controls">
       <div class="zoom-controls" role="group" aria-label="Zoom"><button type="button" id="zoom-out" aria-label="Zoom out" disabled>−</button><button type="button" id="zoom-in" aria-label="Zoom in" disabled>+</button></div>
       <button type="button" id="reset-spatial" aria-label="Reset the 3D camera" disabled>↺ <span>Reset view</span></button>

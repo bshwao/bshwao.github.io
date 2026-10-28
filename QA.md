@@ -1,5 +1,11 @@
 # Release verification
 
+## Final review and polish, local candidate — October 28, 2026
+
+The local review fixes the phone preview server's audio MIME/range responses, virtual-terminal root listing and a queued dialog-close race affecting activity state and focus. Both preview commands now explain occupied ports without interrupting the existing server. The desktop EH—001 badge and palette chips are removed, the clock sits at the upper left, and stale documentation is corrected. These changes are uncommitted and unpublished.
+
+All 219 source/server tests, 87 module/reference checks and five integration modes pass. Connected Windows Edge checks pass all 31 WebGL views and object responses in 23 rooms, eight responsive control layouts, 49 phone usability views with simulated safe insets and 36 accessibility views with zero automated WCAG A/AA violations. No browser warnings or errors were recorded. Physical Safari was not retested for this local candidate. See [the final review report](state/final-polish/README.md) for scope, logs and the header capture.
+
 ## Phase 3: deployment and live verification — October 28, 2026
 
 Phase 3 is complete. Content release [`1ee09f5`](https://github.com/bshwao/bshwao.github.io/commit/1ee09f58da9a64fe64b3aebfdb2b91eacdb08b93) is published at [bshwao.github.io](https://bshwao.github.io/). Both [Portfolio checks](https://github.com/bshwao/bshwao.github.io/actions/runs/40761001565) and [Pages deployment](https://github.com/bshwao/bshwao.github.io/actions/runs/40761000611) pass for that exact revision. All 116 published-file comparisons pass, including every committed runtime asset, bundled audio, images, PDF and release documentation.

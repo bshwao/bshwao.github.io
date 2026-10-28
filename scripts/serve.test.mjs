@@ -4,12 +4,14 @@ import { request } from 'node:http';
 import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname, basename } from 'node:path';
+import { execFile } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { createPreviewServer, parseByteRange } from './serve.mjs';
 
 const audio=Buffer.from('0123456789abcdefghijklmnopqrstuvwxyz');
 const audioTypes={wav:'audio/wav',mp3:'audio/mpeg',ogg:'audio/ogg',m4a:'audio/mp4',flac:'audio/flac',aac:'audio/aac',webm:'audio/webm'};
 
-async function fixture(t) {
+async function fixture(t,{host='127.0.0.1'}={}) {
   const temporaryRoot=resolve(tmpdir()),root=await mkdtemp(join(temporaryRoot,'portfolio-serve-'));
   await Promise.all([
     writeFile(join(root,'index.html'),'<h1>Preview</h1>'),writeFile(join(root,'empty.wav'),''),
@@ -17,7 +19,7 @@ async function fixture(t) {
     writeFile(join(root,'upper.WAV'),audio),
   ]);
   const server=createPreviewServer({root});
-  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
+  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,host,resolve);});
   const {port}=server.address();
   t.after(async()=>{
     await new Promise((resolve,reject)=>server.close(error=>error?reject(error):resolve()));
@@ -34,8 +36,21 @@ async function fixture(t) {
       req.on('error',reject);req.end();
     });
   }
-  return {get};
+  return {get,port};
 }
+
+test('preview commands explain occupied ports and leave the running server intact',async t=>{
+  for(const script of ['serve.mjs','device-serve.mjs']){
+    const {get,port}=await fixture(t,{host:script==='device-serve.mjs'?'0.0.0.0':'127.0.0.1'});
+    const {error,stderr}=await new Promise(resolve=>execFile(process.execPath,[fileURLToPath(new URL(script,import.meta.url))],{
+      env:{...process.env,PORT:String(port)},timeout:10000,
+    },(error,stdout,stderr)=>resolve({error,stdout,stderr})));
+    assert.equal(error?.code,1,`${script} exits with a clear failure status`);
+    assert.match(stderr,new RegExp(`Port ${port} is already in use`));assert.match(stderr,/set PORT/);
+    assert.doesNotMatch(stderr,/Unhandled|throw er;|at Server\./);
+    assert.equal((await get('/')).status,200,'The existing server is not interrupted');
+  }
+});
 
 test('single byte-range parser handles inclusive, open-ended, suffix, and large offsets',()=>{
   assert.equal(parseByteRange(undefined,100),null);

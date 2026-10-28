@@ -28,7 +28,14 @@ export function createPenthouseExperiences({container,onAtmosphere=()=>{},reduce
     const controller=kind==='music'?createMusicPlayer(dialog,engine,{reducedMotion}):kind==='arcade'?createArcade(dialog):kind==='desktop'?createDesktop(dialog):createStarMap(dialog,{reducedMotion:reducedMotion()});
     const record={dialog,controller,opener:null};dialogs.set(kind,record);
     dialog.querySelector('[data-close-experience]').addEventListener('click',()=>dialog.close(),options);
-    dialog.addEventListener('close',()=>{controller.setActive?.(false);compact?.setActive?.(true);if(record.opener?.isConnected)record.opener.focus({preventScroll:true});},options);
+    dialog.addEventListener('close',()=>{
+      // Native close events are queued: this dialog may already have reopened.
+      if(dialog.open)return;
+      controller.setActive?.(false);
+      const anotherOpen=[...dialogs.values()].some(record=>record.dialog.open);
+      compact?.setActive?.(active&&!anotherOpen);
+      if(!anotherOpen&&record.opener?.isConnected)record.opener.focus({preventScroll:true});
+    },options);
     return record;
   }
   function open(kind,game){

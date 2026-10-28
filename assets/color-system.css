@@ -4,8 +4,7 @@ html, body, .tower-page, dialog.floor-view { background: var(--paper); color: va
 :focus-visible { outline-color: var(--accent-ink); }
 .tower-page::after { border-color: var(--line); }
 .spatial-stage::after { background: linear-gradient(to bottom,rgba(17,30,52,.12),transparent 24%,transparent 70%,rgba(20,28,35,.12)); }
-.material-key { position: absolute; left: 50%; top: 30px; transform: translateX(-50%); display: flex; align-items: center; gap: 7px; white-space: nowrap; pointer-events: none; background:var(--raised);padding:5px 8px; }
-.material-key span { width: 7px; height: 7px; background: var(--swatch); }
+.material-key { position: absolute; left: 32px; top: 24px; display: flex; align-items: center; gap: 7px; white-space: nowrap; pointer-events: none; background:var(--raised);padding:5px 8px; }
 .material-key small { margin-left: 5px; color: var(--muted); font: 7px/1.5 var(--mono); letter-spacing: .08em; }
 .material-key time { border-left: 1px solid var(--line); padding-left: 9px; color: var(--ink); font: 10px/1.5 var(--mono); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
 .tower-label { border-left: 2px solid var(--accent); }
@@ -41,8 +40,7 @@ html, body, .tower-page, dialog.floor-view { background: var(--paper); color: va
 #orbit-instructions { padding:3px 8px; }
 .spatial[data-mode="section"] .material-key { display:none; }
 @media (max-width: 760px) {
-  .material-key { top: 31px; left: 50%; right: auto; transform: translateX(-50%); gap: 4px; }
-  .material-key span { width: 5px; height: 5px; }
+  .material-key { top: 16px; left: 16px; right: auto; gap: 4px; }
   .material-key small { display: none; }
   .material-key time { font-size: 9px; padding-left: 6px; }
 }

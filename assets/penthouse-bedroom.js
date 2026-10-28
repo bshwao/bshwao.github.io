@@ -72,7 +72,7 @@ export function runDesktopCommand(value,{notes=''}={}){
   if(command==='clear')return result('',{clear:true});
   if(command==='ls'){
     if(Object.hasOwn(files,path))return result(path.split('/').at(-1));
-    const prefix=`${path}/`,entries=[...new Set(Object.keys(files).filter(file=>file.startsWith(prefix)).map(file=>{const rest=file.slice(prefix.length),slash=rest.indexOf('/');return slash<0?rest:`${rest.slice(0,slash)}/`;}))];
+    const prefix=path==='/'?'/':`${path}/`,entries=[...new Set(Object.keys(files).filter(file=>file.startsWith(prefix)).map(file=>{const rest=file.slice(prefix.length),slash=rest.indexOf('/');return slash<0?rest:`${rest.slice(0,slash)}/`;}))];
     return result(entries.length?entries.sort().join('  '):`ls: ${argument||'.'}: folder not found`);
   }
   if(command==='cat')return result(!argument?'Usage: cat <file>':Object.hasOwn(files,path)?files[path]:`cat: ${argument}: file not found`);

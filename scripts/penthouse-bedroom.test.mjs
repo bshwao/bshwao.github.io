@@ -32,6 +32,10 @@ test('terminal commands read an isolated virtual filesystem and return only name
   assert.equal(runDesktopCommand('pwd').output,'/home/visitor');
   assert.match(runDesktopCommand('help').output,/no access to your computer or a real shell/);
   assert.match(runDesktopCommand('ls').output,/about\.txt.*notes\.txt.*projects\//);
+  assert.equal(runDesktopCommand('ls /').output,'home/');
+  assert.equal(runDesktopCommand('ls /home').output,'visitor/');
+  assert.equal(runDesktopCommand('ls ../..').output,'home/');
+  assert.equal(runDesktopCommand('ls /../../..').output,'home/','Parent traversal stays within the virtual root');
   for(const project of projects){
     assert.ok(runDesktopCommand('ls projects').output.includes(`${project.id}.txt`));
     assert.ok(runDesktopCommand(`cat projects/${project.id}.txt`).output.includes(project.url));
