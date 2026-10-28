@@ -1,0 +1,18 @@
+{
+  "checkedOn": "2026-10-28",
+  "origin": "https://bshwao.github.io/",
+  "contentRelease": "1ee09f58da9a64fe64b3aebfdb2b91eacdb08b93",
+  "device": "iPhone",
+  "browser": "Safari",
+  "method": "User-reported physical-device check on the live site after refresh",
+  "response": "Live iPhone/Safari checks pass",
+  "checks": {
+    "introTowerAndRoomNavigation": true,
+    "pinchAndOrbit": true,
+    "readingAndResume": true,
+    "penthouseGameOrMusic": true,
+    "switchAwayAndReturn": true,
+    "noClippedControlsFreezesOrBrokenContent": true
+  },
+  "performanceBenchmark": false
+}

@@ -1,5 +1,13 @@
 # Release verification
 
+## Phase 3: deployment and live verification — October 28, 2026
+
+Phase 3 is complete. Content release [`1ee09f5`](https://github.com/bshwao/bshwao.github.io/commit/1ee09f58da9a64fe64b3aebfdb2b91eacdb08b93) is published at [bshwao.github.io](https://bshwao.github.io/). Both [Portfolio checks](https://github.com/bshwao/bshwao.github.io/actions/runs/40761001565) and [Pages deployment](https://github.com/bshwao/bshwao.github.io/actions/runs/40761000611) pass for that exact revision. All 116 published-file comparisons pass, including every committed runtime asset, bundled audio, images, PDF and release documentation.
+
+Fourteen live desktop checks pass: intro/tower, all six floors, room-route reload, reading overlay and full reading content, current profile/résumé links, games, actual audio playback and analyser response, bedroom desktop and telescope atlas. No browser warnings or errors were recorded, and playback was paused afterward. The user separately confirms the live physical iPhone/Safari check passes after refresh, covering navigation, touch controls, reading/résumé, a penthouse activity and returning from another app/tab. This is a manual live check, not another performance benchmark.
+
+The [Phase 3 report](state/release-phase-3/README.md) contains deployment, desktop and user-reported phone evidence. `state/deployment.json` records the verified content-release SHA; later evidence commits preserve that record. A final read-only comparison against the closeout HEAD is saved locally in `.preview/final-live-verification.json` after its deployment.
+
 ## Phase 2: accessibility and release preparation — October 28, 2026
 
 The desktop keyboard review verifies visible focus, floor/room entry, reading-dialog return and opening/closing all four activity dialogs with focus restored to their openers. Reduced-motion navigation works. Two semantic issues were fixed: the native clock no longer has an unsupported label, and the Word Guess letter keyboard now has a group role. The source/server suite passes all 216 tests and 87 module/reference checks after these changes; all five integration modes also pass.

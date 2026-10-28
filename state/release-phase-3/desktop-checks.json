@@ -1,0 +1,92 @@
+{
+  "origin": "https://bshwao.github.io/",
+  "contentRelease": "1ee09f58da9a64fe64b3aebfdb2b91eacdb08b93",
+  "checks": [
+    {
+      "check": "Live intro and tower expansion",
+      "pass": true,
+      "url": "https://bshwao.github.io/#explore"
+    },
+    {
+      "check": "Live floor about",
+      "pass": true,
+      "title": "About"
+    },
+    {
+      "check": "Live floor projects",
+      "pass": true,
+      "title": "Projects"
+    },
+    {
+      "check": "Live floor experience",
+      "pass": true,
+      "title": "Experience"
+    },
+    {
+      "check": "Live floor resume",
+      "pass": true,
+      "title": "Résumé"
+    },
+    {
+      "check": "Live floor contact",
+      "pass": true,
+      "title": "Contact"
+    },
+    {
+      "check": "Live floor penthouse",
+      "pass": true,
+      "title": "Penthouse"
+    },
+    {
+      "check": "Reloaded live Projects/b deep link",
+      "pass": true
+    },
+    {
+      "check": "Live reading overlay opens and restores room view",
+      "pass": true
+    },
+    {
+      "check": "Live games dashboard and Blackjack hand",
+      "pass": true,
+      "result": "Dealer wins."
+    },
+    {
+      "check": "Live audio playback and audio-reactive visualizer",
+      "pass": true,
+      "sample": {
+        "musicCanvas": "",
+        "signalEnergy": "0.10601",
+        "signalFrames": "106",
+        "visualStyle": "spectrum"
+      }
+    },
+    {
+      "check": "Live bedroom desktop terminal",
+      "pass": true
+    },
+    {
+      "check": "Live telescope atlas search and selection",
+      "pass": true
+    },
+    {
+      "check": "Live complete reading page, résumé links and current LinkedIn address",
+      "pass": true,
+      "details": {
+        "linkedin": "https://www.linkedin.com/in/erichsuu/",
+        "overflow": false,
+        "resumes": [
+          {
+            "href": "https://bshwao.github.io/assets/eric-hsu-resume.pdf",
+            "name": "Eric-Hsu-Resume.pdf"
+          },
+          {
+            "href": "https://bshwao.github.io/assets/eric-hsu-resume.pdf",
+            "name": "Eric-Hsu-Resume.pdf"
+          }
+        ],
+        "sections": 7
+      }
+    }
+  ],
+  "logs": []
+}

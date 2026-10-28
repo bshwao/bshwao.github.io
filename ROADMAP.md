@@ -61,16 +61,16 @@ Completed October 28, 2026 in Edge 156 on Windows. The [Phase 1 report](state/re
 
 Complete when required content and controls are usable, links work and the final candidate passes its checks.
 
-Completed October 28, 2026 in Edge on Windows. The [Phase 2 report](state/release-phase-2/README.md) records 36 accessibility views, actual 200% browser zoom, fallback and download checks, contrast review, 216 passing source/server tests and all five integration modes. The clock and letter-keyboard labels were corrected, the audit's reading-page loader was repaired, and LinkedIn links now use the current profile address. Phase 3 remains pending; nothing was published as part of this phase.
+Completed October 28, 2026 in Edge on Windows. The [Phase 2 report](state/release-phase-2/README.md) records 36 accessibility views, actual 200% browser zoom, fallback and download checks, contrast review, 216 passing source/server tests and all five integration modes. The clock and letter-keyboard labels were corrected, the audit's reading-page loader was repaired, and LinkedIn links now use the current profile address.
 
 ### Phase 3 — Deployment and live verification
 
-- [ ] Publish the approved release candidate through the repository's deployment process.
-- [ ] Confirm the published commit and successful deployment checks.
-- [ ] Check the live introduction, tower/room routes, reading page, résumé, links and penthouse activities on desktop and iPhone/Safari.
-- [ ] Update the deployment report and QA.md with the verified revision and results.
+- [x] Publish the approved release candidate through the repository's deployment process.
+- [x] Confirm the published commit and successful deployment checks.
+- [x] Check the live introduction, tower/room routes, reading page, résumé, links and penthouse activities on desktop and iPhone/Safari.
+- [x] Update the deployment report and QA.md with the verified revision and results.
 
-Complete when the intended revision is live and the production checks pass. These phases describe the release plan; publishing remains a separate action.
+Completed October 28, 2026. Content release `1ee09f5` is live with successful CI and Pages deployment, 116 matching published files, 14 live desktop checks and the user's passing live iPhone/Safari report. See [the Phase 3 record](state/release-phase-3/README.md). All three release phases are complete.
 
 ## Optional enhancement
 
@@ -78,7 +78,7 @@ First-person seating in the sky lounge remains deferred. A future implementation
 
 ## Release records and maintenance
 
-The saved [deployment report](state/deployment.json) verifies commit `e446760` from October 24, 2026. It does not establish the deployment status of later commits. Confirm the published revision and CI results when preparing a release.
+The saved [deployment report](state/deployment.json) verifies content release `1ee09f5` from October 28, 2026. Verification evidence and documentation are recorded separately afterward; future releases must confirm their own published revision and CI results.
 
 Keep project status, contributions, screenshots, résumé details, and external links current. Preserve stable section and room IDs. See [MAINTENANCE.md](MAINTENANCE.md) for update and release procedures.
 
