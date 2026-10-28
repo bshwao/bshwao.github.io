@@ -1,0 +1,113 @@
+{
+  "width": 844,
+  "height": 390,
+  "safeInsets": {
+    "top": 0,
+    "right": 44,
+    "bottom": 21,
+    "left": 44
+  },
+  "rows": [
+    {
+      "view": "room panel scene",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "room panel read",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "room panel split",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "reachable footer",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "penthouse-desktop-dialog",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "bedroom notes",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "penthouse-arcade-dialog",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game blackjack",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game wordle",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game crossword",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game snake",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game 2048",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game sudoku",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game tic-tac-toe",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "penthouse-music-dialog",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "penthouse-sky-dialog",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "city controls",
+      "controls": 4,
+      "overflow": false
+    },
+    {
+      "view": "city zoom-in stop",
+      "controls": 4,
+      "overflow": false
+    },
+    {
+      "view": "city zoom-out stop",
+      "controls": 4,
+      "overflow": false
+    },
+    {
+      "view": "floor selector",
+      "controls": 4,
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

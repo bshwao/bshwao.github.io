@@ -30,10 +30,25 @@ test('zoom limits contain the fitted view and keep each scene at a useful scale'
     }
     for(const focusedRoom of [false,true])for(const fitDistance of [20,80,250]){
       const bounds=cameraZoomLimits({mode:'section',width,height,fitDistance,radius:fitDistance*.3,focusedRoom});
-      assert.ok(bounds.min>=fitDistance*.6&&bounds.min<fitDistance);
+      assert.ok(bounds.min>=fitDistance*.3&&bounds.min<fitDistance);
       assert.ok(bounds.max>fitDistance&&bounds.max<=fitDistance*2,'Floors and rooms retain a bounded close-up range');
     }
   }
+});
+
+test('mobile zoom reaches details while stopping before a distant island overview',()=>{
+  for(const [width,height] of [[320,568],[390,600],[390,844],[844,390],[768,1024]]){
+    for(const mode of ['tower','explore','section'])for(const focusedRoom of [false,true]){
+      const fitDistance=mode==='section'?80:400;
+      const bounds=cameraZoomLimits({mode,width,height,fitDistance,radius:24,focusedRoom});
+      assert.ok(fitDistance/bounds.min>=2.4,'A phone can magnify the fitted view enough to inspect details');
+      assert.ok(bounds.max/fitDistance<=1.65,'Zooming out keeps the scene near its fitted scale');
+      if(mode==='tower')assert.ok(bounds.max<islandZoomLimit(width,height)*.4,'The mobile stop no longer backs away to the entire island');
+    }
+  }
+  const desktop=cameraZoomLimits({mode:'tower',width:1280,height:720,fitDistance:400});
+  assert.ok(Math.abs(desktop.min-220)<1e-8);
+  assert.equal(desktop.max,islandZoomLimit(1280,720),'Desktop still supports the island overview');
 });
 
 test('phone and large-screen raster budgets stay bounded without changing navigation regions', () => {

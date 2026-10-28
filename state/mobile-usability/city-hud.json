@@ -1,0 +1,52 @@
+[
+  {
+    "clock": {
+      "bottom": 86.5,
+      "height": 28.5,
+      "left": 16,
+      "right": 100.953125,
+      "top": 58,
+      "width": 84.953125,
+      "x": 16,
+      "y": 58
+    },
+    "mode": "tower",
+    "overlap": false,
+    "toolbar": {
+      "bottom": 50,
+      "height": 44,
+      "left": 12,
+      "right": 378,
+      "top": 6,
+      "width": 366,
+      "x": 12,
+      "y": 6
+    },
+    "width": 390
+  },
+  {
+    "clock": {
+      "bottom": 130.5,
+      "height": 28.5,
+      "left": 16,
+      "right": 100.953125,
+      "top": 102,
+      "width": 84.953125,
+      "x": 16,
+      "y": 102
+    },
+    "collapse": {
+      "bottom": 96,
+      "height": 44,
+      "left": 16,
+      "right": 150.6875,
+      "top": 52,
+      "width": 134.6875,
+      "x": 16,
+      "y": 52
+    },
+    "mode": "explore",
+    "overlap": false,
+    "width": 390
+  }
+]

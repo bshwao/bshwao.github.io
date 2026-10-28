@@ -15,6 +15,10 @@ The first-floor robot experiment has been removed. Its evidence remains archived
 
 ## Recorded verification
 
+The October 27, 2026 [phone-feedback fixes](state/mobile-usability/phone-feedback/README.md) address selection, control placement, touch sensitivity and camera limits from the initial iPhone review. They pass 213 source/server tests, five integration modes, 178 rendered usability cases and eight settings/control layouts. A physical iPhone/Safari recheck remains pending.
+
+The October 27, 2026 [mobile usability](state/mobile-usability/README.md) checkpoint adds Scene/Split/Read room panels, larger mobile controls, phone-landscape and tablet-portrait layouts, and safe-area spacing. It passes 212 source/server tests, 85 module/reference checks, five integration modes, 281 simulated usability cases, a 36-view accessibility sweep and a landscape WebGL sweep. Physical-device and Safari verification remain separate pending work.
+
 The October 26, 2026 [tower and room motion](state/spatial-motion/README.md) checkpoint passes 199 source/server tests, 82 module/reference checks, all five DOM/camera modes, and desktop/portrait WebGL sweeps. It adds explicit camera and material continuity checks for interrupted navigation and direct room entry.
 
 The October 26, 2026 [games dashboard](state/game-dashboard/README.md) checkpoint passes 190 source/server tests, 81 module/reference checks, all five DOM/camera integration modes, and 24 responsive game/library accessibility and overflow checks. Its report includes native game interaction evidence and environment limits.
@@ -34,7 +38,7 @@ Other feature checkpoints include simulated portrait and landscape Chromium layo
 ## Remaining work
 
 - [ ] Validate the current published commit with a fresh live-site smoke review and an updated deployment report.
-- [ ] Complete physical-device and cross-engine testing, including iPhone/Safari and the regular Edge session. This work was previously deferred.
+- [ ] Recheck the mobile touch fixes on iPhone/Safari and complete physical-device and cross-engine testing, including the regular Edge session.
 - [ ] Review manual accessibility and actual phone performance alongside the existing automated and simulated-layout checks.
 
 Local Chromium verification is complete for the latest recorded checkpoint. The earlier browser-connection issue is historical and is no longer an active local-testing blocker.

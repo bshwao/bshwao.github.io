@@ -476,8 +476,9 @@ for(const radius of [2300,3200,3500])for(let i=0;i<16;i++){
   const floor=outdoorTerrainFloor(lastCamera.position.x,lastCamera.position.z);
   if(floor>10)raisedViews++;
   assert.ok(lastCamera.position.y>=floor-.002,'Low outdoor orbit clears the actual mountain/foothill surface');
+  if(mobile)assert.ok(lastCamera.position.distanceTo(originalTarget)<=Number(main.dataset.zoomMax)+.02,'A forced distant camera also respects the mobile city boundary');
 }
-assert.ok(raisedViews>=8,'Camera clearance is exercised over different mountain regions and distances');
+if(!mobile)assert.ok(raisedViews>=8,'Camera clearance is exercised over different mountain regions and distances');
 click('#reset-spatial');await settleCamera();
 for(let i=0;i<24;i++){cameraKey('ArrowDown');await tick(16);}
 await settleCamera();assert.ok(lastCamera.position.y>=1.49,'Outdoor orbit stops above street level');
@@ -556,10 +557,16 @@ assert.equal(w.location.hash, '#explore', 'Orbiting does not select a section');
 const contextMenu = new w.MouseEvent('contextmenu', { cancelable: true });
 canvas.dispatchEvent(contextMenu); assert.ok(contextMenu.defaultPrevented, 'Browser context menu is suppressed on the canvas');
 if (mobile) {
-  const before = Number(main.dataset.azimuth);
-  sendMouse('pointerdown', 140, 270, 0, 'touch', 2); sendMouse('pointermove', 200, 290, 0, 'touch', 2); sendMouse('pointerup', 200, 290, 0, 'touch', 2);
-  for (let i = 0; i < 12; i++) await tick(16);
-  assert.ok(Math.abs(Number(main.dataset.azimuth) - before) > .1, 'One finger rotates without opening a section');
+  async function dragAngle(pointerType){
+    await settleCamera();
+    const before=Number(main.dataset.azimuth);
+    sendMouse('pointerdown',140,270,0,pointerType,2);sendMouse('pointermove',200,270,0,pointerType,2);sendMouse('pointerup',200,270,0,pointerType,2);
+    await settleCamera();
+    return Math.abs(Number(main.dataset.azimuth)-before);
+  }
+  const mouseAngle=await dragAngle('mouse'),touchAngle=await dragAngle('touch'),mouseAfterTouch=await dragAngle('mouse');
+  assert.ok(touchAngle>.1&&touchAngle<mouseAngle*.55&&touchAngle>mouseAngle*.35,'The same finger drag rotates roughly half as far as a mouse drag');
+  assert.ok(Math.abs(mouseAfterTouch-mouseAngle)<.005,'Switching back to a mouse restores its original sensitivity');
   assert.equal(main.dataset.mode, 'explore');
 }
 

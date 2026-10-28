@@ -19,6 +19,14 @@ export function islandZoomLimit(width, height) {
 
 /** Practical user zoom ranges, relative to each view's fitted default camera. */
 export function cameraZoomLimits({mode,width,height,fitDistance,radius=0,focusedRoom=false}) {
+  const mobile=width<=760||(width<=1000&&(height<=520||height>=width));
+  // Phone framing is already pulled back for the narrow screen and its HUD.
+  // Keep a useful close-up and city overview instead of the desktop island tour.
+  if(mobile){
+    if(mode==='tower')return {min:Math.max(45,fitDistance*.28),max:fitDistance*1.6};
+    if(mode==='explore')return {min:fitDistance*.4,max:fitDistance*1.45};
+    return {min:fitDistance*(focusedRoom ? .35 : .4),max:fitDistance*1.45};
+  }
   if(mode==='tower')return {min:Math.max(140,fitDistance*.55),max:Math.max(fitDistance*1.1,islandZoomLimit(width,height))};
   if(mode==='explore')return {min:fitDistance*.65,max:fitDistance*2.2};
   return {min:Math.min(fitDistance*.9,Math.max(radius*1.4,fitDistance*.65)),max:fitDistance*(focusedRoom?1.8:1.9)};

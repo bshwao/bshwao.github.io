@@ -1,0 +1,253 @@
+{
+  "width": 844,
+  "height": 390,
+  "safeInsets": null,
+  "rows": [
+    {
+      "view": "penthouse overview",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "penthouse/a",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "penthouse/b",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "penthouse/c",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "penthouse/d",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "about overview",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "about/a",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "about/b",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "about/c",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "about/d",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "projects overview",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "projects/a",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "projects/b",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "projects/c",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "experience overview",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "experience/a",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "experience/b",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "experience/c",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "experience/d",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "resume overview",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "resume/a",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "resume/b",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "resume/c",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "resume/d",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "contact overview",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "contact/a",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "contact/b",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "contact/c",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "contact/d",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "room panel scene",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "room panel read",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "room panel split",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "reachable footer",
+      "controls": 8,
+      "overflow": false
+    },
+    {
+      "view": "penthouse-desktop-dialog",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "bedroom notes",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "penthouse-arcade-dialog",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game blackjack",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game wordle",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game crossword",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game snake",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game 2048",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game sudoku",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "game tic-tac-toe",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "penthouse-music-dialog",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "penthouse-sky-dialog",
+      "controls": 1,
+      "overflow": false
+    },
+    {
+      "view": "city controls",
+      "controls": 4,
+      "overflow": false
+    },
+    {
+      "view": "city zoom-in stop",
+      "controls": 4,
+      "overflow": false
+    },
+    {
+      "view": "city zoom-out stop",
+      "controls": 4,
+      "overflow": false
+    },
+    {
+      "view": "floor selector",
+      "controls": 4,
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

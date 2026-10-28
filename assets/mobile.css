@@ -1,0 +1,106 @@
+/* Phone controls and room reading share one scroll surface. */
+:root { --safe-top:env(safe-area-inset-top,0px); --safe-right:env(safe-area-inset-right,0px); --safe-bottom:env(safe-area-inset-bottom,0px); --safe-left:env(safe-area-inset-left,0px); }
+.room-panel-views,.mobile-reading-label,.mobile-settings-icon { display:none; }
+.interior-scroll { display:contents; }
+/* Scene chrome must never become one large iOS text selection. Reading and
+   editable surfaces retain native selection, copy, and text cursor behavior. */
+.spatial { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+.interior-scroll,.floor-view,.penthouse-dialog { -webkit-user-select:text; user-select:text; -webkit-touch-callout:default; }
+:is(.spatial,.floor-view,.penthouse-dialog) :is(button,summary) { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+:is(.spatial,.floor-view,.penthouse-dialog) :is(input,textarea,[contenteditable="true"]) { -webkit-user-select:text; user-select:text; -webkit-touch-callout:default; }
+
+@media (max-width:760px), (max-width:1000px) and (max-height:520px), (max-width:1000px) and (orientation:portrait) {
+  .tower-page { min-height:0; }
+  .spatial .spatial-tools { top:calc(12px + var(--safe-top)); left:auto; right:max(12px,var(--safe-right)); gap:6px; }
+  .spatial-tools > button,.view-settings { font-size:11px; }
+  .spatial-tools #reading-view { display:none; }
+  .spatial-tools #reset-spatial { min-width:44px; padding-inline:8px; font-size:16px; }
+  .spatial-tools #reset-spatial span { display:none; }
+  .desktop-reading-label { display:none; }
+  .mobile-reading-label { display:inline; }
+  .view-settings > summary { padding:0; min-width:44px; width:44px; }
+  .view-settings > summary::after,.settings-label { display:none; }
+  .mobile-settings-icon { display:block; }
+  .spatial .material-key { left:max(12px,var(--safe-left)); top:calc(12px + var(--safe-top)); height:44px; padding:0 9px; right:auto; transform:none; box-sizing:border-box; }
+  .spatial .material-key :is(span,small) { display:none; }
+  .spatial .material-key time { border:0; padding:0; font-size:10px; }
+  .view-settings-panel { width:290px; max-width:calc(100vw - 24px - var(--safe-left) - var(--safe-right)); max-height:calc(100dvh - 70px - var(--safe-top) - var(--safe-bottom)); }
+  .spatial .controls-hint { z-index:9; max-width:calc(100% - 24px - var(--safe-left) - var(--safe-right)); }
+  .spatial[data-room-panel="read"] .controls-hint { top:calc(106px + var(--safe-top)); bottom:auto; left:50%; }
+  .spatial .structure-action,.spatial #collapse-structure { top:calc(64px + var(--safe-top)); left:max(12px,var(--safe-left)); }
+  .spatial #back-to-structure { top:calc(12px + var(--safe-top)); width:44px; padding:0; gap:0; justify-content:center; font-size:18px; }
+  .spatial #back-to-structure span { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+  .spatial .spatial-heading { left:50%; top:calc(64px + var(--safe-top)); padding:5px 12px 7px; max-width:calc(100% - 24px); }
+  .spatial .spatial-heading h2 { font-size:24px; margin-top:0; }
+  .spatial .spatial-heading .spatial-eyebrow { font-size:7px; }
+  .spatial .interior-panel { left:max(12px,var(--safe-left)); right:max(12px,var(--safe-right)); bottom:max(10px,var(--safe-bottom)); height:44%; min-height:166px; padding:8px 12px 10px; overflow:hidden; }
+  .spatial .interior-panel { width:auto; top:auto; border-left:0; }
+  .panel-drawing-index { display:none; }
+  .room-panel-views { display:flex; flex:0 0 auto; gap:4px; padding:0 0 4px; }
+  .room-panel-views button { flex:1; min-width:44px; min-height:44px; border:1px solid transparent; border-radius:8px; background:transparent; color:var(--muted); font:12px/1.4 var(--mono); }
+  .room-panel-views button[aria-pressed="true"] { color:var(--raised); background:var(--ink); }
+  .room-panel-views button:focus-visible { outline:2px solid var(--accent-ink); outline-offset:1px; }
+  .interior-viewbar { min-height:44px; gap:6px; padding:0; }
+  .interior-viewbar p { font-size:9px; }
+  .interior-viewbar button { font-size:11px; }
+  .station-navigation { display:flex; gap:10px; padding-bottom:4px; overflow:auto hidden; overscroll-behavior-x:contain; flex:0 0 auto; }
+  .station-navigation button { flex:0 0 auto; font-size:12px; min-height:44px; padding:8px 5px; white-space:nowrap; }
+  .station-navigation button span { font-size:9px; }
+  .interior-scroll { display:block; flex:1; min-height:0; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:var(--line) transparent; }
+  .interior-content { flex:none; overflow:visible; padding:17px 4px 20px 0; font-size:15px; line-height:1.75; }
+  .interior-content :is(p,li,a) { overflow-wrap:anywhere; }
+  .interior-content h3 { font-size:29px; }
+  .interior-entry p { font-size:14px; }
+  .interior-footer { padding-right:4px; }
+  .interior-share,#interior-navigation { font-size:12px; gap:10px; }
+  .spatial[data-room-panel="scene"] .interior-panel { height:166px; }
+  .spatial[data-room-panel="scene"] .interior-scroll { display:none; }
+  .spatial[data-room-panel="read"] .interior-panel { top:calc(106px + var(--safe-top)); height:auto; z-index:7; --glass-top:1; --glass-bottom:.98; }
+  .spatial[data-room-panel="read"] .spatial-heading { opacity:0; }
+  .spatial[data-mode="section"] .spatial-bottom { display:none; }
+  .spatial .page-identity { bottom:calc(8px + var(--safe-bottom)); left:max(16px,var(--safe-left)); padding:3px 7px; border:0; background:var(--raised); box-shadow:none; -webkit-backdrop-filter:none; backdrop-filter:none; }
+  .spatial .page-identity .identity-name { font-size:10px; }
+  .spatial .page-identity > span:last-child,.spatial .drawing-edition { display:none; }
+  .tower-labels[data-layout="dock"] { left:max(12px,var(--safe-left)); right:max(12px,var(--safe-right)); bottom:calc(112px + var(--safe-bottom)); }
+  .spatial .tower-labels[data-layout="dock"] .tower-label { min-height:52px; }
+  .spatial .spatial-bottom { left:max(12px,var(--safe-left)); right:max(12px,var(--safe-right)); bottom:calc(34px + var(--safe-bottom)); transform:none; padding:2px 6px 6px; }
+  .spatial #unfold-structure { width:100%; min-height:44px; font-size:10px; letter-spacing:.04em; }
+  .spatial #orbit-instructions { font-size:8px; margin:0; }
+  .spatial:not([data-mode="section"]) .controls-hint { bottom:calc(126px + var(--safe-bottom)); }
+  .spatial[data-mode="explore"] .controls-hint { bottom:calc(252px + var(--safe-bottom)); }
+  .spatial :is(input,textarea,select),.penthouse-dialog :is(input,textarea,select) { font-size:16px; }
+  .spatial .interior-content :is(input,textarea,select),.penthouse-dialog :is(.penthouse-desktop,.penthouse-player,.penthouse-sky) :is(input,textarea,select) { font-size:16px; }
+  .floor-topbar { padding-top:max(14px,var(--safe-top)); padding-left:max(16px,var(--safe-left)); padding-right:max(16px,var(--safe-right)); }
+  .floor-scroll { padding-bottom:max(24px,var(--safe-bottom)); }
+  .penthouse-dialog { max-width:calc(100vw - var(--safe-left) - var(--safe-right) - 16px); max-height:calc(100dvh - var(--safe-top) - var(--safe-bottom) - 16px); }
+  .penthouse-dialog-header { padding-top:max(12px,var(--safe-top)); }
+  .penthouse-dialog-body { padding-bottom:max(12px,var(--safe-bottom)); }
+  .penthouse-visualizer-dialog { width:100%; max-width:none; max-height:none; }
+  .penthouse-visualizer-dialog .penthouse-dialog-header { padding-left:max(14px,var(--safe-left)); padding-right:max(14px,var(--safe-right)); }
+  .penthouse-player .music-heading { flex-wrap:wrap; }
+  .penthouse-player .music-options { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  .penthouse-player select,.penthouse-player input[type="file"] { min-width:0; max-width:100%; }
+  .bedroom-atmosphere .bedroom-atmosphere-controls { grid-template-columns:1fr; }
+  .bedroom-atmosphere .bedroom-atmosphere-controls label { grid-template-columns:85px minmax(0,1fr); align-items:center; }
+  dialog.portfolio-intro { padding-top:max(24px,var(--safe-top)); padding-bottom:max(20px,var(--safe-bottom)); padding-left:max(24px,var(--safe-left)); padding-right:max(24px,var(--safe-right)); min-height:0; }
+}
+
+@media (min-width:520px) and (max-width:1000px) and (max-height:520px) {
+  .spatial .interior-panel { left:auto; right:max(12px,var(--safe-right)); top:calc(64px + var(--safe-top)); bottom:max(10px,var(--safe-bottom)); width:calc(min(390px,44vw) - max(12px,var(--safe-right))); height:auto; padding:6px 10px 8px; }
+  .spatial .spatial-heading { left:28%; top:calc(12px + var(--safe-top)); }
+  .spatial .spatial-heading .spatial-eyebrow { max-width:150px; white-space:normal; }
+  .spatial .spatial-heading h2 { font-size:22px; }
+  .spatial #back-to-structure { width:44px; padding-inline:0; gap:0; justify-content:center; font-size:16px; }
+  .spatial #back-to-structure span { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+  .spatial[data-room-panel="scene"] .interior-panel { top:auto; height:166px; }
+  .spatial[data-room-panel="read"] .interior-panel { top:calc(64px + var(--safe-top)); left:max(12px,var(--safe-left)); width:auto; }
+  .spatial .material-key,.spatial .drawing-reference { display:none; }
+  .spatial .spatial-tools { left:auto; }
+  .spatial #collapse-structure { top:calc(12px + var(--safe-top)); }
+  .spatial .spatial-bottom { left:max(12px,var(--safe-left)); right:auto; width:calc(56% - max(12px,var(--safe-left)) - 12px); bottom:calc(32px + var(--safe-bottom)); }
+  .interior-content h3 { font-size:26px; }
+}
+
+@media (prefers-reduced-motion:no-preference) {
+  .room-panel-views button { transition:background 150ms,color 150ms; }
+}

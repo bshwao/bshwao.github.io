@@ -14,7 +14,7 @@ const assert = (condition, message) => { if (!condition) throw new Error(message
 const rows = [];
 function checkControls(width, height) {
   const doc = frame.contentDocument;
-  const controls = [...doc.querySelectorAll('.spatial-tools > button:not([hidden]), .zoom-controls button, .view-settings > summary')];
+  const controls = [...doc.querySelectorAll('.spatial-tools > button:not([hidden]), .zoom-controls button, .view-settings > summary')].filter(node=>node.getBoundingClientRect().width>0);
   const boxes = controls.map(node => ({ name: node.getAttribute('aria-label') || node.textContent.trim(), box: node.getBoundingClientRect() }));
   for (const { name, box } of boxes) {
     assert(box.left >= 0 && box.right <= width && box.top >= 0 && box.bottom <= height, `${name} leaves ${width}x${height}`);

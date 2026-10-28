@@ -9,13 +9,14 @@ import { createLocalClock } from './local-clock.js';
 import { readViewPreferences, saveViewPreferences, shouldReduceMotion } from './view-preferences.js';
 import { createPortfolioIntro } from './portfolio-intro.js';
 import { penthouseExperienceMarkup,createPenthouseExperiences } from './penthouse-experiences.js';
+import { createMobileRoomPanel } from './mobile-room-panel.js';
 
 const page = document.querySelector('#main');
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 let spatial, currentId = null, currentRoomIndex = null, revision = 0;
 const defaultTitle = document.title;
 let routeKey = '', fallbackActive = false;
-let readingView, localClock, intro, penthouseExperiences, roomContentAnimation;
+let readingView, localClock, intro, penthouseExperiences, roomContentAnimation, mobilePanel;
 let preferenceStorage;
 try { preferenceStorage = window.localStorage; } catch { /* Private browsing may deny storage. */ }
 let viewPreferences = readViewPreferences(preferenceStorage);
@@ -75,7 +76,7 @@ function selectRoom(index, { focus = false, moveCamera = true, writeRoute = true
   if (!Number.isInteger(index) || !content.rooms[index]) return;
   if (moveCamera && writeRoute) {
     navigate(routeHash({ sectionId: currentId, roomIndex: index }), { force: true });
-    if (focus) $('#interior-room-title').focus({ preventScroll: true });
+    if (focus) { mobilePanel?.revealForFocus(); $('#interior-room-title').focus({ preventScroll: true }); }
     return;
   }
   const restoreFocus = $('#interior-content').contains(document.activeElement);
@@ -84,14 +85,16 @@ function selectRoom(index, { focus = false, moveCamera = true, writeRoute = true
   penthouseExperiences?.mount(currentId,index);
   $('#interior-content').scrollTop = 0;
   $('#interior-panel').scrollTop = 0;
+  $('#interior-scroll').scrollTop = 0;
   page.querySelectorAll('[data-station]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.station) === index)));
+  mobilePanel?.refreshNavigation();
   if (moveCamera) {
     spatial.focusRoom(index);
     if(page.dataset.motion!=='reduced')roomContentAnimation=$('#interior-content').animate?.(
       [{opacity:.25,transform:'translateY(9px)'},{opacity:1,transform:'translateY(0)'}],
       {duration:360,easing:'cubic-bezier(.22,1,.36,1)'});
   }
-  if (focus || restoreFocus) $('#interior-room-title').focus({ preventScroll: true });
+  if (focus || restoreFocus) { mobilePanel?.revealForFocus(); $('#interior-room-title').focus({ preventScroll: true }); }
 }
 
 function sectionMarkup(id) {
@@ -270,6 +273,7 @@ function useFallback() {
   readingView?.close({ focus: false });
   localClock?.dispose();
   penthouseExperiences?.dispose();
+  mobilePanel?.dispose();
   roomContentAnimation?.cancel();
   spatial?.dispose();
   page.className = 'tower-page unavailable';
@@ -301,8 +305,8 @@ async function start() {
     <div class="spatial-tools" role="group" aria-label="View controls">
       <div class="zoom-controls" role="group" aria-label="Zoom"><button type="button" id="zoom-out" aria-label="Zoom out" disabled>−</button><button type="button" id="zoom-in" aria-label="Zoom in" disabled>+</button></div>
       <button type="button" id="reset-spatial" aria-label="Reset the 3D camera" disabled>↺ <span>Reset view</span></button>
-      <button type="button" id="reading-view" aria-haspopup="dialog" aria-controls="room-dialog" hidden>Reading view</button>
-      <details class="view-settings" id="view-settings"><summary>Settings</summary><div class="view-settings-panel">
+      <button type="button" id="reading-view" aria-label="Reading view" aria-haspopup="dialog" aria-controls="room-dialog" hidden><span class="desktop-reading-label">Reading view</span><span class="mobile-reading-label" aria-hidden="true">Read</span></button>
+      <details class="view-settings" id="view-settings"><summary aria-label="Settings"><span class="settings-label">Settings</span><svg class="mobile-settings-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="var(--raised)"/><circle cx="15" cy="17" r="3" fill="var(--raised)"/></svg></summary><div class="view-settings-panel">
         <p class="spatial-eyebrow">YOUR VIEW</p>
         <label for="motion-preference">Motion</label><select id="motion-preference"><option value="system">Use device setting</option><option value="reduced">Reduced motion</option><option value="full">Full motion</option></select>
         <p>Reduced motion skips camera flights and object movement, keeping color feedback.</p>
@@ -319,15 +323,18 @@ async function start() {
     <header class="spatial-heading" id="spatial-heading" hidden><p class="spatial-eyebrow" id="spatial-level"></p><h2 id="spatial-title"></h2></header>
     <aside class="interior-panel" id="interior-panel" aria-label="Interior portfolio content" hidden inert>
       <div class="panel-drawing-index" aria-hidden="true">E.H. / INHABITED SPACES <span>01—04</span></div>
+      <div class="room-panel-views" id="room-panel-views" role="group" aria-label="Room panel view"><button type="button" data-panel-view="scene" aria-label="Show scene" aria-pressed="false" aria-controls="interior-scroll">Scene</button><button type="button" data-panel-view="split" aria-label="Split view" aria-pressed="true" aria-controls="interior-scroll">Split</button><button type="button" data-panel-view="read" aria-label="Read room details" aria-pressed="false" aria-controls="interior-scroll">Read</button></div>
       <div class="interior-viewbar"><p id="room-view-status" aria-live="polite">FLOOR OVERVIEW</p><button id="floor-overview" type="button" disabled>↗ Whole floor</button></div>
       <nav id="station-navigation" class="station-navigation" aria-label="Choose a room"></nav>
-      <div id="interior-content" class="interior-content" role="region" aria-labelledby="interior-room-title" tabindex="0"></div>
+      <div id="interior-scroll" class="interior-scroll"><div id="interior-content" class="interior-content" role="region" aria-labelledby="interior-room-title" tabindex="0"></div>
       <footer class="interior-footer"><p id="interior-note"></p><div class="interior-share"><button id="share-room" type="button">Copy link ↗</button><a id="complete-portfolio" href="./reading.html">Full portfolio ↗</a></div><p id="share-status" role="status"></p><input id="share-url" type="text" readonly aria-label="Link to this view" hidden><nav id="interior-navigation" aria-label="Explore another section"></nav></footer>
+      </div>
     </aside>
     <div class="page-identity"><span class="identity-name">ERIC HSU</span><span>ELECTRICAL ENGINEERING · McGILL</span></div>
     <div class="spatial-bottom"><button type="button" id="unfold-structure" aria-label="Unfold the structure" disabled>+ <span id="spatial-hint" aria-live="polite">DRAWING THE STRUCTURE…</span></button><p id="orbit-instructions">LEFT DRAG TO ORBIT <span>·</span> SCROLL TO ZOOM</p></div>
     <span class="drawing-edition" aria-hidden="true">PORTFOLIO / 2026</span>`;
   localClock = createLocalClock($('#local-clock'));
+  mobilePanel = createMobileRoomPanel(page);
   readingView = createSectionReadingView({
     onClose: () => $('#reading-view')?.focus({ preventScroll: true }),
     onTower: () => navigate('explore'),

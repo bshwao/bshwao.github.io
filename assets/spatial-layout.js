@@ -1,8 +1,8 @@
 /** Screen regions shared by camera framing and projected HTML controls. */
 export function viewportLayout(width, height) {
-  const compactLandscape = width >= 520 && width <= 760 && height <= 520;
-  const stacked = width <= 760 && !compactLandscape;
-  const panelWidth = stacked ? 0 : Math.min(compactLandscape ? 300 : 390, width * (compactLandscape ? .44 : .34));
+  const compactLandscape = width >= 520 && width <= 1000 && height <= 520;
+  const stacked = !compactLandscape && (width <= 760 || (width <= 1000 && height > width));
+  const panelWidth = stacked ? 0 : Math.min(390, width * (compactLandscape ? .44 : .34));
   const top = stacked ? 140 : height <= 600 ? 82 : 110;
   const bottom = stacked ? height * .56 - 30 : height - 88;
   const rect = { left: 24, right: width - panelWidth - 24, top, bottom: Math.max(top + 80, bottom) };

@@ -509,7 +509,7 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
       {rubber:previousMode!=='section'&&nextMode!=='section'&&previousMode!==nextMode});
     canvas.dataset.mode = nextMode;
     canvas.dataset.section = selected?.id || '';
-    canvas.setAttribute('aria-label', selected ? `3D cutaway of ${selected.name}: ${selected.theme}. Left mouse drag or arrow keys to orbit. Hover furniture to preview it; click or tap to animate it and explore its room. Keyboard object controls are in the room content panel.` : 'Interactive 3D city skyline. Left mouse drag or arrow keys to orbit; scroll or plus and minus to zoom. Click to unfold the main tower.');
+    canvas.setAttribute('aria-label', selected ? `3D cutaway of ${selected.name}: ${selected.theme}. Drag or use arrow keys to orbit. Pinch, scroll or use zoom buttons to zoom. Click or tap furniture to animate it and explore its room. Keyboard object controls are in the room content panel.` : 'Interactive 3D city skyline. Drag or use arrow keys to orbit; pinch, scroll or use zoom buttons to zoom. Click or tap to unfold the main tower.');
   }
   function focusRoom(index, { instant = false } = {}) {
     if (!selected || animation?.kind === 'scene' || !Number.isInteger(index) || !selected.interior.rooms[index]) return;
@@ -562,6 +562,9 @@ export function createSpatialScene({ container, onSelectSection, onSelectRoom, o
     return found.object.userData.sectionId ?? null;
   }
   canvas.addEventListener('pointerdown', event => {
+    // Pointer type, rather than device detection, also handles touch laptops.
+    controls.rotateSpeed = event.pointerType === 'touch' ? .3 : .65;
+    controls.dampingFactor = event.pointerType === 'touch' ? .16 : .1;
     previewObject(null);
     if (hoveredRoom !== null || hover !== null) {
       hover = null; hoveredRoom = null; selected?.interior.setHoveredRoom(null); modelDirty = true; invalidate();

@@ -1,5 +1,17 @@
 # Release verification
 
+## Mobile touch feedback (local) — October 27, 2026
+
+The first physical iPhone review identified accidental interface selection, scattered controls, overly sensitive orbiting and an excessive zoom range. The scene chrome and device-test iframe now suppress text selection and iOS touch callouts while reading content and editors retain native selection. A compact toolbar aligns with the clock/back control, the floor title is smaller, and the bottom action area replaces the separated mobile cards. Touch rotation uses less than half the mouse speed and settles faster. Mobile camera limits allow closer inspection and stop within the city rather than backing away to the island overview; desktop limits remain unchanged.
+
+All 213 source/server tests, 85 module/reference checks and five DOM/camera integration modes pass. Native Chromium passes 178 rendered usability cases across portrait, landscape, small-phone, short embedded-frame and simulated safe-area layouts, plus eight settings/control layouts. The integration suite compares actual touch and mouse rotation and exercises zoom boundaries on every floor and room. Reports and captures are in [the phone-feedback checkpoint](state/mobile-usability/phone-feedback/README.md). These fixes still need a physical iPhone/Safari recheck; the local simulations do not establish Safari behavior.
+
+## Mobile usability (local) — October 27, 2026
+
+Mobile room panels now offer Scene, Split and Read views, larger controls, scrollable room tabs that reveal the current selection, and one content scroll area containing the footer actions. Phone landscapes reserve wider reading panels; portrait tablets use the stacked layout. View changes preserve live activity content, collapsed content cannot receive focus, and resizing back to desktop restores a visible focus target. Toolbar labels, form text and safe-area spacing are adjusted for small screens. Blackjack's card groups also receive valid accessibility roles.
+
+All 212 source/server tests, 85 module/reference checks and five integration modes pass. Native Chromium passes 230 usability cases at five viewport sizes and 51 additional short-screen/simulated-inset activity cases. The 36-view accessibility sweep has no automated WCAG A/AA violations. Landscape low-graphics WebGL passes all 31 views and 23 room object checks, retaining the 78-draw peak, zero idle frames, stable warmed resources and complete disposal. Manual review includes the 320px introduction and desktop recovery. Evidence and reproduction instructions are in `state/mobile-usability/`. Physical-device, real keyboard/browser chrome and Safari verification remain pending.
+
 ## Interior surfaces (local) — October 27, 2026
 
 All six floors and 23 rooms received a geometry and visual review. Furniture panels now share one exposed skin within their own interaction target, with independent piano-key groups preserved. Authored fixes remove cushion-edge gaps, overlapping books and rounded chair joins, plus collisions around the maker desk, simulator, network storage, diagnostic worktable, inspection car and Contact lounge. Overhead orbit navigation remains in place.
